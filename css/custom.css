@@ -1,0 +1,230 @@
+root { 
+    display: block;
+    
+}
+
+body {
+    font-size: 13px;
+    margin-top: 80px; /* see .linkdiv */
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    font-size: 13px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 25px;
+    line-height: 20px;
+}
+
+.navbar-inner {
+    min-height: 61px;
+    font-size: 16px;
+}
+
+#uzi_link {
+    text-decoration:none;
+    margin: 0px;
+    padding: 0px;
+    cursor: default;
+}
+
+#uzi_img {
+    margin: 0px;
+    padding: 0px;
+    /*border: 1px solid red;*/
+    width: 234px;
+    height: 60px;
+}
+
+.linkdiv {
+    position:relative; 
+    top:-60px; /* related to body margin-top */
+}
+
+.menu-vcenter{
+    margin-top: 10px;
+}
+
+.btn {
+    font-size: 13px;
+}
+
+.navbar-inner {
+    /*background-color: #3C3C3C;*/
+    background-image: none;
+}
+
+/*
+.navbar-fixed-top .brand {
+    color: #000000;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 30px rgba(255, 255, 255, 0.125);
+    
+}
+
+.navbar-fixed-top .brand a {
+    color: #000000;
+}
+*/
+
+#bodycontainer {
+    /* 
+    20px if navbar-static-top 
+    40px if navbar-fixed-top 
+    */
+    
+    margin-bottom: 30px;
+    
+}
+
+.groupicon{
+    margin-right: 2px;/* 20px if navbar-static-top */
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: text-top;
+    width: 16px;   
+}
+
+
+.datepicker-group{
+    width: 70px;
+}
+
+#startdate {
+    margin-bottom: 0px;
+}
+
+#enddate {
+    margin-bottom: 0px;
+}
+
+.table-event-container{
+    display: none;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.table-event {
+    margin: 0px
+}
+
+.form-event {
+    margin: 0px
+}
+
+.del-event{
+    cursor: pointer;
+}
+
+#event-add{
+    cursor:  pointer;
+}
+
+#event-date {
+    width: 80px;
+}
+
+.event-data {
+    width: 95%;
+}
+
+.group-head {
+    margin-top: 5px;
+    margin-left: 0px;
+}
+
+.group-title{
+    width: 560px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 1px;   
+    
+    float: left;
+    padding: 4px 0;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15);
+}
+
+.group-action-btn {
+    float: right;
+}
+
+#loading-span {
+    display: block;
+    float: left;
+    font-size: 20px;
+    font-weight: 200;
+    margin-left: -40px;
+    padding-top: 8px;
+    text-shadow: 0 1px 0;   
+}
+
+#loading-img {
+    display: none;
+}
+
+#new-version-span{
+    display: block;
+    float: left;
+    margin-left: -140px;
+    padding-top: 8px;
+}
+
+#new-version-link {
+    color: red;
+    font-size: 13px;
+    text-decoration: underline;
+}
+
+#new-version-link:hover {
+    text-decoration: none;
+}
+
+#cur-version {
+    color: black;
+    font-size: 12px;
+}
+
+.handleicon {
+    background-image:url(../img/dnd-handle.gif);
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    margin-right: 2px;
+    margin-left: 4px;
+    vertical-align: text-top;
+    width: 10px;
+}
+
+.nav-list > .draggable-li > a {
+    padding: 2px 0px; 
+}
+
+.tablerender td {
+    text-align: center;
+    font-size: 12px;
+}
+
+.tablerender td:nth-child(even) {
+    background-color: #F9F9F9;
+}
+
+.tdevent {
+    font-weight: bold;
+}
+
+.tdprogess {
+    color: green;
+}
+
+.tdregress {
+    color: red;
+}
