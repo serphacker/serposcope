@@ -84,6 +84,11 @@ if (isset($_GET['idGroup'])) {
     }
 }
 
+if($group == NULL){
+    header("Location: index.php?error=Can't find group");
+    die();
+}
+
 if(isset($_GET['export'])){
     include('renders/csv.php');
     render($rank, $sites, $keywords);

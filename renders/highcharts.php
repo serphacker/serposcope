@@ -71,7 +71,7 @@ $(document).ready(function() {
     
     foreach ($keywords as $keyword) {
         echo "{\n";
-        echo "\tname: ".json_encode($keyword,JSON_HEX_TAG).",\n";
+        echo "\tname: ".json_encode_tag($keyword).",\n";
         echo "\tdata: [";
         foreach ($ranks as $rank) {
             if(isset($rank[$target]) && isset($rank[$target][$keyword])){

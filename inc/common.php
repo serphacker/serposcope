@@ -14,6 +14,14 @@ if(!defined('INCLUDE_OK'))
 
 include(OHMYROOT.'inc/functions.php');
 
+// don't even start if php version is < 5.2
+if( PHP_MAJOR_VERSION < 5 ||
+    (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2)
+){
+    die("Serposcope need at lease PHP <strong>5.2</strong>, you are using <strong>".PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."</strong> check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>");
+}
+
+
 ini_set("default_charset", 'utf-8');
 set_time_limit(0);
 

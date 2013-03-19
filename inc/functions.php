@@ -9,6 +9,16 @@
  * 
  * Redistributions of files must retain the above notice.
  */
+// because PHP < 5.3.0 doesn't handle JSON_HEX_TAG
+function json_encode_tag($string){
+    return str_replace("<", "\\u003C", 
+        str_replace(">", "\\u003E", 
+            json_encode($string)
+        )
+    );
+}
+
+
 function proxyToString($proxy){
     
     $string = $proxy['type']."://";

@@ -10,7 +10,7 @@
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
-    die("Can't find inc/config.php, check install instruction <a href='http://serphacker.com/serposcope/doc/install.html' >here</a>");
+    die("Can't find inc/config.php, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>");
 }
 
 include('inc/config.php');

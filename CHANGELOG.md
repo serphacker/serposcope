@@ -1,5 +1,11 @@
 # Serposcope changelog
 
+## 0.9.4 - 19/03/2013
+
+* Fixed PHP 5.2 unsupported json_encode options 
+* Prevent soft from running if using PHP < 5.2
+* Fixed SQL install file
+
 ## 0.9.3 - 18/03/2013
 
 * Fixed fucked detection of invalid max_execution_time
