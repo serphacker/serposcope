@@ -15,15 +15,51 @@ include('inc/common.php');
 if(isset($_GET['id'])){
     $res = null;
     if(is_numeric($_GET['id'])){
-        $res=mysql_query("SELECT logs FROM  `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
+        $res=mysql_query("SELECT * FROM  `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
     }else if( $_GET['id'] == "last" ){
-        $res=mysql_query("SELECT logs FROM  `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
+        $res=mysql_query("SELECT * FROM  `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
     }
-    if($res && $logs=  mysql_fetch_assoc($res)){
+    if($res && $run=  mysql_fetch_assoc($res)){
+        if($run['dateStop'] == null){
+            if(!is_pid_alive($run['pid'])){
+                // in this case the pid have been killed externally 
+                // from command line or max execution time reached
+                mysql_query(
+                    "UPDATE `".SQL_PREFIX."run` SET haveError=1, dateStop=now(), ".
+                    "logs=CONCAT(logs,'ERROR ABNORMAL TERMINATION : process may have been killed or reached max execution time\n') ".
+                    "WHERE idRun = ".$run['idRun']
+                );
+            }
+        }
+    }
+    
+    if(is_numeric($_GET['id'])){
+        $res=mysql_query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
+    }else if( $_GET['id'] == "last" ){
+        $res=mysql_query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
+    }    
+    if($res && $run=  mysql_fetch_assoc($res)){
         header('Content-Type: text/plain');
-        echo $logs['logs'];
+        if($run['dateStop'] == null){
+            echo "Cron is still running (PID: ".$run['pid']." started: ".$run['dateStart']."), press F5 to Refresh the log\n";
+        }else{
+            if($run['haveError']){
+                echo "Run done in ".$run['diff']." with error (PID: ".$run['pid']." started: ".$run['dateStart'].")\n";
+            }else{
+                echo "Run successfully done in ".$run['diff']." (PID: ".$run['pid']." started: ".$run['dateStart'].")\n";
+            }
+        }
+        echo "-----\n";
+        echo $run['logs'];
+        echo "-----\n";
+        if($run['dateStop'] == null){
+            echo "Press F5 to Refresh the log\n";
+        }else{
+            echo "Process terminated, end of log\n";
+        }        
+        
         die();
-    }
+    }    
 }
 
 include("inc/header.php");

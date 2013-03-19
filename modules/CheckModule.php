@@ -77,6 +77,23 @@ abstract class GroupModule {
      * $group['sites'] array of sit
      */
     abstract public function check($group);
+ 
+    /**
+     * Validate if a keyword is ok for this checker
+     * better to be override
+     */
+    public function validateKeyword($keyword){
+        return true;
+    }
+    
+    /**
+     * Validate if a target is ok for this checker
+     * by example, google module only accept domaine name
+     * better to be override
+     */
+    public function validateTarget($target){
+        return preg_match('/^[a-zA-Z0-9.-]$/', $target);
+    }
     
     protected function e($msg){
         return e(get_class($this),$msg);

@@ -14,13 +14,19 @@ if(!defined('INCLUDE_OK'))
 
 include(OHMYROOT.'inc/functions.php');
 
-// don't even start if php version is < 5.2
+// critical check, don't even start if :
+// php version is < 5.2
 if( PHP_MAJOR_VERSION < 5 ||
     (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2)
 ){
-    die("Serposcope need at lease PHP <strong>5.2</strong>, you are using <strong>".PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."</strong> check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>");
+    die("Serposcope need at least PHP <strong>5.2</strong>, you are using <strong>".PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION."</strong> check <a href='http://serphacker.com/serposcope/doc/install.html' >install instructions</a>");
 }
 
+// curl not installed
+if(!function_exists('curl_version')){
+    die("Serposcope need <strong>curl</strong>, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instructions</a>");
+}
+// critical check
 
 ini_set("default_charset", 'utf-8');
 set_time_limit(0);
@@ -30,8 +36,11 @@ if(!mysql_connect(SQL_HOST, SQL_LOGIN, SQL_PASS)){
     mysql_connect(SQL_HOST, SQL_LOGIN, SQL_PASS) or die('no database connection (wrong host/login/password)');
 }
 
-mysql_select_db(SQL_DATABASE) or die("can't select the database");
+mysql_select_db(SQL_DATABASE) or die("Can't select ".SQL_DATABASE." database");
 mysql_query("set names 'utf8'");
+
+if(mysql_query('select 1 from `group`') === false){
+    die("Database ".SQL_DATABASE." ok but can't find tables, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>"); }
 
 $modules = Array();
 

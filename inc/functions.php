@@ -126,7 +126,7 @@ function is_pid_alive($pid){
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         $wmi=new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
         $procs=$wmi->ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId='".$pid."'");
-        return !empty($procs);
+        return $procs && ($procs->Count !== 0);
     } else {
         return posix_getsid($pid) !== FALSE;
     }    
@@ -178,6 +178,7 @@ function load_proxies(){
     
     $proxies=array();
     $result = mysql_query("SELECT * FROM `".SQL_PREFIX."proxy`");
+//    die("x => ".$result);
     while($proxy=  mysql_fetch_assoc($result)){
         $proxies[]=$proxy;
     }

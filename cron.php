@@ -53,7 +53,7 @@ if(ini_get('safe_mode')){
 }
 
 if($defaultMaxExecutionTime > 0){
-    e('Cron','max_execution_time is '.$defaultMaxExecutionTime.' it should be 0. All positions may not be checked');
+    e('Cron','max_execution_time is '.$defaultMaxExecutionTime.' it should be 0. All positions may not be checked. Edit your php.ini');
 }
 
 $iProxy= empty($proxies) ? 0 : rand(0, count($proxies)-1);

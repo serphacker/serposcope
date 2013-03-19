@@ -27,7 +27,7 @@ header("Content-type: text/html;charset=UTF-8");
         <script src="lib/datepicker/js/bootstrap-datepicker.js" ></script>
         <script src="lib/highcharts/js/highcharts.js" ></script>
         <script src="lib/highcharts/js/modules/exporting.js" ></script>
-        <script>var current_version = "<?= VERSION; ?>";</script>
+        <script>var current_version = "<?php echo VERSION; ?>";</script>
         <script src="js/app.js" ></script>
         <script src="http://serphacker.com/serposcope/latest.js" ></script>
 
@@ -47,7 +47,7 @@ header("Content-type: text/html;charset=UTF-8");
                             <a id='new-version-link' href='http://serphacker.com/serposcope/download.html' ></a>
                         </span> 
                         <span id='loading-span' ><img id="loading-img" src="img/spinner.gif" /></span> 
-                        <a class="brand"  href="index.php" >Serposcope <span id='cur-version' ><?= VERSION ?></span></a>
+                        <a class="brand"  href="index.php" >Serposcope <span id='cur-version' ><?php echo VERSION; ?></span></a>
                         <div class="nav-collapse collapse">
                             <ul class="nav">
                                 <li >
@@ -69,7 +69,10 @@ header("Content-type: text/html;charset=UTF-8");
                                 </li>                            
                                 <li >
                                     <a href="import.php" >Import</a>
-                                </li>                                   
+                                </li>        
+                                <li >
+                                    <a href="#" class='btn-run-all' >RUN ALL</a>
+                                </li>                                    
                             </ul>
                         </div>
                     </div>

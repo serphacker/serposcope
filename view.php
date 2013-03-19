@@ -98,14 +98,14 @@ if(isset($_GET['export'])){
 include("inc/header.php");
 include('renders/'.$options['general']['rendering'].'.php');
 ?>
-<h2><?= $group != null && isset($group['name']) ? h8($group['name']) : "" ?></h2>
+<h2><?php echo ($group != null && isset($group['name']) ? h8($group['name']) : ""); ?></h2>
 <div>
     <input class="datepicker datepicker-group" id="startdate" name="startdate" type="text" />
     <input class="datepicker datepicker-group" id="enddate" name="enddate" type="text" />
     <a type="button" class="btn" id="btn-date-scope" >Refresh</a>
     <a type="button" class='btn' id="btn-export" >Export</a>
     <div style='float:right;' >
-    <a href='edit.php?idGroup=<?= $group['idGroup'] ?>' class='btn btn-primary' >Edit</a>
+    <a href='edit.php?idGroup=<?php echo $group['idGroup']; ?>' class='btn btn-primary' >Edit</a>
     <a id=btn-del-group class='btn btn-danger' >Delete</a>
     <a href='#' id='btn-force-run' class='btn btn-warning' >Force run</a>
     </div>
@@ -115,8 +115,8 @@ include('renders/'.$options['general']['rendering'].'.php');
     $(function() {
         $( ".datepicker" ).datepicker({format : 'dd/mm/yyyy'});
         $( ".event-date" ).datepicker('setValue', Date());
-        $( "#startdate" ).datepicker('setValue', '<?= date('d/m/Y', $startDate) ?>');
-        $( "#enddate" ).datepicker('setValue', '<?= date('d/m/Y', $endDate) ?>');
+        $( "#startdate" ).datepicker('setValue', '<?php echo date('d/m/Y', $startDate); ?>');
+        $( "#enddate" ).datepicker('setValue', '<?php echo date('d/m/Y', $endDate); ?>');
         
         $('#btn-force-run').click(function(){
             var canRun=false;
@@ -152,7 +152,7 @@ include('renders/'.$options['general']['rendering'].'.php');
                     return;
                 }
                 var imgRun = new Image();
-                imgRun.src = "cron.php?idGroup=<?= $group['idGroup'] ?>";
+                imgRun.src = "cron.php?idGroup=<?php echo $group['idGroup']; ?>";
 
                 // lock everything for 3 sec
                 $.blockUI({ message: '<h1>Launching run...</h1>' });
@@ -163,14 +163,14 @@ include('renders/'.$options['general']['rendering'].'.php');
         });
         
         $('#btn-date-scope').click(function(){
-            var url = "view.php?idGroup=<?= $group['idGroup'] ?>" + 
+            var url = "view.php?idGroup=<?php echo $group['idGroup']; ?>" + 
                 "&startdate=" + $('#startdate').val() + 
                 "&enddate="+ $('#enddate').val();
             window.location = url;
         });
         
         $('#btn-export').click(function(){
-            var url = "view.php?idGroup=<?= $group['idGroup'] ?>" + 
+            var url = "view.php?idGroup=<?php echo $group['idGroup']; ?>" + 
                 "&export=true" +
                 "&startdate=" + $('#startdate').val() + 
                 "&enddate="+ $('#enddate').val();
@@ -185,7 +185,7 @@ include('renders/'.$options['general']['rendering'].'.php');
                     url: "ajax.php",
                     data: {
                         action: "delGroup",
-                        idGroup: <?= $group['idGroup'] ?>
+                        idGroup: <?php echo $group['idGroup']; ?>
                     }
                 }).done(function(rawdata){
                     data = JSON.parse(rawdata);

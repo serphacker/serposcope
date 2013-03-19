@@ -24,43 +24,53 @@ if(isset($_POST['name'])){
         $error .= "No group name.<br/>";
     }
     
-    if(isset($_POST['keywords']) && is_array($_POST['keywords'])){
-        foreach ($_POST['keywords'] as $keyword) {
-            if(!empty($keyword))
-                $keywords[] = $keyword;
+    if(empty($error)){
+        if(!isset($_POST['module']) || !isset($modules[$_POST['module']])){
+            $error .= "Need a valid module.<br/>";
+        }else{
+            $groupDefaultOptions=$modules[$_POST['module']]->getGroupOptions();
+            foreach ($groupDefaultOptions as $option) {
+                if(!isset($_POST[$option[0]]))
+                    $error .= "Missing group option ".$option[0].".<br/>";
+                else if(!preg_match($option[3], $_POST[$option[0]]))
+                    $error .= "Invalid group option ".$option[0]." \"<strong>".h8($_POST[$option[0]])."</strong>\", doesn't match ".h8($option[3])." <br/>";
+                else
+                    $groupOptions[$option[0]] = $_POST[$option[0]];
+            }
+        }    
+    }
+    
+    if(empty($error)){
+        if(isset($_POST['keywords']) && is_array($_POST['keywords'])){
+            foreach ($_POST['keywords'] as $keyword) {
+                if(!empty($keyword)){
+                    if(!$modules[$_POST['module']]->validateKeyword($keyword)){
+                        $error .= "Invalid target format ".$keyword;
+                        break;
+                    }else{
+                        $keywords[] = $keyword;
+                    }                    
+                }
+            }
         }
     }
     
-    /*
-    if(empty($keywords))
-        $error .= "No keywords.<br/>";
-     */
-    
-    if(isset($_POST['sites']) && is_array($_POST['sites'])){
-        foreach ($_POST['sites'] as $site) {
-            if(!empty($site))
-                $sites[] = $site;
-        }
-    }    
-    
-    /*
-    if(empty($sites))
-        $error .= "No sites.<br/>";    
-     */
-    
-    if(!isset($_POST['module']) || !isset($modules[$_POST['module']])){
-        $error .= "Need a valid module.<br/>";
-    }else{
-        $groupDefaultOptions=$modules[$_POST['module']]->getGroupOptions();
-        foreach ($groupDefaultOptions as $option) {
-            if(!isset($_POST[$option[0]]))
-                $error .= "Missing group option ".$option[0].".<br/>";
-            else if(!preg_match($option[3], $_POST[$option[0]]))
-                $error .= "Invalid group option ".$option[0]." \"<strong>".h8($_POST[$option[0]])."</strong>\", doesn't match ".h8($option[3])." <br/>";
-            else
-                $groupOptions[$option[0]] = $_POST[$option[0]];
-        }
+    if(empty($error)){
+        if(isset($_POST['sites']) && is_array($_POST['sites'])){
+            foreach ($_POST['sites'] as $site) {
+                if(!empty($site)){
+                    if(!$modules[$_POST['module']]->validateTarget($site)){
+                        $error .= "Invalid target format ".$site;
+                        break;
+                    }else{
+                        $sites[] = $site;
+                    }
+                }
+            }
+        }    
     }
+    
+
     
     if(empty($error)){
         $q="INSERT INTO `".SQL_PREFIX."group`(`name`,`module`,`options`) VALUES(".
@@ -81,7 +91,7 @@ if(isset($_POST['name'])){
         }
     }    
         
-    if(empty($error)){
+    if(empty($error) && !empty($keywords)){
         // insert the keywords
         $qKW="INSERT INTO `".SQL_PREFIX."keyword`(`idGroup`,`name`) VALUES ";
         for($i=0;$i<count($keywords);$i++){
@@ -94,7 +104,7 @@ if(isset($_POST['name'])){
         }        
     }
         
-    if(empty($error)){
+    if(empty($error) && !empty($sites)){
         // insert the sites
         $qSite="INSERT INTO `".SQL_PREFIX."target`(`idGroup`,`name`) VALUES ";
         for($i=0;$i<count($sites);$i++){

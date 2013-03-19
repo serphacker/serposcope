@@ -10,7 +10,7 @@
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
-    die("Can't find inc/config.php, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>");
+    die("Can't find inc/config.php, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instructions</a>");
 }
 
 include('inc/config.php');
@@ -37,15 +37,15 @@ if($res && ($run=mysql_fetch_assoc($res))){
                 "logs=CONCAT(logs,'ERROR ABNORMAL TERMINATION : process may have been killed or reached max execution time\n') ".
                 "WHERE idRun = ".$run['idRun']
             );
-            echo "<div class='alert alert-error' >Last run done in ".$run['diff']." seconds with error  (PID: ".$run['pid']." started: ".$run['dateStart']." )<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
+            echo "<div class='alert alert-error' >Last run done in ".$run['diff']." with error (PID: ".$run['pid']." started: ".$run['dateStart'].")<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
         }else{
-            echo "<div class='alert' >Warning: cron is still running (PID: ".$run['pid']." started: ".$run['dateStart']." ) <span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>] [<a style='color:red;' id='stop' data-pid=".$run['pid']." data-runid=".$run['idRun']." href='#' >STOP</a>]</span></div>";
+            echo "<div class='alert' >Warning: cron is still running (PID: ".$run['pid']." started: ".$run['dateStart'].") <span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>] [<a style='color:red;' id='stop' data-pid=".$run['pid']." data-runid=".$run['idRun']." href='#' >STOP</a>]</span></div>";
         }
     }else{
         if($run['haveError']){
-            echo "<div class='alert alert-error' >Last run done in ".$run['diff']." seconds with error  (PID: ".$run['pid']." started: ".$run['dateStart']." )<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
+            echo "<div class='alert alert-error' >Last run done in ".$run['diff']." with error (PID: ".$run['pid']." started: ".$run['dateStart'].")<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
         }else{
-            echo "<div class='alert alert-success' >Last run successfully done in ".$run['diff']." seconds (PID: ".$run['pid']." started: ".$run['dateStart']." )<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
+            echo "<div class='alert alert-success' >Last run successfully done in ".$run['diff']." (PID: ".$run['pid']." started: ".$run['dateStart'].")<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
         }
     }
 }

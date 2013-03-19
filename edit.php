@@ -149,12 +149,12 @@ if(!empty($error)){
 }
 ?>
 <div>
-<form method="POST" class="well form-horizontal" action="edit.php?idGroup=<?= intval($_GET['idGroup']); ?>" >
+<form method="POST" class="well form-horizontal" action="edit.php?idGroup=<?php echo intval($_GET['idGroup']); ?>" >
     <fieldset>
         <div class="control-group">
             <label class="control-label" for="name">Group name</label>
             <div class="controls">
-                <input type="text" class="input-xlarge" id="name" name="name" value="<?= h8($group['name']);  ?>" >
+                <input type="text" class="input-xlarge" id="name" name="name" value="<?php echo h8($group['name']);  ?>" >
             </div>
         </div>
 

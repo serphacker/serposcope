@@ -1,6 +1,6 @@
 <?php
 
-define('VERSION','0.9.4'); 
+define('VERSION','0.9.5'); 
 define('INCLUDE_OK',1);
 
 define('IMPORT_SERPOSCOPE_CSV',1);

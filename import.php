@@ -23,7 +23,6 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
         $error="File upload error";
     }else{
         $dateFormat="";
-        $delim="";
         $urlFormat="";
         $qGroup = "SELECT idGroup,name FROM `".SQL_PREFIX."group` WHERE idGroup = ".intval($_POST['group']);
         $resGroup=mysql_query($qGroup);
@@ -33,31 +32,35 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
             switch(intval($_POST['type'])){
                 case IMPORT_MYPOSEO_CSV:
                     $dateFormat="Y-m-d";
-                    $delim = ",";
                     $urlFormat="url trouvée";
                     break;
                 case IMPORT_RANKSFR_CSV:
                     $dateFormat="Y-m-d 00:00:00";
-                    $delim = ";";
                     $urlFormat="url";
                     break;     
                 case IMPORT_SERPOSCOPE_CSV:
                     $dateFormat="Y-m-d 00:00:00";
-                    $delim = ",";
                     $urlFormat="url";
                 default:
                     die("invalid import");
             }
             
-            $line=fgetcsv($fpFile,0,$delim);
-
+            
+            $line=fgets($fpFile);
+            if(count(explode(",", $line)) > count(explode(";", $line))){
+                $delim=",";
+            }else{
+                $delim=";";
+            }
+            
+            $line=  explode($delim, $line);
             $dateIndex=-1;
             $positionIndex=-1;
             $kwIndex=-1;
             $urlIndex=-1;                    
             
             for($i=0;$i<count($line);$i++){
-                switch(strtolower($line[$i])){
+                switch(trim(strtolower($line[$i]),'"')){
                     case "position j":
                     case "position":
                         $positionIndex=$i;
@@ -73,10 +76,9 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                     
                     case $urlFormat:
                         $urlIndex=$i;
-                        break;                                
+                        break;            
                 }
             }
-            
             if($dateIndex == -1 || $positionIndex == -1 || $kwIndex == -1 || $urlIndex == -1){
                 $error = 
                 "Invalid CSV file. File must be UTF-8 encoded. ".
