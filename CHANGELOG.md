@@ -1,5 +1,9 @@
 # Serposcope changelog
 
+## 0.9.6 - 20/03/2013
+
+* fixed default validateTarget regex
+
 ## 0.9.5 - 19/03/2013
 
 * Check if valid keyword/site on new.php (need to be done on edit/import)
