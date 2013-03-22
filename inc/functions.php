@@ -137,6 +137,7 @@ $generalOptions = array(
     array('timeout','20','Maximum HTTP request execution time','/^[0-9]+$/','text'),
     array('home_unchanged','yes','Display unchanged position on home','/^yes|no$/','yesno'),
     array('rendering','highcharts','Possible values : highcharts,table','/^highcharts|table$/','text'),
+    array('debug_log','no','Enable debug logging','/^yes|no$/','yesno'),
 //    array('proxies',null,'Http proxy IP:PORT format, 1 per line.<br/>To mix direct connection with proxy, use DIRECT.','/^[0-9+]+$/','textarea'),
 );
 $options=array();
@@ -196,6 +197,18 @@ function e($src,$str){
     global $haveError;
     $haveError=true;
     echo "[".date('d/m/Y h:i:s')."][$src] ERROR: $str\n";
+}
+
+// debug logging
+function d($src,$str){
+    global $options;
+    if($options['general']['debug_log'] === "yes"){
+        echo "[".date('d/m/Y h:i:s')."][$src] DEBUG: $str\n";
+    }
+}
+
+function debug_memory(){
+    return (memory_get_usage(true)/(1024*1024))."M/".ini_get('memory_limit');
 }
 
 ?>

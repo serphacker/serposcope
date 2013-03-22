@@ -180,7 +180,7 @@ $(function() {
                 return;
             }
 
-            if (!confirm("Warning, run should be done from command line or via cron, continue ?")) {
+            if (!confirm("Warning, run should be done from COMMAND LINE or via cron, continue ?")) {
                 return;
             }
             var imgRun = new Image();

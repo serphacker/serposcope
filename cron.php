@@ -18,6 +18,8 @@ include('inc/define.php');
 include('inc/common.php');
 
 if(php_sapi_name() != "cli"){
+    // don't abort the script on client disconnect
+    ignore_user_abort(true); 
     header('Content-type: text/plain');
 }
 
@@ -52,6 +54,8 @@ if(ini_get('safe_mode')){
     e('Cron','safe_mode should be off, may trigger errors');
 }
 
+// we did override max_execution_time before, but it doesn't always work
+// force the user to do it in php.ini
 if($defaultMaxExecutionTime > 0){
     e('Cron','max_execution_time is '.$defaultMaxExecutionTime.' it should be 0. All positions may not be checked. Edit your php.ini');
 }
@@ -116,10 +120,14 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     mysql_query($qRun);
     $id=  mysql_insert_id();
     $res = $modules[$row['module']]->check($group);
+    
+    
 
     if($res === null){
-        e('cron','module returned fatal error');
+        e('Cron','Module returned fatal error for group['.$row['idGroup'].'] '.$row['name']);
         continue;
+    }else{
+        l('Cron','Checking done for group['.$row['idGroup'].'] '.$row['name']);
     }
 
     $qRank = "INSERT INTO `".SQL_PREFIX."rank` VALUES ";
@@ -137,6 +145,8 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
 //    e('DEBUG', $qRank);
     mysql_query($qRank);
 }
+
+l('Cron','All groups done');
 
 ob_end_flush();
 

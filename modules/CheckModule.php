@@ -103,6 +103,10 @@ abstract class GroupModule {
         return l(get_class($this),$msg);
     }
     
+    protected function d($msg){
+        return d(get_class($this),$msg);
+    }
+    
 }
 
 ?>

@@ -1,5 +1,12 @@
 # Serposcope changelog
 
+## 0.9.7 - 22/03/2013
+
+* more debug output in Google module
+* debug option and new debug function d()
+* debug_memory()
+* using ignore_user_abort()
+
 ## 0.9.6 - 20/03/2013
 
 * fixed default validateTarget regex

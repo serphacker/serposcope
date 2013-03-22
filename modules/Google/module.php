@@ -105,7 +105,7 @@ class Google extends GroupModule {
                     $curl=curl_init();
                     curl_setopt_array($curl,$opts);
                     
-//                    $this->e("GET $url");
+                    $this->d("GET $url (try: $fetchRetry) (mem: ".  debug_memory().")");
                     $data=curl_exec($curl);
                     $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
                     
