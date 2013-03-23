@@ -9,7 +9,11 @@
  * 
  * Redistributions of files must retain the above notice.
  */
-include('inc/config.php');
+if(!file_exists('inc/config.php')){
+    header("Location: install/",TRUE,302);
+    die();
+}
+require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
 

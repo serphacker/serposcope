@@ -10,7 +10,11 @@
  * Redistributions of files must retain the above notice.
  */
 
-include('inc/config.php');
+if(!file_exists('inc/config.php')){
+    header("Location: install/",TRUE,302);
+    die();
+}
+require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
 include("inc/header.php");
@@ -26,7 +30,8 @@ include("inc/header.php");
         </thead>
         <tbody>
 <?php
-    $q="SELECT `target`.name tname,idTarget,`group`.idGroup,`group`.name gname ".
+    $q="SELECT `".SQL_PREFIX."target`.name tname,idTarget, ".
+            "`".SQL_PREFIX."group`.idGroup,`".SQL_PREFIX."group`.name gname ".
             "FROM `".SQL_PREFIX."target` ".
             "JOIN `".SQL_PREFIX."group` USING(idGroup) ";
     $result = mysql_query($q);

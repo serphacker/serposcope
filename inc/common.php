@@ -39,8 +39,22 @@ if(!mysql_connect(SQL_HOST, SQL_LOGIN, SQL_PASS)){
 mysql_select_db(SQL_DATABASE) or die("Can't select ".SQL_DATABASE." database");
 mysql_query("set names 'utf8'");
 
-if(mysql_query('select 1 from `group`') === false){
-    die("Database ".SQL_DATABASE." ok but can't find tables, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>"); }
+if(mysql_query('select 1 from `'.SQL_PREFIX.'group`') === false){
+    die("Database ".SQL_DATABASE." ok but can't find tables, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>"); 
+}
+
+$dbversion=1;
+$result=@mysql_query("SELECT version FROM `".SQL_PREFIX."version`");
+if($result){
+    $array =  mysql_fetch_assoc($result);
+    if($array){
+        $dbversion=$array['version'];
+    }
+}
+
+if($dbversion != SQL_VERSION){
+    die("You need to upgrade your SQL tables to use this version, delete <code>inc/config.php</code> and go to <a href='".dirname($_SERVER['PHP_SELF'])."/install/' >installer</a>");
+}
 
 $modules = Array();
 

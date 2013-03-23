@@ -10,10 +10,10 @@
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
-    die("Can't find inc/config.php, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instructions</a>");
+    header("Location: install/",TRUE,302);
+    die();
 }
-
-include('inc/config.php');
+require('inc/config.php');
 include('inc/define.php');  
 include('inc/common.php');
 include("inc/header.php");
@@ -74,7 +74,7 @@ $otherBadChanges=array();
 $unchanged=array();
 
 foreach ($groupsCheck as $check) {
-    $q="SELECT idCheck,rank.idTarget,keyword.name name,target.name url,position ".
+    $q="SELECT idCheck, `".SQL_PREFIX."rank`.idTarget, `".SQL_PREFIX."keyword`.name name, `".SQL_PREFIX."target`.name url, position ".
             " FROM `".SQL_PREFIX."rank` ".
             " JOIN `".SQL_PREFIX."keyword` USING(idKeyword) ".
             " JOIN `".SQL_PREFIX."target` USING(idTarget) ".

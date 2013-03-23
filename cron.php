@@ -115,7 +115,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
 
     $date = "NOW()";
     //$date = "DATE_SUB(NOW(),INTERVAL ".$interval." DAY)";
-    $qRun = "INSERT INTO `".SQL_PREFIX."check`(idGroup,date) VALUES(".intval($row['idGroup']).",".$date.")";
+    $qRun = "INSERT INTO `".SQL_PREFIX."check`(idGroup,idRun,date) VALUES(".intval($row['idGroup']).",".intval($runid).",".$date.")";
 
     mysql_query($qRun);
     $id=  mysql_insert_id();

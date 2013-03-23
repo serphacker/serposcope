@@ -9,7 +9,11 @@
  * 
  * Redistributions of files must retain the above notice.
  */
-include('inc/config.php');
+if(!file_exists('inc/config.php')){
+    header("Location: install/",TRUE,302);
+    die();
+}
+require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
 
@@ -59,7 +63,9 @@ if (isset($_GET['idGroup'])) {
 
         while ($check = mysql_fetch_assoc($resCheck)) {
             $rank[$check['idCheck']]['date'] = $check['date'];
-            $qRank = "select rank.idTarget, target.name tname, keyword.name kname, position, url FROM `".SQL_PREFIX."rank` ".
+            $qRank = "select `".SQL_PREFIX."rank`.idTarget, `".SQL_PREFIX."target`.name tname, ".
+                "`".SQL_PREFIX."keyword`.name kname, position, url ".
+                "FROM `".SQL_PREFIX."rank` ".
                 "JOIN `".SQL_PREFIX."target` USING (idTarget) ".
                 "JOIN `".SQL_PREFIX."keyword` USING(idKeyword) ".
                 "WHERE idCheck= " . intval($check['idCheck']);

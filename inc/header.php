@@ -14,8 +14,9 @@ header("Content-type: text/html;charset=UTF-8");
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-        <title></title>
+        <title>Serposcope</title>
         <meta charset="utf-8" />
+        <meta name="robots" content="noindex" />
 
         <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="lib/datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
