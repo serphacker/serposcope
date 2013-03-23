@@ -274,7 +274,6 @@ function clear_cache($force = false){
             $cacheFile = sys_get_temp_dir()."/".CACHE_DIR."/".$filename;
             
             if(is_file($cacheFile) && ($force || (time() - filemtime($cacheFile)) > $cache_hto*3600) ){
-                echo "DBG UNLINK $cacheFile\n";
                 unlink($cacheFile);
             }
             
