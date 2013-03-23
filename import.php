@@ -29,7 +29,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
         $dateFormat="";
         $urlFormat="";
         $qGroup = "SELECT idGroup,name FROM `".SQL_PREFIX."group` WHERE idGroup = ".intval($_POST['group']);
-        $resGroup=mysql_query($qGroup);
+        $resGroup=$db->query($qGroup);
         if(!$resGroup || mysql_num_rows($resGroup) == 0){
             $error = "Unknown group";
         }else{
@@ -92,14 +92,14 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
 
                 $keywords=array();
                 $qSelectKeywords = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = ".intval($_POST['group']);
-                $resSelectKeywords=mysql_query($qSelectKeywords);
+                $resSelectKeywords=$db->query($qSelectKeywords);
                 while($resSelectKeywords != null && ($kw=mysql_fetch_assoc($resSelectKeywords))){
                     $keywords[$kw['name']] = $kw['idKeyword'];
                 }
 
                 $sites=array();
                 $qSelectSites = "SELECT idTarget,name FROM `".SQL_PREFIX."target` WHERE idGroup = ".intval($_POST['group']);
-                $resSelectSites=mysql_query($qSelectSites);
+                $resSelectSites=$db->query($qSelectSites);
                 while($resSelectSites != null && ($targ=mysql_fetch_assoc($resSelectSites))){
                     $sites[$targ['name']] = $targ['idTarget'];
                 }
@@ -116,7 +116,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                         $date = date($dateFormat,strtotime($line[$dateIndex]));
                         if(!isset($check[$date])){
                             $qInsertDate = "INSERT INTO `".SQL_PREFIX."check`(idGroup,`date`) VALUES (".intval($_POST['group']).",'".addslashes($date)."')";
-                            if(mysql_query($qInsertDate)){
+                            if($db->query($qInsertDate)){
                                 $check[$date] = $iCheck =mysql_insert_id();
                             }else{
                                 $error = "SQL insert error (insert check)";
@@ -128,7 +128,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
 
                         if(!isset($keywords[$line[$kwIndex]])){
                             $qInsertKW = "INSERT INTO `".SQL_PREFIX."keyword` (idGroup,name) VALUES (".intval($_POST['group']).",'".addslashes($line[$kwIndex])."') ";
-                            if(mysql_query($qInsertKW)){
+                            if($db->query($qInsertKW)){
                                 $keywords[$line[$kwIndex]] = $iKeyword = mysql_insert_id();
                             }else{
                                 $error = "SQL insert error (insert keyword)";
@@ -145,7 +145,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
 
                             if(!isset($sites[$site])){
                                 $qInsertTarget = "INSERT INTO `".SQL_PREFIX."target` (idGroup,name) VALUES (".intval($_POST['group']).",'".addslashes($site)."') ";
-                                if(mysql_query($qInsertTarget)){
+                                if($db->query($qInsertTarget)){
                                     $sites[$site] = $iSite = mysql_insert_id();
                                 }else{
                                     $error = "SQL insert error (insert target)";
@@ -158,7 +158,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                             $qInsertRank="INSERT INTO `".SQL_PREFIX."rank`(idCheck,idTarget,idKeyword,position,url) ".
                                 "VALUES(".$iCheck.",".$iSite.",".$iKeyword.",".intval($line[$positionIndex]).",'".addslashes($line[$urlIndex])."') ".
                                 "ON DUPLICATE KEY UPDATE position = ".intval($line[$positionIndex]).", url = '".addslashes($line[$urlIndex])."' ";
-                            if(!mysql_query($qInsertRank)){
+                            if(!$db->query($qInsertRank)){
                                     $error = "SQL insert error (insert rank) <b>".h8($qInsertRank)."</b>.<br/>".mysql_error();
                                     break;
                             }                                    
@@ -199,7 +199,7 @@ if(!empty($error)){
 <?php
 $groups = array();
 $qImportGroup = "SELECT idGroup,name FROM `".SQL_PREFIX."group` ORDER BY idGroup DESC"; // recent first
-$resImportGroup = mysql_query($qImportGroup);
+$resImportGroup = $db->query($qImportGroup);
 while($resImportGroup && ($group=mysql_fetch_assoc($resImportGroup)) ){
     echo "<option value=".$group['idGroup']." >".h8($group['name'])."</option>";
 }

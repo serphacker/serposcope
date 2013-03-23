@@ -25,14 +25,14 @@ function cmpBadChange($a,$b){
     return ($a['diff'] - $b['diff']);
 }
 
-$res=mysql_query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT 1"); 
+$res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT 1"); 
 if($res && ($run=mysql_fetch_assoc($res))){
     if($run['dateStop'] == null){
         
         if(!is_pid_alive($run['pid'])){
             // in this case the pid have been killed externally 
             // from command line or max execution time reached
-            mysql_query(
+            $db->query(
                 "UPDATE `".SQL_PREFIX."run` SET haveError=1, dateStop=now(), ".
                 "logs=CONCAT(logs,'ERROR ABNORMAL TERMINATION : process may have been killed or reached max execution time\n') ".
                 "WHERE idRun = ".$run['idRun']
@@ -51,7 +51,7 @@ if($res && ($run=mysql_fetch_assoc($res))){
 }
 
 $q = "select max(idCheck) idLastCheck,idGroup from `".SQL_PREFIX."check` where date(`date`) = curdate() group by idGroup";
-$res=mysql_query($q);
+$res=$db->query($q);
 $groupsCheck= array();
 while ($res && ($row=mysql_fetch_assoc($res))){
     
@@ -60,7 +60,7 @@ while ($res && ($row=mysql_fetch_assoc($res))){
             "and idCheck < ".intval($row['idLastCheck'])." ".
             "order by idCheck DESC limit 1";
     
-    $res2=mysql_query($q);
+    $res2=$db->query($q);
     if($res2 && ($row2=mysql_fetch_row($res2))){
         $row['idPrevCheck'] = $row2[0];
         $groupsCheck[]=$row;
@@ -79,7 +79,7 @@ foreach ($groupsCheck as $check) {
             " JOIN `".SQL_PREFIX."keyword` USING(idKeyword) ".
             " JOIN `".SQL_PREFIX."target` USING(idTarget) ".
             " WHERE idCheck IN (".intval($check['idPrevCheck']).",".intval($check['idLastCheck']).")";
-    $res=mysql_query($q);
+    $res=$db->query($q);
     while ($res && ($row=mysql_fetch_assoc($res))){
         if($row['idCheck'] == $check['idPrevCheck']){
             $check['ranks'][$row['idTarget']."-".$row['name']]['prev'] = $row['position'];

@@ -19,16 +19,16 @@ include('inc/common.php');
 if(isset($_GET['id'])){
     $res = null;
     if(is_numeric($_GET['id'])){
-        $res=mysql_query("SELECT * FROM  `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
+        $res=$db->query("SELECT * FROM  `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
     }else if( $_GET['id'] == "last" ){
-        $res=mysql_query("SELECT * FROM  `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
+        $res=$db->query("SELECT * FROM  `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
     }
     if($res && $run=  mysql_fetch_assoc($res)){
         if($run['dateStop'] == null){
             if(!is_pid_alive($run['pid'])){
                 // in this case the pid have been killed externally 
                 // from command line or max execution time reached
-                mysql_query(
+                $db->query(
                     "UPDATE `".SQL_PREFIX."run` SET haveError=1, dateStop=now(), ".
                     "logs=CONCAT(logs,'ERROR ABNORMAL TERMINATION : process may have been killed or reached max execution time\n') ".
                     "WHERE idRun = ".$run['idRun']
@@ -38,9 +38,9 @@ if(isset($_GET['id'])){
     }
     
     if(is_numeric($_GET['id'])){
-        $res=mysql_query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
+        $res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
     }else if( $_GET['id'] == "last" ){
-        $res=mysql_query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
+        $res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
     }    
     if($res && $run=  mysql_fetch_assoc($res)){
         header('Content-Type: text/plain');
@@ -78,7 +78,7 @@ include("inc/header.php");
     
     $perPage=20;
     $qCount = "SELECT count(*) FROM `".SQL_PREFIX."run`";
-    $resultCount = mysql_query($qCount);
+    $resultCount = $db->query($qCount);
     $rowCount = mysql_fetch_row($resultCount);
     $count = $rowCount[0];
     
@@ -89,7 +89,7 @@ include("inc/header.php");
     $start = ($page-1)*$perPage;
     
     $q="SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT $start,$perPage";
-    $result = mysql_query($q);
+    $result = $db->query($q);
     
     while($result && ($run=mysql_fetch_assoc($result))){
         echo "<tr class=";

@@ -34,7 +34,7 @@ include("inc/header.php");
             "`".SQL_PREFIX."group`.idGroup,`".SQL_PREFIX."group`.name gname ".
             "FROM `".SQL_PREFIX."target` ".
             "JOIN `".SQL_PREFIX."group` USING(idGroup) ";
-    $result = mysql_query($q);
+    $result = $db->query($q);
     
     while($result && ($row=mysql_fetch_assoc($result))){
         echo "<tr>" .

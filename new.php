@@ -82,7 +82,7 @@ if(isset($_POST['name'])){
                 "'".addslashes($_POST['module'])."',".
                 "'".addslashes(json_encode($groupOptions))."')";
         
-        if(mysql_query($q) !== true){
+        if($db->query($q) !== true){
             $error = "SQL Error #1";
         }
     }
@@ -90,7 +90,7 @@ if(isset($_POST['name'])){
     if(empty($error)){
         $id=mysql_insert_id();
         $q="UPDATE `".SQL_PREFIX."group` SET position = ".intval($id)." WHERE idGroup = ".intval($id);
-        if(mysql_query($q) !== true){
+        if($db->query($q) !== true){
             $error = "SQL Error #2";
         }
     }    
@@ -103,7 +103,7 @@ if(isset($_POST['name'])){
             if($i < count($keywords)-1)
                 $qKW .= ",";
         }
-        if(mysql_query($qKW) !== true){
+        if($db->query($qKW) !== true){
             $error = "SQL Error #3";
         }        
     }
@@ -116,7 +116,7 @@ if(isset($_POST['name'])){
             if($i < count($sites)-1)
                 $qSite .= ",";
         }
-        if(mysql_query($qSite) !== true){
+        if($db->query($qSite) !== true){
             $error = "SQL Error #4";
         }          
     }

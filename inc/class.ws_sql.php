@@ -8,13 +8,12 @@ class WS_SQL {
     function __construct($profile = false) {
         if ($profile) {
             $this->profile = true;
-            mysql_query("set profiling = 1");
         }        
     }
     
     function __destruct() {
         
-        if($this->profile && !isBot()){
+        if($this->profile /*&& !isBot()*/){
             echo "<table class='table' ><thead><th>Query</th><th>File</th><th>PhpTime</th><th>MysqlTime</th></tbody></thead><tbody>\n";
 
             foreach ($this->queries as $query) {
@@ -31,6 +30,9 @@ class WS_SQL {
     
     function connect($host, $user, $pass){
         return mysql_connect($host, $user, $pass);
+        if($this->profile){
+            mysql_query("set profiling = 1");
+        }
     }
     
     function select_db($db){

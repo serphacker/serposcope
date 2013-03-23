@@ -38,19 +38,19 @@ $keywords = array();
 $sites = array();
 if (isset($_GET['idGroup'])) {
     $qGroup = "SELECT * FROM `".SQL_PREFIX."group` WHERE idGroup = " . intval($_GET['idGroup']);
-    $resGroup = mysql_query($qGroup);
+    $resGroup = $db->query($qGroup);
     if (($group = mysql_fetch_assoc($resGroup))) {
 
 
         $qKeyword = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = " . intval($_GET['idGroup']);
-        $resKeyword = mysql_query($qKeyword);
+        $resKeyword = $db->query($qKeyword);
         while ($keyword = mysql_fetch_assoc($resKeyword)) {
             $keywords[$keyword['idKeyword']] = $keyword['name'];
         }
 
 
         $qSite = "SELECT idTarget,name FROM `".SQL_PREFIX."target` WHERE idGroup = " . intval($_GET['idGroup']);
-        $resSite = mysql_query($qSite);
+        $resSite = $db->query($qSite);
         while ($site = mysql_fetch_assoc($resSite)) {
             $sites[$site['idTarget']] = $site['name'];
         }
@@ -59,7 +59,7 @@ if (isset($_GET['idGroup'])) {
         $qCheck = "SELECT * FROM  `".SQL_PREFIX."check` WHERE idGroup = " . intval($_GET['idGroup']) . 
                 " AND `date` >= '".date( 'Y-m-d H:i:s',$startDate)."' ".
                 " AND `date` <= '".date( 'Y-m-d H:i:s',$endDate)."' ORDER BY `date`";
-        $resCheck = mysql_query($qCheck);
+        $resCheck = $db->query($qCheck);
 
         while ($check = mysql_fetch_assoc($resCheck)) {
             $rank[$check['idCheck']]['date'] = $check['date'];
@@ -70,7 +70,7 @@ if (isset($_GET['idGroup'])) {
                 "JOIN `".SQL_PREFIX."keyword` USING(idKeyword) ".
                 "WHERE idCheck= " . intval($check['idCheck']);
             
-            $resRank = mysql_query($qRank);
+            $resRank = $db->query($qRank);
             while ($positions = mysql_fetch_assoc($resRank)) {
                 $rank[$check['idCheck']][$positions['tname']][$positions['kname']][0] = $positions['position'];
                 $rank[$check['idCheck']][$positions['tname']][$positions['kname']][1] = $positions['url'];
@@ -80,7 +80,7 @@ if (isset($_GET['idGroup'])) {
                     "JOIN `".SQL_PREFIX."target` USING(idTarget) " .
                     "WHERE `date` = DATE('" . addslashes($rank[$check['idCheck']]['date']) . "') " .
                     "AND idTarget IN(" . implode(",", array_keys($sites)) . ")";
-            $resEvent = mysql_query($qEvent);
+            $resEvent = $db->query($qEvent);
             while ($resEvent && $event = mysql_fetch_assoc($resEvent)) {
                 if (!isset($rank[$check['idCheck']]['__event'][$event['name']][$event['event']])) {
                     $rank[$check['idCheck']]['__event'][$event['name']][$event['idEvent']] = $event['event'];
@@ -315,7 +315,7 @@ foreach ($sites as $idSite => $site) {
                 "FROM `".SQL_PREFIX."event` ".
                 "JOIN `".SQL_PREFIX."target` USING (idTarget) ".
                 "WHERE idTarget = $idSite ORDER BY `date` ASC ";
-        $resEvent = mysql_query($qEvent);
+        $resEvent = $db->query($qEvent);
         while ($event = mysql_fetch_assoc($resEvent)) {
 
             $diff = date_diff(date_create_from_format('d/m/Y', $event['dateF']),date_create());

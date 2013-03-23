@@ -19,7 +19,7 @@ if(isset($_POST['host']) && isset($_POST['database'])){
             $prefix=$_POST['prefix'];
         }
         
-        if(!mysql_query("SELECT 1 FROM `".$prefix."group` LIMIT 1")){
+        if(!$db->query("SELECT 1 FROM `".$prefix."group` LIMIT 1")){
             
 //            die(mysql_error());
             echo '
@@ -47,7 +47,7 @@ if(isset($_POST['host']) && isset($_POST['database'])){
         } else {
             
             $oldversion=null;
-            if($res=mysql_query("SELECT version FROM `".$prefix."version` LIMIT 1")){
+            if($res=$db->query("SELECT version FROM `".$prefix."version` LIMIT 1")){
                 if( $array=  mysql_fetch_assoc($res) ){
                     $oldversion=$array['version'];
                 }

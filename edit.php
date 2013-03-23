@@ -24,20 +24,20 @@ $sites = array();
 if(isset($_GET['idGroup'])){
     
     $qGroup = "SELECT * FROM `".SQL_PREFIX."group` WHERE idGroup = ".intval($_GET['idGroup']);
-    $resGroup = mysql_query($qGroup);
+    $resGroup = $db->query($qGroup);
     if(($group = mysql_fetch_assoc($resGroup))){
         
         $group['options'] = json_decode($group['options']);
         
         $qKeyword = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = ".intval($_GET['idGroup']);
-        $resKeyword=mysql_query($qKeyword);
+        $resKeyword=$db->query($qKeyword);
         while($keyword=mysql_fetch_assoc($resKeyword)){
             $keywords[$keyword['idKeyword']]=$keyword['name'];
         }
         
         
         $qSite = "SELECT idTarget,name FROM `".SQL_PREFIX."target` WHERE idGroup = ".intval($_GET['idGroup']);
-        $resSite=mysql_query($qSite);
+        $resSite=$db->query($qSite);
         while($site=mysql_fetch_assoc($resSite)){
             $sites[$site['idTarget']]=$site['name'];
         }        
@@ -70,7 +70,7 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
     // delete old keyword
     $qDeleteKW = "DELETE FROM `".SQL_PREFIX."keyword` WHERE idGroup = ".intval($_GET['idGroup']).
             " AND name NOT IN ('".implode("','",array_map('addslashes',$keywordsEDIT))."')";
-    mysql_query($qDeleteKW);
+    $db->query($qDeleteKW);
     
     // add keyword
     
@@ -82,7 +82,7 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
                 $qAddKW .= ",";
             }
         }
-        mysql_query($qAddKW);
+        $db->query($qAddKW);
     }
     
     
@@ -101,7 +101,7 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
     // delete old site
     $qDeleteSite = "DELETE FROM `".SQL_PREFIX."target` WHERE idGroup=".intval($_GET['idGroup']).
             " AND name NOT IN ('".implode("','",array_map('addslashes',$sitesEDIT))."')";
-    mysql_query($qDeleteSite);
+    $db->query($qDeleteSite);
     
     // add new site
     if(!empty($sitesADD)){
@@ -112,7 +112,7 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
                 $qAddSite .= ",";
             }
         }
-        mysql_query($qAddSite);
+        $db->query($qAddSite);
     }
     
     // group option
@@ -136,7 +136,7 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
             "options = '".addslashes(json_encode($groupOptions))."' ".
             "WHERE idGroup = ".intval($_GET['idGroup']);
     
-    mysql_query($qUpdateGroup);
+    $db->query($qUpdateGroup);
 
     header("Location: view.php?idGroup=".intval($_GET['idGroup']));
 }

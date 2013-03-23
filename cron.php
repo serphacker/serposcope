@@ -29,21 +29,21 @@ function my_ob_logs($str){
     global $logs;
     global $runid;
     $logs .= $str;
-    mysql_query("UPDATE `".SQL_PREFIX."run` SET logs = '".addslashes($logs)."' WHERE idRun = ".$runid);    
+    $db->query("UPDATE `".SQL_PREFIX."run` SET logs = '".addslashes($logs)."' WHERE idRun = ".$runid);    
     return $str;
 }
 // we will store the output in the database
 ob_start('my_ob_logs',2);
 
 // if another job is running, abort
-$res=mysql_query("SELECT * FROM `".SQL_PREFIX."run` WHERE ISNULL(dateStop)");
+$res=$db->query("SELECT * FROM `".SQL_PREFIX."run` WHERE ISNULL(dateStop)");
 if($res && ($run=mysql_fetch_assoc($res))){
     e('Cron',"Fatal, another job is running : PID = ".$run['pid'].", dateStart = ".$run['dateStart']);
     e('Cron',"Abort the current running jobs via the \"Logs\" page");
     die();
 }
 
-$res=mysql_query("INSERT INTO `".SQL_PREFIX."run`(dateStart,pid) VALUES (now(),".getmypid().")");
+$res=$db->query("INSERT INTO `".SQL_PREFIX."run`(dateStart,pid) VALUES (now(),".getmypid().")");
 if(!$res || ( $runid=mysql_insert_id())==0 ){
     e('Cron',"Fatal, can't insert run in the database");
     die();
@@ -70,7 +70,7 @@ if(isset($_GET['idGroup'])){
     $query .= " ORDER BY rand()";
 }
 
-$resGroup=mysql_query($query);
+$resGroup=$db->query($query);
 while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
 
 
@@ -83,7 +83,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     $qKW = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = ".intval($row['idGroup']);
     // shuffle keywords
     $qKW .= " ORDER BY rand()";
-    $result=mysql_query($qKW);
+    $result=$db->query($qKW);
     while($kw=  mysql_fetch_assoc($result)){
         $keywords[$kw['idKeyword']] = $kw['name'];
     }
@@ -94,7 +94,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     
     $sites = array();
     $qSite = "SELECT idTarget,name FROM `".SQL_PREFIX."target` WHERE idGroup = ".intval($row['idGroup']);
-    $result=mysql_query($qSite);
+    $result=$db->query($qSite);
     while($site=  mysql_fetch_assoc($result)){
         $sites[$site['idTarget']] = $site['name'];
     }
@@ -117,7 +117,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     //$date = "DATE_SUB(NOW(),INTERVAL ".$interval." DAY)";
     $qRun = "INSERT INTO `".SQL_PREFIX."check`(idGroup,idRun,date) VALUES(".intval($row['idGroup']).",".intval($runid).",".$date.")";
 
-    mysql_query($qRun);
+    $db->query($qRun);
     $id=  mysql_insert_id();
     $res = $modules[$row['module']]->check($group);
     
@@ -143,7 +143,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     }
     $qRank = substr($qRank, 0, strlen($qRank)-1);
 //    e('DEBUG', $qRank);
-    mysql_query($qRank);
+    $db->query($qRank);
 }
 
 l('Cron','All groups done');
@@ -154,7 +154,7 @@ l('Cron','Cache clear');
 
 ob_end_flush();
 
-mysql_query( 
+$db->query( 
     "UPDATE `".SQL_PREFIX."run` SET ".
     "dateStop = NOW(), ".
     "logs = '".addslashes($logs)."', ".

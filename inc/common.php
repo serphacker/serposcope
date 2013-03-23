@@ -12,6 +12,7 @@
 if(!defined('INCLUDE_OK'))
     die();
 
+include(OHMYROOT.'inc/class.ws_sql.php');
 include(OHMYROOT.'inc/functions.php');
 
 // critical check, don't even start if :
@@ -44,12 +45,12 @@ $db->select_db(SQL_DATABASE) or die("Can't select ".SQL_DATABASE." database");
 
 $db->query("set names 'utf8'");
 
-if(mysql_query('select 1 from `'.SQL_PREFIX.'group`') === false){
+if($db->query('select 1 from `'.SQL_PREFIX.'group`') === false){
     die("Database ".SQL_DATABASE." ok but can't find tables, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>"); 
 }
 
 $dbversion=1;
-$result=@mysql_query("SELECT version FROM `".SQL_PREFIX."version`");
+$result=@$db->query("SELECT version FROM `".SQL_PREFIX."version`");
 if($result){
     $array =  mysql_fetch_assoc($result);
     if($array){
@@ -82,7 +83,7 @@ if ($handle = opendir(OHMYROOT.'modules')) {
 
 // load all the groups name
 $groups = array();
-$result = mysql_query("SELECT * FROM `".SQL_PREFIX."group` ORDER BY position");
+$result = $db->query("SELECT * FROM `".SQL_PREFIX."group` ORDER BY position");
 while($result && ($row=mysql_fetch_assoc($result))){
     $groups[] = $row;
 }

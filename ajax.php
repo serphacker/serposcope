@@ -23,7 +23,7 @@ if(isset($_POST['action'])){
     switch($_POST['action']){
         
         case "is_running":{
-            $res=mysql_query("SELECT 1 FROM `".SQL_PREFIX."run` WHERE ISNULL(dateStop)");
+            $res=$db->query("SELECT 1 FROM `".SQL_PREFIX."run` WHERE ISNULL(dateStop)");
             die(json_encode(array("running" => (mysql_num_rows($res) > 0))));
         }
         
@@ -32,7 +32,7 @@ if(isset($_POST['action'])){
                 isset($_POST['id']) && is_numeric($_POST['id'])
             ){
                 $query="SELECT * FROM `".SQL_PREFIX."proxy` WHERE id = ".intval($_POST['id']);
-                $result=mysql_query($query);
+                $result=$db->query($query);
                 $proxy=  mysql_fetch_assoc($result);
                 if(!is_array($proxy)){
                     die(json_encode(array("result" => "no proxy with this id")));
@@ -60,7 +60,7 @@ if(isset($_POST['action'])){
             ){
                 $ids=array_map("intval", $_POST['id']);
                 $query = "DELETE FROM `".SQL_PREFIX."proxy` WHERE id IN (".implode(",",$ids).")";
-                $swap = mysql_query($query);
+                $swap = $db->query($query);
                 die(json_encode(array("deleted" => $swap)));
             }
             break;            
@@ -77,7 +77,7 @@ if(isset($_POST['action'])){
                     "`".SQL_PREFIX."group` AS g1 JOIN `".SQL_PREFIX."group` AS g2 ".
                     "ON ( g1.idGroup = ".intval($_POST['source'])." AND g2.idGroup = ".intval($_POST['target'])." ) ".
                     "SET g1.position = g2.position, g2.position = g1.position";
-                $swap = mysql_query($query);
+                $swap = $db->query($query);
                 die(json_encode(array("swap" => $swap)));
             }
             break;
@@ -94,7 +94,7 @@ if(isset($_POST['action'])){
                 if(is_pid_alive($_POST['pid'])){
                     die(json_encode(array("kill" => FALSE)));
                 }
-                mysql_query(
+                $db->query(
                     "UPDATE `".SQL_PREFIX."run` SET haveError=1, dateStop=now(), ".
                     "logs=CONCAT(logs,'ERROR KILLED FROM WEB PANEL\n') ".
                     "WHERE idRun = ".intval($_POST['runid'])
@@ -107,7 +107,7 @@ if(isset($_POST['action'])){
         case "getSiteInfo":{
                 if(isset($_POST['target']) && is_numeric($_POST['target'])){
                     $q="SELECT info FROM `".SQL_PREFIX."target` WHERE idTarget = ".intval($_POST['target']);
-                    $result=mysql_query($q);
+                    $result=$db->query($q);
                     if($result && ($row=mysql_fetch_assoc($result))){
                         die(json_encode($row));
                     }
@@ -118,7 +118,7 @@ if(isset($_POST['action'])){
         case "addSiteInfo":{
                 if(isset($_POST['target']) && is_numeric($_POST['target']) && isset($_POST['info'])){
                     $q="UPDATE `".SQL_PREFIX."target` SET info = '".addslashes($_POST['info'])."' WHERE idTarget = ".intval($_POST['target']);
-                    if(mysql_query($q) == 1){
+                    if($db->query($q) == 1){
                         echo json_encode(array('success' => 'ok'));
                     }else{
                         echo json_encode(array('error' => 'sql error'));
@@ -153,7 +153,7 @@ if(isset($_POST['action'])){
                             '".addslashes($_POST['note'])."'
                         )";
                 
-                mysql_query($qAddEvent);
+                $db->query($qAddEvent);
                 
                 die(json_encode(array("success" => "ok")));
             }else{
@@ -163,7 +163,7 @@ if(isset($_POST['action'])){
             
         case "delEvent":
             if(isset($_POST['idEvent']) && is_numeric($_POST['idEvent'])){
-                mysql_query("DELETE FROM `".SQL_PREFIX."event` WHERE idevent = ".intval($_POST['idEvent']));
+                $db->query("DELETE FROM `".SQL_PREFIX."event` WHERE idevent = ".intval($_POST['idEvent']));
                 die(json_encode(array("success" => "ok")));
             }else{
                 die(json_encode(array("error" => "bad inputs")));
@@ -173,7 +173,7 @@ if(isset($_POST['action'])){
             
         case "delGroup":
             if(isset($_POST['idGroup']) && is_numeric($_POST['idGroup'])){
-                mysql_query("DELETE FROM `".SQL_PREFIX."group` WHERE idGroup = ".intval($_POST['idGroup']));
+                $db->query("DELETE FROM `".SQL_PREFIX."group` WHERE idGroup = ".intval($_POST['idGroup']));
                 die(json_encode(array("success" => "ok")));
             }else{
                 die(json_encode(array("error" => "bad inputs")));

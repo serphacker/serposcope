@@ -13,7 +13,7 @@ include('install-inc/db.php');
 ini_set("default_charset", 'utf-8');
 
 function check_db_co($host,$login,$pass,$db){
-    return @mysql_connect($host, $login, $pass) && @mysql_select_db($db) && @mysql_query("set names 'utf8'");
+    return @mysql_connect($host, $login, $pass) && @mysql_select_db($db) && @$db->query("set names 'utf8'");
 }
 
 if(isset($_GET['do'])){

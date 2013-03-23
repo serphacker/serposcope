@@ -51,7 +51,7 @@ if(!empty($_POST)){
         $q.= (empty($_POST['user']) ? "NULL" : "'".addslashes($_POST['user'])."'").",";
         $q.= (empty($_POST['password']) ? "NULL" : "'".addslashes($_POST['password'])."'");
         $q.=")";
-        if(!mysql_query($q)){
+        if(!$db->query($q)){
             $err="sql error";
         }
     }

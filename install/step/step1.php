@@ -51,7 +51,7 @@ if( !can_write_dir($incdir) ){
 
 // mysql
 echo '<tr><td><strong>MySQL extension</strong> </td>';
-if( !function_exists('mysql_query')){
+if( !function_exists('$db->query')){
     echo '<td class="text-error" > MySQL extension not installed</td></tr>';
     $success=false;
 }else{

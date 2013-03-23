@@ -92,7 +92,7 @@ if(!empty($_POST)){
         
         // if it's the default value, erase from the DB
         if($defaultOption[1] == $value){
-            mysql_query("DELETE FROM `".SQL_PREFIX."option` WHERE name = '".addslashes($keyModule."_".$keyName)."'");
+            $db->query("DELETE FROM `".SQL_PREFIX."option` WHERE name = '".addslashes($keyModule."_".$keyName)."'");
             continue;
         }
         
@@ -103,7 +103,7 @@ if(!empty($_POST)){
         }
         
         // the regex match, insert in the DB
-        mysql_query("INSERT INTO `".SQL_PREFIX."option` VALUES ".
+        $db->query("INSERT INTO `".SQL_PREFIX."option` VALUES ".
                 "('".addslashes($keyModule."_".$keyName)."', '".addslashes($value)."') ".
                 "ON DUPLICATE KEY UPDATE value = '".addslashes($value)."'"
         );

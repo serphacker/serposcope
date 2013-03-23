@@ -5,23 +5,23 @@ if(!defined('INCLUDE_OK')){
 }
 
 function drop_tables($prefix){
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."option`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."version`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."proxy`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."event`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."rank`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."check`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."keyword`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."target`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."run`;");
-    @mysql_query("DROP TABLE IF EXISTS `".$prefix."group`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."option`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."version`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."proxy`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."event`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."rank`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."check`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."keyword`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."target`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."run`;");
+    @$db->query("DROP TABLE IF EXISTS `".$prefix."group`;");
 }
 
 function create_tables($prefix){
 
 // clear the last mysql_error()
-return mysql_query("SELECT 1 FROM dual") &&
-mysql_query("
+return $db->query("SELECT 1 FROM dual") &&
+$db->query("
 CREATE TABLE `".$prefix."group` (
     `idGroup` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` text,
@@ -31,7 +31,7 @@ CREATE TABLE `".$prefix."group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."keyword` (
     `idKeyword` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `idGroup` int(11) DEFAULT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE `".$prefix."keyword` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."target` (
     `idTarget` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `idGroup` int(11) DEFAULT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE `".$prefix."target` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."run` (
     `idRun` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `dateStart` datetime NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE `".$prefix."run` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."check` (
     `idCheck` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `idGroup` int(11) DEFAULT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE `".$prefix."check` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."rank` (
     `idCheck` int(11) NOT NULL DEFAULT '0',
     `idTarget` int(11) NOT NULL DEFAULT '0',
@@ -86,7 +86,7 @@ CREATE TABLE `".$prefix."rank` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."event` (
     `idEvent` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `idTarget` int(11) DEFAULT NULL,
@@ -96,14 +96,14 @@ CREATE TABLE `".$prefix."event` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."option` (
     `name` varchar(255) NOT NULL PRIMARY KEY,
     `value` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."proxy` (
     `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `type` text,
@@ -114,12 +114,12 @@ CREATE TABLE `".$prefix."proxy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
-mysql_query("
+$db->query("
 CREATE TABLE `".$prefix."version` (
     `version` TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
-mysql_query("INSERT INTO `".$prefix."version` VALUE ('".SQL_VERSION."')");
+$db->query("INSERT INTO `".$prefix."version` VALUE ('".SQL_VERSION."')");
 }
 
 function upgrade_tables($prefix,$oldversion){
@@ -135,20 +135,20 @@ function upgrade_tables($prefix,$oldversion){
         $q="CREATE TABLE `".$prefix."version` (
                 `version` TEXT
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-        @mysql_query($q);
+        @$db->query($q);
         
         // doesn't have foreign keys for check <-> run
         $q="ALTER TABLE `".$prefix."check` ADD COLUMN
             `idRun` int(11) DEFAULT NULL
             AFTER idGroup";
-        if(!mysql_query($q)){
+        if(!$db->query($q)){
             return $q;
         }
 
         // add constraint
         $q="ALTER TABLE `".$prefix."check` ADD CONSTRAINT
             `".$prefix."fk_check_idRun` FOREIGN KEY (`idRun`) REFERENCES `".$prefix."run` (`idRun`) ON DELETE CASCADE";
-        if(!mysql_query($q)){
+        if(!$db->query($q)){
             return $q;
         }
         
@@ -156,12 +156,12 @@ function upgrade_tables($prefix,$oldversion){
     
     // finally set the version
     $q="DELETE FROM `".$prefix."version`";
-    if(!mysql_query($q)){
+    if(!$db->query($q)){
         return $q;
     }
     
     $q="INSERT INTO `".$prefix."version` VALUES('".SQL_VERSION."')";
-    if(!mysql_query($q)){
+    if(!$db->query($q)){
         return $q;
     }
     return true;

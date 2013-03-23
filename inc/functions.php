@@ -145,7 +145,7 @@ $generalOptions = array(
 $options=array();
 
 function load_options(){
-    global $modules,$generalOptions,$options;
+    global $modules,$generalOptions,$options,$db;
     
     $options = array();
     
@@ -164,7 +164,7 @@ function load_options(){
         }
     }
     
-    $res=mysql_query("SELECT * FROM `".SQL_PREFIX."option`");
+    $res=$db->query("SELECT * FROM `".SQL_PREFIX."option`");
     while($res != null && ($option=mysql_fetch_assoc($res))){
         $exploded=explode("_",$option['name']);
         $modulename = array_shift($exploded);
@@ -177,10 +177,10 @@ function load_options(){
 
 $proxies=array();
 function load_proxies(){
-    global $proxies;
+    global $proxies,$db;
     
     $proxies=array();
-    $result = mysql_query("SELECT * FROM `".SQL_PREFIX."proxy`");
+    $result = $db->query("SELECT * FROM `".SQL_PREFIX."proxy`");
 //    die("x => ".$result);
     while($proxy=  mysql_fetch_assoc($result)){
         $proxies[]=$proxy;
