@@ -31,13 +31,18 @@ if(!function_exists('curl_version')){
 ini_set("default_charset", 'utf-8');
 set_time_limit(0);
 
-if(!mysql_connect(SQL_HOST, SQL_LOGIN, SQL_PASS)){
-    sleep(60);
-    mysql_connect(SQL_HOST, SQL_LOGIN, SQL_PASS) or die('no database connection (wrong host/login/password)');
-}
+$db = new WS_SQL();
 
-mysql_select_db(SQL_DATABASE) or die("Can't select ".SQL_DATABASE." database");
-mysql_query("set names 'utf8'");
+//if(!mysql_connect(SQL_HOST, SQL_LOGIN, SQL_PASS)){
+//    sleep(60);
+//    mysql_connect(SQL_HOST, SQL_LOGIN, SQL_PASS) or die('no database connection (wrong host/login/password)');
+//}
+$db->connect(SQL_HOST, SQL_LOGIN, SQL_PASS) or die('no database connection (wrong host/login/password)');
+
+//mysql_select_db(SQL_DATABASE) or die("Can't select ".SQL_DATABASE." database");
+$db->select_db(SQL_DATABASE) or die("Can't select ".SQL_DATABASE." database");
+
+$db->query("set names 'utf8'");
 
 if(mysql_query('select 1 from `'.SQL_PREFIX.'group`') === false){
     die("Database ".SQL_DATABASE." ok but can't find tables, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>"); 

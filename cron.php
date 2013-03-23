@@ -148,6 +148,10 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
 
 l('Cron','All groups done');
 
+l('Cron','Clearing the cache (force='.($options['general']['cache_run_clear'] === 'yes' ? 'yes' :'no').')...');
+clear_cache($options['general']['cache_run_clear'] === 'yes'); 
+l('Cron','Cache clear');
+
 ob_end_flush();
 
 mysql_query( 

@@ -8,6 +8,8 @@ define('IMPORT_SERPOSCOPE_CSV',1);
 define('IMPORT_RANKSFR_CSV',2);
 define('IMPORT_MYPOSEO_CSV',3);
 
+define('CACHE_PREFIX','serposcope_cache_');
+
 if(!defined('OHMYROOT')){
     define('OHMYROOT','./');
 }

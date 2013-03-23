@@ -58,8 +58,9 @@ class Voila extends GroupModule {
                 
                 //l('CheckVoila',"Fetching $url");
                 curl_setopt_array($curl,$opts);
-                $data=curl_exec($curl);
-                $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                $curlout=curl_cache_exec($curl);
+                $data=$curlout['data'];
+                $http_status = $curlout['status'];                
                 
                 if($http_status != 200){
                     l('CheckVoila',"Error: bad retcode from google ".$http_status);

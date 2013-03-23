@@ -106,8 +106,10 @@ class Google extends GroupModule {
                     curl_setopt_array($curl,$opts);
                     
                     $this->d("GET $url (try: $fetchRetry) (mem: ".  debug_memory().")");
-                    $data=curl_exec($curl);
-                    $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    $curlout=curl_cache_exec($curl);
+                    $this->d("GOT status=".$curlout['status']." cache=".($curlout['cache'] ? "HIT" : "MISS")." age=".$curlout['cache_age']." (mem: ".  debug_memory().")");
+                    $data=$curlout['data'];
+                    $http_status = $curlout['status'];
                     
                     switch($http_status){
                         case 302:{

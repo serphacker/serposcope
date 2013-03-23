@@ -47,7 +47,7 @@ function buildCurlOptions($proxy){
     
     $opts=array(
         CURLOPT_DNS_USE_GLOBAL_CACHE => false,
-        CURLOPT_TIMEOUT => $options['general']['timeout'],
+        CURLOPT_TIMEOUT => (isset($options['general']['timeout']) ? $options['general']['timeout'] : 30 ),
         CURLOPT_AUTOREFERER => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.".rand(10000,20000)." .NET CLR 3.5.".rand(10000,20000).")",
@@ -135,6 +135,8 @@ function is_pid_alive($pid){
 $generalOptions = array(
 //    array('home_top_limit','15','Rank limit in the "TOP X change" home display','/^[0-9+]+$/','text'),
     array('timeout','20','Maximum HTTP request execution time','/^[0-9]+$/','text'),
+    array('cache_lifetime','8','Maximum age of the cache in hour','/^[0-9]+$/','text'),
+    array('cache_run_clear','yes','Clear the cache after each run even if lifetime isn\'t expired','/^yes|no$/','yesno'),
     array('home_unchanged','yes','Display unchanged position on home','/^yes|no$/','yesno'),
     array('rendering','highcharts','Possible values : highcharts,table','/^highcharts|table$/','text'),
     array('debug_log','no','Enable debug logging','/^yes|no$/','yesno'),
@@ -209,6 +211,69 @@ function d($src,$str){
 
 function debug_memory(){
     return (memory_get_usage(true)/(1024*1024))."M/".ini_get('memory_limit');
+}
+
+// WARNING: this shit isn't thread safe
+function curl_cache_exec($ch){
+    global $options;
+    
+    $url = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
+    if($url && !empty($url)){
+        $cacheFile=sys_get_temp_dir()."/".CACHE_PREFIX.sha1($url);
+        if(file_exists($cacheFile)){
+            
+            $cache_hto =  intval(isset($options['general']['cache_lifetime']) ? $options['general']['cache_lifetime'] : 4);
+//            echo "DEBUG CACHE  Now : ".time()." cacheFile: ". filemtime($cacheFile)." hto : ".($cache_hto*3600)."\n";
+            
+            // HIT
+            if( (time() - filemtime($cacheFile)) < $cache_hto*3600){
+                $cacheData = @file_get_contents($cacheFile);
+                if($cacheData !== FALSE){
+                    // use the cache
+                    $response['cache'] = true;
+                    $response['data'] = $cacheData;
+                    $response['status'] = 200; // we only cache 200, no problem
+                    $response['cache_age'] = time() - filemtime($cacheFile);
+                }
+                
+                return $response;
+            }
+        }
+        
+        $data=curl_exec($ch);
+        $response=array();
+        $response['cache'] = false;
+        $response['data'] = $data;
+        $response['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response['cache_age'] = 0;
+        
+        // only cache 200 OK
+        if($response['status'] == 200 && strlen($data) > 0){
+            // try to cache the stuff
+            @file_put_contents($cacheFile, $data);
+        }
+        
+        return $response;
+    }
+    
+    return null;
+}
+
+// do not forgot to clear the cache
+function clear_cache($force = false){
+    global $options;
+    
+    $cache_hto =  intval(isset($options['general']['cache_lifetime']) ? $options['general']['cache_lifetime'] : 4);
+    
+    $dh  = opendir(sys_get_temp_dir());
+    while (false !== ($cacheFile = readdir($dh))) {
+        $cacheFile = sys_get_temp_dir()."/".$cacheFile;
+        if(strncmp($cacheFile,CACHE_PREFIX,strlen(CACHE_PREFIX)) === 0 &&
+            ($force || (time() - filemtime($cacheFile)) > $cache_hto*3600) 
+        ){
+            unlink($cacheFile);
+        }
+    }
 }
 
 ?>
