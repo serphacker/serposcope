@@ -49,6 +49,7 @@ if($group == null){
 }
 
 if(isset($_POST['edit']) && $_POST['edit']=="edit"){
+    $error=null;
     $keywordsEDIT = array();
     $keywordsADD = array();
     $sitesEDIT= array();
@@ -59,12 +60,22 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
     if(isset($_POST['keywords']) && is_array($_POST['keywords'])){
         foreach ($_POST['keywords'] as $keyword) {
             if(!empty($keyword)){
-                $keywordsEDIT[] = $keyword;
-                if(!in_array($keyword,$keywords)){
-                    $keywordsADD[]=$keyword;
+                if(!$modules[$group['module']]->validateKeyword($keyword)){
+                    $error .= "Invalid target format ".$keyword;
+                    break;
+                }else{
+                    $keywordsEDIT[] = $keyword;
+                    if(!in_array($keyword,$keywords)){
+                        $keywordsADD[]=$keyword;
+                    }
                 }
-            }
+            }                
         }
+    }
+    
+    if($error){
+        header("Location: edit.php?idGroup=".intval($_GET['idGroup'])."&error=".$error,TRUE,302);
+        die();
     }
 
     // delete old keyword
@@ -90,13 +101,23 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
     if(isset($_POST['sites']) && is_array($_POST['sites'])){
         foreach ($_POST['sites'] as $site) {
             if(!empty($site)){
-                $sitesEDIT[] = $site;
-                if(!in_array($site,$sites)){
-                    $sitesADD[]=$site;
+                if(!$modules[$group['module']]->validateTarget($site)){
+                    $error .= "Invalid target format ".$site;
+                    break;
+                }else{
+                    $sitesEDIT[] = $site;
+                    if(!in_array($site,$sites)){
+                        $sitesADD[]=$site;
+                    }
                 }
-            }
+            }            
         }
     }
+    
+    if($error){
+        header("Location: edit.php?idGroup=".intval($_GET['idGroup'])."&error=".$error,TRUE,302);
+        die();
+    }    
     
     // delete old site
     $qDeleteSite = "DELETE FROM `".SQL_PREFIX."target` WHERE idGroup=".intval($_GET['idGroup']).

@@ -28,6 +28,8 @@ $runid=null;
 function my_ob_logs($str){
     global $logs;
     global $runid;
+    global $db;
+    
     $logs .= $str;
     $db->query("UPDATE `".SQL_PREFIX."run` SET logs = '".addslashes($logs)."' WHERE idRun = ".$runid);    
     return $str;
@@ -148,7 +150,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
 
 l('Cron','All groups done');
 
-l('Cron','Clearing the cache (force='.($options['general']['cache_run_clear'] === 'yes' ? 'yes' :'no').')...');
+l('Cron','Clearing the cache (force='.$options['general']['cache_run_clear'].')...');
 clear_cache($options['general']['cache_run_clear'] === 'yes'); 
 l('Cron','Cache clear');
 

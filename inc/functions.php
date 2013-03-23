@@ -266,9 +266,9 @@ function clear_cache($force = false){
     $cache_hto =  intval(isset($options['general']['cache_lifetime']) ? $options['general']['cache_lifetime'] : 4);
     
     $dh  = opendir(sys_get_temp_dir());
-    while (false !== ($cacheFile = readdir($dh))) {
-        $cacheFile = sys_get_temp_dir()."/".$cacheFile;
-        if(strncmp($cacheFile,CACHE_PREFIX,strlen(CACHE_PREFIX)) === 0 &&
+    while (false !== ($filename = readdir($dh))) {
+        $cacheFile = sys_get_temp_dir()."/".$filename;
+        if(strncmp($filename,CACHE_PREFIX,strlen(CACHE_PREFIX)-1) === 0 &&
             ($force || (time() - filemtime($cacheFile)) > $cache_hto*3600) 
         ){
             unlink($cacheFile);

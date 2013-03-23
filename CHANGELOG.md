@@ -1,5 +1,13 @@
 # Serposcope changelog
 
+## 0.9.8 - 23/03/2013
+
+* One click installer
+* Better SQL handling : SQL_PREFIX / Upgrade
+* HTTP Caching
+* FIX target/keyword validation on edit
+* export_%group-name%_%date-begin%_%date-end%
+
 ## 0.9.7 - 22/03/2013
 
 * more debug output in Google module

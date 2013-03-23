@@ -53,7 +53,7 @@ if(isset($_POST['name'])){
                         break;
                     }else{
                         $keywords[] = $keyword;
-                    }                    
+                    }
                 }
             }
         }
