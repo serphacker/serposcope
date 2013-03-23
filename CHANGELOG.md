@@ -2,6 +2,11 @@
 
 ## 0.9.8 - 23/03/2013
 
+* fixed wild card bug
+* fixed clear_cache() on mutu with hundred of thousand of files in the same dir
+
+## 0.9.8 - 23/03/2013
+
 * One click installer
 * Better SQL handling : SQL_PREFIX / Upgrade
 * HTTP Caching
