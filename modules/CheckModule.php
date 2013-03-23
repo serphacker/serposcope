@@ -92,7 +92,7 @@ abstract class GroupModule {
      * better to be override
      */
     public function validateTarget($target){
-        return preg_match('/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/', $target);
+        return preg_match('/^([a-zA-Z0-9*]([a-zA-Z0-9\-*]{0,61}[a-zA-Z0-9*])?\.)+[a-zA-Z*]{2,6}$/', $target);
     }
     
     protected function e($msg){

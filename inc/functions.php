@@ -219,7 +219,7 @@ function curl_cache_exec($ch){
     
     $url = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
     if($url && !empty($url)){
-        $cacheFile=sys_get_temp_dir()."/".CACHE_PREFIX.sha1($url);
+        $cacheFile=sys_get_temp_dir()."/".CACHE_DIR."/".sha1($url);
         if(file_exists($cacheFile)){
             
             $cache_hto =  intval(isset($options['general']['cache_lifetime']) ? $options['general']['cache_lifetime'] : 4);
@@ -250,6 +250,9 @@ function curl_cache_exec($ch){
         // only cache 200 OK
         if($response['status'] == 200 && strlen($data) > 0){
             // try to cache the stuff
+            if(!file_exists(sys_get_temp_dir()."/".CACHE_DIR)){
+                @mkdir(sys_get_temp_dir()."/".CACHE_DIR);
+            }
             @file_put_contents($cacheFile, $data);
         }
         
@@ -265,13 +268,16 @@ function clear_cache($force = false){
     
     $cache_hto =  intval(isset($options['general']['cache_lifetime']) ? $options['general']['cache_lifetime'] : 4);
     
-    $dh  = opendir(sys_get_temp_dir());
-    while (false !== ($filename = readdir($dh))) {
-        $cacheFile = sys_get_temp_dir()."/".$filename;
-        if(strncmp($filename,CACHE_PREFIX,strlen(CACHE_PREFIX)-1) === 0 &&
-            ($force || (time() - filemtime($cacheFile)) > $cache_hto*3600) 
-        ){
-            unlink($cacheFile);
+    $dh  = opendir(sys_get_temp_dir()."/".CACHE_DIR);
+    while ($dh && false !== ($filename = @readdir($dh))) {
+        if($filename != null){
+            $cacheFile = sys_get_temp_dir()."/".CACHE_DIR."/".$filename;
+            
+            if(is_file($cacheFile) && ($force || (time() - filemtime($cacheFile)) > $cache_hto*3600) ){
+                echo "DBG UNLINK $cacheFile\n";
+                unlink($cacheFile);
+            }
+            
         }
     }
 }
