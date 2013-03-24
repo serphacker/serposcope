@@ -150,8 +150,6 @@ if(isset($_POST['edit']) && $_POST['edit']=="edit"){
         }
     }
     
-    print_r($groupOptions);
-    
     $qUpdateGroup = "UPDATE `".SQL_PREFIX."group` SET ".
             "name = '".addslashes($_POST['name'])."', ".
             "options = '".addslashes(json_encode($groupOptions))."' ".

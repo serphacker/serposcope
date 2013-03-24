@@ -46,7 +46,7 @@ $db->select_db(SQL_DATABASE) or die("Can't select ".SQL_DATABASE." database");
 $db->query("set names 'utf8'");
 
 if($db->query('select 1 from `'.SQL_PREFIX.'group`') === false){
-    die("Database ".SQL_DATABASE." ok but can't find tables, check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>"); 
+    die("Database ".SQL_DATABASE." OK but can't find tables. Need to reinstall. Delete <code>inc/config.php</code> and go to <a href='".dirname($_SERVER['PHP_SELF'])."/install/' >installer</a> or check <a href='http://serphacker.com/serposcope/doc/install.html' >install instruction</a>"); 
 }
 
 $dbversion=1;

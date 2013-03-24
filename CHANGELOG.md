@@ -1,6 +1,11 @@
 # Serposcope changelog
 
-## 0.9.8 - 23/03/2013
+## 0.9.10 - 24/03/2013
+
+* fixed no change on home page if only one check
+* minor fixes/enhancement
+
+## 0.9.9 - 23/03/2013
 
 * fixed wild card bug
 * fixed clear_cache() on mutu with hundred of thousand of files in the same dir

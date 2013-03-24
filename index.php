@@ -61,8 +61,12 @@ while ($res && ($row=mysql_fetch_assoc($res))){
             "order by idCheck DESC limit 1";
     
     $res2=$db->query($q);
-    if($res2 && ($row2=mysql_fetch_row($res2))){
-        $row['idPrevCheck'] = $row2[0];
+    if($res2){
+        if($row2=mysql_fetch_row($res2)){
+            $row['idPrevCheck'] = $row2[0];
+        }else{
+            $row['idPrevCheck'] = null;
+        }
         $groupsCheck[]=$row;
     }
 }
