@@ -1,6 +1,6 @@
 <?php
 
-define('VERSION','0.9.10'); 
+define('VERSION','1.0.0');
 define('SQL_VERSION',2); 
 define('INCLUDE_OK',1);
 
