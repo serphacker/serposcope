@@ -57,8 +57,8 @@ if (isset($_GET['idGroup'])) {
 
         $rank = array();
         $qCheck = "SELECT * FROM  `".SQL_PREFIX."check` WHERE idGroup = " . intval($_GET['idGroup']) . 
-                " AND `date` >= '".date( 'Y-m-d H:i:s',$startDate)."' ".
-                " AND `date` <= '".date( 'Y-m-d H:i:s',$endDate)."' ORDER BY `date`";
+                " AND date(`date`) >= date('".date( 'Y-m-d H:i:s',$startDate)."') ".
+                " AND date(`date`) <= date('".date( 'Y-m-d H:i:s',$endDate)."') ORDER BY `date`";
         $resCheck = $db->query($qCheck);
 
         while ($check = mysql_fetch_assoc($resCheck)) {
