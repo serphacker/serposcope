@@ -1,5 +1,9 @@
 # Serposcope changelog
 
+## 1.0.1 - 25/03/2013
+
+* proxies bulk import (contributed by @512banque http://twitter.com/512banque)
+
 ## 1.0.0 - 25/03/2013
 
 * stable release
