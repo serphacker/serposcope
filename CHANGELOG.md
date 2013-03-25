@@ -1,5 +1,9 @@
 # Serposcope changelog
 
+## 1.0.0 - 25/03/2013
+
+* stable release
+
 ## 0.9.10 - 24/03/2013
 
 * fixed no change on home page if only one check
