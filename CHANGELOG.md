@@ -1,6 +1,6 @@
 # Serposcope changelog
 
-## 1.0.1 - 25/03/2013
+## 1.0.1 - UPCOMING
 
 * proxies bulk import (contributed by @512banque http://twitter.com/512banque)
 
