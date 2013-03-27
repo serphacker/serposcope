@@ -69,12 +69,13 @@ include(OHMYROOT.'modules/CheckModule.php');
 if ($handle = opendir(OHMYROOT.'modules')) {
 
     while (false !== ($filename = readdir($handle))) {
-        
-        $modulepath = OHMYROOT.'modules/'.$filename.'/module.php';
-        
-        if( is_file($modulepath) ){
-            include($modulepath);
-            $modules[$filename] = new $filename;
+        if (is_dir(OHMYROOT.'modules/'.$filename)) {
+            $modulepath = OHMYROOT.'modules/'.$filename.'/module.php';
+            
+            if( is_file($modulepath) ){
+                include($modulepath);
+                $modules[$filename] = new $filename;
+            }
         }
     }
 
