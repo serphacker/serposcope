@@ -3,6 +3,7 @@
 ## 1.0.1 - UPCOMING
 
 * proxies bulk import (contributed by @512banque http://twitter.com/512banque)
+* fixed openbase_dir warning issue (contributed by @alxblog https://twitter.com/alxblog)
 
 ## 1.0.0 - 25/03/2013
 
