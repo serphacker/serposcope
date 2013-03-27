@@ -252,11 +252,11 @@ foreach ($proxies as $proxy) {
                     <option>iface</option>
                 </select>
             </td>
-            <td><input name=ip class=input-small placeholder="ip" /></td>
-            <td><input name=port class=input-mini placeholder="port" /></td>
-            <td><input name=user placeholder="username" /></td>
-            <td><input name=password placeholder="password" /></td>
-            <td><input type=submit class="btn btn-primary" value=Add /></td>
+            <td><input type="text" name=ip class=input-small placeholder="ip" /></td>
+            <td><input type="text" name=port class=input-mini placeholder="port" /></td>
+            <td><input type="text" name=user placeholder="username" /></td>
+            <td><input type="text" name=password placeholder="password" /></td>
+            <td><input type="submit" class="btn btn-primary" value=Add /></td>
         </tr>
     </table>
     <hr/>
