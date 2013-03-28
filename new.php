@@ -182,20 +182,27 @@ foreach ($modules as $name => $module) {
 </div>
 <script>
     $(function(){
+    	var kw_num=1;
+		var site_num=1;
+		
         $('.itype').each(function(){
             $(this).prop('checked', false);
         });
         
         $('.kwimage').click(function(){
             $('.keywords').append(
-                '<li><input type="text" class="input-xlarge" name="keywords[]" /></li>'
+                '<li><input type="text" id="kw'+kw_num+'" class="input-xlarge" name="keywords[]" /></li>'
             );
+			$('#kw'+kw_num).focus();
+			kw_num++;
         });
         
         $('.siteimage').click(function(){
             $('.sites').append(
-                '<li><input type="text" class="input-xlarge" name="sites[]" /></li>'
+                '<li><input type="text" id="site'+site_num+'" class="input-xlarge" name="sites[]" /></li>'
             );
+			$('#site'+site_num).focus();
+			site_num++;
         });        
         
         $('.itype').click(function(){
