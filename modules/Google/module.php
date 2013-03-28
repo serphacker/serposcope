@@ -82,6 +82,7 @@ class Google extends GroupModule {
             $this->l('Checking '.$keyword." on $domain via ".($proxy == null ? "DIRECT" : proxyToString($proxy)));
             $pos=1;
             $start_index=0;
+    		$page_num=1;
 
             do{
                 
@@ -125,6 +126,7 @@ class Google extends GroupModule {
                         }
                         
                         case 200:{
+							$this->l("[$keyword] Fetching page #".$page_num);
                             break;
                         }
                         
@@ -154,8 +156,6 @@ class Google extends GroupModule {
 //                        return null;
 //                    }
 //                }                
-                
-
                 
                 $doc = new DOMDocument;
                 if(!@$doc->loadHTML($data)){
@@ -208,6 +208,7 @@ class Google extends GroupModule {
                 }   
 
                 $start_index += 10;
+				$page_num += 1;
                 sleep($options[get_class($this)]['page_sleep']);
                
             }while($start_index<100 && !$bAllWebsiteFound);
