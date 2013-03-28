@@ -168,9 +168,13 @@ class Google extends GroupModule {
                 foreach($allh3 as $h3){
                     if(!$h3->hasAttribute("style") && $h3->getAttribute("class") == "r"){
                         try {
-                            $href = $h3->getElementsByTagName('a')->item(0)->getAttribute('href');
+                            $h3_a=$h3->getElementsByTagName('a');
+                            if($h3_a == null || $h3_a->length == 0){
+                                continue;
+                            }
+                            $href = $h3_a->item(0)->getAttribute('href');
                             $parsed = parse_url($href);
-                            if(isset($parsed['host'])){
+                            if($parsed !== FALSE && isset($parsed['host'])){
                                 
                                 foreach ($group['sites'] as $keySite => $website) {
                                     

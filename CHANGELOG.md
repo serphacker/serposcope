@@ -1,9 +1,10 @@
 # Serposcope changelog
 
-## 1.0.1 - UPCOMING
+## 1.0.1 - 26/03/2013
 
 * proxies bulk import (contributed by @512banque http://twitter.com/512banque)
 * fixed open_basedir warning issue (contributed by @alxblog https://twitter.com/alxblog)
+* fixed parsing fatal error in google module
 
 ## 1.0.0 - 25/03/2013
 
