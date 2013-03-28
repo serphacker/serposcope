@@ -1,6 +1,6 @@
 # Serposcope changelog
 
-## 1.0.1 - 26/03/2013
+## 1.0.1 - 28/03/2013
 
 * proxies bulk import (contributed by @512banque http://twitter.com/512banque)
 * fixed open_basedir warning issue (contributed by @alxblog https://twitter.com/alxblog)
