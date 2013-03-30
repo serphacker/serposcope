@@ -2,6 +2,10 @@
 
 ## UPCOMING
 
+* Additionnal parameters for Google search (hl=fr&whatyou=want)
+
+## 1.0.2 - 30/03/2013
+
 * better keywords/sites insertion (bulk/textarea, no more empty form on error)
 * fix class COM not found bug (affected: Windows + PHP > 5.4.5)
 * detect COM on install (affected: Windows + PHP > 5.4.5)
