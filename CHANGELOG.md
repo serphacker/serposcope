@@ -2,12 +2,13 @@
 
 ## UPCOMING
 
+* better keywords/sites insertion (bulk/textarea, no more empty form on error)
 * fix class COM not found bug (affected: Windows + PHP > 5.4.5)
-* detect uninstalled COM extension on install (affected: Windows + PHP > 5.4.5)
+* detect COM on install (affected: Windows + PHP > 5.4.5)
 * fix undefined PHP_MAJOR_VERSION / PHP_MINOR_VERSION (affected: PHP < 5.2.7)
 * fix last check not displayed on main page
 * more verbose error message on import fail
-* fix go ninja go install link
+* fix "go ninja go" install link
 * display bug / support link
 
 ## 1.0.1 - 28/03/2013

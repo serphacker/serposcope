@@ -41,38 +41,38 @@ if(isset($_POST['name'])){
                 else
                     $groupOptions[$option[0]] = $_POST[$option[0]];
             }
-        }    
+        }
     }
     
-    if(empty($error)){
-        if(isset($_POST['keywords']) && is_array($_POST['keywords'])){
-            foreach ($_POST['keywords'] as $keyword) {
-                if(!empty($keyword)){
-                    if(!$modules[$_POST['module']]->validateKeyword($keyword)){
-                        $error .= "Invalid target format ".$keyword;
-                        break;
-                    }else{
-                        $keywords[] = $keyword;
-                    }
+    if(isset($_POST['keywords'])){
+        $_POST['keywords'] = explode("\n", $_POST['keywords']);
+        foreach ($_POST['keywords'] as $keyword) {
+            $keyword=trim($keyword);
+            if(!empty($keyword)){
+                if(!$modules[$_POST['module']]->validateKeyword($keyword)){
+                    $error .= "Invalid target format ".$keyword;
+                    break;
+                }else{
+                    $keywords[] = $keyword;
                 }
             }
         }
     }
     
-    if(empty($error)){
-        if(isset($_POST['sites']) && is_array($_POST['sites'])){
-            foreach ($_POST['sites'] as $site) {
-                if(!empty($site)){
-                    if(!$modules[$_POST['module']]->validateTarget($site)){
-                        $error .= "Invalid target format ".$site;
-                        break;
-                    }else{
-                        $sites[] = $site;
-                    }
+    if(isset($_POST['sites'])){
+        $_POST['sites'] = explode("\n", $_POST['sites']);
+        foreach ($_POST['sites'] as $site) {
+            $site=trim($site);
+            if(!empty($site)){
+                if(!$modules[$_POST['module']]->validateTarget($site)){
+                    $error .= "Invalid target format ".$site;
+                    break;
+                }else{
+                    $sites[] = $site;
                 }
             }
-        }    
-    }
+        }
+    }    
     
 
     
@@ -139,23 +139,26 @@ if(!empty($error)){
             <div class="control-group">
                 <label class="control-label" for="name">Group name</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="name" name="name">
+                    <input type="text" class="input-xlarge" id="name" name="name" value="<?php echo isset($_POST['name']) ? h8($_POST['name']) : ""; ?>" >
                 </div>
             </div>
             
             <div class="control-group">
-                <label class="control-label" for="keywords[]">Keywords</label>
-                <ul class="controls keywords" style="list-style-type:none">
-                    <li><input type="text" class="input-xlarge" name="keywords[]"><img src="img/add.png" class="kwimage" /></li>
-                </ul>
+                <label class="control-label" for="keywords">Keywords</label>
+                <div class="controls keywords">
+                    <textarea type="text" name="keywords" class="input-xlarge" placeholder="one keyword per line" ><?php
+                    echo isset($_POST['keywords']) && !empty($_POST['keywords']) ? h8(implode("\n", $_POST['keywords'])) : "";
+                    ?></textarea>
+                </div>
             </div>
             
             <div class="control-group">
-                <label class="control-label" for="sites[]">Domain</label>
-                <ul class="controls sites" style="list-style-type:none">
-                    <li><input type="text" class="input-xlarge" name="sites[]" placeholder="www.site.com or *.site.com" ><img src="img/add.png" class="siteimage" /></li>
-                </ul>
-                
+                <label class="control-label" for="sites">Domain</label>
+                <div class="controls sites">
+                    <textarea type="text" name="sites" class="input-xlarge" placeholder="www.site.com or *.site.com" ><?php
+                    echo isset($_POST['sites']) && !empty($_POST['sites']) ? h8(implode("\n", $_POST['sites'])) : "";
+                    ?></textarea>
+                </div>                
             </div>            
             
             <div class="control-group">
@@ -174,9 +177,11 @@ foreach ($modules as $name => $module) {
             <div id="groupopt" >
                 
             </div>
-
-            <button class="btn btn-primary" type="submit">Save</button>
-          
+            <div class="control-group">
+                <div class="controls">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </div>
         </fieldset>
     </form>
 </div>
@@ -185,18 +190,6 @@ foreach ($modules as $name => $module) {
         $('.itype').each(function(){
             $(this).prop('checked', false);
         });
-        
-        $('.kwimage').click(function(){
-            $('.keywords').append(
-                '<li><input type="text" class="input-xlarge" name="keywords[]" /></li>'
-            );
-        });
-        
-        $('.siteimage').click(function(){
-            $('.sites').append(
-                '<li><input type="text" class="input-xlarge" name="sites[]" /></li>'
-            );
-        });        
         
         $('.itype').click(function(){
             $('#groupopt').empty();

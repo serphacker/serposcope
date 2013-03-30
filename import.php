@@ -93,10 +93,10 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                     $error .= "Missing column header 'date'.\n";
                 }
                 if($positionIndex == -1){
-                    $error .= "Missing column header 'position' (other possible value: 'position', 'position j').\n";
+                    $error .= "Missing column header 'position' (can be: 'position', 'position j').\n";
                 }
                 if($kwIndex == -1){
-                    $error .= "Missing column header 'keyword' (other possible value: 'keyword', 'mot clé', 'mot-clé').\n";
+                    $error .= "Missing column header 'keyword' (can be: 'keyword', 'mot clé', 'mot-clé').\n";
                 }
                 if($urlIndex == -1){
                     $error .= "Missing column header '$urlFormat'.\n";
@@ -197,10 +197,10 @@ include("inc/header.php");
 <h2>Import group</h2>
 <?php
 if(isset($_GET['error'])){
-    $error = nl2br(h8($_GET['error']));
+    $error = $_GET['error'];
 }
 if(!empty($error)){
-    echo "<div class='alert alert-error'>$error</div>\n";
+    echo "<div class='alert alert-error'>".nl2br(strip_tags($error))."</div>\n";
 }
 ?>
 <div>
