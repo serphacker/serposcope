@@ -54,11 +54,6 @@ header("Content-type: text/html;charset=UTF-8");
                                 <li >
                                     <a href="new.php" >New Group</a>
                                 </li> 
-                                <!--
-                                <li>
-                                    <a href="website.php" >Website</a>
-                                </li>
-                                -->
                                 <li>
                                     <a href="logs.php" >Logs</a>
                                 </li>

@@ -35,7 +35,7 @@ if( file_put_contents($incdir."config.php", $cfgToWrite) ===FALSE ){
     echo "
     <div class='alert alert-success' >
         Installation done <br/>
-        <a href='".dirname(dirname($_SERVER['PHP_SELF'])."..")."' >Go ninja go</a><br/><br/>
+        <a href='../' >Go ninja go</a><br/><br/>
     </div> 
 ";        
 }

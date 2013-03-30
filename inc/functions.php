@@ -104,6 +104,9 @@ function wd_wildcard_to_preg($pattern){
 }
 
 function win_kill($pid){
+    if(!class_exists("COM")){
+        return false;
+    }
     $ret=false;
     $wmi=new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
     $procs=$wmi->ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId='".$pid."'");
@@ -124,8 +127,11 @@ function portable_kill($pid){
 
 function is_pid_alive($pid){
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if(!class_exists("COM")){
+            return true;
+        }
         $wmi=new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
-        $procs=$wmi->ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId='".$pid."'");
+        $procs=$wmi->ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId='".$pid."'");        
         return $procs && ($procs->Count !== 0);
     } else {
         return posix_getsid($pid) !== FALSE;

@@ -15,6 +15,15 @@ if(!defined('INCLUDE_OK'))
 include(OHMYROOT.'inc/class.ws_sql.php');
 include(OHMYROOT.'inc/functions.php');
 
+$phpversion = explode(".", phpversion());
+if(!defined('PHP_MAJOR_VERSION')){
+    define('PHP_MAJOR_VERSION',intval($phpversion[0]));
+}
+
+if(!defined('PHP_MINOR_VERSION')){
+    define('PHP_MINOR_VERSION',intval($phpversion[1]));    
+}
+
 // critical check, don't even start if :
 // php version is < 5.2
 if( PHP_MAJOR_VERSION < 5 ||

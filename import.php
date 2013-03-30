@@ -85,9 +85,23 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
             }
             if($dateIndex == -1 || $positionIndex == -1 || $kwIndex == -1 || $urlIndex == -1){
                 $error = 
-                "Invalid CSV file. File must be UTF-8 encoded. ".
-                "Line must be delimited by char '$delim' .".
-                "First line must be columns header.";
+                "Invalid CSV file. File must be UTF-8 encoded.\n".
+                "Line must be delimited by char '$delim'.\n".
+                "First line must be column header.\n";                
+                
+                if($dateIndex == -1){
+                    $error .= "Missing column header 'date'.\n";
+                }
+                if($positionIndex == -1){
+                    $error .= "Missing column header 'position' (other possible value: 'position', 'position j').\n";
+                }
+                if($kwIndex == -1){
+                    $error .= "Missing column header 'keyword' (other possible value: 'keyword', 'mot clé', 'mot-clé').\n";
+                }
+                if($urlIndex == -1){
+                    $error .= "Missing column header '$urlFormat'.\n";
+                }                
+
             }else{
 
                 $keywords=array();
@@ -183,7 +197,7 @@ include("inc/header.php");
 <h2>Import group</h2>
 <?php
 if(isset($_GET['error'])){
-    $error = h8($_GET['error']);
+    $error = nl2br(h8($_GET['error']));
 }
 if(!empty($error)){
     echo "<div class='alert alert-error'>$error</div>\n";

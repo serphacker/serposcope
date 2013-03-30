@@ -30,6 +30,14 @@ function can_write_dir($dir){
 $success=true;
 
 // php version
+$phpversion = explode(".", phpversion());
+if(!defined('PHP_MAJOR_VERSION')){
+    define('PHP_MAJOR_VERSION',intval($phpversion[0]));
+}
+
+if(!defined('PHP_MINOR_VERSION')){
+    define('PHP_MINOR_VERSION',intval($phpversion[1]));    
+}
 echo '<tr><td><strong>PHP Version</strong> </td>';
 if( PHP_MAJOR_VERSION < 5 || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2)
 ){
@@ -86,7 +94,14 @@ if( ini_get('max_execution_time') ){
 
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    // check for windows
+    
+    // COM
+    echo '<tr><td><strong>COM extension</strong> </td>';
+    if( !class_exists("COM")){
+        echo '<td class="text-error" > COM extension not installed (Running/Killing task will be very bugged)</td></tr>';
+    }else{
+        echo '<td class="text-success" > OK</td></tr>';
+    }
     
 }else{
     // check for UNIX (mac/linux/...)
@@ -107,9 +122,13 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     
 }
 
-echo "</table>";
+echo "</table>
+   
+<div style='margin:15px;text-align:center;' >
+If you have error or warning, see <a href='http://serphacker.com/serposcope/doc/install.html' >Install instructions</a> and read the <a href='http://serphacker.com/serposcope/doc/faq.html' >FAQ</a>. There is also a last resort <a href='http://forum.serphacker.com/' >support forum</a>.
+</div>
 
-echo "<div style='text-align: center; margin-top: 20px;' >";
+<div style='text-align: center; margin-top: 20px;' >";
 if($success){
     echo "<a href='?step=2' class='btn btn-primary' >Next</a>";
 }else{

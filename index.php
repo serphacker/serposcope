@@ -50,7 +50,16 @@ if($res && ($run=mysql_fetch_assoc($res))){
     }
 }
 
-$q = "select max(idCheck) idLastCheck,idGroup from `".SQL_PREFIX."check` where date(`date`) = curdate() group by idGroup";
+$q= "select max(date(`date`)) from `".SQL_PREFIX."check` limit 1";
+$res=$db->query($q);
+if($res && ($row=  mysql_fetch_row($res))){
+    $dateLastCheck = $row[0];
+}else{
+    $dateLastCheck = date('Y-m-d'); // will fail anyway
+}
+
+//$q = "select max(idCheck) idLastCheck,idGroup from `".SQL_PREFIX."check` where date(`date`) = curdate() group by idGroup";
+$q = "select max(idCheck) idLastCheck,idGroup from `".SQL_PREFIX."check` where date(`date`) = '".$dateLastCheck."' group by idGroup";
 $res=$db->query($q);
 $groupsCheck= array();
 while ($res && ($row=mysql_fetch_assoc($res))){
@@ -133,6 +142,8 @@ foreach ($groupsCheck as $check) {
         }
     }
 }
+
+echo "<div style='text-align:center;' ><h3>Last check ".$dateLastCheck."</h3></div>\n";
 
 if(isset($options['general']['home_top_limit']) && $options['general']['home_top_limit'] != 0){
     echo "<h4>Top ".$options['general']['home_top_limit']." positives changes</h4>\n";
