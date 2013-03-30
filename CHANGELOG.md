@@ -8,6 +8,7 @@
 * fix last check not displayed on main page
 * more verbose error message on import fail
 * fix go ninja go install link
+* display bug / support link
 
 ## 1.0.1 - 28/03/2013
 

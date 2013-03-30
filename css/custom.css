@@ -57,27 +57,35 @@ h2 {
     background-image: none;
 }
 
-/*
-.navbar-fixed-top .brand {
-    color: #000000;
-    font-weight: bold;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 30px rgba(255, 255, 255, 0.125);
-    
+.mybrand {
+    display: block;
+    float: left;
+    padding: 0px 20px;
 }
 
-.navbar-fixed-top .brand a {
-    color: #000000;
+.brand-link {
+    color: black;
+    font-size: 20px;
+    font-weight: 200;
+    margin-left: -20px;
+    text-shadow: 0 1px 0 #FFFFFF;
 }
-*/
+
+.brand-link:hover {
+    color: black;
+}
+
+.support-link {
+    font-size: 11px;
+    float: right;
+}
 
 #bodycontainer {
     /* 
     20px if navbar-static-top 
     40px if navbar-fixed-top 
     */
-    
     margin-bottom: 30px;
-    
 }
 
 .groupicon{

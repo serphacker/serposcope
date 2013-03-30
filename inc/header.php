@@ -38,7 +38,6 @@ header("Content-type: text/html;charset=UTF-8");
             <div class="navbar-inner">
                 <div class="container">
                     <div class="pull-right" >
-                        <!-- ad stuff -->
                         <a id="uzi_link" href="." >
                             <img id="uzi_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOoAAAA8CAMAAABfLdZOAAAAA1BMVEX6+vqsEtnpAAAAJElEQVR42u3BAQ0AAADCIPunfg43YAAAAAAAAAAAAAAAAABwIjcUAAHdSbRTAAAAAElFTkSuQmCC" />
                         </a>
@@ -48,7 +47,15 @@ header("Content-type: text/html;charset=UTF-8");
                             <a id='new-version-link' href='http://serphacker.com/serposcope/download.html' ></a>
                         </span> 
                         <span id='loading-span' ><img id="loading-img" src="img/spinner.gif" /></span> 
-                        <a class="brand"  href="index.php" >Serposcope <span id='cur-version' ><?php echo VERSION; ?></span></a>
+                        <span class='mybrand' >
+                            <a class='brand-link' href="index.php" >Serposcope <span id='cur-version' ><?php echo VERSION; ?></span></a>
+                            <br/>
+                            <span class='support-link' >
+                                [ <a href='https://github.com/serphacker/serposcope/issues' >bugs</a> ]
+                                [ <a href='http://forum.serphacker.com/' >support</a> ]
+                            </span>
+                        </span>
+                        
                         <div class="nav-collapse collapse">
                             <ul class="nav">
                                 <li >
