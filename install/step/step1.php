@@ -98,7 +98,8 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     // COM
     echo '<tr><td><strong>COM extension</strong> </td>';
     if( !class_exists("COM")){
-        echo '<td class="text-error" > COM extension not installed (Running/Killing task will be very bugged)</td></tr>';
+        $success=false;
+        echo '<td class="text-error" > COM extension not installed</td></tr>';
     }else{
         echo '<td class="text-success" > OK</td></tr>';
     }
