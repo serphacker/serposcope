@@ -13,6 +13,7 @@ if(!defined('INCLUDE_OK'))
     die();
 
 include(OHMYROOT.'inc/class.ws_sql.php');
+include(OHMYROOT.'inc/class.proxies.php');
 include(OHMYROOT.'inc/functions.php');
 
 $phpversion = explode(".", phpversion());
@@ -102,6 +103,6 @@ while($result && ($row=mysql_fetch_assoc($result))){
 $options = load_options();
 
 // load the proxies
-$proxies = load_proxies();
+$proxies = new Proxies(load_proxies());
 
 ?>

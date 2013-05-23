@@ -3,6 +3,10 @@
 ## UPCOMING
 
 * Additionnal parameters for Google search (hl=fr&whatyou=want)
+* Proxy rotation on captcha encounter
+* fix index display bug (keyword with dash '-')
+* fix htmlentites display bug in calendar
+* fix https javascript bug (chrome only)
 
 ## 1.0.2 - 30/03/2013
 

@@ -324,7 +324,7 @@ foreach ($sites as $idSite => $site) {
                 ($diff->format("%m") > 0 ? $diff->format("%m mois ") : "") . 
                 $diff->format("%d jours").
             "</td>" .
-            "<td>" . h8($event['event']) . "</td>" .
+            "<td>" . ($event['event']) . "</td>" .
             "<td><img class=del-event data-id=" . $event['idEvent'] . " src='img/trash.png' /></td>" .
             "</tr>";
         }

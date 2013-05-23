@@ -95,6 +95,10 @@ abstract class GroupModule {
         return preg_match('/^([a-zA-Z0-9*]([a-zA-Z0-9\-*]{0,61}[a-zA-Z0-9*])?\.)+[a-zA-Z*]{2,6}$/', $target);
     }
     
+    protected function w($msg){
+        return w(get_class($this),$msg);
+    }    
+    
     protected function e($msg){
         return e(get_class($this),$msg);
     }    

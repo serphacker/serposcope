@@ -55,7 +55,6 @@ class Google extends GroupModule {
     public function check($group) {
         global $options;
         global $proxies;
-        global $iProxy;
         
         $ranks =  array();
         
@@ -71,15 +70,9 @@ class Google extends GroupModule {
         
         foreach ($group['keywords'] as $keyKW => $keyword) {
             
-            $proxy=null;
-            if($proxies != null && is_array($proxies) && !empty($proxies)){
-                if(++$iProxy >= count($proxies)){
-                    $iProxy=0;
-                }
-                $proxy = $proxies[$iProxy];
-            }              
+            $proxy=$proxies->next();
             
-            $this->l('Checking '.$keyword." on $domain via ".($proxy == null ? "DIRECT" : proxyToString($proxy)));
+            $this->l("Checking $keyword on $domain");
             $pos=1;
             $start_index=0;
 
@@ -93,19 +86,15 @@ class Google extends GroupModule {
                     $url="http://$domain/search?q=".urlencode($keyword)."&start=".($start_index);
                 }
             
-                $opts = array(
-                    CURLOPT_URL => $url,
-                    CURLOPT_REFERER => $referrer
-                ) + buildCurlOptions($proxy);
-                
 //                print_r($opts);
                 $fetchRetry=1;
                 
                 do {
                     $curl=curl_init();
+                    $opts = array(CURLOPT_URL => $url,CURLOPT_REFERER => $referrer) + buildCurlOptions($proxy);
                     curl_setopt_array($curl,$opts);
                     
-                    $this->d("GET $url (try: $fetchRetry) (mem: ".  debug_memory().")");
+                    $this->d("GET $url via ".($proxy == null ? "DIRECT" : proxyToString($proxy))." (try: $fetchRetry) (mem: ".  debug_memory().")");
                     $curlout=curl_cache_exec($curl);
                     $this->d("GOT status=".$curlout['status']." cache=".($curlout['cache'] ? "HIT" : "MISS")." age=".$curlout['cache_age']." (mem: ".  debug_memory().")");
                     $data=$curlout['data'];
@@ -114,9 +103,16 @@ class Google extends GroupModule {
                     switch($http_status){
                         case 302:{
                             if($fetchRetry <= 3){
+                                // if rate limit, sleep
                                 $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
-                                $this->e("rate limit detected (captcha), retry $fetchRetry, sleeping $rateLimitSleepTime seconds");
+                                $this->w("rate limit detected (captcha), retry $fetchRetry, sleeping $rateLimitSleepTime seconds");
                                 sleep($rateLimitSleepTime);
+                                
+                                // and change proxy
+                                $proxy=$proxies->next();
+                                $this->w("switching to proxy ".($proxy == null ? "DIRECT" : proxyToString($proxy)));
+                                
+                                
                             }else{
                                 $this->e("rate limit detected (captcha), after $fetchRetry retry");
                                 return null;
@@ -173,7 +169,7 @@ class Google extends GroupModule {
                                 continue;
                             }
                             $href = $h3_a->item(0)->getAttribute('href');
-                            $parsed = parse_url($href);
+                            $parsed = @parse_url($href);
                             if($parsed !== FALSE && isset($parsed['host'])){
                                 
                                 foreach ($group['sites'] as $keySite => $website) {

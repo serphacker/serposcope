@@ -62,8 +62,6 @@ if($defaultMaxExecutionTime > 0){
     e('Cron','max_execution_time is '.$defaultMaxExecutionTime.' it should be 0. All positions may not be checked. Edit your php.ini');
 }
 
-$iProxy= empty($proxies) ? 0 : rand(0, count($proxies)-1);
-
 $query = "SELECT * FROM `".SQL_PREFIX."group`"; //" WHERE idGroup = 10";
 if(isset($_GET['idGroup'])){
     $query .= " WHERE idGroup =  ".intval($_GET['idGroup']);

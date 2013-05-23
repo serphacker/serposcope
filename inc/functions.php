@@ -181,9 +181,8 @@ function load_options(){
     return $options;
 }
 
-$proxies=array();
 function load_proxies(){
-    global $proxies,$db;
+    global $db;
     
     $proxies=array();
     $result = $db->query("SELECT * FROM `".SQL_PREFIX."proxy`");
@@ -205,6 +204,11 @@ function e($src,$str){
     global $haveError;
     $haveError=true;
     echo "[".date('d/m/Y h:i:s')."][$src] ERROR: $str\n";
+}
+
+function w($src,$str){
+    global $options;
+    echo "[".date('d/m/Y h:i:s')."][$src] WARNING: $str\n";
 }
 
 // debug logging

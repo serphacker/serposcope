@@ -121,7 +121,7 @@ if (!empty($_POST)) {
     }
 }
 
-$proxies = load_proxies();
+$proxies = new Proxies(load_proxies());
 
 include('inc/header.php');
 if ($err != null) {
@@ -223,7 +223,7 @@ if ($err != null) {
 <tbody>
 <?php
 
-foreach ($proxies as $proxy) {
+foreach ($proxies->get() as $proxy) {
     echo "<tr>";
     echo "<td><input type=checkbox name=idproxy[] value=" . $proxy['id'] . " /></td>";
     echo "<td>" . $proxy['type'] . "</td>";

@@ -177,7 +177,8 @@ function displayRanks($ranks){
     foreach ($ranks as $key => $rank) {
         
         $split=explode("-",$key);
-        echo "<tr><td>".h8($split[1])."</td>";
+        array_shift($split);
+        echo "<tr><td>".h8(implode($split,"-"))."</td>";
         echo "<td>".h8($rank['url'])."</td>";
         echo "<td>".(isset($rank['prev']) ? $rank['prev'] : "N/A")."</td>";
         echo "<td>".(isset($rank['now']) ? $rank['now'] : "N/A")."</td>";
