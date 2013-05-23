@@ -66,9 +66,11 @@ if (isset($_POST['edit']) && $_POST['edit'] == "edit") {
                     $error .= "Invalid target format " . $keyword;
                     break;
                 } else {
-                    $keywordsEDIT[] = $keyword;
-                    if (!in_array($keyword, $keywords)) {
-                        $keywordsADD[] = $keyword;
+                    if(!in_array($keyword, $keywordsEDIT)){
+                        $keywordsEDIT[] = $keyword;
+                        if (!in_array($keyword, $keywords)) {
+                            $keywordsADD[] = $keyword;
+                        }
                     }
                 }
             }
@@ -109,9 +111,11 @@ if (isset($_POST['edit']) && $_POST['edit'] == "edit") {
                     $error .= "Invalid target format " . $site;
                     break;
                 } else {
-                    $sitesEDIT[] = $site;
-                    if (!in_array($site, $sites)) {
-                        $sitesADD[] = $site;
+                    if(!in_array($site, $sitesEDIT)){
+                        $sitesEDIT[] = $site;
+                        if (!in_array($site, $sites)) {
+                            $sitesADD[] = $site;
+                        }
                     }
                 }
             }

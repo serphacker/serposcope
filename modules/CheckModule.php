@@ -111,6 +111,17 @@ abstract class GroupModule {
         return d(get_class($this),$msg);
     }
     
+    public function getTotalProgressBarUnit($group){
+        if(is_array($group) && isset($group['keywords'])){
+            return count($group['keywords']);
+        }
+        return 0;
+    }
+    
+    public function incrementProgressBarUnit(){
+        // todo
+    }
+    
 }
 
 ?>

@@ -236,3 +236,7 @@ h2 {
 .tdregress {
     color: red;
 }
+
+.rankchange-table th {
+    cursor: pointer;
+}

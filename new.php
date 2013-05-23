@@ -53,7 +53,9 @@ if(isset($_POST['name'])){
                     $error .= "Invalid target format ".$keyword;
                     break;
                 }else{
-                    $keywords[] = $keyword;
+                    if(!in_array($keyword, $keywords)){
+                        $keywords[] = $keyword;
+                    }
                 }
             }
         }
@@ -68,7 +70,9 @@ if(isset($_POST['name'])){
                     $error .= "Invalid target format ".$site;
                     break;
                 }else{
-                    $sites[] = $site;
+                    if(!in_array($site, $sites)){
+                        $sites[] = $site;
+                    }
                 }
             }
         }

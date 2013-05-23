@@ -141,7 +141,7 @@ function drop(ev) {
 
 $(function() {
 
-    $(".tablerender td").tooltip();
+    $("[rel='tooltip']").tooltip();
 
     $('#loading-img').hide().ajaxStart(function() {
         $(this).show();  // show Loading Div

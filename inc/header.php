@@ -28,6 +28,7 @@ header("Content-type: text/html;charset=UTF-8");
         <script src="lib/datepicker/js/bootstrap-datepicker.js" ></script>
         <script src="lib/highcharts/js/highcharts.js" ></script>
         <script src="lib/highcharts/js/modules/exporting.js" ></script>
+        <script src="lib/Stupid-Table-Plugin/stupidtable.min.js" ></script>
         <script>
             var current_version = "<?php echo VERSION; ?>";
             var latest_version = "<?php echo VERSION; ?>"; // will be overiden by latest.js

@@ -144,6 +144,7 @@ $generalOptions = array(
     array('cache_lifetime','8','Maximum age of the cache in hour','/^[0-9]+$/','text'),
     array('cache_run_clear','yes','Clear the cache after each run even if lifetime isn\'t expired','/^yes|no$/','yesno'),
     array('home_unchanged','yes','Display unchanged position on home','/^yes|no$/','yesno'),
+    array('serp_volatility','yes','Display serp volatility on home','/^yes|no$/','yesno'),
     array('rendering','highcharts','Possible values : highcharts,table','/^highcharts|table$/','text'),
     array('debug_log','no','Enable debug logging','/^yes|no$/','yesno'),
 //    array('proxies',null,'Http proxy IP:PORT format, 1 per line.<br/>To mix direct connection with proxy, use DIRECT.','/^[0-9+]+$/','textarea'),

@@ -7,7 +7,7 @@ class Proxies {
     
     function __construct($prx_array) {
         $this->proxies = $prx_array;
-        $iProxy= (is_null($prx_array) || empty($prx_array)) ? 0 : rand(0, count($prx_array)-1);
+        $this->iProxy= (is_null($prx_array) || count($prx_array) <= 1) ? 0 : rand(0, count($prx_array)-1);
     }
     
     public function current(){

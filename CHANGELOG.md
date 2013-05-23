@@ -4,9 +4,15 @@
 
 * Additionnal parameters for Google search (hl=fr&whatyou=want)
 * Proxy rotation on captcha encounter
+* Javascript sorting on index.php change tables
+* Ability to delete a run and all position checked during this run in logs.php
+* Detect algo update from external sources
+* fix positions checked before a fatal error are now saved
 * fix index display bug (keyword with dash '-')
 * fix htmlentites display bug in calendar
-* fix https javascript bug (chrome only)
+* fix https javascript bug (chrome+https only)
+* fix doublon bug
+* fix tooltip display bug
 
 ## 1.0.2 - 30/03/2013
 

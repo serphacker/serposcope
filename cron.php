@@ -70,15 +70,17 @@ if(isset($_GET['idGroup'])){
     $query .= " ORDER BY rand()";
 }
 
+$currentUnit=0;
+$totalUnit=0;
+$allGroups = array();
 $resGroup=$db->query($query);
 while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
-
-
+    
     if(!isset($modules[$row['module']])){
         e('Cron',"Can't find ".$row['module']." for group ".$row['name']." (uninstalled ?)");
         continue;
-    }
-
+    }    
+    
     $keywords = array();
     $qKW = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = ".intval($row['idGroup']);
     // shuffle keywords
@@ -91,6 +93,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
         e('Cron',"No keywords for group ".$row['name']."  ");
         continue;        
     }
+    $row['keywords'] = $keywords;
     
     $sites = array();
     $qSite = "SELECT idTarget,name FROM `".SQL_PREFIX."target` WHERE idGroup = ".intval($row['idGroup']);
@@ -101,34 +104,49 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     if(empty($sites)){
         e('Cron',"No site for group ".$row['name']."  ");
         continue;        
-    }    
-
-    // if everything looks OK, let's go for a run
-    l('Cron','Checking group['.$row['idGroup'].'] '.$row['name'].' with module '.$row['module']);
-
+    }  
+    
+    $group = array();
     $group['id'] = $row['idGroup'];
     $group['name'] = $row['name'];
+    $group['module'] = $row['module'];
     $group['options'] = empty($row['options']) ? array() : json_decode($row['options'],true);
     $group['keywords'] = $keywords;
     $group['sites'] = $sites;
+    
+    $allGroups[] = $group;
+    $totalUnit += $modules[$row['module']]->getTotalProgressBarUnit($group);
+}
+d('Cron','display total unit '.$totalUnit);
 
+foreach ($allGroups as $group) {
+    
+    // if everything looks OK, let's go for a run
+    l('Cron','Checking group['.$group['id'].'] '.$group['name'].' with module '.$group['module']);
 
+    // save current total unit
+    
     $date = "NOW()";
     //$date = "DATE_SUB(NOW(),INTERVAL ".$interval." DAY)";
-    $qRun = "INSERT INTO `".SQL_PREFIX."check`(idGroup,idRun,date) VALUES(".intval($row['idGroup']).",".intval($runid).",".$date.")";
+    $qRun = "INSERT INTO `".SQL_PREFIX."check`(idGroup,idRun,date) VALUES(".intval($group['id']).",".intval($runid).",".$date.")";
 
     $db->query($qRun);
     $id=  mysql_insert_id();
-    $res = $modules[$row['module']]->check($group);
+    $res = $modules[$group['module']]->check($group);
+    $currentUnit += $modules[$group['module']]->getTotalProgressBarUnit($group);
     
-    
+    // update the progress bar
 
-    if($res === null){
-        e('Cron','Module returned fatal error for group['.$row['idGroup'].'] '.$row['name']);
+    if($res === null || !is_array($res)){
+        e('Cron','Module returned fatal error for group['.$group['id'].'] '.$group['name']);
         continue;
+    }else if(isset($res['__have_error'])){
+        e('Cron','Module have non fatal error for group['.$group['id'].'] '.$group['name'].'. All positions may have not been checked');
     }else{
-        l('Cron','Checking done for group['.$row['idGroup'].'] '.$row['name']);
+        l('Cron','Checking done for group['.$group['id'].'] '.$group['name']);
     }
+    
+    unset($res['__have_error']);
 
     $qRank = "INSERT INTO `".SQL_PREFIX."rank` VALUES ";
     foreach ($res as $idKW => $sites) {

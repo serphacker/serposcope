@@ -157,6 +157,8 @@ class Voila extends GroupModule {
                 $url=$linkNextPageTag[0]->href;
                
             }while($page<11 && !$bAllWebsiteFound);            
+            
+            $this->incrementProgressBarUnit();
         }
         
         curl_close($curl);

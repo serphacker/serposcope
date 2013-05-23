@@ -143,6 +143,13 @@ foreach ($groupsCheck as $check) {
     }
 }
 
+if(isset($options['general']['serp_volatility']) && $options['general']['serp_volatility'] === "yes"){
+    echo "
+    <div style='text-align: center;' >
+    <span id='serpvol' ><a href='http://serphacker.com/serposcope/doc/faq.html#serp-volatility' >SERP Volatility</a> <img src='img/spinner.gif' ></span>
+    </div>
+    ";
+}
 echo "<div style='text-align:center;' ><h3>Last check ".$dateLastCheck."</h3></div>\n";
 
 if(isset($options['general']['home_top_limit']) && $options['general']['home_top_limit'] != 0){
@@ -172,8 +179,20 @@ if($options['general']['home_unchanged'] == "yes"){
 
 
 function displayRanks($ranks){
-    echo "<table class=table >\n";
-    echo "<tr><th style='width:50%;' >keyword</th><th style='width:50%;' >domain</th><th style='width:50px;' >Old</th><th style='width:50px;' >Now</th><th style='width:50px;' >+/-</th><th style='width:50px;' >Group</th></tr>\n";
+    echo "<table class='rankchange-table table' >\n";
+    echo "
+    <thead>
+    <tr>
+        <th data-sort='string' style='width:50%;' >keyword</th>
+        <th data-sort='string' style='width:50%;' >domain</th>
+        <th data-sort='change' style='width:50px;' >Old</th>
+        <th data-sort='change' style='width:50px;' >Now</th>
+        <th data-sort='change' style='width:50px;' >+/-</th>
+        <th style='width:50px;' >Group</th>
+    </tr>
+    </thead>
+    <tbody>
+    ";
     foreach ($ranks as $key => $rank) {
         
         $split=explode("-",$key);
@@ -195,13 +214,45 @@ function displayRanks($ranks){
         echo "<td>[<a href='view.php?idGroup=".h8($rank['group'])."#".h8($rank['url'])."' >view</a>]</td>";
         echo "</tr>";        
     }
-    echo "</table>\n";    
+    echo "</tbody></table>\n";    
 }
 
 
 ?>
 <script>
     $(function() {
+        
+        if($('#serpvol').length){
+            $.get('http://stats.serphacker.com/serpmetrics/data.html', function(data) {
+                $('#serpvol').html(data);
+                $('[rel=tooltip]').tooltip();
+            }).fail(function() {
+                $('#serpvol').html("Can't load serp volatility");
+            });
+        }
+        
+        $('.rankchange-table').stupidtable(
+            {"change":function(a,b){
+            
+                if(a[0] === '-' || a[0] === '+'){
+                    a = parseInt(a.substring(1),10);
+                }
+                if(b[0] === '-' || b[0] === '+'){
+                    b = parseInt(b.substring(1),10);
+                }  
+                
+                if(a === "IN" || a === "OUT" || a === "N/A"){
+                    a = 1000;
+                }
+                
+                if(b === "IN" || b === "OUT" || b === "N/A"){
+                    b = 1000;
+                }
+                
+                return a-b;
+            }
+        });
+        
         $("#stop").click(function(){
             var pid = $(this).attr('data-pid');
             var runid = $(this).attr('data-runid');

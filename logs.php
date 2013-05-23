@@ -66,12 +66,33 @@ if(isset($_GET['id'])){
     }    
 }
 
+$error_msg="";
+$info_msg="";
+if(isset($_GET['did'])){
+    if($db->query("DELETE from `".SQL_PREFIX."run`  WHERE idRun = ".intval($_GET['did'])." AND dateStop is not null") && mysql_affected_rows() > 0){
+        $info_msg = "Run ".intval($_GET['did'])." deleted";
+    }else{
+        $error_msg = "Can't delete run ".intval($_GET['did']).". It doesn't exists or job is still running.";
+    }
+}
+
 include("inc/header.php");
+if (!empty($error_msg)) {
+    echo "<div class='alert alert-error'>$error_msg</div>\n";
+}
+if (!empty($info_msg)) {
+    echo "<div class='alert alert-info'>$info_msg</div>\n";
+}
 ?>
+<script>
+    function warningDeleteRun(){
+        return confirm("It will delete all the positions checked during this run, continue ?");
+    }
+</script>
 <div>
     <table class='table table-condensed table-bordered' >
         <thead>
-            <tr><th>#</th><th>start</th><th>stop</th><th>length</th><th>logs</th></tr>
+            <tr><th>#</th><th>start</th><th>stop</th><th>length</th><th>logs</th><th>delete</th></tr>
         </thead>
         <tbody>
 <?php
@@ -108,6 +129,7 @@ include("inc/header.php");
         echo "<td>".$run['dateStop']."</td>";
         echo "<td>".$run['diff']."</td>";
         echo "<td><a href='logs.php?id=".$run['idRun']."' >logs</a></td>";
+        echo "<td><a href='logs.php?did=".$run['idRun']."' onclick='return warningDeleteRun()' >delete</a></td>";
         echo "</tr>";
     }
 ?>

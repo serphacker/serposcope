@@ -48,7 +48,14 @@ class Google extends GroupModule {
                 'A specific datacenter. Leave empty to use standard google.tld',
                 '/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|)$/',
                 'text'
-            ),            
+            ),
+            array(
+                'parameters',
+                '',
+                'Additional parameters in the request (like <strong>hl=fr&tbs=qdr:d</strong>)',
+                '/^.*$/',
+                'text'
+            ),
         );
     }
    
@@ -85,7 +92,10 @@ class Google extends GroupModule {
                     $referrer=$url;
                     $url="http://$domain/search?q=".urlencode($keyword)."&start=".($start_index);
                 }
-            
+                
+                if(!empty($group['options']['parameters'])){
+                    $url .= "&".$group['options']['parameters'];
+                }
 //                print_r($opts);
                 $fetchRetry=1;
                 
@@ -115,7 +125,8 @@ class Google extends GroupModule {
                                 
                             }else{
                                 $this->e("rate limit detected (captcha), after $fetchRetry retry");
-                                return null;
+                                $ranks['__have_error'] = 1;
+                                return $ranks;
                             }
                             break;
                         }
@@ -126,12 +137,14 @@ class Google extends GroupModule {
                         
                         case 0:{
                             $this->e("Curl error ".  curl_error($curl));
-                            return null;
+                            $ranks['__have_error'] = 1;
+                            return $ranks;
                         }
                         
                         default:{
                             $this->e("Bad retcode ".$http_status);
-                            return null;
+                            $ranks['__have_error'] = 1;
+                            return $ranks;
                         }
                     }
                     
@@ -156,7 +169,8 @@ class Google extends GroupModule {
                 $doc = new DOMDocument;
                 if(!@$doc->loadHTML($data)){
                     $this->e("Can't parse HTML");
-                    return null;
+                    $ranks['__have_error'] = 1;
+                    return $ranks;
                 }
                 $allh3 = $doc->getElementsByTagName('h3');
                 
@@ -207,6 +221,12 @@ class Google extends GroupModule {
                 sleep($options[get_class($this)]['page_sleep']);
                
             }while($start_index<100 && !$bAllWebsiteFound);
+            
+            // trigger a bug
+            $this->e("Forced bug");
+            $ranks['__have_error'] = 1;
+            return $ranks;
+            $this->incrementProgressBarUnit();
         }
         
         curl_close($curl);
