@@ -56,7 +56,67 @@ class Google extends GroupModule {
                 '/^.*$/',
                 'text'
             ),
+            array(
+                'local',
+                '',
+                'City or place for local search, should be in the country of the tld',
+                '/^.*$/',
+                'text'
+            ),            
         );
+    }
+    
+    private function init_session($domain, $proxy, $local){
+        $url = "http://".$domain."/preferences";
+        
+        @unlink(COOKIE_PATH);
+        
+        $opts = array(
+            CURLOPT_URL => $url
+        ) + buildCurlOptions($proxy);
+        
+        $curl=curl_init();
+        curl_setopt_array($curl,$opts);
+        $data = curl_cache_exec($curl, false);
+        curl_close($curl);
+        
+        if(empty($local)){
+            $this->d("local search not used");
+            return $curl;
+        }
+        
+        
+//        echo $data['data'];
+        
+        $matches = array();
+        //if( !isset($data['data'])  || !preg_match("|/&amp;sig=([^&\"']+)[&\"']|",$data['data'],$matches)  ){
+        if( !isset($data['data'])  || !preg_match('|<input value="([^"]+)" type="hidden" name="sig">|',$data['data'],$matches)  ){
+            $this->e("can't extract session, local search disabled ");
+//            echo $data['data'];
+            return $curl;
+        }
+        
+        $prev = $data['data'];
+        
+        $url = "http://".$domain."/uul?muul=4_18&luul=".urlencode($local)."&uulo=1&usg=".$matches[1]."&hl=en";
+        $opts = array(
+            CURLOPT_URL => $url
+        ) + buildCurlOptions($proxy);
+        $curl=curl_init();
+        curl_setopt_array($curl,$opts);
+        $data = curl_cache_exec($curl, false);
+        curl_close($curl);
+        
+        if( !isset($data['data']) || !empty($data['data'])  ){
+            
+            $this->e("Can't set location ".$local." : '".str_replace("\n"," ",substr($data['data'],0,128))."'");
+            $this->d("URL used for location ".$url);
+//            echo $prev;
+            return $curl;
+        }
+        
+        $this->d("local search on ".$local);
+        return $curl;
     }
    
     public function check($group) {
@@ -66,7 +126,7 @@ class Google extends GroupModule {
         $ranks =  array();
         
         $domain = "";
-
+        
         if(!empty($group['options']['datacenter'])){
             $domain = $group['options']['datacenter'];
         }else if(!empty($group['options']['tld'])){
@@ -75,6 +135,8 @@ class Google extends GroupModule {
             $domain = "www.google.com";
         }        
         
+        
+        $curl = null;
         foreach ($group['keywords'] as $keyKW => $keyword) {
             
             $proxy=$proxies->next();
@@ -82,7 +144,9 @@ class Google extends GroupModule {
             $this->l("Checking $keyword on $domain");
             $pos=1;
             $start_index=0;
-
+            
+            // init a new session
+            $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
             do{
                 
                 if($start_index==0){
@@ -100,13 +164,17 @@ class Google extends GroupModule {
                 $fetchRetry=1;
                 
                 do {
-                    $curl=curl_init();
-                    $opts = array(CURLOPT_URL => $url,CURLOPT_REFERER => $referrer) + buildCurlOptions($proxy);
+                    $opts = array(CURLOPT_URL => $url, CURLOPT_REFERER => $referrer) + buildCurlOptions($proxy);
+                    $curl = curl_init();
                     curl_setopt_array($curl,$opts);
                     
+                    
                     $this->d("GET $url via ".($proxy == null ? "DIRECT" : proxyToString($proxy))." (try: $fetchRetry) (mem: ".  debug_memory().")");
-                    $curlout=curl_cache_exec($curl);
+                    $curlout=curl_cache_exec($curl, empty($group['options']['local'])); // don't use cache if local search
                     $this->d("GOT status=".$curlout['status']." cache=".($curlout['cache'] ? "HIT" : "MISS")." age=".$curlout['cache_age']." (mem: ".  debug_memory().")");
+                    $curl_error=curl_error($curl);
+                    curl_close($curl);
+                    
                     $data=$curlout['data'];
                     $http_status = $curlout['status'];
                     
@@ -126,6 +194,7 @@ class Google extends GroupModule {
                             }else{
                                 $this->e("rate limit detected (captcha), after $fetchRetry retry");
                                 $ranks['__have_error'] = 1;
+//                                @curl_close($curl);
                                 return $ranks;
                             }
                             break;
@@ -136,14 +205,16 @@ class Google extends GroupModule {
                         }
                         
                         case 0:{
-                            $this->e("Curl error ".  curl_error($curl));
+                            $this->e("Curl error ".  $curl_error);
                             $ranks['__have_error'] = 1;
+//                            @curl_close($curl);
                             return $ranks;
                         }
                         
                         default:{
                             $this->e("Bad retcode ".$http_status);
                             $ranks['__have_error'] = 1;
+//                            @curl_close($curl);
                             return $ranks;
                         }
                     }
@@ -151,25 +222,11 @@ class Google extends GroupModule {
                     $fetchRetry++;
                 }while($http_status != 200);
                 
-//                curl_setopt_array($curl,$opts);
-//                $data=curl_exec($curl);
-//                $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-//                
-//                if($http_status != 200){
-//                    if($http_status == 302){
-//                        
-//                    }else{
-//                        $this->e("Bad retcode from google ".$http_status);
-//                        return null;
-//                    }
-//                }                
-                
-
-                
                 $doc = new DOMDocument;
                 if(!@$doc->loadHTML($data)){
                     $this->e("Can't parse HTML");
                     $ranks['__have_error'] = 1;
+//                    @curl_close($curl);
                     return $ranks;
                 }
                 $allh3 = $doc->getElementsByTagName('h3');
@@ -223,13 +280,12 @@ class Google extends GroupModule {
             }while($start_index<100 && !$bAllWebsiteFound);
             
             // trigger a bug
-            $this->e("Forced bug");
-            $ranks['__have_error'] = 1;
-            return $ranks;
             $this->incrementProgressBarUnit();
         }
         
-        curl_close($curl);
+        if($curl != null){
+//            @curl_close($curl); $curl =  null;
+        }
         return $ranks;
     }
 

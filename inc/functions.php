@@ -46,6 +46,8 @@ function buildCurlOptions($proxy){
     global $options;
     
     $opts=array(
+        CURLOPT_COOKIEJAR => COOKIE_PATH,
+        CURLOPT_COOKIEFILE => COOKIE_PATH,
         CURLOPT_DNS_USE_GLOBAL_CACHE => false,
         CURLOPT_TIMEOUT => (isset($options['general']['timeout']) ? $options['general']['timeout'] : 30 ),
         CURLOPT_AUTOREFERER => true,
@@ -225,13 +227,13 @@ function debug_memory(){
 }
 
 // WARNING: this shit isn't thread safe
-function curl_cache_exec($ch){
+function curl_cache_exec($ch,$usecache=true){
     global $options;
     
     $url = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
     if($url && !empty($url)){
-        $cacheFile=sys_get_temp_dir()."/".CACHE_DIR."/".sha1($url);
-        if(file_exists($cacheFile)){
+        $cacheFile=CACHE_DIR.sha1($url);
+        if($usecache && file_exists($cacheFile)){
             
             $cache_hto =  intval(isset($options['general']['cache_lifetime']) ? $options['general']['cache_lifetime'] : 4);
 //            echo "DEBUG CACHE  Now : ".time()." cacheFile: ". filemtime($cacheFile)." hto : ".($cache_hto*3600)."\n";
@@ -259,10 +261,10 @@ function curl_cache_exec($ch){
         $response['cache_age'] = 0;
         
         // only cache 200 OK
-        if($response['status'] == 200 && strlen($data) > 0){
+        if($usecache && $response['status'] == 200 && strlen($data) > 0){
             // try to cache the stuff
-            if(!file_exists(sys_get_temp_dir()."/".CACHE_DIR)){
-                @mkdir(sys_get_temp_dir()."/".CACHE_DIR);
+            if(!file_exists(CACHE_DIR)){
+                @mkdir(CACHE_DIR);
             }
             @file_put_contents($cacheFile, $data);
         }
@@ -279,10 +281,10 @@ function clear_cache($force = false){
     
     $cache_hto =  intval(isset($options['general']['cache_lifetime']) ? $options['general']['cache_lifetime'] : 4);
     
-    $dh  = opendir(sys_get_temp_dir()."/".CACHE_DIR);
+    $dh  = opendir(CACHE_DIR);
     while ($dh && false !== ($filename = @readdir($dh))) {
         if($filename != null){
-            $cacheFile = sys_get_temp_dir()."/".CACHE_DIR."/".$filename;
+            $cacheFile = CACHE_DIR.$filename;
             
             if(is_file($cacheFile) && ($force || (time() - filemtime($cacheFile)) > $cache_hto*3600) ){
                 unlink($cacheFile);

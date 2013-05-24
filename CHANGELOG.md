@@ -2,11 +2,12 @@
 
 ## UPCOMING
 
+* Local search
 * Additionnal parameters for Google search (hl=fr&whatyou=want)
 * Proxy rotation on captcha encounter
-* Javascript sorting on index.php change tables
+* Javascript sorting on home change tables
 * Ability to delete a run and all position checked during this run in logs.php
-* Detect algo update from external sources
+* Detect algo update from external sources (mozcast/serpmetrics/...)
 * fix positions checked before a fatal error are now saved
 * fix index display bug (keyword with dash '-')
 * fix htmlentites display bug in calendar

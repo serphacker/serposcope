@@ -124,6 +124,9 @@ foreach ($allGroups as $group) {
     // if everything looks OK, let's go for a run
     l('Cron','Checking group['.$group['id'].'] '.$group['name'].' with module '.$group['module']);
 
+    // clear cookies 
+    @unlink(COOKIE_PATH);
+    
     // save current total unit
     
     $date = "NOW()";
