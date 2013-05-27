@@ -46,8 +46,8 @@ function buildCurlOptions($proxy){
     global $options;
     
     $opts=array(
-        CURLOPT_COOKIEJAR => COOKIE_PATH,
-        CURLOPT_COOKIEFILE => COOKIE_PATH,
+//        CURLOPT_COOKIEJAR => COOKIE_PATH,
+//        CURLOPT_COOKIEFILE => COOKIE_PATH,
         CURLOPT_DNS_USE_GLOBAL_CACHE => false,
         CURLOPT_TIMEOUT => (isset($options['general']['timeout']) ? $options['general']['timeout'] : 30 ),
         CURLOPT_AUTOREFERER => true,

@@ -69,6 +69,8 @@ class Google extends GroupModule {
     private function init_session($domain, $proxy, $local){
         $url = "http://".$domain."/preferences";
         
+        @unlink(COOKIE_PATH);
+        
         $opts = array(
             CURLOPT_URL => $url
         ) + buildCurlOptions($proxy);
@@ -144,9 +146,7 @@ class Google extends GroupModule {
             $start_index=0;
             
             // init a new session
-//            @unlink(COOKIE_PATH);
-//            $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
-
+            $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
             do{
                 
                 if($start_index==0){
