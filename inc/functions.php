@@ -21,6 +21,10 @@ function json_encode_tag($string){
 
 function proxyToString($proxy){
     
+    if(!is_array($proxy)){
+        return $proxy;
+    }
+    
     $string = $proxy['type']."://";
     if(!empty($proxy['user'])){
         $string .= $proxy['user'];
@@ -46,13 +50,14 @@ function buildCurlOptions($proxy){
     global $options;
     
     $opts=array(
-//        CURLOPT_COOKIEJAR => COOKIE_PATH,
-//        CURLOPT_COOKIEFILE => COOKIE_PATH,
+        CURLOPT_COOKIEJAR => COOKIE_PATH,
+        CURLOPT_COOKIEFILE => COOKIE_PATH,
         CURLOPT_DNS_USE_GLOBAL_CACHE => false,
         CURLOPT_TIMEOUT => (isset($options['general']['timeout']) ? $options['general']['timeout'] : 30 ),
         CURLOPT_AUTOREFERER => true,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.".rand(10000,20000)." .NET CLR 3.5.".rand(10000,20000).")",
+//        CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.".rand(10000,20000)." .NET CLR 3.5.".rand(10000,20000).")",
+        CURLOPT_USERAGENT => "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
         CURLINFO_HEADER_OUT => true,
         CURLOPT_HTTPHEADER => array(
             "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -143,6 +148,9 @@ function is_pid_alive($pid){
 $generalOptions = array(
 //    array('home_top_limit','15','Rank limit in the "TOP X change" home display','/^[0-9+]+$/','text'),
     array('timeout','20','Maximum HTTP request execution time','/^[0-9]+$/','text'),
+    array('fetch_retry','10','Maximum GET retry on HTTP error / captcha','/^[0-9]+$/','text'),
+    array('rm_bad_proxies','2','Remove bad proxies after X fails, 0 to never remove bad proxy','/^[0-9]+$/','text'),
+    
     array('cache_lifetime','8','Maximum age of the cache in hour','/^[0-9]+$/','text'),
     array('cache_run_clear','yes','Clear the cache after each run even if lifetime isn\'t expired','/^yes|no$/','yesno'),
     array('home_unchanged','yes','Display unchanged position on home','/^yes|no$/','yesno'),

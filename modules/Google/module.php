@@ -138,14 +138,19 @@ class Google extends GroupModule {
         foreach ($group['keywords'] as $keyKW => $keyword) {
             
             $proxy=$proxies->next();
+            if($proxy == null){
+                $this->e("No more valid proxy, aborting");
+                $ranks['__have_error'] = 1;
+                return $ranks;
+            }
             
             $this->l("Checking $keyword on $domain");
             $pos=1;
             $start_index=0;
             
             // init a new session
-//            @unlink(COOKIE_PATH);
-//            $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
+            @unlink(COOKIE_PATH);
+            $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
 
             do{
                 
@@ -168,8 +173,7 @@ class Google extends GroupModule {
                     $curl = curl_init();
                     curl_setopt_array($curl,$opts);
                     
-                    
-                    $this->d("GET $url via ".($proxy == null ? "DIRECT" : proxyToString($proxy))." (try: $fetchRetry) (mem: ".  debug_memory().")");
+                    $this->d("GET $url via ".proxyToString($proxy)." (try: $fetchRetry) (mem: ".  debug_memory().")");
                     $curlout=curl_cache_exec($curl, empty($group['options']['local'])); // don't use cache if local search
                     $this->d("GOT status=".$curlout['status']." cache=".($curlout['cache'] ? "HIT" : "MISS")." age=".$curlout['cache_age']." (mem: ".  debug_memory().")");
                     $curl_error=curl_error($curl);
@@ -178,59 +182,80 @@ class Google extends GroupModule {
                     $data=$curlout['data'];
                     $http_status = $curlout['status'];
                     
+                    $error=false;
+                    $doc = new DOMDocument;
                     switch($http_status){
-                        case 302:{
-                            if($fetchRetry <= 3){
-                                // if rate limit, sleep
-                                $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
-                                $this->w("rate limit detected (captcha), retry $fetchRetry, sleeping $rateLimitSleepTime seconds");
-                                sleep($rateLimitSleepTime);
-                                
-                                // and change proxy
-                                $proxy=$proxies->next();
-                                $this->w("switching to proxy ".($proxy == null ? "DIRECT" : proxyToString($proxy)));
-                                
-                                
-                            }else{
-                                $this->e("rate limit detected (captcha), after $fetchRetry retry");
-                                $ranks['__have_error'] = 1;
-//                                @curl_close($curl);
-                                return $ranks;
-                            }
-                            break;
-                        }
-                        
                         case 200:{
+                            break;
+                        }                        
+                        
+                        case 302:{
+                            $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
+                            $this->w("Google captcha, sleeping $rateLimitSleepTime seconds");
+                            sleep($rateLimitSleepTime);
+                            $error=true;
                             break;
                         }
                         
                         case 0:{
-                            $this->e("Curl error ".  $curl_error);
-                            $ranks['__have_error'] = 1;
-//                            @curl_close($curl);
-                            return $ranks;
+                            $this->w("Curl error ".  $curl_error);
+                            $error=true;
+                            break;
                         }
                         
                         default:{
-                            $this->e("Bad retcode ".$http_status);
-                            $ranks['__have_error'] = 1;
-//                            @curl_close($curl);
-                            return $ranks;
+                            $this->w("Bad retcode ".$http_status);
+                            $error=true;
+                            break;
                         }
                     }
                     
-                    $fetchRetry++;
-                }while($http_status != 200);
+                    if(!$error){
+                        // is it really google
+                        if(strstr($data, "window.google=") === FALSE){
+                            $this->w("Not a valid google SERP");
+                            $error=true;
+                        }
+                    }
+                    
+                    if(!$error){
+                        if(!@$doc->loadHTML($data)){
+                            $this->w("Can't parse HTML");
+                            $error=true;
+                        }
+                    }
+                    
+                    if($error){
+                        $nPrxCsfFail = $proxies->fail($proxy);
+                        if( 
+                            intval($options['general']['rm_bad_proxies']) > 0 && 
+                            $nPrxCsfFail >= intval($options['general']['rm_bad_proxies'])  
+                        ){
+                            $this->w("Removing proxy ".proxyToString($proxy)." after ".$nPrxCsfFail." consecutives fails");
+                            $proxies->remove($proxy);
+                        }
+                        $proxy=$proxies->next();
+                        if($proxy == null){
+                            $this->e("No more valid proxy, aborting");
+                            $ranks['__have_error'] = 1;
+                            return $ranks;
+                        }
+                        $this->w("Switched to proxy ".proxyToString($proxy));
+                    }else{
+                        $proxies->success($proxy);
+                    }
+                    
+                    ++$fetchRetry;
+                    
+                }while($error && $fetchRetry <= intval($options['general']['fetch_retry']));
                 
-                $doc = new DOMDocument;
-                if(!@$doc->loadHTML($data)){
-                    $this->e("Can't parse HTML");
+                if($error){
+                    $this->e("Too many consecutive fail ($fetchRetry), aborting");
                     $ranks['__have_error'] = 1;
-//                    @curl_close($curl);
                     return $ranks;
                 }
-                $allh3 = $doc->getElementsByTagName('h3');
                 
+                $allh3 = $doc->getElementsByTagName('h3');
                 
                 foreach($allh3 as $h3){
                     if(!$h3->hasAttribute("style") && $h3->getAttribute("class") == "r"){
@@ -279,13 +304,9 @@ class Google extends GroupModule {
                
             }while($start_index<100 && !$bAllWebsiteFound);
             
-            // trigger a bug
             $this->incrementProgressBarUnit();
         }
         
-        if($curl != null){
-//            @curl_close($curl); $curl =  null;
-        }
         return $ranks;
     }
 

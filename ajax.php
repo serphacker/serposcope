@@ -41,6 +41,10 @@ if(isset($_POST['action'])){
                     CURLOPT_URL => "http://revolt.vu.cx/"
                 ) + buildCurlOptions($proxy);
                 
+                if(isset($_POST['to']) && is_numeric($_POST['to'])){
+                    $opts[CURLOPT_TIMEOUT] = intval($_POST['to']);
+                }
+                
                 $curl=curl_init();
                 curl_setopt_array($curl,$opts);
                 

@@ -2,12 +2,15 @@
 
 ## UPCOMING
 
-* Local search
+* Local search (BETA)
 * Additionnal parameters for Google search (hl=fr&whatyou=want)
-* Proxy rotation on captcha encounter
+* Huge enhancement on error detection and bad proxies detection
+* Proxy rotation on error and catpcha
+* Option to stop using proxy with X consecutives fails
 * Javascript sorting on home change tables
 * Ability to delete a run and all position checked during this run in logs.php
 * Detect algo update from external sources (mozcast/serpmetrics/...)
+* Delete all down/ERR proxies on proxies.php
 * fix positions checked before a fatal error are now saved
 * fix index display bug (keyword with dash '-')
 * fix htmlentites display bug in calendar

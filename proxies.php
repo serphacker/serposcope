@@ -121,7 +121,8 @@ if (!empty($_POST)) {
     }
 }
 
-$proxies = new Proxies(load_proxies());
+// $proxies = new Proxies(load_proxies());
+$dbproxies = load_proxies();
 
 include('inc/header.php');
 if ($err != null) {
@@ -142,7 +143,7 @@ if ($err != null) {
             }
             bAllSelected = !bAllSelected;
         });
-
+        
         $('#btndeleteproxy').click(function() {
             var selected = $('[name="idproxy[]"]:checked');
             if (selected.length === 0) {
@@ -173,6 +174,38 @@ if ($err != null) {
                 }
             });
 
+        });        
+
+        $('#btndeleteoffproxy').click(function() {
+            var selected = $('[state="ERR"]');
+            if (selected.length === 0) {
+                alert("no proxy selected");
+                return;
+            }
+
+            var proxiesId = "";
+            selected.each(function(i, item) {
+                proxiesId += "&id[]=" + item.value;
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "ajax.php",
+                data: "action=deleteproxy" + proxiesId
+            }).done(function(rawdata) {
+                data = JSON.parse(rawdata);
+                if (data !== null) {
+                    if (data.deleted === true) {
+                        $('[state="ERR"]').parent().parent().remove();
+                    } else {
+                        alert("Can't delete proxies");
+
+                    }
+                } else {
+                    alert("unknow error [1]");
+                }
+            });
+
         });
 
         $('#btncheckproxy').click(function() {
@@ -193,9 +226,11 @@ if ($err != null) {
                         if (data.result === "ok") {
                             $('#status' + item.value).html("OK");
                             $('#status' + item.value).css("color", "green");
+                            $('#chkprx_' + item.value).attr("state","OK");
                         } else {
                             $('#status' + item.value).html("ERR");
                             $('#status' + item.value).css("color", "red");
+                            $('#chkprx_' + item.value).attr("state","ERR");
                         }
                     } else {
                         alert("unknow error [1]");
@@ -223,9 +258,9 @@ if ($err != null) {
 <tbody>
 <?php
 
-foreach ($proxies->get() as $proxy) {
+foreach ($dbproxies as $proxy) {
     echo "<tr>";
-    echo "<td><input type=checkbox name=idproxy[] value=" . $proxy['id'] . " /></td>";
+    echo "<td><input type=checkbox name=idproxy[] id=chkprx_".$proxy['id']." value=" . $proxy['id'] . " /></td>";
     echo "<td>" . $proxy['type'] . "</td>";
     echo "<td>" . h8($proxy['ip']) . "</td>";
     echo "<td>" . $proxy['port'] . "</td>";
@@ -236,8 +271,11 @@ foreach ($proxies->get() as $proxy) {
 }
 ?>
     <tr>
-        <td colspan=7><button class="btn" id="btndeleteproxy">Delete</button>
-            <button class="btn" id="btncheckproxy">Check</button></td>
+        <td colspan=7>
+            <button class="btn" id="btndeleteproxy">Delete</button>
+            <button class="btn" id="btndeleteoffproxy">Delete ERR</button>
+            <button class="btn" id="btncheckproxy">Check</button>
+        </td>
     </tr>
 </tbody>
 </table>

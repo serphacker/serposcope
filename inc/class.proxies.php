@@ -2,12 +2,25 @@
 
 class Proxies {
     
+    private $mapFail;
     private $proxies;
     private $iProxy;
     
     function __construct($prx_array) {
-        $this->proxies = $prx_array;
-        $this->iProxy= (is_null($prx_array) || count($prx_array) <= 1) ? 0 : rand(0, count($prx_array)-1);
+        if(is_null($prx_array) || !is_array($prx_array) || empty($prx_array) ){
+            $this->proxies = array("DIRECT");
+        }else{
+            $this->mapFail = array();
+            $this->proxies = array();
+            foreach ($prx_array as $proxy) {
+                if( !isset($this->mapFail[proxyToString($proxy)] ) ){
+                    $this->mapFail[proxyToString($proxy)] = 0;
+                    $this->proxies[] = $proxy;
+                }
+                
+            }
+        }
+        $this->iProxy=rand(0, count($this->proxies)-1);
     }
     
     public function current(){
@@ -34,7 +47,34 @@ class Proxies {
         return $this->proxies;
     }
     
+    public function fail($proxy){
+        return ++$this->mapFail[proxyToString($proxy)];
+    }
+    
+    public function success($proxy){
+        $this->mapFail[proxyToString($proxy)] = 0;
+    }
+    
+    public function remove($proxy){
+        unset($this->mapFail[proxyToString($proxy)]);
+        for($i=0;$i<count($this->proxies);$i++){
+            if(proxyToString($this->proxies[$i]) === proxyToString($proxy)){
+                $indexRemove=$i;
+            }
+        }
+        
+        if($indexRemove != -1){
+            unset($this->proxies[$indexRemove]);
+            $this->proxies= array_values($this->proxies);
+            if($indexRemove <= $this->iProxy){
+                --$this->iProxy;
+            }
+        }
+    }
+    
+    public function getMapFail(){
+        return $this->mapFail;
+    }
     
 }
-
 ?>
