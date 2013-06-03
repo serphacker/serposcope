@@ -67,6 +67,9 @@ $urls = explode("\n", $options['general']['proxies_list_url']);
 $prx_list = array();
 foreach ($urls as $url) {
     $url = trim($url);
+    if(empty($url)){
+        continue;
+    }
     l('Cron',"Fetching proxies list from URL $url");
     $added=0;
     $prx_list_new = load_proxies_url($url);
