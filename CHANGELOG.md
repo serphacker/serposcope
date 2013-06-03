@@ -1,6 +1,6 @@
 # Serposcope changelog
 
-## UPCOMING
+## 1.0.3 - 03/06/2013
 
 * Local search (BETA)
 * Additionnal parameters for Google search (hl=fr&whatyou=want)
