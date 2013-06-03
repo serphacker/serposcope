@@ -7,6 +7,7 @@
 * Huge enhancement on error detection and bad proxies detection
 * Proxy rotation on error and catpcha
 * Option to stop using proxy with X consecutives fails
+* Option to get proxies from multiples URL before each run
 * Javascript sorting on home change tables
 * Ability to delete a run and all position checked during this run in logs.php
 * Detect algo update from external sources (mozcast/serpmetrics/...)
@@ -17,6 +18,7 @@
 * fix https javascript bug (chrome+https only)
 * fix doublon bug
 * fix tooltip display bug
+* Voila/LeMoteur module removed
 
 ## 1.0.2 - 30/03/2013
 

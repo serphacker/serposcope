@@ -62,6 +62,38 @@ if($defaultMaxExecutionTime > 0){
     e('Cron','max_execution_time is '.$defaultMaxExecutionTime.' it should be 0. All positions may not be checked. Edit your php.ini');
 }
 
+
+$urls = explode("\n", $options['general']['proxies_list_url']);
+$prx_list = array();
+foreach ($urls as $url) {
+    $url = trim($url);
+    l('Cron',"Fetching proxies list from URL $url");
+    $added=0;
+    $prx_list_new = load_proxies_url($url);
+    foreach ($prx_list_new as $prx_new) {
+        if(!in_array($prx_new, $prx_list)){
+            ++$added;
+            $prx_list[] = $prx_new;
+        }
+    }
+    l('Cron',"$added new proxies added");
+}
+
+$urlproxies = array();
+foreach ($prx_list as $prx_new) {
+    $proproxy = explode(":",$prx_new);
+    $urlproxies[] = array(
+        'type' => 'http',
+        'ip' => $proproxy[0],
+        'port' => $proproxy[1],
+        'user' => null,
+        'password' => null
+    );
+}
+$dbproxies = load_proxies();
+// load the proxies
+$proxies = new Proxies( $dbproxies + $urlproxies);
+
 $query = "SELECT * FROM `".SQL_PREFIX."group`"; //" WHERE idGroup = 10";
 if(isset($_GET['idGroup'])){
     $query .= " WHERE idGroup =  ".intval($_GET['idGroup']);

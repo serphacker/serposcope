@@ -126,6 +126,4 @@ while ($result && ($row = mysql_fetch_assoc($result))) {
 // load the options
 $options = load_options();
 
-// load the proxies
-$proxies = new Proxies(load_proxies());
 ?>

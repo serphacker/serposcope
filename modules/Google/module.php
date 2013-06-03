@@ -137,12 +137,22 @@ class Google extends GroupModule {
         $curl = null;
         foreach ($group['keywords'] as $keyKW => $keyword) {
             
-            $proxy=$proxies->next();
-            if($proxy == null){
-                $this->e("No more valid proxy, aborting");
-                $ranks['__have_error'] = 1;
-                return $ranks;
+            if($options['general']['proxy_auto_rotate'] === "yes"){
+                $proxy=$proxies->next();
+                if($proxy == null){
+                    $this->e("No more valid proxy, aborting");
+                    $ranks['__have_error'] = 1;
+                    return $ranks;
+                }else{
+                    $this->l("Switched to proxy ".proxyToString($proxy));
+                }
+            }else{
+                $proxy=$proxies->current();
+                $this->l("Using current proxy ".proxyToString($proxy));
             }
+            
+            
+
             
             $this->l("Checking $keyword on $domain");
             $pos=1;
@@ -240,7 +250,7 @@ class Google extends GroupModule {
                             $ranks['__have_error'] = 1;
                             return $ranks;
                         }
-                        $this->w("Switched to proxy ".proxyToString($proxy));
+                        $this->w("Previous proxy failed, switched to proxy ".proxyToString($proxy));
                     }else{
                         $proxies->success($proxy);
                     }

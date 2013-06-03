@@ -150,6 +150,7 @@ $generalOptions = array(
     array('timeout','20','Maximum HTTP request execution time','/^[0-9]+$/','text'),
     array('fetch_retry','10','Maximum GET retry on HTTP error / captcha','/^[0-9]+$/','text'),
     array('rm_bad_proxies','2','Remove bad proxies after X fails, 0 to never remove bad proxy','/^[0-9]+$/','text'),
+    array('proxy_auto_rotate','yes','Rotate the proxy on new keyword','/^yes|no$/','yesno'),
     
     array('cache_lifetime','8','Maximum age of the cache in hour','/^[0-9]+$/','text'),
     array('cache_run_clear','yes','Clear the cache after each run even if lifetime isn\'t expired','/^yes|no$/','yesno'),
@@ -158,6 +159,9 @@ $generalOptions = array(
     array('rendering','highcharts','Possible values : highcharts,table','/^highcharts|table$/','text'),
     array('debug_log','no','Enable debug logging','/^yes|no$/','yesno'),
 //    array('proxies',null,'Http proxy IP:PORT format, 1 per line.<br/>To mix direct connection with proxy, use DIRECT.','/^[0-9+]+$/','textarea'),
+    // hiddens options
+    array('proxies_list_url','','',''), 
+    
 );
 $options=array();
 
@@ -200,6 +204,27 @@ function load_proxies(){
 //    die("x => ".$result);
     while($proxy=  mysql_fetch_assoc($result)){
         $proxies[]=$proxy;
+    }
+    return $proxies;
+}
+
+function load_proxies_url($url){
+    $proxies=array();
+    $curl=curl_init();
+    $opts = array(CURLOPT_URL => $url)  + buildCurlOptions(null);
+    curl_setopt_array($curl, $opts);
+    $data = curl_cache_exec($curl, false);
+    
+    if(!empty($data['data'])){
+        $groups = array();
+        preg_match_all('/[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+:[0-9]+/', $data['data'], $groups);   
+        if(isset($groups[0]) && !empty($groups[0])){
+            foreach ($groups[0] as $ip) {
+                if(!in_array($ip, $proxies)){
+                    $proxies[] = $ip;
+                }
+            }
+        }
     }
     return $proxies;
 }
