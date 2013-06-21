@@ -1,5 +1,13 @@
 # Serposcope changelog
 
+## 1.0.4 - 21/06/2013
+
+* break captcha with DeathByCaptcha api
+* each group can have a different rendering (table/highcharts)
+* reduced number of options to improve ease of use (now hardcoded in defined.php)
+* prevent indexing serposcope in search engines (noindex on all pages)
+* fix delete invalid page cached
+
 ## 1.0.3 - 03/06/2013
 
 * Local search (BETA)

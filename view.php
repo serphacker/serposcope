@@ -17,21 +17,9 @@ require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
 
-$startDate = strtotime("now") - (24*3600*30);
-if(isset($_GET['startdate']) ){
-    $dateArr = explode("/", $_GET['startdate']);
-    if(is_array($dateArr) && count($dateArr) == 3 && checkdate($dateArr[1], $dateArr[0], $dateArr[2])){
-        $startDate = strtotime($dateArr[0]."-".$dateArr[1]."-".$dateArr[2]);
-    }
-}
+$render = $options['general']['rendering'];
 
-$endDate = strtotime("now");
-if(isset($_GET['enddate']) ){
-    $dateArr = explode("/", $_GET['enddate']);
-    if(is_array($dateArr) && count($dateArr) == 3 && checkdate($dateArr[1], $dateArr[0], $dateArr[2])){
-        $endDate = strtotime($dateArr[0]."-".$dateArr[1]."-".$dateArr[2]);
-    }
-}
+
 
 $group = null;
 $keywords = array();
@@ -40,7 +28,48 @@ if (isset($_GET['idGroup'])) {
     $qGroup = "SELECT * FROM `".SQL_PREFIX."group` WHERE idGroup = " . intval($_GET['idGroup']);
     $resGroup = $db->query($qGroup);
     if (($group = mysql_fetch_assoc($resGroup))) {
+        
+//        if(isset($_COOKIE[$group['idGroup']])){
+//            if($_COOKIE[$group['idGroup']] == "h"){
+//                $render = "highcharts";
+//            }else if($_COOKIE[$group['idGroup']] == "t"){
+//                $render = "table";
+//            }
+//        }
+        
+        if(isset($serposcopeCookie['r_h'])){
+            if(in_array($group['idGroup'],$serposcopeCookie['r_h'])){
+                $render = "highcharts";
+            }
+        }
+        
+        if(isset($serposcopeCookie['r_t'])){
+            if(in_array($group['idGroup'],$serposcopeCookie['r_t'])){
+                $render = "table";
+            }
+        }    
+        
+        if($render == "table"){
+            $nDay = RENDER_TABLE_NDAY;
+        }else{
+            $nDay = RENDER_HIGHCHARTS_NDAY;
+        }
+        
+        $startDate = strtotime("now") - (24*3600*$nDay);
+        if(isset($_GET['startdate']) ){
+            $dateArr = explode("/", $_GET['startdate']);
+            if(is_array($dateArr) && count($dateArr) == 3 && checkdate($dateArr[1], $dateArr[0], $dateArr[2])){
+                $startDate = strtotime($dateArr[0]."-".$dateArr[1]."-".$dateArr[2]);
+            }
+        }
 
+        $endDate = strtotime("now");
+        if(isset($_GET['enddate']) ){
+            $dateArr = explode("/", $_GET['enddate']);
+            if(is_array($dateArr) && count($dateArr) == 3 && checkdate($dateArr[1], $dateArr[0], $dateArr[2])){
+                $endDate = strtotime($dateArr[0]."-".$dateArr[1]."-".$dateArr[2]);
+            }
+        }        
 
         $qKeyword = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = " . intval($_GET['idGroup']);
         $resKeyword = $db->query($qKeyword);
@@ -102,7 +131,7 @@ if(isset($_GET['export'])){
 }
 
 include("inc/header.php");
-include('renders/'.$options['general']['rendering'].'.php');
+include('renders/'.$render.'.php');
 ?>
 <h2><?php echo ($group != null && isset($group['name']) ? h8($group['name']) : ""); ?></h2>
 <div>
@@ -110,10 +139,23 @@ include('renders/'.$options['general']['rendering'].'.php');
     <input class="datepicker datepicker-group" id="enddate" name="enddate" type="text" />
     <a type="button" class="btn" id="btn-date-scope" >Refresh</a>
     <a type="button" class='btn' id="btn-export" >Export</a>
-    <div style='float:right;' >
-    <a href='edit.php?idGroup=<?php echo $group['idGroup']; ?>' class='btn btn-primary' >Edit</a>
+    <a href='edit.php?idGroup=<?php echo $group['idGroup']; ?>' class='btn' >Edit</a>
     <a id=btn-del-group class='btn btn-danger' >Delete</a>
     <a href='#' id='btn-force-run' class='btn btn-warning' >Force run</a>
+    <div style='float:right;' >
+        <span  rel="tooltip" title="highcharts" >
+            <input type=radio name=radio-render class=radio-render value=highcharts
+                <?php echo $render === "highcharts" ? "checked" : "" ?> 
+            > 
+            <i class='icon-signal'  ></i> 
+        </span>
+        
+        <span  rel="tooltip" title="table" >
+        <input type=radio name=radio-render class=radio-render value=table
+            <?php echo $render !== "highcharts" ? "checked" : "" ?> 
+        > 
+        <i class='icon-th' ></i> 
+        </span>
     </div>
 </div>
 <br/>
@@ -288,7 +330,50 @@ include('renders/'.$options['general']['rendering'].'.php');
             });
         });
         
+        $('.radio-render').click(function(){
+            var idGroup = <?php echo $group['idGroup']; ?>;
+            var key =  idGroup;
+            var cookie = readCookie("serposcope");
+            var render = $(this).val();
+            
+            if(cookie !== null){
+                cookie = JSON.parse(cookie);
+            }
+            
+            if(cookie === null){
+                cookie = {};
+            }
+            
+            if( cookie.r_h === undefined){
+                cookie.r_h = [];
+            }
+            
+            if( cookie.r_t === undefined){
+                cookie.r_t = [];
+            }
+            
+            if(cookie.r_h.indexOf(key) !== -1){
+                cookie.r_h.splice(cookie.r_h.indexOf(key),1);
+            }            
+            if(cookie.r_t.indexOf(key) !== -1){
+                cookie.r_t.splice(cookie.r_t.indexOf(key),1);
+            }   
+            
+            if(render === "table"){
+                cookie.r_t.push(key);
+            }else if(render === "highcharts"){
+                cookie.r_h.push(key);
+            }else{
+                return;
+            }
+            
+            setCookie("serposcope", JSON.stringify(cookie), 365);
+            document.location.reload(true);
+        });
+        
     }); 
+    
+    
 </script>
 <?php
 foreach ($sites as $idSite => $site) {

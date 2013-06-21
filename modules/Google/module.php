@@ -69,18 +69,11 @@ class Google extends GroupModule {
     private function init_session($domain, $proxy, $local){
         $url = "http://".$domain."/preferences";
         
-        $opts = array(
-            CURLOPT_URL => $url
-        ) + buildCurlOptions($proxy);
-        
-        $curl=curl_init();
-        curl_setopt_array($curl,$opts);
-        $data = curl_cache_exec($curl, false);
-        curl_close($curl);
+        $data = curl_cache_exec(array(CURLOPT_URL => $url), $proxy, false);
         
         if(empty($local)){
             $this->d("local search not used");
-            return $curl;
+            return;
         }
         
         
@@ -91,35 +84,31 @@ class Google extends GroupModule {
         if( !isset($data['data'])  || !preg_match('|<input value="([^"]+)" type="hidden" name="sig">|',$data['data'],$matches)  ){
             $this->e("can't extract session, local search disabled ");
 //            echo $data['data'];
-            return $curl;
+            return;
         }
         
         $prev = $data['data'];
         
         $url = "http://".$domain."/uul?muul=4_18&luul=".urlencode($local)."&uulo=1&usg=".$matches[1]."&hl=en";
-        $opts = array(
-            CURLOPT_URL => $url
-        ) + buildCurlOptions($proxy);
-        $curl=curl_init();
-        curl_setopt_array($curl,$opts);
-        $data = curl_cache_exec($curl, false);
-        curl_close($curl);
+        $data = curl_cache_exec(array(CURLOPT_URL => $url), $proxy, false);
         
         if( !isset($data['data']) || !empty($data['data'])  ){
             
             $this->e("Can't set location ".$local." : '".str_replace("\n"," ",substr($data['data'],0,128))."'");
             $this->d("URL used for location ".$url);
 //            echo $prev;
-            return $curl;
+            return;
         }
         
         $this->d("local search on ".$local);
-        return $curl;
+        return;
     }
    
     public function check($group) {
         global $options;
         global $proxies;
+        global $dbc;
+        global $captchaBrokenCurrentRun;
         
         $ranks =  array();
         
@@ -159,7 +148,7 @@ class Google extends GroupModule {
             $start_index=0;
             
             // init a new session
-            @unlink(COOKIE_PATH);
+            // TODO: should be done on proxy switch too for local search
             $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
 
             do{
@@ -179,15 +168,8 @@ class Google extends GroupModule {
                 $fetchRetry=1;
                 
                 do {
-                    $opts = array(CURLOPT_URL => $url, CURLOPT_REFERER => $referrer) + buildCurlOptions($proxy);
-                    $curl = curl_init();
-                    curl_setopt_array($curl,$opts);
-                    
-                    $this->d("GET $url via ".proxyToString($proxy)." (try: $fetchRetry) (mem: ".  debug_memory().")");
-                    $curlout=curl_cache_exec($curl, empty($group['options']['local'])); // don't use cache if local search
-                    $this->d("GOT status=".$curlout['status']." cache=".($curlout['cache'] ? "HIT" : "MISS")." age=".$curlout['cache_age']." (mem: ".  debug_memory().")");
-                    $curl_error=curl_error($curl);
-                    curl_close($curl);
+                    $opts = array(CURLOPT_URL => $url, CURLOPT_REFERER => $referrer);
+                    $curlout=curl_cache_exec($opts, $proxy, empty($group['options']['local'])); // don't use cache if local search
                     
                     $data=$curlout['data'];
                     $http_status = $curlout['status'];
@@ -200,15 +182,53 @@ class Google extends GroupModule {
                         }                        
                         
                         case 302:{
-                            $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
-                            $this->w("Google captcha, sleeping $rateLimitSleepTime seconds");
-                            sleep($rateLimitSleepTime);
-                            $error=true;
+                            
+                            $redir = $curlout['redir'];
+                            if(strncmp($redir, "http://www.google.com/sorry/?continue=", 38) !== 0){
+                                $this->w("Invalid redir ");
+                                $error = true;
+                            }else{
+                                $redir = str_replace("http://www.google.com/sorry/?continue=", "http://".$domain."/sorry/?continue=", $redir);
+                                
+                                $opts = array(
+                                    CURLOPT_URL => $redir,
+                                    CURLOPT_REFERER => $referrer
+                                );
+                                $data = curl_cache_exec($opts, $proxy, false);
+                                
+                                if($data['status'] == 403){
+                                    $proxies->ban($proxy);
+                                    $this->w("IP banned from google (no captcha), force proxy remove");
+                                    $error = true;
+                                }else{
+                                    $this->w("Google captcha");
+                                    if($dbc == null){
+                                        $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
+                                        $this->w("DeathByCaptcha not configured, sleeping $rateLimitSleepTime seconds");
+                                        sleep($rateLimitSleepTime);
+                                        $error=true;
+                                    }else if($captchaBrokenCurrentRun > CAPTCHA_MAX_RUN){
+                                        $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
+                                        $this->w("Broke to many captcha ($captchaBrokenCurrentRun), sleeping $rateLimitSleepTime seconds");
+                                        sleep($rateLimitSleepTime);
+                                        $error=true;
+                                    }else{
+                                        $this->w("Handling captcha with DeathByCaptcha (already solved $captchaBrokenCurrentRun captchas)");
+                                        $data = $this->handleCaptcha($data['data'], $proxy, $domain, $url);
+                                        if($data == null){
+                                            $error = true;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // go ninja go
+
                             break;
                         }
                         
                         case 0:{
-                            $this->w("Curl error ".  $curl_error);
+                            $this->w("Curl error ".  $curlout['error']);
                             $error=true;
                             break;
                         }
@@ -224,6 +244,7 @@ class Google extends GroupModule {
                         // is it really google
                         if(strstr($data, "window.google=") === FALSE){
                             $this->w("Not a valid google SERP");
+//                            file_put_contents("/tmp/noserp_". sha1("".time().rand(0, 10000)), $data);
                             $error=true;
                         }
                     }
@@ -236,6 +257,7 @@ class Google extends GroupModule {
                     }
                     
                     if($error){
+                        rm_cache($url);
                         $nPrxCsfFail = $proxies->fail($proxy);
                         if( 
                             intval($options['general']['rm_bad_proxies']) > 0 && 
@@ -251,6 +273,7 @@ class Google extends GroupModule {
                             return $ranks;
                         }
                         $this->w("Previous proxy failed, switched to proxy ".proxyToString($proxy));
+                        $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
                     }else{
                         $proxies->success($proxy);
                     }
@@ -318,6 +341,121 @@ class Google extends GroupModule {
         }
         
         return $ranks;
+    }
+    
+    private function handleCaptcha($html, $proxy, $dc, $origUrl){
+        global $dbc;
+        global $proxies;
+        global $captchaBrokenCurrentRun;
+        
+        if($dbc == null){
+            $this->w("DeathByCaptcha not initialized");
+            return null;
+        }
+        
+        $docCaptcha = new DOMDocument;
+        if(empty($html) || !@$docCaptcha->loadHTML($html)){
+            $this->w("Can't parse captcha HTML");
+            return null;                                   
+        }
+        
+        $imgsrc = null;
+        $elts = $docCaptcha->getElementsByTagName("img");
+
+        if($elts != null){
+            foreach ($elts as $elt){
+                $src=$elt->getAttribute("src");
+                if($src != null && strncmp($src,"/sorry/image",12) === 0){
+                    $imgsrc = "http://".$dc.$src;
+                }
+            }
+        }
+
+        $groupRegex=array();
+        if($imgsrc == null || !preg_match("|/sorry/image\?id=([0-9]+)&?|", $imgsrc, $groupRegex)){
+            $this->w("Can't extract captcha from HTML");
+            return null;
+        }
+        
+        $params = array();
+        $params['id'] = $groupRegex[1];
+        $params['continue'] = $origUrl;
+        $params['submit']="Submit";
+
+        $data = curl_cache_exec(array(CURLOPT_URL => $imgsrc), $proxy, false);
+
+        $captcha = $data['data'];
+        if($captcha == null || strlen($captcha) < 10 || ord($captcha[0]) !== 0xFF || ord($captcha[1]) !== 0xD8) {
+            $this->w("Can't fetch captcha image");
+            return null;
+        }
+        
+        $time = round(microtime(true) * 1000);
+        $solved =null;
+        try {
+            $solved =$dbc->decode(unpack('C*',$captcha), CAPTCHA_TIMEOUT);
+            ++$captchaBrokenCurrentRun;
+        }catch(Exception $ex){
+            $solved =null;
+        }
+        $time = (round(microtime(true) * 1000) - $time);
+        
+        if($solved == null || !is_array($solved) 
+            || !isset($solved['is_correct']) 
+            || !isset($solved['text'])
+            || !isset($solved['captcha'])   
+        ){
+            // not proxy fault
+            $proxies->preventfail($proxy);
+            $this->w("DeathByCaptcha failed breaking");
+            return null;
+        }
+        
+        $this->w("Solved captcha to '".$solved['text']."' in $time ms");
+        
+        $params['captcha'] = $solved['text'];
+        
+        $sendUrl = "http://".$dc."/sorry/Captcha?";
+        foreach ($params as $key => $value) {
+            $sendUrl .= $key."=".urlencode($value)."&";
+        }
+        $sendUrl = rtrim($sendUrl,"&");
+        
+        $data = curl_cache_exec(array(CURLOPT_URL => $sendUrl), $proxy, false);
+        
+        if(empty($data['data'])){
+            $this->w("Can't send captcha answer [1]");
+            return null;
+        }
+        
+        if(strstr($data['data'],'<img src="/sorry/')){
+            $this->w("Captcha incorrectly solved, report to DeathByCaptcha");
+            try {
+                $dbc->report($captcha['captcha']);
+            }catch(Exception $ex){}
+            // not proxy fault
+            $proxies->preventfail($proxy);
+            return null;
+        }
+        
+        if(!strstr($data['data'],'<TITLE>Redirecting</TITLE>')){
+            $this->w("Can't send captcha answer [1]");
+            return null;            
+        }
+        
+        $this->l("Captcha succesfully solved");
+        $data = curl_cache_exec(array(CURLOPT_URL => $origUrl), $proxy, false);
+
+        if($data['status'] != 200 ){
+            $this->w("Bad redirection after captcha solving");
+            return null;
+        }else if(empty($data['data'])){
+            $this->w("Bad content after captcha solving");
+            return null;
+        }else{
+            return $data['data'];
+        }
+        
     }
 
 }

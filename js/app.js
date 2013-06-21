@@ -1,3 +1,36 @@
+if(!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(needle) {
+        for(var i = 0; i < this.length; i++) {
+            if(this[i] === needle) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    }
+    
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
 function version_compare(v1, v2) {
     var v1parts = v1.split('.');
     var v2parts = v2.split('.');
@@ -207,7 +240,7 @@ $(function() {
         $('#uzi_link')[0].href = "http://stats.serphacker.com/serposcope/" + current_version + "/";
     }
 
-    $('#uzi_img')[0].src = "http://stats.serphacker.com/serposcope/" + current_version + "/banner.jpg"; 
+    $('#uzi_img')[0].src = "http://stats.serphacker.com/serposcope/" + current_version + "/banner.jpg";
 
     // check if new version available
     if (current_version !== undefined && latest_version !== undefined) {

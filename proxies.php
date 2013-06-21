@@ -45,7 +45,8 @@ if (!empty($_POST)) {
             $linecount = 0;
             foreach ($lines as $line) {
                 ++$linecount;
-                $line = ltrim($line); //only ltrim
+                //$line = ltrim($line); //only ltrim 
+                $line = trim($line); // fuck password with space
                 // check if the line is not empty
                 if (!empty($line)) {
 

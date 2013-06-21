@@ -47,6 +47,15 @@ class Proxies {
         return $this->proxies;
     }
     
+    public function ban($proxy){
+        global $options;
+        $this->mapFail[proxyToString($proxy)] = intval($options['general']['rm_bad_proxies']);
+    }
+
+    public function preventfail($proxy){
+        return --$this->mapFail[proxyToString($proxy)];
+    }
+    
     public function fail($proxy){
         return ++$this->mapFail[proxyToString($proxy)];
     }

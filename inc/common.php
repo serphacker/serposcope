@@ -126,4 +126,13 @@ while ($result && ($row = mysql_fetch_assoc($result))) {
 // load the options
 $options = load_options();
 
+$serposcopeCookie = null;
+if(isset($_COOKIE['serposcope'])){
+    $serposcopeCookie = json_decode($_COOKIE['serposcope'], true);
+}
+
+if(php_sapi_name() !== "cli"){
+    header("X-Robots-Tag: noindex, nofollow, noarchive");
+}
+
 ?>

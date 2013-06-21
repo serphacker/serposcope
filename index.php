@@ -143,7 +143,7 @@ foreach ($groupsCheck as $check) {
     }
 }
 
-if(isset($options['general']['serp_volatility']) && $options['general']['serp_volatility'] === "yes"){
+if(HOME_SERP_VOLATILITY){
     echo "
     <div style='text-align: center;' >
     <span id='serpvol' ><a href='http://serphacker.com/serposcope/doc/faq.html#serp-volatility' >SERP Volatility</a> <img src='img/spinner.gif' ></span>
@@ -170,7 +170,7 @@ echo "<h4>Negatives changes</h4>\n";
 uasort($otherBadChanges, "cmpBadChange");
 displayRanks($otherBadChanges);
 
-if($options['general']['home_unchanged'] == "yes"){
+if(HOME_UNCHANGED){
     echo "<h4>Unchanged *</h4>\n";
     displayRanks($unchanged);
     
@@ -212,7 +212,7 @@ function displayRanks($ranks){
         }
         echo "</span></td>";
         echo "<td>[<a href='view.php?idGroup=".h8($rank['group'])."#".h8($rank['url'])."' >view</a>]</td>";
-        echo "</tr>";        
+        echo "</tr>\n";        
     }
     echo "</tbody></table>\n";    
 }

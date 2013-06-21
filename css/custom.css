@@ -216,6 +216,11 @@ h2 {
     padding: 2px 0px; 
 }
 
+/*
+.tablerender {
+    border-right: none;
+}
+*/
 .tablerender td {
     text-align: center;
     font-size: 12px;

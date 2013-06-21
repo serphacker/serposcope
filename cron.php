@@ -16,6 +16,7 @@ $defaultMaxExecutionTime = ini_get('max_execution_time');
 include('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include("lib/deathbycaptcha/deathbycaptcha.php");
 
 if(php_sapi_name() != "cli"){
     // don't abort the script on client disconnect
@@ -31,7 +32,9 @@ function my_ob_logs($str){
     global $db;
     
     $logs .= $str;
-    $db->query("UPDATE `".SQL_PREFIX."run` SET logs = '".addslashes($logs)."' WHERE idRun = ".$runid);    
+    if(!$db->query("UPDATE `".SQL_PREFIX."run` SET logs = '".addslashes($logs)."' WHERE idRun = ".$runid)){
+        die("Critical sql error");
+    }
     return $str;
 }
 // we will store the output in the database
@@ -81,6 +84,7 @@ foreach ($urls as $url) {
     }
     l('Cron',"$added new proxies added");
 }
+shuffle($prx_list);
 
 $urlproxies = array();
 foreach ($prx_list as $prx_new) {
@@ -154,14 +158,44 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
 }
 d('Cron','display total unit '.$totalUnit);
 
+$dbc = null;
+$captchaBrokenCurrentRun=0;
+if(!empty($options['general']['dbc_user']) && !empty($options['general']['dbc_pass'])){
+    $balance = 0;
+    try {
+        $dbc = new DeathByCaptcha_SocketClient($options['general']['dbc_user'], $options['general']['dbc_pass']);
+        $balance = $dbc->get_balance();
+    }catch(Exception $ex){
+        $balance=0;
+    }
+    
+    if($balance == 0){
+        $dbc = null;
+        e('Cron','DeathByCaptcha balance is to low');
+    }else{
+        l('Cron','DeathByCaptcha balance = '.$balance);
+    }
+    
+}else{
+    l('Cron','DeathByCaptcha not configured, skipping');
+}
+
+l('Cron','Clearing the cache (force='.strval(CACHE_RUN_CLEAR).')...');
+clear_cache(CACHE_RUN_CLEAR); 
+l('Cron','Cache clear');
+
+if(!file_exists(COOKIE_DIR)){
+    @mkdir(COOKIE_DIR);
+}else{
+    clear_cookies();
+}
+
+
 foreach ($allGroups as $group) {
     
     // if everything looks OK, let's go for a run
     l('Cron','Checking group['.$group['id'].'] '.$group['name'].' with module '.$group['module']);
 
-    // clear cookies 
-    @unlink(COOKIE_PATH);
-    
     // save current total unit
     
     $date = "NOW()";
@@ -203,9 +237,13 @@ foreach ($allGroups as $group) {
 }
 
 l('Cron','All groups done');
+if($dbc != null){
+    l('Cron','Broke a total of '.$captchaBrokenCurrentRun.' captchas');
+}
 
-l('Cron','Clearing the cache (force='.$options['general']['cache_run_clear'].')...');
-clear_cache($options['general']['cache_run_clear'] === 'yes'); 
+
+l('Cron','Clearing the cache (force='.strval(CACHE_RUN_CLEAR).')...');
+clear_cache(CACHE_RUN_CLEAR); 
 l('Cron','Cache clear');
 
 ob_end_flush();
