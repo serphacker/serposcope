@@ -45,6 +45,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                 case IMPORT_SERPOSCOPE_CSV:
                     $dateFormat="Y-m-d 00:00:00";
                     $urlFormat="url";
+                    break;
                 default:
                     die("invalid import");
             }
@@ -64,7 +65,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
             $urlIndex=-1;                    
             
             for($i=0;$i<count($line);$i++){
-                switch(trim(strtolower($line[$i]),'"')){
+                switch(trim(strtolower($line[$i]),"\" \r\n\t")){
                     case "position j":
                     case "position":
                         $positionIndex=$i;

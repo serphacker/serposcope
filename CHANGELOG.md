@@ -1,5 +1,9 @@
 # Serposcope changelog
 
+## UPCOMING
+
+* fix import bug with format SERPOSCOPE_CSV
+
 ## 1.0.4 - 21/06/2013
 
 * break captcha with DeathByCaptcha api

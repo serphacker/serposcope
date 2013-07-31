@@ -209,7 +209,7 @@ class Google extends GroupModule {
                                         $error=true;
                                     }else if($captchaBrokenCurrentRun > CAPTCHA_MAX_RUN){
                                         $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
-                                        $this->w("Broke to many captcha ($captchaBrokenCurrentRun), sleeping $rateLimitSleepTime seconds");
+                                        $this->w("Broke too many captcha ($captchaBrokenCurrentRun), sleeping $rateLimitSleepTime seconds");
                                         sleep($rateLimitSleepTime);
                                         $error=true;
                                     }else{
