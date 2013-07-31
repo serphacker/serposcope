@@ -26,7 +26,7 @@ var chart;
 $(document).ready(function() {
         chart = new Highcharts.Chart({
                 exporting: {
-                    url: 'http://export.highcharts.com/index-utf8-encode.php',
+                    url: 'http://export.highcharts.com/',
                     
                     buttons: {
                         printButton:{
