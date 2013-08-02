@@ -101,9 +101,17 @@ $dbproxies = load_proxies();
 // load the proxies
 $proxies = new Proxies( $dbproxies + $urlproxies);
 
-$query = "SELECT * FROM `".SQL_PREFIX."group`"; //" WHERE idGroup = 10";
+$argIdGroup=-1;
 if(isset($_GET['idGroup'])){
-    $query .= " WHERE idGroup =  ".intval($_GET['idGroup']);
+    $argIdGroup=intval($_GET['idGroup']);
+}
+if(isset($argv[1])){
+    $argIdGroup=intval($argv[1]);
+}
+
+$query = "SELECT * FROM `".SQL_PREFIX."group`"; //" WHERE idGroup = 10";
+if($argIdGroup > 0){
+    $query .= " WHERE idGroup =  ".$argIdGroup;
 }else{
     // shuffle
     $query .= " ORDER BY rand()";

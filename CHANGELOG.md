@@ -4,6 +4,7 @@
 
 * fix export image highcharts
 * fix import bug with format SERPOSCOPE_CSV
+* run cron for a specific group `/usr/bin/php cron.php _ID_GROUP_
 
 ## 1.0.4 - 21/06/2013
 
