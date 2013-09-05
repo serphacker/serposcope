@@ -154,11 +154,11 @@ class Google extends GroupModule {
             do{
                 
                 if($start_index==0){
-                    $url="http://$domain/search?q=".urlencode($keyword);
-                    $referrer= "http://$domain/";                    
+                    $url="https://$domain/search?q=".urlencode($keyword);
+                    $referrer= "https://$domain/";                    
                 }else{
                     $referrer=$url;
-                    $url="http://$domain/search?q=".urlencode($keyword)."&start=".($start_index);
+                    $url="https://$domain/search?q=".urlencode($keyword)."&start=".($start_index);
                 }
                 
                 if(!empty($group['options']['parameters'])){
@@ -184,11 +184,14 @@ class Google extends GroupModule {
                         case 302:{
                             
                             $redir = $curlout['redir'];
-                            if(strncmp($redir, "http://www.google.com/sorry/?continue=", 38) !== 0){
-                                $this->w("Invalid redir ");
+                            if(
+                                strncmp($redir, "http://www.google.com/sorry/?continue=", 38) !== 0 &&
+                                strncmp($redir, "https://www.google.com/sorry/?continue=", 38) !== 0
+                            ){
+                                $this->w("Invalid redir"); 
                                 $error = true;
                             }else{
-                                $redir = str_replace("http://www.google.com/sorry/?continue=", "http://".$domain."/sorry/?continue=", $redir);
+                                $redir = str_replace("://www.google.com/sorry/?continue=", "://".$domain."/sorry/?continue=", $redir);
                                 
                                 $opts = array(
                                     CURLOPT_URL => $redir,
@@ -448,6 +451,7 @@ class Google extends GroupModule {
 
         if($data['status'] != 200 ){
             $this->w("Bad redirection after captcha solving");
+            print_r($data);
             return null;
         }else if(empty($data['data'])){
             $this->w("Bad content after captcha solving");

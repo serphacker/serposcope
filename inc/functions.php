@@ -67,7 +67,8 @@ function buildCurlOptions($proxy){
         CURLOPT_HTTPHEADER => array(
             "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7"
-        )
+        ),
+        CURLOPT_SSL_VERIFYPEER => false
     );
     
     if(is_array($proxy)){
