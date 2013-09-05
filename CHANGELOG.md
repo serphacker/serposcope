@@ -3,7 +3,7 @@
 ## 1.0.5 - 05/09/2013
 
 * [critical] fix SSL redirection introduced by Google in september
-* new update url 
+* new update url
 * fix export image highcharts
 * fix import bug with format SERPOSCOPE_CSV
 * run cron for a specific group `/usr/bin/php cron.php _ID_GROUP_
