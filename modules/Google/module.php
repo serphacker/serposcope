@@ -29,15 +29,23 @@ class Google extends GroupModule {
                 'pause in seconds if captcha',
                 '/^[0-9]+$/',
                 'text'
+            ),  
+            array(
+                'tld',
+                'com',
+                'The google search engine top level domain: google.<strong>com</strong>, google.<strong>co.uk</strong>',
+                '/^[a-zA-Z.]+$/',
+                'text'
             ),            
         );
     }
     
     public function getGroupOptions() {
+        global $options;
         return array(
             array(
                 'tld',
-                'fr',
+                $options[get_class($this)]['tld'],
                 'The google search engine top level domain: google.<strong>com</strong>, google.<strong>co.uk</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'

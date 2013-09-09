@@ -1,5 +1,9 @@
 # Serposcope changelog
 
+## 1.0.6 - 09/09/2013
+
+* Ability to set a global default google TLD in options.php (was always .fr)
+
 ## 1.0.5 - 05/09/2013
 
 * [critical] fix SSL redirection introduced by Google in september
