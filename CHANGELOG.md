@@ -1,5 +1,10 @@
 # Serposcope changelog
 
+## 1.0.7 - 17/02/2014
+
+* Fix captcha (Google changed redirection URL)
+* Fix local search (Google changed sig input format)
+
 ## 1.0.6 - 09/09/2013
 
 * Ability to set a global default google TLD in options.php (was always .fr)

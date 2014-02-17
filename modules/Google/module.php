@@ -89,9 +89,10 @@ class Google extends GroupModule {
         
         $matches = array();
         //if( !isset($data['data'])  || !preg_match("|/&amp;sig=([^&\"']+)[&\"']|",$data['data'],$matches)  ){
-        if( !isset($data['data'])  || !preg_match('|<input value="([^"]+)" type="hidden" name="sig">|',$data['data'],$matches)  ){
+        if( !isset($data['data'])  || !preg_match('/<input value="([^"]+)" (type="hidden" name="sig"|name="sig" type="hidden")>/',$data['data'],$matches)  ){
             $this->e("can't extract session, local search disabled ");
-//            echo $data['data'];
+            echo $data['data'];
+            die();
             return;
         }
         
