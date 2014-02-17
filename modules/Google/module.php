@@ -193,13 +193,14 @@ class Google extends GroupModule {
                             
                             $redir = $curlout['redir'];
                             if(
-                                strncmp($redir, "http://www.google.com/sorry/?continue=", 38) !== 0 &&
-                                strncmp($redir, "https://www.google.com/sorry/?continue=", 38) !== 0
+//                                strncmp($redir, "http://www.google.com/sorry/?continue=", 38) !== 0 &&
+//                                strncmp($redir, "https://www.google.com/sorry/?continue=", 38) !== 0
+                                !strstr($redir, "/IndexRedirect?continue=")
                             ){
                                 $this->w("Invalid redir"); 
                                 $error = true;
                             }else{
-                                $redir = str_replace("://www.google.com/sorry/?continue=", "://".$domain."/sorry/?continue=", $redir);
+//                                $redir = str_replace("://www.google.com/sorry/?continue=", "://".$domain."/sorry/?continue=", $redir);
                                 
                                 $opts = array(
                                     CURLOPT_URL => $redir,
