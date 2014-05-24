@@ -53,7 +53,7 @@ if (!empty($_POST)) {
                     //we explode again to split with ':'
                     $proxy_line = explode(':', $line);
 
-                    if (empty($proxy_line[0])) { // line with single :
+                    if (empty($proxy_line[0]) && htmlentities($_POST['bulkimport-type'] != 'iface')) { // line with single :
                         $err = "bulkimport error line $linecount : each line should have at least an ip address";
                         break;
                     }
