@@ -1,7 +1,6 @@
-/inc/config.php
+/inc/*config*
 /docs/
 /tests/
 /demo/
 /modules/Test/
-/inc/config_1.php
 /nbproject/

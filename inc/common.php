@@ -52,7 +52,8 @@ if (!defined('PHP_MINOR_VERSION')) {
 // critical check, don't even start if :
 // php version is < 5.2
 if (PHP_MAJOR_VERSION < 5 ||
-        (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2)
+    (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2) ||
+    (function_exists('curl_version') && !defined('CURLINFO_REDIRECT_URL'))
 ) {
     die("Serposcope need at least PHP <strong>5.2</strong>, you are using <strong>" . PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION . "</strong> check <a href='http://serphacker.com/serposcope/doc/install.html' >install instructions</a>");
 }

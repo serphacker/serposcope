@@ -1,5 +1,11 @@
 # Serposcope changelog
 
+## UPCOMING
+
+* Prevent serposcope from running if php < 5.3.8 (CURLINFO_REDIRECT_URL bug)
+* Fix ipv6 bulk import
+* Fix proxy direct minor issue
+
 ## 1.0.7 - 17/02/2014
 
 * Fix captcha (Google changed redirection URL)

@@ -39,9 +39,11 @@ if(!defined('PHP_MINOR_VERSION')){
     define('PHP_MINOR_VERSION',intval($phpversion[1]));    
 }
 echo '<tr><td><strong>PHP Version</strong> </td>';
-if( PHP_MAJOR_VERSION < 5 || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2)
+if( PHP_MAJOR_VERSION < 5 || 
+    (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 3) || 
+    (function_exists('curl_version') && !defined('CURLINFO_REDIRECT_URL'))
 ){
-    echo '<td class="text-error" > Need <strong>5.2</strong> (current <strong>'.PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION.')</strong></td></tr>';
+    echo '<td class="text-error" > Minimal version is <strong>5.3.8</strong> (current <strong>'.phpversion().')</strong></td></tr>';
     $success=false;
 }else{
     echo '<td class="text-success" > OK</td></tr>';
