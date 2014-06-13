@@ -50,8 +50,8 @@ if (!empty($_POST)) {
                 // check if the line is not empty
                 if (!empty($line)) {
 
-                    //we explode again to split with ':'
-                    $proxy_line = explode(':', $line);
+                    //we explode again to split with '#'
+                    $proxy_line = explode('#', $line);
 
                     if (empty($proxy_line[0])) { // line with single :
                         $err = "bulkimport error line $linecount : each line should have at least an ip address";
@@ -312,7 +312,7 @@ foreach ($dbproxies as $proxy) {
         <option>socks</option>
         <option>iface</option>
     </select>
-    <textarea name=bulkimport-proxies style="width:100%; height: 120px" placeholder="ip:port:username:password" ></textarea>
+    <textarea name=bulkimport-proxies style="width:100%; height: 120px" placeholder="ip#port#username#password" ></textarea>
     <input type=submit class="btn btn-primary" value="Bulk Import" />
     </form>
 

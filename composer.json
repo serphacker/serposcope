@@ -1,0 +1,17 @@
+{
+    "name": "serphacker/serposcope",
+    "licence": "cc",
+    "type": "project",
+    "description": "Serposcope is an open source search engine rank checker for SEO",
+    "require": {
+        "serphacker/serposcope": "*"
+    },
+    "authors":[
+        {
+            "name": "serphacker",
+            "email": "pierre@serphacker.com",
+            "homepage": "http://serposcope.serphacker.com",
+            "role": "Developer"
+        }
+    ]
+}
