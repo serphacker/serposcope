@@ -4,7 +4,7 @@ Serposcope is an open source search engine rank checker for SEO.
 
 ## Install
 
-See install instruction here : http://serphacker.com/serposcope/doc/install.html
+See install instruction here : http://serposcope.serphacker.com/en/doc/install.html
 
 ## Licence
 
@@ -13,7 +13,7 @@ Check licencing/
 
 ## Links
 
-* [Website](http://serphacker.com/serposcope/)
-* [Downloads](http://serphacker.com/serposcope/download.html)
-* [Documentation](http://serphacker.com/serposcope/doc/)
+* [Website](http://serposcope.serphacker.com)
+* [Downloads](http://serposcope.serphacker.com/en/download.html)
+* [Documentation](http://serposcope.serphacker.com/en/doc/)
 * [Support](http://forum.serphacker.com/)
