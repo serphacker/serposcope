@@ -319,7 +319,7 @@ foreach ($dbproxies as $proxy) {
     <hr/>
     <h4>Lists URL</h4>
     <form method=POST>
-        <p class="help-block">If you use public proxies list,you need to  <a href='http://serphacker.com/serposcope/doc/proxies.html' >optimize the configuration</a>.</p>
+        <p class="help-block">If you use public proxies list,you need to  <a href='http://serposcope.serphacker.com/doc/proxies.html' >optimize the configuration</a>.</p>
         <textarea name=list-url-proxies style="width:100%; height: 120px" placeholder="http://domain.com/proxies-list.html" ><?php echo h8($options['general']['proxies_list_url']); ?></textarea>
         <input type=submit class="btn btn-primary" value="Update proxies list URL" />    
     </form>
