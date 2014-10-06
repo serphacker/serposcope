@@ -47,6 +47,7 @@ $(document).ready(function() {
                 yAxis: {
                     min : -10,
                     max : 100,
+                    allowDecimals : false,
                     endOnTick: false,
                     tickPixelInterval: 40,  
                     reversed : true,
@@ -59,7 +60,34 @@ $(document).ready(function() {
                         'Drag your finger over the plot to zoom in'
                     },
                 },
-
+                plotOptions: {
+			        series: {
+			            events: {
+			                legendItemClick: function(event) {
+				                var isVisible = this.visible
+							    var seriesIndex = this.index;
+							    var series = this.chart.series;
+							    if (isVisible) {						
+								    for (var i = 0; i < series.length; i++)
+								    {
+								        if (series[i].index != seriesIndex)
+								        {
+								            series[i].visible ? series[i].hide() : series[i].show();
+								        } 
+								    }
+								    return false;
+							    }else{
+							    	for (var i = 0; i < series.length; i++)
+								    {
+								      series[i].hide(); 
+								    }
+							    	series[seriesIndex].show();
+							    	return false;
+							    }
+							}
+			            }
+			        }
+			    },
                 legend: {
                     align: 'center',
                     verticalAlign: 'bottom',
