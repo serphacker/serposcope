@@ -223,7 +223,7 @@ function displayRanks($ranks){
     $(function() {
         
         if($('#serpvol').length){
-            $.get('http://stats.serphacker.com/serpmetrics/data.html', function(data) {
+            $.get('//stats.serphacker.com/serpmetrics/data.html', function(data) {
                 $('#serpvol').html(data);
                 $('[rel=tooltip]').tooltip();
             }).fail(function() {

@@ -34,7 +34,7 @@ header("Content-type: text/html;charset=UTF-8");
             var latest_version = "<?php echo VERSION; ?>"; // will be overiden by latest.js
         </script>
         <script src="js/app.js" ></script>
-        <script src="http://serposcope.serphacker.com/latest.php" ></script>
+        <script src="//serposcope.serphacker.com/latest.php" ></script>
 
     </head>
     <body>

@@ -237,10 +237,10 @@ $(function() {
 
     $('#uzi_img')[0].onload = function(elt) {
         $('#uzi_link').css("cursor", "pointer");
-        $('#uzi_link')[0].href = "http://stats.serphacker.com/serposcope/" + current_version + "/";
+        $('#uzi_link')[0].href = "//stats.serphacker.com/serposcope/" + current_version + "/";
     }
 
-    $('#uzi_img')[0].src = "http://stats.serphacker.com/serposcope/" + current_version + "/banner.jpg";
+    $('#uzi_img')[0].src = "//stats.serphacker.com/serposcope/" + current_version + "/banner.jpg";
 
     // check if new version available
     if (current_version !== undefined && latest_version !== undefined) {
