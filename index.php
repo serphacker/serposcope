@@ -9,272 +9,147 @@
  * 
  * Redistributions of files must retain the above notice.
  */
-if(!file_exists('inc/config.php')){
-    header("Location: install/",TRUE,302);
+if(!defined('INCLUDE_OK'))
     die();
-}
-require('inc/config.php');
-include('inc/define.php');  
-include('inc/common.php');
-include("inc/header.php");
 
-function cmpGoodChange($a,$b){
-    return ($b['diff'] - $a['diff']);
-}
-function cmpBadChange($a,$b){
-    return ($a['diff'] - $b['diff']);
-}
-
-$res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT 1"); 
-if($res && ($run=mysql_fetch_assoc($res))){
-    if($run['dateStop'] == null){
-        
-        if(!is_pid_alive($run['pid'])){
-            // in this case the pid have been killed externally 
-            // from command line or max execution time reached
-            $db->query(
-                "UPDATE `".SQL_PREFIX."run` SET haveError=1, dateStop=now(), ".
-                "logs=CONCAT(logs,'ERROR ABNORMAL TERMINATION : process may have been killed or reached max execution time\n') ".
-                "WHERE idRun = ".$run['idRun']
-            );
-            echo "<div class='alert alert-error' >Last run done in ".$run['diff']." with error (PID: ".$run['pid']." started: ".$run['dateStart'].")<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
-        }else{
-            echo "<div class='alert' >Warning: cron is still running (PID: ".$run['pid']." started: ".$run['dateStart'].") <span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>] [<a style='color:red;' id='stop' data-pid=".$run['pid']." data-runid=".$run['idRun']." href='#' >STOP</a>]</span></div>";
-        }
-    }else{
-        if($run['haveError']){
-            echo "<div class='alert alert-error' >Last run done in ".$run['diff']." with error (PID: ".$run['pid']." started: ".$run['dateStart'].")<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
-        }else{
-            echo "<div class='alert alert-success' >Last run successfully done in ".$run['diff']." (PID: ".$run['pid']." started: ".$run['dateStart'].")<span class='pull-right' >[<a href='logs.php?id=".$run['idRun']."' >LOG</a>]</span></div>";
-        }
-    }
-}
-
-$q= "select max(date(`date`)) from `".SQL_PREFIX."check` limit 1";
-$res=$db->query($q);
-if($res && ($row=  mysql_fetch_row($res))){
-    $dateLastCheck = $row[0];
-}else{
-    $dateLastCheck = date('Y-m-d'); // will fail anyway
-}
-
-//$q = "select max(idCheck) idLastCheck,idGroup from `".SQL_PREFIX."check` where date(`date`) = curdate() group by idGroup";
-$q = "select max(idCheck) idLastCheck,idGroup from `".SQL_PREFIX."check` where date(`date`) = '".$dateLastCheck."' group by idGroup";
-$res=$db->query($q);
-$groupsCheck= array();
-while ($res && ($row=mysql_fetch_assoc($res))){
+function render($ranks, $target, $keywords){  
+    $height=450;
+    $idDiveu = rand(1000,3000);
     
-    $q = "select idCheck idPrevCheck ".
-            "from `".SQL_PREFIX."check` where idGroup = ".intval($row['idGroup'])." ".
-            "and idCheck < ".intval($row['idLastCheck'])." ".
-            "order by idCheck DESC limit 1";
-    
-    $res2=$db->query($q);
-    if($res2){
-        if($row2=mysql_fetch_row($res2)){
-            $row['idPrevCheck'] = $row2[0];
-        }else{
-            $row['idPrevCheck'] = null;
-        }
-        $groupsCheck[]=$row;
-    }
-}
+    echo '<div id="'.$idDiveu.'" style="height: '.$height.'px; margin: 0 auto"></div>';
 
-$topGoodChanges=array();
-$topBadChanges=array();
-$otherGoodChanges=array();
-$otherBadChanges=array();
-$unchanged=array();
+    echo "
+<script type='text/javascript'>
 
-foreach ($groupsCheck as $check) {
-    $q="SELECT idCheck, `".SQL_PREFIX."rank`.idTarget, `".SQL_PREFIX."keyword`.name name, `".SQL_PREFIX."target`.name url, position ".
-            " FROM `".SQL_PREFIX."rank` ".
-            " JOIN `".SQL_PREFIX."keyword` USING(idKeyword) ".
-            " JOIN `".SQL_PREFIX."target` USING(idTarget) ".
-            " WHERE idCheck IN (".intval($check['idPrevCheck']).",".intval($check['idLastCheck']).")";
-    $res=$db->query($q);
-    while ($res && ($row=mysql_fetch_assoc($res))){
-        if($row['idCheck'] == $check['idPrevCheck']){
-            $check['ranks'][$row['idTarget']."-".$row['name']]['prev'] = $row['position'];
-            if(!isset($check['ranks'][$row['idTarget']."-".$row['name']]['url']))
-                $check['ranks'][$row['idTarget']."-".$row['name']]['url'] = $row['url'];
-        }else{
-            $check['ranks'][$row['idTarget']."-".$row['name']]['now'] = $row['position'];
-            $check['ranks'][$row['idTarget']."-".$row['name']]['url'] = $row['url'];
-        }
-        
-        $check['ranks'][$row['idTarget']."-".$row['name']]['group'] = $row['url'];
-    }
-    
-    if(isset($check['ranks'])){
-        foreach ($check['ranks'] as $key => $val) {
-            $val['group']= $check['idGroup'];
-            $val['diff'] = 1337;
-            if(isset($val['prev']) && isset($val['now']))
-                $val['diff'] = $val['prev'] - $val['now'];
-            else if(isset($val['prev']) && !isset($val['now']))
-                //$val['diff'] = $val['prev'] - 100;
-                $val['diff'] = -1000;
-            else if(!isset($val['prev']) && isset($val['now']))
-                //$val['diff'] = 100 - $val['now'];
-                $val['diff'] = 1000;
-
-            if($val['diff'] == 0){
-                $unchanged[$key] = $val;
-            } else {
-                if( isset($options['general']['home_top_limit']) && $options['general']['home_top_limit'] != 0 && (
-                        (isset($val['prev']) && $val['prev'] <= $options['general']['home_top_limit']) ||
-                        (isset($val['now']) && $val['now'] <= $options['general']['home_top_limit'])
-                    )
-                ){
-                    if($val['diff'] > 0)
-                        $topGoodChanges[$key] = $val;
-                    else
-                        $topBadChanges[$key] = $val;
+var chart;
+$(document).ready(function() {
+        chart = new Highcharts.Chart({
+                exporting: {
+                    url: 'http://export.highcharts.com/',
                     
-                }else{
-                    if($val['diff'] > 0)
-                        $otherGoodChanges[$key] = $val;
-                    else
-                        $otherBadChanges[$key] = $val;
-                }
-            }
-        }
-    }
-}
-
-if(HOME_SERP_VOLATILITY){
-    echo "
-    <div style='text-align: center;' >
-    <span id='serpvol' ><a href='http://serphacker.com/serposcope/doc/faq.html#serp-volatility' >SERP Volatility</a> <img src='img/spinner.gif' ></span>
-    </div>
-    ";
-}
-echo "<div style='text-align:center;' ><h3>Last check ".$dateLastCheck."</h3></div>\n";
-
-if(isset($options['general']['home_top_limit']) && $options['general']['home_top_limit'] != 0){
-    echo "<h4>Top ".$options['general']['home_top_limit']." positives changes</h4>\n";
-    uasort($topGoodChanges, "cmpGoodChange");
-    displayRanks($topGoodChanges);
-    
-    echo "<h4>Top ".$options['general']['home_top_limit']." negatives changes</h4>\n";
-    uasort($topBadChanges, "cmpBadChange");
-    displayRanks($topBadChanges);
-}
-
-echo "<h4>Positives changes</h4>\n";
-uasort($otherGoodChanges, "cmpGoodChange");
-displayRanks($otherGoodChanges);
-
-echo "<h4>Negatives changes</h4>\n";
-uasort($otherBadChanges, "cmpBadChange");
-displayRanks($otherBadChanges);
-
-if(HOME_UNCHANGED){
-    echo "<h4>Unchanged *</h4>\n";
-    displayRanks($unchanged);
-    
-    echo "* Unranked position aren't displayed on home page";
-}
-
-
-function displayRanks($ranks){
-    echo "<table class='rankchange-table table' >\n";
-    echo "
-    <thead>
-    <tr>
-        <th data-sort='string' style='width:50%;' >keyword</th>
-        <th data-sort='string' style='width:50%;' >domain</th>
-        <th data-sort='change' style='width:50px;' >Old</th>
-        <th data-sort='change' style='width:50px;' >Now</th>
-        <th data-sort='change' style='width:50px;' >+/-</th>
-        <th style='width:50px;' >Group</th>
-    </tr>
-    </thead>
-    <tbody>
-    ";
-    foreach ($ranks as $key => $rank) {
-        
-        $split=explode("-",$key);
-        array_shift($split);
-        echo "<tr><td>".h8(implode($split,"-"))."</td>";
-        echo "<td>".h8($rank['url'])."</td>";
-        echo "<td>".(isset($rank['prev']) ? $rank['prev'] : "N/A")."</td>";
-        echo "<td>".(isset($rank['now']) ? $rank['now'] : "N/A")."</td>";
-        echo "<td>";
-        
-        if($rank['diff'] == 0){
-            echo "<span>=";
-        } else if($rank['diff'] > 0 ){
-            echo "<span style='color:green' >".($rank['diff'] == 1000 ? "IN" : "+".$rank['diff']);
-        }else{
-            echo "<span style='color:red' >".($rank['diff'] == -1000 ? "OUT" : $rank['diff']);
-        }
-        echo "</span></td>";
-        echo "<td>[<a href='view.php?idGroup=".h8($rank['group'])."#".h8($rank['url'])."' >view</a>]</td>";
-        echo "</tr>\n";        
-    }
-    echo "</tbody></table>\n";    
-}
-
-
-?>
-<script>
-    $(function() {
-        
-        if($('#serpvol').length){
-            $.get('//stats.serphacker.com/serpmetrics/data.html', function(data) {
-                $('#serpvol').html(data);
-                $('[rel=tooltip]').tooltip();
-            }).fail(function() {
-                $('#serpvol').html("Can't load serp volatility");
-            });
-        }
-        
-        $('.rankchange-table').stupidtable(
-            {"change":function(a,b){
-            
-                if(a[0] === '-' || a[0] === '+'){
-                    a = parseInt(a.substring(1),10);
-                }
-                if(b[0] === '-' || b[0] === '+'){
-                    b = parseInt(b.substring(1),10);
-                }  
-                
-                if(a === "IN" || a === "OUT" || a === "N/A"){
-                    a = 1000;
-                }
-                
-                if(b === "IN" || b === "OUT" || b === "N/A"){
-                    b = 1000;
-                }
-                
-                return a-b;
-            }
-        });
-        
-        $("#stop").click(function(){
-            var pid = $(this).attr('data-pid');
-            var runid = $(this).attr('data-runid');
-            $.ajax({
-                type: "POST",
-                url: "ajax.php",
-                data: "action=kill&pid=" + pid +"&runid=" + runid
-            }).done(function(rawdata){
-                data = JSON.parse(rawdata);
-                if(data != null){
-                    if(data.kill == true){
-                        location.reload();
-                    }else{
-                        alert("Can't kill PID " + pid);
+                    buttons: {
+                        printButton:{
+                            enabled:false
+                        }
                     }
-                }else{
-                    alert("unknow error [1]");
+                },
+                chart: {
+                        renderTo: '$idDiveu',
+                        defaultSeriesType: 'line',
+                        zoomType: 'x',
+                },
+
+
+                title: {
+                        text: '',
+                },
+                plotOptions: {
+                series: {
+                cursor: 'pointer',
+                point: {
+                events: {
+                    click: function () {window.open(this.url,'_blanc');}
+                    }
+                    }
                 }
-            });
+            },
+                yAxis: {
+                showFirstLabel: false,
+                    allowDecimals: false,
+//                    min : 0,
+//                    max : 100,
+                    endOnTick: false,
+                    tickPixelInterval: 40,  
+                    reversed : true,
+                    title: {
+                            text: 'Pozycja w wyszukiwarce'
+                    },
+                    subtitle: {
+                        text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' :
+                        'Drag your finger over the plot to zoom in'
+                    },
+                },
+                tooltip: {
+          },
+                legend: {
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    borderWidth: 0
+                },
+                series: [
+";
+
+    foreach ($keywords as $keyword) {
+    	$pass = '';
+    	$hide = '';
+        echo "{\n";
+        echo "\tname: ".json_encode_tag($keyword).",stack:0,\n";
+        echo "\tdata: [";
+        foreach ($ranks as $rank) {
+        	$dateo = date('d M',strtotime($rank['date']));
+        	$dateo = to_PL($dateo);
+            if(isset($rank[$target]) && isset($rank[$target][$keyword])){
+            	if($rank[$target][$keyword][0] == 1){$hide++;  $false = 1;} else {$false = 0;}
+                echo "{y:".$rank[$target][$keyword][0].",name:'".$dateo."<br />".h8($rank[$target][$keyword][1])."',url:'".h8($rank[$target][$keyword][1])."'},";
+                $marker = 'true'; $pass++;
+            }else{
+                echo "null,"; if($pass == 0){$marker = 'false';}
+            }
+        }
+        echo "],\n";
+        echo "\tmarker: {symbol: 'circle',enabled: ".$marker."},\n";
+        if($false == 1){$ready++;}
+        if(($ready > 1 && $false == 1) || $pass == 0){echo "visible:false,";}
+        echo "},\n";
+    }
+    echo "{tooltip: {pointFormat: '',},
+    events: {click: function () { $('.group-btn-calendar').click(); return this.point.url; } },\n";
+    echo "\tlineWidth: 0,\n";
+    echo "\type: 'scatter',\n";
+    echo "\tcolor: 'black',\n";
+    echo "\tmarker: {symbol: 'triangle-down'},\n";
+    echo "\tname: \"Events\",\n";
+    echo "\tdata: [";
+    foreach ($ranks as $check) {
+        $hEvent = false;
+        $event = date('d M',strtotime($check['date']))."<br/>";
+        	$event = to_PL($event);
+        if(isset($check['__event']) && isset($check['__event'][$target]) && is_array($check['__event'][$target])){
+            foreach ($check['__event'][$target] as $evt) {
+                $hEvent = true;
+                //$event .= $evt;
+            }
+        }
+        if($hEvent/*!empty($event)*/){
+            echo "{y: 0.5, name:'".$event.$evt."',url:'".$evt."',},"; $show++;
+        }else{
+            echo "null,";
+        }
+    }
+    echo "]\n";
+    if(!$show){echo ",visible:false";}
+    echo "},\n";
+    
+    echo "
+                ],
+                    
+                xAxis: {tickInterval: 2,
+                    categories: [
+";
+    foreach ($ranks as $rank) {
+    	$datem = date('d M',strtotime($rank['date']));
+
+        echo "'".to_mPL($datem)."',";
+    }
+echo "
+                    ],
+                }
         });
-    });
+ });
 </script>
-<?php
-include('inc/footer.php');
+";
+        
+    }
+    
 ?>
