@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
@@ -26,7 +26,7 @@ if(isset($_GET['id'])){
     if($res && $run=  mysql_fetch_assoc($res)){
         if($run['dateStop'] == null){
             if(!is_pid_alive($run['pid'])){
-                // in this case the pid have been killed externally 
+                // in this case the pid have been killed externally
                 // from command line or max execution time reached
                 $db->query(
                     "UPDATE `".SQL_PREFIX."run` SET haveError=1, dateStop=now(), ".
@@ -36,12 +36,12 @@ if(isset($_GET['id'])){
             }
         }
     }
-    
+
     if(is_numeric($_GET['id'])){
         $res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` WHERE idRun = ".intval($_GET['id']));
     }else if( $_GET['id'] == "last" ){
         $res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff,logs FROM `".SQL_PREFIX."run` ORDER BY idRun DESC LIMIT 1");
-    }    
+    }
     if($res && $run=  mysql_fetch_assoc($res)){
         header('Content-Type: text/plain');
         if($run['dateStop'] == null){
@@ -60,10 +60,10 @@ if(isset($_GET['id'])){
             echo "Press F5 to Refresh the log\n";
         }else{
             echo "Process terminated, end of log\n";
-        }        
-        
+        }
+
         die();
-    }    
+    }
 }
 
 $error_msg="";
@@ -96,22 +96,22 @@ if (!empty($info_msg)) {
         </thead>
         <tbody>
 <?php
-    
+
     $perPage=20;
     $qCount = "SELECT count(*) FROM `".SQL_PREFIX."run`";
     $resultCount = $db->query($qCount);
     $rowCount = mysql_fetch_row($resultCount);
     $count = $rowCount[0];
-    
+
     $totalPages = ceil($count/$perPage);
     $page=isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']) : 1;
-    
-    
+
+
     $start = ($page-1)*$perPage;
-    
+
     $q="SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT $start,$perPage";
     $result = $db->query($q);
-    
+
     while($result && ($run=mysql_fetch_assoc($result))){
         echo "<tr class=";
         if($run['dateStop'] == null){
@@ -142,7 +142,7 @@ if (!empty($info_msg)) {
     }else{
         echo "<li class='previous' ><a href='?page=".($page-1)."' >&larr; Newer</a></li>";
     }
-    
+
     if($page >= $totalPages){
         echo "<li class='disabled next' ><a href='#' >Older &rarr;</a></li>";
     }else{

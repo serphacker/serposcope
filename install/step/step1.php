@@ -36,11 +36,11 @@ if(!defined('PHP_MAJOR_VERSION')){
 }
 
 if(!defined('PHP_MINOR_VERSION')){
-    define('PHP_MINOR_VERSION',intval($phpversion[1]));    
+    define('PHP_MINOR_VERSION',intval($phpversion[1]));
 }
 echo '<tr><td><strong>PHP Version</strong> </td>';
-if( PHP_MAJOR_VERSION < 5 || 
-    (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 3) || 
+if( PHP_MAJOR_VERSION < 5 ||
+    (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 3) ||
     (function_exists('curl_version') && !defined('CURLINFO_REDIRECT_URL'))
 ){
     echo '<td class="text-error" > Minimal version is <strong>5.3.8</strong> (current <strong>'.phpversion().')</strong></td></tr>';
@@ -96,7 +96,7 @@ if( ini_get('max_execution_time') ){
 
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    
+
     // COM
     echo '<tr><td><strong>COM extension</strong> </td>';
     if( !class_exists("COM")){
@@ -105,7 +105,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     }else{
         echo '<td class="text-success" > OK</td></tr>';
     }
-    
+
 }else{
     // check for UNIX (mac/linux/...)
     echo '<tr><td><strong>Disabled functions</strong> </td>';
@@ -116,17 +116,17 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $disabled[] = $fu;
         }
     }
-    
+
     if(!empty($disabled)){
         echo '<td class="text-warning" > <strong>'.implode(",",$disabled).'</strong> disabled, edit php.ini <code>disable_functions = </code> </td></tr>';
     }else{
         echo '<td class="text-success" > OK</td></tr>';
     }
-    
+
 }
 
 echo "</table>
-   
+
 <div style='margin:15px;text-align:center;' >
 If you have error or warning, see <a href='http://serphacker.com/serposcope/doc/install.html' >Install instructions</a> and read the <a href='http://serphacker.com/serposcope/doc/faq.html' >FAQ</a>. There is also a last resort <a href='http://forum.serphacker.com/' >support forum</a>.
 </div>

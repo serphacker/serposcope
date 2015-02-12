@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
@@ -41,7 +41,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                 case IMPORT_RANKSFR_CSV:
                     $dateFormat="Y-m-d 00:00:00";
                     $urlFormat="url";
-                    break;     
+                    break;
                 case IMPORT_SERPOSCOPE_CSV:
                     $dateFormat="Y-m-d 00:00:00";
                     $urlFormat="url";
@@ -49,21 +49,21 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                 default:
                     die("invalid import");
             }
-            
-            
+
+
             $line=fgets($fpFile);
             if(count(explode(",", $line)) > count(explode(";", $line))){
                 $delim=",";
             }else{
                 $delim=";";
             }
-            
+
             $line=  explode($delim, $line);
             $dateIndex=-1;
             $positionIndex=-1;
             $kwIndex=-1;
-            $urlIndex=-1;                    
-            
+            $urlIndex=-1;
+
             for($i=0;$i<count($line);$i++){
                 switch(trim(strtolower($line[$i]),"\" \r\n\t")){
                     case "position j":
@@ -78,18 +78,18 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                     case "mot-clé":
                         $kwIndex=$i;
                         break;
-                    
+
                     case $urlFormat:
                         $urlIndex=$i;
-                        break;            
+                        break;
                 }
             }
             if($dateIndex == -1 || $positionIndex == -1 || $kwIndex == -1 || $urlIndex == -1){
-                $error = 
+                $error =
                 "Invalid CSV file. File must be UTF-8 encoded.\n".
                 "Line must be delimited by char '$delim'.\n".
-                "First line must be column header.\n";                
-                
+                "First line must be column header.\n";
+
                 if($dateIndex == -1){
                     $error .= "Missing column header 'date'.\n";
                 }
@@ -101,7 +101,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                 }
                 if($urlIndex == -1){
                     $error .= "Missing column header '$urlFormat'.\n";
-                }                
+                }
 
             }else{
 
@@ -122,7 +122,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                 $check=array();
 
                 while( ($line=fgetcsv($fpFile,0,$delim)) != null){
-                    
+
                     if(count($line) > 3){
 //                                $qInsertKW = "INSERT INTO keyword(idGroup,name) VALUES (".intval($_POST['group']).",'".addslashes($line[$kwIndex])."') ";
 //                                echo $qInsertKW;
@@ -139,7 +139,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                             }
                         }else{
                             $iCheck = $check[$date];
-                        }                                
+                        }
 
                         if(!isset($keywords[$line[$kwIndex]])){
                             $qInsertKW = "INSERT INTO `".SQL_PREFIX."keyword` (idGroup,name) VALUES (".intval($_POST['group']).",'".addslashes($line[$kwIndex])."') ";
@@ -151,7 +151,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                             }
                         }else{
                             $iKeyword= $keywords[$line[$kwIndex]];
-                        }                                
+                        }
 
                         // add the site if not yet in the target table
                         $parsed = parse_url($line[$urlIndex]);
@@ -176,7 +176,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                             if(!$db->query($qInsertRank)){
                                     $error = "SQL insert error (insert rank) <b>".h8($qInsertRank)."</b>.<br/>".mysql_error();
                                     break;
-                            }                                    
+                            }
                         }
 
 
@@ -188,7 +188,7 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
                 }
             }
         }
-        
+
         fclose($fpFile);
     }
 }
@@ -221,12 +221,12 @@ while($resImportGroup && ($group=mysql_fetch_assoc($resImportGroup)) ){
 ?>
                 </select>
                 <div class="help-block" >
-                    <span class="label label-warning">Warning</span> It's highly 
+                    <span class="label label-warning">Warning</span> It's highly
                     recommanded to use import on new and empty group.
                 </div>
             </div>
         </div>
-        
+
         <div class="control-group">
             <label class="control-label" for="type">Source type</label>
             <div class="controls">
@@ -244,14 +244,14 @@ while($resImportGroup && ($group=mysql_fetch_assoc($resImportGroup)) ){
                 </div>
             </div>
         </div>
-        
+
         <div class="control-group">
             <label class="control-label" for="type">File</label>
             <div class="controls">
                 <input type="file" class="input-file" name="file" />
             </div>
-        </div>        
-        <button class="btn btn-primary" type="submit" name="import" value="import" >Import</button>            
+        </div>
+        <button class="btn btn-primary" type="submit" name="import" value="import" >Import</button>
     </fieldset>
 </form>
 </div>

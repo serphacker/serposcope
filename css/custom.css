@@ -1,6 +1,6 @@
-root { 
+root {
     display: block;
-    
+
 }
 
 body {
@@ -40,7 +40,7 @@ h2 {
 }
 
 .linkdiv {
-    position:relative; 
+    position:relative;
     top:-60px; /* related to body margin-top */
 }
 
@@ -81,9 +81,9 @@ h2 {
 }
 
 #bodycontainer {
-    /* 
-    20px if navbar-static-top 
-    40px if navbar-fixed-top 
+    /*
+    20px if navbar-static-top
+    40px if navbar-fixed-top
     */
     margin-bottom: 30px;
 }
@@ -95,7 +95,7 @@ h2 {
     height: 16px;
     line-height: 16px;
     vertical-align: text-top;
-    width: 16px;   
+    width: 16px;
 }
 
 
@@ -150,8 +150,8 @@ h2 {
     width: 560px;
     text-align: center;
     font-weight: bold;
-    margin-bottom: 1px;   
-    
+    margin-bottom: 1px;
+
     float: left;
     padding: 4px 0;
     border-radius: 4px 4px 4px 4px;
@@ -171,7 +171,7 @@ h2 {
     font-weight: 200;
     margin-left: -40px;
     padding-top: 8px;
-    text-shadow: 0 1px 0;   
+    text-shadow: 0 1px 0;
 }
 
 #loading-img {
@@ -213,7 +213,7 @@ h2 {
 }
 
 .nav-list > .draggable-li > a {
-    padding: 2px 0px; 
+    padding: 2px 0px;
 }
 
 /*

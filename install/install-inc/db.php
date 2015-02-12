@@ -123,20 +123,20 @@ mysql_query("INSERT INTO `".$prefix."version` VALUE ('".SQL_VERSION."')");
 }
 
 function upgrade_tables($prefix,$oldversion){
-    
+
     if($oldversion == null){
         $oldversion=1;
     }
-    
+
     // < 2
     if($oldversion < 2){
-        
+
         // the version table may not exists
         $q="CREATE TABLE `".$prefix."version` (
                 `version` TEXT
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
         @mysql_query($q);
-        
+
         // doesn't have foreign keys for check <-> run
         $q="ALTER TABLE `".$prefix."check` ADD COLUMN
             `idRun` int(11) DEFAULT NULL
@@ -151,20 +151,18 @@ function upgrade_tables($prefix,$oldversion){
         if(!mysql_query($q)){
             return $q;
         }
-        
+
     }
-    
+
     // finally set the version
     $q="DELETE FROM `".$prefix."version`";
     if(!mysql_query($q)){
         return $q;
     }
-    
+
     $q="INSERT INTO `".$prefix."version` VALUES('".SQL_VERSION."')";
     if(!mysql_query($q)){
         return $q;
     }
     return true;
 }
-
-?>

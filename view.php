@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
@@ -28,7 +28,7 @@ if (isset($_GET['idGroup'])) {
     $qGroup = "SELECT * FROM `".SQL_PREFIX."group` WHERE idGroup = " . intval($_GET['idGroup']);
     $resGroup = $db->query($qGroup);
     if (($group = mysql_fetch_assoc($resGroup))) {
-        
+
 //        if(isset($_COOKIE[$group['idGroup']])){
 //            if($_COOKIE[$group['idGroup']] == "h"){
 //                $render = "highcharts";
@@ -36,25 +36,25 @@ if (isset($_GET['idGroup'])) {
 //                $render = "table";
 //            }
 //        }
-        
+
         if(isset($serposcopeCookie['r_h'])){
             if(in_array($group['idGroup'],$serposcopeCookie['r_h'])){
                 $render = "highcharts";
             }
         }
-        
+
         if(isset($serposcopeCookie['r_t'])){
             if(in_array($group['idGroup'],$serposcopeCookie['r_t'])){
                 $render = "table";
             }
-        }    
-        
+        }
+
         if($render == "table"){
             $nDay = RENDER_TABLE_NDAY;
         }else{
             $nDay = RENDER_HIGHCHARTS_NDAY;
         }
-        
+
         $startDate = strtotime("now") - (24*3600*$nDay);
         if(isset($_GET['startdate']) ){
             $dateArr = explode("/", $_GET['startdate']);
@@ -69,7 +69,7 @@ if (isset($_GET['idGroup'])) {
             if(is_array($dateArr) && count($dateArr) == 3 && checkdate($dateArr[1], $dateArr[0], $dateArr[2])){
                 $endDate = strtotime($dateArr[0]."-".$dateArr[1]."-".$dateArr[2]);
             }
-        }        
+        }
 
         $qKeyword = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = " . intval($_GET['idGroup']);
         $resKeyword = $db->query($qKeyword);
@@ -85,7 +85,7 @@ if (isset($_GET['idGroup'])) {
         }
 
         $rank = array();
-        $qCheck = "SELECT * FROM  `".SQL_PREFIX."check` WHERE idGroup = " . intval($_GET['idGroup']) . 
+        $qCheck = "SELECT * FROM  `".SQL_PREFIX."check` WHERE idGroup = " . intval($_GET['idGroup']) .
                 " AND date(`date`) >= '".date( 'Y-m-d',$startDate)."' ".
                 " AND date(`date`) <= '".date( 'Y-m-d',$endDate)."' ORDER BY `date`";
         $resCheck = $db->query($qCheck);
@@ -98,7 +98,7 @@ if (isset($_GET['idGroup'])) {
                 "JOIN `".SQL_PREFIX."target` USING (idTarget) ".
                 "JOIN `".SQL_PREFIX."keyword` USING(idKeyword) ".
                 "WHERE idCheck= " . intval($check['idCheck']);
-            
+
             $resRank = $db->query($qRank);
             while ($positions = mysql_fetch_assoc($resRank)) {
                 $rank[$check['idCheck']][$positions['tname']][$positions['kname']][0] = $positions['position'];
@@ -145,16 +145,16 @@ include('renders/'.$render.'.php');
     <div style='float:right;' >
         <span  rel="tooltip" title="highcharts" >
             <input type=radio name=radio-render class=radio-render value=highcharts
-                <?php echo $render === "highcharts" ? "checked" : "" ?> 
-            > 
-            <i class='icon-signal'  ></i> 
+                <?php echo $render === "highcharts" ? "checked" : "" ?>
+            >
+            <i class='icon-signal'  ></i>
         </span>
-        
+
         <span  rel="tooltip" title="table" >
         <input type=radio name=radio-render class=radio-render value=table
-            <?php echo $render !== "highcharts" ? "checked" : "" ?> 
-        > 
-        <i class='icon-th' ></i> 
+            <?php echo $render !== "highcharts" ? "checked" : "" ?>
+        >
+        <i class='icon-th' ></i>
         </span>
     </div>
 </div>
@@ -165,10 +165,10 @@ include('renders/'.$render.'.php');
         $( ".event-date" ).datepicker('setValue', Date());
         $( "#startdate" ).datepicker('setValue', '<?php echo date('d/m/Y', $startDate); ?>');
         $( "#enddate" ).datepicker('setValue', '<?php echo date('d/m/Y', $endDate); ?>');
-        
+
         $('#btn-force-run').click(function(){
             var canRun=false;
-            
+
             // check if a run is already launched
             $.ajax({
                 type: "POST",
@@ -184,12 +184,12 @@ include('renders/'.$render.'.php');
                             canRun=true;
                         }
                     }else{
-                        alert("unknow error [2]");   
+                        alert("unknow error [2]");
                     }
                 }else{
                     alert("unknow error [1]");
                 }
-            
+
                 if(!canRun){
                     alert("A job is already running");
                     document.location.href = "index.php";
@@ -209,23 +209,23 @@ include('renders/'.$render.'.php');
                 }, 2000);
             });
         });
-        
+
         $('#btn-date-scope').click(function(){
-            var url = "view.php?idGroup=<?php echo $group['idGroup']; ?>" + 
-                "&startdate=" + $('#startdate').val() + 
+            var url = "view.php?idGroup=<?php echo $group['idGroup']; ?>" +
+                "&startdate=" + $('#startdate').val() +
                 "&enddate="+ $('#enddate').val();
             window.location = url;
         });
-        
+
         $('#btn-export').click(function(){
-            var url = "view.php?idGroup=<?php echo $group['idGroup']; ?>" + 
+            var url = "view.php?idGroup=<?php echo $group['idGroup']; ?>" +
                 "&export=true" +
-                "&startdate=" + $('#startdate').val() + 
+                "&startdate=" + $('#startdate').val() +
                 "&enddate="+ $('#enddate').val();
             window.location = url;
-        });        
-        
-    
+        });
+
+
         $('#btn-del-group').click(function(){
             if(confirm("Are you sure to delete current group ?")){
                 $.ajax({
@@ -243,7 +243,7 @@ include('renders/'.$render.'.php');
                         }else if(data.error != undefined){
                             alert(data.error);
                         }else{
-                            alert("unknow error [2]");   
+                            alert("unknow error [2]");
                         }
                     }else{
                         alert("unknow error [1]");
@@ -251,7 +251,7 @@ include('renders/'.$render.'.php');
                 });
             }
         });
-    
+
         $('.group-btn-calendar').click(function(){
             var id = $(this).attr('data-id');
             $('#event-table-' + id).toggle(250,'swing',
@@ -262,7 +262,7 @@ include('renders/'.$render.'.php');
                 }
             );
         });
-    
+
         $('.del-event').click(function(){
             $.ajax({
                 type: "POST",
@@ -279,16 +279,16 @@ include('renders/'.$render.'.php');
                     }else if(data.error != undefined){
                         alert(data.error);
                     }else{
-                        alert("unknow error [2]");   
+                        alert("unknow error [2]");
                     }
                 }else{
                     alert("unknow error [1]");
                 }
             });
         });
-    
+
         $('.event-add').click(function(){
-        
+
             $.ajax({
                 type: "POST",
                 url: "ajax.php",
@@ -301,18 +301,18 @@ include('renders/'.$render.'.php');
                     }else if(data.error != undefined){
                         alert(data.error);
                     }else{
-                        alert("unknow error [2]");   
+                        alert("unknow error [2]");
                     }
                 }else{
                     alert("unknow error [1]");
                 }
             });
         });
-        
+
         $('.group-btn-info').click(function(){
             var idSite = $(this).attr('data-id');
             $.ajax({
-                type: "POST",  
+                type: "POST",
                 url: "ajax.php",
                 data: "action=getSiteInfo&target=" + idSite
             }).done(function(rawdata){
@@ -322,43 +322,43 @@ include('renders/'.$render.'.php');
                     if(data.info != undefined && data.info != null){
                         domodal('Website info', data.info,onSaveGroupInfo,idSite);
                     }else{
-                        domodal('Website info', '',onSaveGroupInfo,idSite); 
+                        domodal('Website info', '',onSaveGroupInfo,idSite);
                     }
                 }else{
                     alert("unknow error [1]");
                 }
             });
         });
-        
+
         $('.radio-render').click(function(){
             var idGroup = <?php echo $group['idGroup']; ?>;
             var key =  idGroup;
             var cookie = readCookie("serposcope");
             var render = $(this).val();
-            
+
             if(cookie !== null){
                 cookie = JSON.parse(cookie);
             }
-            
+
             if(cookie === null){
                 cookie = {};
             }
-            
+
             if( cookie.r_h === undefined){
                 cookie.r_h = [];
             }
-            
+
             if( cookie.r_t === undefined){
                 cookie.r_t = [];
             }
-            
+
             if(cookie.r_h.indexOf(key) !== -1){
                 cookie.r_h.splice(cookie.r_h.indexOf(key),1);
-            }            
+            }
             if(cookie.r_t.indexOf(key) !== -1){
                 cookie.r_t.splice(cookie.r_t.indexOf(key),1);
-            }   
-            
+            }
+
             if(render === "table"){
                 cookie.r_t.push(key);
             }else if(render === "highcharts"){
@@ -366,14 +366,14 @@ include('renders/'.$render.'.php');
             }else{
                 return;
             }
-            
+
             setCookie("serposcope", JSON.stringify(cookie), 365);
             document.location.reload(true);
         });
-        
-    }); 
-    
-    
+
+    });
+
+
 </script>
 <?php
 foreach ($sites as $idSite => $site) {
@@ -405,8 +405,8 @@ foreach ($sites as $idSite => $site) {
 
             $diff = date_diff(date_create_from_format('d/m/Y', $event['dateF']),date_create());
             echo "<tr>" .
-            '<td rel="tooltip" title="'.$event['dateF'].'" style="pointeur: cursor" > ' . 
-                ($diff->format("%m") > 0 ? $diff->format("%m mois ") : "") . 
+            '<td rel="tooltip" title="'.$event['dateF'].'" style="pointeur: cursor" > ' .
+                ($diff->format("%m") > 0 ? $diff->format("%m mois ") : "") .
                 $diff->format("%d jours").
             "</td>" .
             "<td>" . ($event['event']) . "</td>" .

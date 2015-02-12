@@ -1,7 +1,7 @@
 <?php
 
 define('VERSION','1.0.7');
-define('SQL_VERSION',2); 
+define('SQL_VERSION',2);
 define('INCLUDE_OK',1);
 
 define('IMPORT_SERPOSCOPE_CSV',1);
@@ -32,5 +32,3 @@ define('DEBUG_LOG',TRUE); // Enable debug logging
 define('CAPTCHA_TIMEOUT',60);
 define('CAPTCHA_RETRY',3);
 define('CAPTCHA_MAX_RUN',100); // Maximum captcha to break in a run
-
-?>

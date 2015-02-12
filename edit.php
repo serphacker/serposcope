@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if (!file_exists('inc/config.php')) {
@@ -197,15 +197,15 @@ if (!empty($error)) {
                     ?></textarea>
                 </div>
             </div>
-            
+
             <div class="control-group">
                 <label class="control-label" for="sites">Domain</label>
                 <div class="controls sites">
                     <textarea type="text" name="sites" class="input-xlarge" placeholder="www.site.com or *.site.com" ><?php
                     echo !empty($sites) ? h8(implode("\n", $sites)) : "";
                     ?></textarea>
-                </div>                
-            </div>   
+                </div>
+            </div>
 
             <div id="groupopt" >
                 <?php
@@ -220,12 +220,12 @@ if (!empty($error)) {
                     echo '</div>';
                     echo "\n";
                 }
-                ?>                
+                ?>
             </div>
 
             <div class='control-group' >
                 <div class="controls">
-                    <button class="btn btn-primary" type="submit" name="edit" value="edit" >Edit</button>            
+                    <button class="btn btn-primary" type="submit" name="edit" value="edit" >Edit</button>
                 </div>
             </div>
         </fieldset>

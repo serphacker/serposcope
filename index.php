@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
@@ -14,7 +14,7 @@ if(!file_exists('inc/config.php')){
     die();
 }
 require('inc/config.php');
-include('inc/define.php');  
+include('inc/define.php');
 include('inc/common.php');
 include("inc/header.php");
 
@@ -25,12 +25,12 @@ function cmpBadChange($a,$b){
     return ($a['diff'] - $b['diff']);
 }
 
-$res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT 1"); 
+$res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT 1");
 if($res && ($run=mysql_fetch_assoc($res))){
     if($run['dateStop'] == null){
-        
+
         if(!is_pid_alive($run['pid'])){
-            // in this case the pid have been killed externally 
+            // in this case the pid have been killed externally
             // from command line or max execution time reached
             $db->query(
                 "UPDATE `".SQL_PREFIX."run` SET haveError=1, dateStop=now(), ".
@@ -63,12 +63,12 @@ $q = "select max(idCheck) idLastCheck,idGroup from `".SQL_PREFIX."check` where d
 $res=$db->query($q);
 $groupsCheck= array();
 while ($res && ($row=mysql_fetch_assoc($res))){
-    
+
     $q = "select idCheck idPrevCheck ".
             "from `".SQL_PREFIX."check` where idGroup = ".intval($row['idGroup'])." ".
             "and idCheck < ".intval($row['idLastCheck'])." ".
             "order by idCheck DESC limit 1";
-    
+
     $res2=$db->query($q);
     if($res2){
         if($row2=mysql_fetch_row($res2)){
@@ -102,10 +102,10 @@ foreach ($groupsCheck as $check) {
             $check['ranks'][$row['idTarget']."-".$row['name']]['now'] = $row['position'];
             $check['ranks'][$row['idTarget']."-".$row['name']]['url'] = $row['url'];
         }
-        
+
         $check['ranks'][$row['idTarget']."-".$row['name']]['group'] = $row['url'];
     }
-    
+
     if(isset($check['ranks'])){
         foreach ($check['ranks'] as $key => $val) {
             $val['group']= $check['idGroup'];
@@ -131,7 +131,7 @@ foreach ($groupsCheck as $check) {
                         $topGoodChanges[$key] = $val;
                     else
                         $topBadChanges[$key] = $val;
-                    
+
                 }else{
                     if($val['diff'] > 0)
                         $otherGoodChanges[$key] = $val;
@@ -156,7 +156,7 @@ if(isset($options['general']['home_top_limit']) && $options['general']['home_top
     echo "<h4>Top ".$options['general']['home_top_limit']." positives changes</h4>\n";
     uasort($topGoodChanges, "cmpGoodChange");
     displayRanks($topGoodChanges);
-    
+
     echo "<h4>Top ".$options['general']['home_top_limit']." negatives changes</h4>\n";
     uasort($topBadChanges, "cmpBadChange");
     displayRanks($topBadChanges);
@@ -173,7 +173,7 @@ displayRanks($otherBadChanges);
 if(HOME_UNCHANGED){
     echo "<h4>Unchanged *</h4>\n";
     displayRanks($unchanged);
-    
+
     echo "* Unranked position aren't displayed on home page";
 }
 
@@ -194,7 +194,7 @@ function displayRanks($ranks){
     <tbody>
     ";
     foreach ($ranks as $key => $rank) {
-        
+
         $split=explode("-",$key);
         array_shift($split);
         echo "<tr><td>".h8(implode($split,"-"))."</td>";
@@ -202,7 +202,7 @@ function displayRanks($ranks){
         echo "<td>".(isset($rank['prev']) ? $rank['prev'] : "N/A")."</td>";
         echo "<td>".(isset($rank['now']) ? $rank['now'] : "N/A")."</td>";
         echo "<td>";
-        
+
         if($rank['diff'] == 0){
             echo "<span>=";
         } else if($rank['diff'] > 0 ){
@@ -212,16 +212,16 @@ function displayRanks($ranks){
         }
         echo "</span></td>";
         echo "<td>[<a href='view.php?idGroup=".h8($rank['group'])."#".h8($rank['url'])."' >view</a>]</td>";
-        echo "</tr>\n";        
+        echo "</tr>\n";
     }
-    echo "</tbody></table>\n";    
+    echo "</tbody></table>\n";
 }
 
 
 ?>
 <script>
     $(function() {
-        
+
         if($('#serpvol').length){
             $.get('//stats.serphacker.com/serpmetrics/data.html', function(data) {
                 $('#serpvol').html(data);
@@ -230,29 +230,29 @@ function displayRanks($ranks){
                 $('#serpvol').html("Can't load serp volatility");
             });
         }
-        
+
         $('.rankchange-table').stupidtable(
             {"change":function(a,b){
-            
+
                 if(a[0] === '-' || a[0] === '+'){
                     a = parseInt(a.substring(1),10);
                 }
                 if(b[0] === '-' || b[0] === '+'){
                     b = parseInt(b.substring(1),10);
-                }  
-                
+                }
+
                 if(a === "IN" || a === "OUT" || a === "N/A"){
                     a = 1000;
                 }
-                
+
                 if(b === "IN" || b === "OUT" || b === "N/A"){
                     b = 1000;
                 }
-                
+
                 return a-b;
             }
         });
-        
+
         $("#stop").click(function(){
             var pid = $(this).attr('data-pid');
             var runid = $(this).attr('data-runid');

@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 
@@ -35,7 +35,7 @@ include("inc/header.php");
             "FROM `".SQL_PREFIX."target` ".
             "JOIN `".SQL_PREFIX."group` USING(idGroup) ";
     $result = $db->query($q);
-    
+
     while($result && ($row=mysql_fetch_assoc($result))){
         echo "<tr>" .
             "<td>".h8($row['tname'])."</td>".
