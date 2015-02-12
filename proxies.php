@@ -45,7 +45,7 @@ if (!empty($_POST)) {
             $linecount = 0;
             foreach ($lines as $line) {
                 ++$linecount;
-                //$line = ltrim($line); //only ltrim 
+                //$line = ltrim($line); //only ltrim
                 $line = trim($line); // fuck password with space
                 // check if the line is not empty
                 if (!empty($line)) {
@@ -155,7 +155,7 @@ if ($err != null) {
             }
         bAllSelected = !bAllSelected;
             });
-        
+
         $('#btndeleteproxy').click(function() {
                 var selected = $('[name="idproxy[]"]:checked');
                 if (selected.length === 0) {
@@ -186,7 +186,7 @@ if ($err != null) {
                 }
             });
 
-            });        
+            });
 
             $('#btndeleteoffproxy').click(function() {
                 var selected = $('[state="ERR"]');
@@ -216,7 +216,7 @@ if ($err != null) {
                 } else {
         alert("unknow error [1]");
                 }
-            }); 
+            });
             });
 
         $('#btncheckproxy').click(function() {
@@ -321,7 +321,7 @@ foreach ($dbproxies as $proxy) {
     <form method=POST>
         <p class="help-block">If you use public proxies list,you need to  <a href='http://serposcope.serphacker.com/doc/proxies.html' >optimize the configuration</a>.</p>
         <textarea name=list-url-proxies style="width:100%; height: 120px" placeholder="http://domain.com/proxies-list.html" ><?php echo h8($options['general']['proxies_list_url']); ?></textarea>
-        <input type=submit class="btn btn-primary" value="Update proxies list URL" />    
+        <input type=submit class="btn btn-primary" value="Update proxies list URL" />
     </form>
 
 

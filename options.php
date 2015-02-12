@@ -1,13 +1,13 @@
-<?php
+    <?php
 
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if (!file_exists('inc/config.php')) {
@@ -23,7 +23,7 @@ function displayOptForm($groupName, $groupOptions) {
 
     foreach ($groupOptions as $opt) {
         if (!empty($opt[4])) {
-            echo '        
+            echo '
            <div class="control-group ' . (isset($formErrors[$groupName][$opt[0]]) ? "error" : "") . '" >
                <label class="control-label" for="' . h8($groupName . "_" . $opt[0]) . '">' . h8($opt[0]) . '</label>
                <div class="controls">
@@ -136,7 +136,7 @@ echo "
     </div>
 
     </fieldset>
-    
+
 </form>";
 
 include('inc/footer.php');

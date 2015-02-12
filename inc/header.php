@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 header("Content-type: text/html;charset=UTF-8");
@@ -45,12 +45,12 @@ header("Content-type: text/html;charset=UTF-8");
                         <a id="uzi_link" href="." >
                             <img id="uzi_img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOoAAAA8CAMAAABfLdZOAAAAA1BMVEX6+vqsEtnpAAAAJElEQVR42u3BAQ0AAADCIPunfg43YAAAAAAAAAAAAAAAAABwIjcUAAHdSbRTAAAAAElFTkSuQmCC" />
                         </a>
-                    </div>                    
+                    </div>
                     <div class="menu-vcenter" >
                         <span id='new-version-span' >
                             <a id='new-version-link' href='http://serphacker.com/serposcope/download.html' ></a>
-                        </span> 
-                        <span id='loading-span' ><img id="loading-img" src="img/spinner.gif" /></span> 
+                        </span>
+                        <span id='loading-span' ><img id="loading-img" src="img/spinner.gif" /></span>
                         <span class='mybrand' >
                             <a class='brand-link' href="index.php" >Serposcope <span id='cur-version' ><?php echo VERSION; ?></span></a>
                             <br/>
@@ -59,27 +59,27 @@ header("Content-type: text/html;charset=UTF-8");
                                 [ <a href='http://forum.serphacker.com/' >support</a> ]
                             </span>
                         </span>
-                        
+
                         <div class="nav-collapse collapse">
                             <ul class="nav">
                                 <li >
                                     <a href="new.php" >New Group</a>
-                                </li> 
+                                </li>
                                 <li>
                                     <a href="logs.php" >Logs</a>
                                 </li>
                                 <li>
                                     <a href="proxies.php" >Proxies</a>
-                                </li>                            
+                                </li>
                                 <li>
                                     <a href="options.php" >Options</a>
-                                </li>                            
+                                </li>
                                 <li >
                                     <a href="import.php" >Import</a>
-                                </li>        
+                                </li>
                                 <li >
                                     <a href="#" class='btn-run-all' >RUN ALL</a>
-                                </li>                                    
+                                </li>
                             </ul>
                         </div>
                     </div>

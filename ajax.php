@@ -2,11 +2,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if(!file_exists('inc/config.php')){
@@ -21,12 +21,12 @@ header('Content-Type: text/plain');
 
 if(isset($_POST['action'])){
     switch($_POST['action']){
-        
+
         case "is_running":{
             $res=$db->query("SELECT 1 FROM `".SQL_PREFIX."run` WHERE ISNULL(dateStop)");
             die(json_encode(array("running" => (mysql_num_rows($res) > 0))));
         }
-        
+
         case "checkproxy":{
             if(
                 isset($_POST['id']) && is_numeric($_POST['id'])
@@ -40,14 +40,14 @@ if(isset($_POST['action'])){
                 $opts = array(
                     CURLOPT_URL => "http://revolt.vu.cx/"
                 ) + buildCurlOptions($proxy);
-                
+
                 if(isset($_POST['to']) && is_numeric($_POST['to'])){
                     $opts[CURLOPT_TIMEOUT] = intval($_POST['to']);
                 }
-                
+
                 $curl=curl_init();
                 curl_setopt_array($curl,$opts);
-                
+
                 $data=curl_exec($curl);
                 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
                 if($http_status != 200 || strstr($data,"Your IP:") === FALSE){
@@ -57,7 +57,7 @@ if(isset($_POST['action'])){
             }
             break;
         }
-        
+
         case "deleteproxy":{
             if(
                 isset($_POST['id']) && is_array($_POST['id'])
@@ -67,13 +67,13 @@ if(isset($_POST['action'])){
                 $swap = $db->query($query);
                 die(json_encode(array("deleted" => $swap)));
             }
-            break;            
+            break;
         }
-        
+
         // swap the position between two groups
         case "swap":{
             if(
-                isset($_POST['source']) && is_numeric($_POST['source']) && 
+                isset($_POST['source']) && is_numeric($_POST['source']) &&
                 isset($_POST['target']) && is_numeric($_POST['target'])
             ){
                 // elite query
@@ -86,11 +86,11 @@ if(isset($_POST['action'])){
             }
             break;
         }
-        
+
         // kill a running process
         case "kill":{
             if(
-                isset($_POST['pid']) && is_numeric($_POST['pid']) && 
+                isset($_POST['pid']) && is_numeric($_POST['pid']) &&
                 isset($_POST['runid']) && is_numeric($_POST['runid'])
             ){
                 portable_kill($_POST['pid']);
@@ -107,7 +107,7 @@ if(isset($_POST['action'])){
             }
             break;
         }
-        
+
         case "getSiteInfo":{
                 if(isset($_POST['target']) && is_numeric($_POST['target'])){
                     $q="SELECT info FROM `".SQL_PREFIX."target` WHERE idTarget = ".intval($_POST['target']);
@@ -118,7 +118,7 @@ if(isset($_POST['action'])){
                 }
             }
             break;
-            
+
         case "addSiteInfo":{
                 if(isset($_POST['target']) && is_numeric($_POST['target']) && isset($_POST['info'])){
                     $q="UPDATE `".SQL_PREFIX."target` SET info = '".addslashes($_POST['info'])."' WHERE idTarget = ".intval($_POST['target']);
@@ -129,8 +129,8 @@ if(isset($_POST['action'])){
                     }
                 }
             }
-            break;            
-        
+            break;
+
         case "getGroupOptions":
             if(isset($_POST['module'])){
                 if(isset($modules[$_POST['module']])){
@@ -141,30 +141,30 @@ if(isset($_POST['action'])){
                 }
             }
             break;
-            
-            
+
+
         case "addEvent":
-            if(isset($_POST['target']) && is_numeric($_POST['target']) && 
+            if(isset($_POST['target']) && is_numeric($_POST['target']) &&
                     isset($_POST['date']) && preg_match('/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/', $_POST['date']) &&
                     isset($_POST['note']) && !empty($_POST['note'])){
-                
+
                 $_POST['note'] = preg_replace("/(\r?\n)+/","<br />",strip_tags($_POST['note']));
-                
+
                 $qAddEvent = "INSERT INTO `".SQL_PREFIX."event` (idTarget, `date`, event) ".
                         "VALUES (
                             ".intval($_POST['target']).",
                             STR_TO_DATE('".$_POST['date']."','%d/%m/%Y'),
                             '".addslashes($_POST['note'])."'
                         )";
-                
+
                 $db->query($qAddEvent);
-                
+
                 die(json_encode(array("success" => "ok")));
             }else{
                 die(json_encode(array("error" => "bad inputs")));
             }
             break;
-            
+
         case "delEvent":
             if(isset($_POST['idEvent']) && is_numeric($_POST['idEvent'])){
                 $db->query("DELETE FROM `".SQL_PREFIX."event` WHERE idevent = ".intval($_POST['idEvent']));
@@ -172,9 +172,9 @@ if(isset($_POST['action'])){
             }else{
                 die(json_encode(array("error" => "bad inputs")));
             }
-            break;        
-            
-            
+            break;
+
+
         case "delGroup":
             if(isset($_POST['idGroup']) && is_numeric($_POST['idGroup'])){
                 $db->query("DELETE FROM `".SQL_PREFIX."group` WHERE idGroup = ".intval($_POST['idGroup']));
@@ -182,8 +182,7 @@ if(isset($_POST['action'])){
             }else{
                 die(json_encode(array("error" => "bad inputs")));
             }
-            break;                        
-               
+            break;
+
     }
 }
-?>

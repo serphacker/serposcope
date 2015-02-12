@@ -3,11 +3,11 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if (!defined('INCLUDE_OK'))
@@ -135,5 +135,3 @@ if(isset($_COOKIE['serposcope'])){
 if(php_sapi_name() !== "cli"){
     header("X-Robots-Tag: noindex, nofollow, noarchive");
 }
-
-?>

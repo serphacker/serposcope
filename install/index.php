@@ -50,20 +50,20 @@ if(isset($_GET['do'])){
 
             <div>
                 <?php
-                
+
                     if(file_exists($incdir."/config.php")){
-                        
+
 //                        echo "<h3>Installation done !</h3>";
 //                        echo "<a href='".dirname(dirname($_SERVER['PHP_SELF'])."..")."' >Go ninja go</a><br/><br/>";
                         echo "For security purpose, if you want to reinstall or upgrade the current installation, you must first remove <code>inc/config.php</code>.<br/>";
                     }else{
-                
+
                         if(!isset($_GET['step']) || !is_numeric($_GET['step'])){
                             $_GET['step'] = 1;
                         }
                         echo '<div style="text-align:center" ><h2>Step '.$_GET['step'].'</h2></div>';
                         @include("step/step".intval($_GET['step']).".php");
-                    
+
                     }
                 ?>
             </div>

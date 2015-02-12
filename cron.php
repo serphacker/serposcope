@@ -1,15 +1,15 @@
-<?php 
+<?php
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
-// get max execution time before everything because we try to override it later 
+// get max execution time before everything because we try to override it later
 // and default value would be incorrect even if it's still used (suhoshin patch)
 $defaultMaxExecutionTime = ini_get('max_execution_time');
 
@@ -20,7 +20,7 @@ include("lib/deathbycaptcha/deathbycaptcha.php");
 
 if(php_sapi_name() != "cli"){
     // don't abort the script on client disconnect
-    ignore_user_abort(true); 
+    ignore_user_abort(true);
     header('Content-type: text/plain');
 }
 
@@ -30,7 +30,7 @@ function my_ob_logs($str){
     global $logs;
     global $runid;
     global $db;
-    
+
     $logs .= $str;
     if(!$db->query("UPDATE `".SQL_PREFIX."run` SET logs = '".addslashes($logs)."' WHERE idRun = ".$runid)){
         die("Critical sql error");
@@ -122,12 +122,12 @@ $totalUnit=0;
 $allGroups = array();
 $resGroup=$db->query($query);
 while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
-    
+
     if(!isset($modules[$row['module']])){
         e('Cron',"Can't find ".$row['module']." for group ".$row['name']." (uninstalled ?)");
         continue;
-    }    
-    
+    }
+
     $keywords = array();
     $qKW = "SELECT idKeyword,name FROM `".SQL_PREFIX."keyword` WHERE idGroup = ".intval($row['idGroup']);
     // shuffle keywords
@@ -138,10 +138,10 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     }
     if(empty($keywords)){
         e('Cron',"No keywords for group ".$row['name']."  ");
-        continue;        
+        continue;
     }
     $row['keywords'] = $keywords;
-    
+
     $sites = array();
     $qSite = "SELECT idTarget,name FROM `".SQL_PREFIX."target` WHERE idGroup = ".intval($row['idGroup']);
     $result=$db->query($qSite);
@@ -150,9 +150,9 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     }
     if(empty($sites)){
         e('Cron',"No site for group ".$row['name']."  ");
-        continue;        
-    }  
-    
+        continue;
+    }
+
     $group = array();
     $group['id'] = $row['idGroup'];
     $group['name'] = $row['name'];
@@ -160,7 +160,7 @@ while( $resGroup && ($row =  @mysql_fetch_assoc($resGroup)) ){
     $group['options'] = empty($row['options']) ? array() : json_decode($row['options'],true);
     $group['keywords'] = $keywords;
     $group['sites'] = $sites;
-    
+
     $allGroups[] = $group;
     $totalUnit += $modules[$row['module']]->getTotalProgressBarUnit($group);
 }
@@ -176,20 +176,20 @@ if(!empty($options['general']['dbc_user']) && !empty($options['general']['dbc_pa
     }catch(Exception $ex){
         $balance=0;
     }
-    
+
     if($balance == 0){
         $dbc = null;
         e('Cron','DeathByCaptcha balance is to low');
     }else{
         l('Cron','DeathByCaptcha balance = '.$balance);
     }
-    
+
 }else{
     l('Cron','DeathByCaptcha not configured, skipping');
 }
 
 l('Cron','Clearing the cache (force='.strval(CACHE_RUN_CLEAR).')...');
-clear_cache(CACHE_RUN_CLEAR); 
+clear_cache(CACHE_RUN_CLEAR);
 l('Cron','Cache clear');
 
 if(!file_exists(COOKIE_DIR)){
@@ -200,12 +200,12 @@ if(!file_exists(COOKIE_DIR)){
 
 
 foreach ($allGroups as $group) {
-    
+
     // if everything looks OK, let's go for a run
     l('Cron','Checking group['.$group['id'].'] '.$group['name'].' with module '.$group['module']);
 
     // save current total unit
-    
+
     $date = "NOW()";
     //$date = "DATE_SUB(NOW(),INTERVAL ".$interval." DAY)";
     $qRun = "INSERT INTO `".SQL_PREFIX."check`(idGroup,idRun,date) VALUES(".intval($group['id']).",".intval($runid).",".$date.")";
@@ -214,7 +214,7 @@ foreach ($allGroups as $group) {
     $id=  mysql_insert_id();
     $res = $modules[$group['module']]->check($group);
     $currentUnit += $modules[$group['module']]->getTotalProgressBarUnit($group);
-    
+
     // update the progress bar
 
     if($res === null || !is_array($res)){
@@ -225,7 +225,7 @@ foreach ($allGroups as $group) {
     }else{
         l('Cron','Checking done for group['.$group['id'].'] '.$group['name']);
     }
-    
+
     unset($res['__have_error']);
 
     $qRank = "INSERT INTO `".SQL_PREFIX."rank` VALUES ";
@@ -251,16 +251,15 @@ if($dbc != null){
 
 
 l('Cron','Clearing the cache (force='.strval(CACHE_RUN_CLEAR).')...');
-clear_cache(CACHE_RUN_CLEAR); 
+clear_cache(CACHE_RUN_CLEAR);
 l('Cron','Cache clear');
 
 ob_end_flush();
 
-$db->query( 
+$db->query(
     "UPDATE `".SQL_PREFIX."run` SET ".
     "dateStop = NOW(), ".
     "logs = '".addslashes($logs)."', ".
     "haveError = ".($haveError ? 1 : 0)." ".
     "WHERE idRun = ".$runid
 );
-?>

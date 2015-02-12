@@ -2,21 +2,21 @@
 /**
  * Serposcope - An open source rank checker for SEO
  * http://serphacker.com/serposcope/
- * 
+ *
  * @link http://serphacker.com/serposcope Serposcope
  * @author SERP Hacker <pierre@serphacker.com>
  * @license http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode CC-BY-NC-SA
- * 
+ *
  * Redistributions of files must retain the above notice.
  */
 if(!defined('INCLUDE_OK'))
     die();
 
-function render($ranks, $target, $keywords){  
-    
+function render($ranks, $target, $keywords){
+
     $height=450;
     $idDiveu = rand(1000,3000);
-    
+
     echo '<div id="'.$idDiveu.'" style="height: '.$height.'px; margin: 0 auto"></div>';
 
     echo "
@@ -27,7 +27,7 @@ $(document).ready(function() {
         chart = new Highcharts.Chart({
                 exporting: {
                     url: 'http://export.highcharts.com/',
-                    
+
                     buttons: {
                         printButton:{
                             enabled:false
@@ -48,7 +48,7 @@ $(document).ready(function() {
                     min : -10,
                     max : 100,
                     endOnTick: false,
-                    tickPixelInterval: 40,  
+                    tickPixelInterval: 40,
                     reversed : true,
                     title: {
                             text: 'Position'
@@ -68,7 +68,7 @@ $(document).ready(function() {
 
                 series: [
 ";
-    
+
     foreach ($keywords as $keyword) {
         echo "{\n";
         echo "\tname: ".json_encode_tag($keyword).",\n";
@@ -77,7 +77,7 @@ $(document).ready(function() {
             if(isset($rank[$target]) && isset($rank[$target][$keyword])){
                 echo "{y:".$rank[$target][$keyword][0].",name:'".date('d M',strtotime($rank['date']))."<br/>".h8($rank[$target][$keyword][1])."'},";
             }else{
-                echo "null,";                
+                echo "null,";
             }
         }
         echo "]\n";
@@ -106,10 +106,10 @@ $(document).ready(function() {
     }
     echo "]\n";
     echo "},\n";
-    
+
     echo "
                 ],
-                    
+
                 xAxis: {
                     categories: [
 ";
@@ -123,7 +123,5 @@ echo "
  });
 </script>
 ";
-        
+
     }
-    
-?>
