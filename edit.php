@@ -21,12 +21,12 @@ include('inc/user.php');
 
 function getUserOptions() {
 	return array(
-            array('setting','0','Edycja ustawieñ','Aktywuje dostêp do edycji<br />ustawieñ projektu'),
-            array('info','1','Edycja opisu','Aktywuje dostêp do edycji opisów'),
-            array('events','1','Edycja notatek','Aktywuje dostêp do edycji notatek '),
-            array('del','0','Przycisk Usuñ','Umo¿liwia usuniêcie wybranego projektu'),
-            array('restart','0','Przycisk Uruchom','Aktywuje dostêp do rêcznego startu oraz usuwania wybranych danych'),
-            array('export','1','Przycisk Export','Aktywuje dostêp do zmian widoku'),
+            array('setting','0','Edycja ustawieÃ±','Aktywuje dostÃªp do edycji<br />ustawieÃ± projektu'),
+            array('info','1','Edycja opisu','Aktywuje dostÃªp do edycji opisÃ³w'),
+            array('events','1','Edycja notatek','Aktywuje dostÃªp do edycji notatek '),
+            array('del','0','Przycisk UsuÃ±','UmoÂ¿liwia usuniÃªcie wybranego projektu'),
+            array('restart','0','Przycisk Uruchom','Aktywuje dostÃªp do rÃªcznego startu oraz usuwania wybranych danych'),
+            array('export','1','Przycisk Export','Aktywuje dostÃªp do zmian widoku'),
 			);
 }
 $group = null;
@@ -101,7 +101,6 @@ if (isset($_POST['edit']) && $_POST['edit'] == "edit") {
     $db->query($qDeleteKW);
 
     // add keyword
-
     if (!empty($keywordsADD)) {
         $qAddKW = "INSERT INTO `" . SQL_PREFIX . "keyword` (idGroup,name) VALUES";
         for ($i = 0; $i < count($keywordsADD); $i++) {
@@ -200,7 +199,7 @@ include("inc/header.php");
         $( "#btn_4" ).css("border","solid 2px #D64B46");
         $( "#btn_4" ).css("border-radius","5px");
 </script>
-<h2>Edycja ustawieñ</h2>
+<h2>Edycja ustawieÃ±</h2>
 <?php
 if (isset($_GET['error'])) {
     $error = h8($_GET['error']);
@@ -220,7 +219,7 @@ if (!empty($error)) {
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="keywords">S³owa kluczowe</label>
+                <label class="control-label" for="keywords">SÂ³owa kluczowe</label>
                 <div class="controls keywords">
                     <textarea type="text" name="keywords" class="input-xlarge" placeholder="jedna fraza w lini" ><?php
                     echo !empty($keywords) ? h8(implode("\n", $keywords)) : "";
@@ -259,7 +258,7 @@ if (!empty($error)) {
                  	$regexd = h8(isset($group['user']->$options[0]) ? $group['user']->$options[0] : $options[1]);
                  	if($regexd == '1'){$rex1 = "selected"; $rex0 = "";} else {$rex0 = "selected"; $rex1 = "";}
                  	if ($options[3] != "") {$helps = 'rel="tooltip" title ="'.$options[3].'"';} else {$helps = '';}
-                 	if (!$adminAcces && !$userAcces){$helps ='rel="tooltip" title ="Nie posiadasz wystarczaj¹cych<br />uprawnieñ do zmiany tych opcji" class="disabled"';}
+                 	if (!$adminAcces && !$userAcces){$helps ='rel="tooltip" title ="Nie posiadasz wystarczajÂ¹cych<br />uprawnieÃ± do zmiany tych opcji" class="disabled"';}
                     echo '<div class="control-group" >';
                     echo '<label class="control-label" for="' . $options[0] . '">' . $options[2] . '</label>';
                     echo '<div class="controls">';
