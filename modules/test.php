@@ -1,10 +1,15 @@
 <?php
-
-
+include('../inc/functions.php');
+include('../inc/simple_html_dom.php');
+            $url = "http://www.ask.com/web?q=rzeszow";
+            $doc = file_get_html($url);
+                $allh3 = $doc->getElementsByTagName("h3");
                 foreach($allh3 as $h3){
-                    if($h3->getAttribute("class") == "media-heading"){
+                    if($h3->getAttribute("class") == "wresult"){
+ echo $h3;
                         try {
-                            $h3_a=$h3->getElementsByTagName('a');
+                            $h3_a=$h3->childNodes()->getElementsByTagName("a");
+
                             if($h3_a == null || $h3_a->length == 0){
                                 continue;
                             }
@@ -35,4 +40,5 @@
                         }
                     }
                 }
+                
 ?>

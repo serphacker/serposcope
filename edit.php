@@ -16,8 +16,19 @@ if (!file_exists('inc/config.php')) {
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include('inc/user.php');
+    
 
-
+function getUserOptions() {
+	return array(
+            array('setting','0','Edycja ustawieñ','Aktywuje dostêp do edycji<br />ustawieñ projektu'),
+            array('info','1','Edycja opisu','Aktywuje dostêp do edycji opisów'),
+            array('events','1','Edycja notatek','Aktywuje dostêp do edycji notatek '),
+            array('del','0','Przycisk Usuñ','Umo¿liwia usuniêcie wybranego projektu'),
+            array('restart','0','Przycisk Uruchom','Aktywuje dostêp do rêcznego startu oraz usuwania wybranych danych'),
+            array('export','1','Przycisk Export','Aktywuje dostêp do zmian widoku'),
+			);
+}
 $group = null;
 $keywords = array();
 $sites = array();
@@ -28,6 +39,7 @@ if (isset($_GET['idGroup'])) {
     if (($group = mysql_fetch_assoc($resGroup))) {
 
         $group['options'] = json_decode($group['options']);
+        $group['user'] = json_decode($group['user']);
 
         $qKeyword = "SELECT idKeyword,name FROM `" . SQL_PREFIX . "keyword` WHERE idGroup = " . intval($_GET['idGroup']);
         $resKeyword = $db->query($qKeyword);
@@ -55,6 +67,7 @@ if (isset($_POST['edit']) && $_POST['edit'] == "edit") {
     $sitesEDIT = array();
     $sitesADD = array();
     $groupOptions = array();
+    $userOptions = array();
 
     // KEYWORD
     if (isset($_POST['keywords'])) {
@@ -163,7 +176,20 @@ if (isset($_POST['edit']) && $_POST['edit'] == "edit") {
             "options = '" . addslashes(json_encode($groupOptions)) . "' " .
             "WHERE idGroup = " . intval($_GET['idGroup']);
 
-    $db->query($qUpdateGroup);
+    if ($adminAcces || $set->setting) {$db->query($qUpdateGroup);}
+
+    // user option
+    foreach (getUserOptions() as $uoption) {
+    		if (!isset($_POST[$uoption[0]]))
+            die(header("Location: edit.php?idGroup=" . intval($_GET['idGroup']) . "&error=" . urlencode("Missing user option " . $uoption[0])));
+            $userOptions[$uoption[0]] = $_POST[$uoption[0]];
+    }
+    
+    $qUpdateUser = "UPDATE `" . SQL_PREFIX . "group` SET " .
+            "name = '" . addslashes($_POST['name']) . "', " .
+            "user = '" . addslashes(json_encode($userOptions)) . "' " .
+            "WHERE idGroup = " . intval($_GET['idGroup']);
+    if ($adminAcces || $userAcces){$db->query($qUpdateUser);}
 
     header("Location: view.php?idGroup=" . intval($_GET['idGroup']));
 }
@@ -183,13 +209,13 @@ if (!empty($error)) {
     echo "<div class='alert alert-error'>$error</div>\n";
 }
 ?>
-<div>
+<div class="accordion-group">
     <form method="POST" class="well form-horizontal" action="edit.php?idGroup=<?php echo intval($_GET['idGroup']); ?>" >
         <fieldset>
-            <div class="control-group">
+            <div class="control-group <?php echo $hName; ?>">
                 <label class="control-label" for="name">Nazwa</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="name" name="name" value="<?php echo h8($group['name']); ?>" >
+                    <input type="text" class="input-xlarge" id="name" name="name"  value="<?php echo h8($group['name']); ?>" >
                 </div>
             </div>
 
@@ -226,10 +252,31 @@ if (!empty($error)) {
                 }
                 ?>                
             </div>
+            <div id="useropt"><center>
+                <?php
+                // echo h8($group['user']->setting).'<br/>';  //debug
+                 foreach (getUserOptions() as $options) {
+                 	$regexd = h8(isset($group['user']->$options[0]) ? $group['user']->$options[0] : $options[1]);
+                 	if($regexd == '1'){$rex1 = "selected"; $rex0 = "";} else {$rex0 = "selected"; $rex1 = "";}
+                 	if ($options[3] != "") {$helps = 'rel="tooltip" title ="'.$options[3].'"';} else {$helps = '';}
+                 	if (!$adminAcces && !$userAcces){$helps ='rel="tooltip" title ="Nie posiadasz wystarczaj¹cych<br />uprawnieñ do zmiany tych opcji" class="disabled"';}
+                    echo '<div class="control-group" >';
+                    echo '<label class="control-label" for="' . $options[0] . '">' . $options[2] . '</label>';
+                    echo '<div class="controls">';
+                  	echo '<select id="' . $options[0] . '" name="' . $options[0] . '" ' . $helps .'>
+                  <option value="1" '. $rex1 . '>TAK</option>
+                  <option value="0" '. $rex0 . '>NIE</option>
+                  </select>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo "\n";
+                }
+                ?>                
+            </center></div>
 
             <div class='control-group' >
-                <div class="controls">
-                    <button class="btn btn-primary" type="submit" name="edit" value="edit" >Zapisz</button>            
+                <div class="finalize">
+                    <button class="btn btn-primary" type="submit" name="edit" value="edit" >Zapisz</button>
                 </div>
             </div>
         </fieldset>

@@ -140,7 +140,7 @@ echo "</div>";
 echo "<br />
 <div class='controls' >";
 if($generalOptions) {echo"        <input type=submit class='btn btn-primary' value='Zapisz ustawienia' />";}
-echo "        <input class='btn btn-run-all btn-warning' title='Uruchom' rel='tooltip' data-placement='bottom' value='RÄ™czny start skanera' />
+echo "        <input class='btn btn-run-all btn-warning' title='Uruchom' rel='tooltip' data-placement='bottom' value='Rêczny start skanera' />
     </div>
 
     </fieldset>

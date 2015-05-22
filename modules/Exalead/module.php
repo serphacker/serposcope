@@ -71,7 +71,7 @@ class Exalead extends GroupModule {
         
         $ranks =  array();
         
-        $domain = "www.exalead.com";
+        $domain = "exalead.com";
         
         $curl = null;
         foreach ($group['keywords'] as $keyKW => $keyword) {
@@ -101,11 +101,11 @@ class Exalead extends GroupModule {
             do{
                 
                 if($start_index==0){
-                    $url="http://$domain/search/web/results/?q=".urlencode($keyword).$lang;
-                    $referrer= "http://$domain/";                    
+                    $url="http://www.$domain/search/web/results/?q=".urlencode($keyword).$lang;
+                    $referrer= "http://www.$domain/";                    
                 }else{
                     $referrer=$url;
-                    $url="http://$domain/search/web/results/?q=".urlencode($keyword).$lang."&start_index=".($start_index);
+                    $url="http://www.$domain/search/web/results/?q=".urlencode($keyword).$lang."&start_index=".($start_index);
                 }
                 
                 if(!empty($group['options']['parameters'])){
@@ -284,8 +284,7 @@ class Exalead extends GroupModule {
                 }   
 
                 $start_index += 10;
-//                sleep($options[get_class($this)]['page_sleep']); //slep wg ustawien
-               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
+               sleep($options[get_class($this)]['page_sleep']); //slep losowo
             }while($start_index<100 && !$bAllWebsiteFound);
             
             $this->incrementProgressBarUnit();

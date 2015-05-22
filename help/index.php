@@ -66,38 +66,38 @@
 
         <div class="container" id="bodycontainer" >
 <div id="1"><h5>Czym jest GoogleFly</h5>
-	<span>GoogleFly to zautomatyzowany system sprawdzajÄ…cy indeksacje przez wyszukiwarki internetowe zdefiniowanych fraz (sÅ‚Ã³w kluczowych) witryny.<br/>
-		Rozbudowany panel klienta umoÅ¼liwia na bieÅ¼Ä…co monitorowanie pozycji strony na dane zapytanie w popularnych wyszukiwarkach Google, Bing, Exalead<br/>
+	<span>GoogleFly to zautomatyzowany system sprawdzaj¹cy indeksacje przez wyszukiwarki internetowe zdefiniowanych fraz (s³ów kluczowych) witryny.<br/>
+		Rozbudowany panel klienta umo¿liwia na bie¿¹co monitorowanie pozycji strony na dane zapytanie w popularnych wyszukiwarkach Google, Bing, Exalead<br/>
 		</span>
 </div>
 
-<div id="2"><h5>Jak odczytaÄ‡ wyniki</h5>
-	<span>GoogleFly oferuje dwa sposoby interpretacji wynikÃ³w
+<div id="2"><h5>Jak odczytaæ wyniki</h5>
+	<span>GoogleFly oferuje dwa sposoby interpretacji wyników
 		<ul>
 			<li>wykres liniowy - <a href="../view.php?wiev=chart&idGroup=<?php echo $_GET['idGroup']; ?>">zobacz</a><span class="aste">*</span></li>
 			<li>tabela pozycji - <a href="../view.php?wiev=table&idGroup=<?php echo $_GET['idGroup']; ?>">zobacz</a><span class="aste">*</span></li>
 			<li>kondycja witryny i social media - <a href="../view.php?wiev=social&idGroup=<?php echo $_GET['idGroup']; ?>">zobacz</a><span class="aste">*</span></li>
 		</ul>
-	Ponadto system tworzy zestawienie czasowe z ostatnich 7 testÃ³w w formie multi-diagramu (<a href="../?idGroup=<?php echo $_GET['idGroup']; ?>">zobacz</a><span class="aste">*</span>) wraz z wyszczegÃ³lnieniem spadkÃ³w i wzlotÃ³w wszystkich sÅ‚Ã³w kluczowych
+	Ponadto system tworzy zestawienie czasowe z ostatnich 7 testów w formie multi-diagramu (<a href="../?idGroup=<?php echo $_GET['idGroup']; ?>">zobacz</a><span class="aste">*</span>) wraz z wyszczególnieniem spadków i wzlotów wszystkich s³ów kluczowych
 		<ul>
-			<li>Aby poznaÄ‡ szczegÃ³Å‚owe wyniki, kliknij interesujÄ…cÄ… ciÄ™ wartoÅ›Ä‡ na wykresie</li>
+			<li>Aby poznaæ szczegó³owe wyniki, kliknij interesuj¹c¹ ciê wartoœæ na wykresie</li>
 		</ul>
 		</span>
 </div>
 
-<div id="3"><h5>Czy mogÄ™ wprowadzaÄ‡ wÅ‚asne sÅ‚owa kluczowe</h5>
-	<span>Dodawanie sÅ‚ow kluczowych dostÄ™pne jest w odpÅ‚atnej wersji systemu - niemniej jednak moÅ¼na zmieniÄ‡ istniejÄ…ce sÅ‚owa na wÅ‚asne.<br/>
+<div id="3"><h5>Czy mogê wprowadzaæ w³asne s³owa kluczowe</h5>
+	<span>Dodawanie s³ow kluczowych dostêpne jest w odp³atnej wersji systemu - niemniej jednak mo¿na zmieniæ istniej¹ce s³owa na w³asne.<br/>
 		</span>
 </div>
-<div id="4"><h5>Jak czÄ™sto sprawdzana jest pozycja w wyszukiwarce</h5>
-	<span>Test pozycji odbywa siÄ™ codziennie w godzinach nocnych. SÅ‚owa kluczowe z poza listy TOP100 sprawdzane sÄ… co tydzieÅ„. Po pojawieniu siÄ™ w TOP100 system sprawdza ich pozycje codziennie<br/>
+<div id="4"><h5>Jak czêsto sprawdzana jest pozycja w wyszukiwarce</h5>
+	<span>Test pozycji odbywa siê codziennie w godzinach nocnych. S³owa kluczowe z poza listy TOP100 sprawdzane s¹ co tydzieñ. Po pojawieniu siê w TOP100 system sprawdza ich pozycje codziennie<br/>
 		</span>
 </div>
 <br /><br /><br />
 <div class="asti"><span class="aste">*</span> Wymaga aktywnego zalogowania do panelu klienta</div>
 </div>
    	<div class="footer">
-		Â© 2014 by <a href="/">Google Position Checker</a> - Based by Google.inc search algorithm: Butterfly 1.0 beta | Penguin 3.0 | piRate 2.0 | Mobi 0.4
+		© 2014 by <a href="/">Google Position Checker</a> - Based by Google.inc search algorithm: Butterfly 1.0 beta | Penguin 3.0 | piRate 2.0 | Mobi 0.4
 	</div>
     </body>
 </html>

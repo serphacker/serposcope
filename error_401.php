@@ -4,9 +4,12 @@
         <title>SeoTest</title>
         <meta charset="windows-1250" />
         <meta name="robots" content="noindex" />
-        <link href="lib/datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
         <link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="lib/datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
         <link href="css/custom.css" rel="stylesheet" type="text/css" />
+
+        <script src="lib/jquery/jquery-1.8.2.min.js" ></script>
+        <script src="lib/jquery-blockUI/jquery.blockUI.js" ></script>
 
         <script type="text/javascript">
         function logout() {
@@ -44,7 +47,8 @@
                         
                         <div class="nav-collapse collapse">
                             <ul class="nav">
-                           <li><a href='/' onclick='logout();' title='Zaloguj'><img src='img/user.png' /></a></li>
+                           <li><a href='/help/' title='Pomoc' rel='tooltip' data-placement='bottom'><img src='img/help.png'/></a></li>
+                           <li><a href='/' onclick='logout();' title='Zaloguj'rel='tooltip' data-placement='bottom'><img src='img/user.png' /></a></li>
                             </ul>
                         </div>
                     </div>
@@ -56,7 +60,7 @@
         <div class="container" id="bodycontainer" >
 
 <h1 class="tdregress"><big>Error 401</big><h3>Ta strona wymaga logowania...</h3></h1>
-Wprowadzony login i hasło zawierają błedy lub wygasły. Kliknij <a href="/" >tutaj</a> by się zalogować ponownie.
+Wprowadzony login i hasło zawierają błedy lub wygasły. Kliknij <a href="/" >tutaj</a> by się zalogować ponownie lub zapoznaj się z <a href="/help/">instrukcją obsługi</a>.
         </div>
    	<div class="footer">
 		© 2014 by <a href="/">Google Position Checker</a> - Based by Google.inc search algorithm: Butterfly 1.0 beta | Penguin 3.0 | piRate 2.0 | Mobi 0.4

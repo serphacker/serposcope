@@ -63,7 +63,6 @@ if($ile_jeszcze > 0 && !$ID){
             echo "<div class='alert' >Ostatni scan nie zosta³ jeszcze wpe³ni ukoñczony (pozosta³o ".$ile_jeszcze." testów)<span class='pull-right' >[<a href='logs.php'>LOG</a>]</span></div>";
           }
 }
-while ($row = mysql_fetch_array($moduls, MYSQL_BOTH)) {$cdd .= $row[0]." ";}
 
 $res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT 1"); 
 if(($res AND ($run=mysql_fetch_assoc($res))) AND $adminAcces){
@@ -305,7 +304,7 @@ displayRanks($unchanged);
 
 function displayRanks($ranks){
 $dt = date("Y-m-d");
-	global $cdd; $module = explode(' ', $cdd);
+	global $db;
 	global $top1;
 	global $top3;
 	global $top10;
@@ -344,28 +343,20 @@ echo "<div id='_".$rr."'><h4>".$tabela." (".count($ranks).")</h4>
     </thead>
     <tbody>\r\n";
 //    var_dump($ranks);
+$uu=1;
     foreach ($ranks as $key => $rank) {
+        $modulesname = $db->query("SELECT `module` FROM `".SQL_PREFIX."group` WHERE `idGroup` =".$rank['group']);
+        while ($row = mysql_fetch_array($modulesname, MYSQL_BOTH)) {$cdd = $row[0];}
         $split=explode("-",$key);
         array_shift($split);
-        
-     if ($module[$rank['group'] -1 ] == 'Exalead') {
+     if ($cdd == 'Ask') 			{	$sUrl='http://www.ask.com/web?q=';}
+     if ($cdd == 'Exalead') 	{	$sUrl='http://www.exalead.com/search/web/results/?q=';}
+     if ($cdd == 'Yahoo') 		{$sUrl='https://search.yahoo.com/search?p=';}
+     if ($cdd == 'Google') 		{$sUrl='http://google.com/search?q=';}
+     if ($cdd == 'Bing') 			{$sUrl='http://www.bing.com/search?q=';}
         echo "    <tr class='".$rank['now']."'>
-        <td><a class='exalead' href='http://www.exalead.com/search/web/results/?q=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
-     }
-     if ($module[$rank['group'] -1 ] == 'Yahoo') {
-        echo "    <tr class='".$rank['now']."'>
-        <td><a class='yahoo' href='https://search.yahoo.com/search?p=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
-     }
-     if ($module[$rank['group'] -1 ] == 'Google') {
-        echo "    <tr class='".$rank['now']."'>
-        <td><a class='google' href='http://google.com/search?q=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
-     }
-     if ($module[$rank['group'] -1 ] == 'Bing') {
-        echo "    <tr class='".$rank['now']."'>
-        <td><a class='bing' href='http://www.bing.com/search?q=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
-     }
-        
-        echo "        <td><a href='http://".str_replace('*','',h8($rank['url']))."' target='_blanc'>".str_replace('*','',h8($rank['url']))."</a></td>\r\n";
+        <td><a class='".strtolower($cdd)."' href='".$sUrl.str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>
+                <td><a href='http://".str_replace('*','',h8($rank['url']))."' target='_blanc'>".str_replace('*','',h8($rank['url']))."</a></td>\r\n";
         if($rank['diff'] != 0){
         	echo "        <td rel='tooltip' data-placement='left' class='bz' title='Poprzednio na pozycji: ".(isset($rank['prev']) ? $rank['prev'] : "N/A")."'>".(isset($rank['now']) ? $rank['now'] : "&nbsp;");
         } else {

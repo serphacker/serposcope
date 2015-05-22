@@ -17,6 +17,7 @@ if(!file_exists('inc/config.php')){
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include('inc/user.php');
 include("inc/header.php");
 
 
@@ -179,10 +180,12 @@ include("inc/header.php");
 <div>
 <div class='website'>
 <?php
+if(!$ID) {echo 'ustaw domyœlny projekt!';}
+if(!$adminAcces) {$filter = "WHERE `".SQL_PREFIX."group`.`name` = '".ucfirst($groupd['name'])."' ";}
     $q="SELECT `".SQL_PREFIX."target`.name tname,idTarget, ".
             "`".SQL_PREFIX."group`.idGroup,`".SQL_PREFIX."group`.name gname ".
-            "FROM `".SQL_PREFIX."target` ".
-            "JOIN `".SQL_PREFIX."group` USING(idGroup) ";
+            "FROM `".SQL_PREFIX."target`".
+            "JOIN `".SQL_PREFIX."group` USING(idGroup)".$filter;
     $result = $db->query($q);
     
     while($result && ($row=mysql_fetch_assoc($result))){
@@ -192,11 +195,11 @@ include("inc/header.php");
             "<li class='bton'> \r\n".
             " <a class='btn' href='edit.php?idGroup=".$row['idGroup']."#".h8($row['tname'])."' ><img src='img/setting.gif' rel='tooltip' title='Zmieñ ustawienia' /></a> \r\n".
             " <a class='btn group-btn-info' data-id='".$row['idTarget']."' ><img src='img/info.gif' rel='tooltip' title='Zmieñ opis' /></a> \r\n".
-            " <a class='btn group-btn-calendar' data-id='".$row['idTarget']."'><img src='img/edit.gif' rel='tooltip' title='Przegl¹daj otatki' /></a></li> \r\n".
+            " <a class='btn group-btn-calendar' data-id='".$row['idTarget']."'><img src='img/edit.gif' rel='tooltip' title='Przegl¹daj notatki' /></a></li> \r\n".
             " <a class='btn btn-danger btn-del-group' data-id='".$row['idTarget']."' data-name='".str_replace('*','',h8($row['gname']))."' ><img src='img/trash.png' rel='tooltip' title='Usuñ test - ".str_replace('*','',h8($row['gname']))."' /></a> \r\n".
             " <a class='btn btn-warning btn-force-run' data-id='".$row['idTarget']."' data-name='".str_replace('*','',h8($row['gname']))."' ><img src='img/play.gif' rel='tooltip' title='Uruchom test - ".str_replace('*','',h8($row['gname']))."' /></a> \r\n".
             "</ul></div> \r\n";
-        echo " <a class='btn btn-warning btn-view-group' href='view.php?idGroup=".$row['idGroup']."#".h8($row['tname'])."' ><img src='img/graph.png' rel='tooltip' title='Zobacz wykres domeny<br />".str_replace('*','',h8($row['tname']))."' /></a> \r\n";
+        echo " <a class='btn btn-warning btn-view-group' href='/?idGroup=".$row['idGroup']."' ><img src='img/graph.png' rel='tooltip' title='Zobacz wykres domeny<br />".str_replace('*','',h8($row['tname']))."' /></a> \r\n";
         echo '
         <div id="event-table-'.$row['idGroup'].'" class="table-event-container" >
         <form id="event-form-'.$row['idGroup'].'" class="form-event" action="ajax.php" >

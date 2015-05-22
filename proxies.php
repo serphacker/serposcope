@@ -17,6 +17,7 @@ if (!file_exists('inc/config.php')) {
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include('inc/user.php');
 
 $err = null;
 
@@ -257,6 +258,7 @@ if ($err != null) {
         $( "#btn_3" ).css("border","solid 2px #D64B46");
         $( "#btn_3" ).css("border-radius","5px");
 </script>
+<div class="accordion-group">
 <h2>Proxies</h2>
 <table class='table'>
     <thead>
@@ -291,12 +293,13 @@ foreach ($dbproxies as $proxy) {
     </tr>
 </tbody>
 </table>
-<hr/>
+</div>
+<div class="accordion-group">
 <form method=POST>
     <h4>Add a proxy</h4>
     <table>
         <tr>
-            <td><select name=type class="input-mini">
+            <td><select name="type" class="input-mini">
                     <option>http</option>
                     <option>socks</option>
                     <option>iface</option>
@@ -309,25 +312,31 @@ foreach ($dbproxies as $proxy) {
             <td><p><input type="submit" class="btn btn-primary" value="Add" /></p></td>
         </tr>
     </table>
-    <hr/>
-    <h4>Bulk import</h4>
-    <select name=bulkimport-type class="input-mini">
+	</div>
+	
+	<div class="accordion-group">
+	    <h4>Bulk import</h4>
+    <table>
+        <tr>
+            <td><select name="bulkimport-type" class="input-mini">
         <option>http</option>
         <option>socks</option>
         <option>iface</option>
-    </select>
-    <textarea name=bulkimport-proxies style="width:100%; height: 120px" placeholder="ip:port:username:password" ></textarea>
-    <input type=submit class="btn btn-primary" value="Bulk Import" />
+    </select></td>
+			<td><input  type="text" name="bulkimport-proxies" placeholder="ip:port:username:password" /></td>
+			<td><p><input type="submit" class="btn btn-primary" value="Bulk Import" /></p></td>
+</tr></table>
     </form>
+</div>
 
-    <hr/>
+<div class="accordion-group">
     <h4>Lists URL</h4>
     <form method=POST>
         <p class="help-block">If you use public proxies list,you need to  <a href='http://serphacker.com/serposcope/doc/proxies.html' >optimize the configuration</a>.</p>
-        <textarea name=list-url-proxies style="width:100%; height: 120px" placeholder="http://domain.com/proxies-list.html" ><?php echo h8($options['general']['proxies_list_url']); ?></textarea>
-        <input type=submit class="btn btn-primary" value="Update proxies list URL" />    
+        <textarea name=list-url-proxies style="width:95%; height: 120px; margin:5px;" placeholder="http://domain.com/proxies-list.html" ><?php echo h8($options['general']['proxies_list_url']); ?></textarea>
+        <p><input type=submit class="btn btn-primary" value="Update proxies list URL" /></p>
     </form>
-
+</div>
 
         <?php
         include('inc/footer.php');

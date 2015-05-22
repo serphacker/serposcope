@@ -131,6 +131,8 @@ class Google extends GroupModule {
             $domain = "www.google.com";
         }        
         
+        $useragent = "Mozilla/".rand(10,30).".".rand(0,9)." (Windows NT ".rand(1,5).".".rand(0,9)."; rv:".rand(10,30).".".rand(0,9).") Gecko/20".rand(10,15)."0".rand(1,9).rand(10,28)." Firefox/".rand(10,30).".".rand(0,9);
+        $this->l("UserAgent: $useragent");
         
         $curl = null;
         foreach ($group['keywords'] as $keyKW => $keyword) {
@@ -161,13 +163,15 @@ class Google extends GroupModule {
             $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
 
             do{
-                
+            $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            $randomize = "&gws_rd=".strtolower(substr(str_shuffle($characters),0,2))."&ei=".substr(str_shuffle($characters),0,22)."&ved=".strtolower(substr(str_shuffle($characters),0,8))."&OP=".rand(1000,9999);
+
                 if($start_index==0){
-                    $url="https://$domain/search?q=".urlencode($keyword);
+                    $url="https://$domain/search?q=".urlencode($keyword).$randomize;
                     $referrer= "https://$domain/";                    
                 }else{
                     $referrer=$url;
-                    $url="https://$domain/search?q=".urlencode($keyword)."&start=".($start_index);
+                    $url="https://$domain/search?q=".urlencode($keyword).$randomize."&start=".($start_index);
                 }
                 
                 if(!empty($group['options']['parameters'])){
@@ -177,7 +181,7 @@ class Google extends GroupModule {
                 $fetchRetry=1;
                 
                 do {
-                    $opts = array(CURLOPT_URL => $url, CURLOPT_REFERER => $referrer);
+                    $opts = array(CURLOPT_URL => $url, CURLOPT_REFERER => $referrer, CURLOPT_USERAGENT => $useragent);
                     $curlout=curl_cache_exec($opts, $proxy, empty($group['options']['local'])); // don't use cache if local search
                     
                     $data=$curlout['data'];

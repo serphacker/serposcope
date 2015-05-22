@@ -161,7 +161,7 @@ if(isset($_POST['action'])){
                 
                 die(json_encode(array("success" => "ok")));
             }else{
-                die(json_encode(array("error" => "bad inputs")));
+                die(json_encode(array("error" => "B³êdne dane...")));
             }
             break;
             
@@ -170,7 +170,7 @@ if(isset($_POST['action'])){
                 $db->query("DELETE FROM `".SQL_PREFIX."event` WHERE idevent = ".intval($_POST['idEvent']));
                 die(json_encode(array("success" => "ok")));
             }else{
-                die(json_encode(array("error" => "bad inputs")));
+                die(json_encode(array("error" => "B³êdne dane...")));
             }
             break;        
             
@@ -180,7 +180,7 @@ if(isset($_POST['action'])){
                 $db->query("DELETE FROM `".SQL_PREFIX."group` WHERE idGroup = ".intval($_POST['idGroup']));
                 die(json_encode(array("success" => "ok")));
             }else{
-                die(json_encode(array("error" => "bad inputs")));
+                die(json_encode(array("error" => "B³êdne dane...")));
             }
             break;                        
                

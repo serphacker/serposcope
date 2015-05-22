@@ -2153,11 +2153,12 @@ table [class*=span],
   background-image: url("../img/glyphicons-halflings.png");
   background-position: 14px 14px;
   background-repeat: no-repeat;
+cursor:pointer; cursor:hands;
 }
 
 /* White icons with optional class, or on hover/active states of certain elements */
 
-.icon-white,
+.icon-red,
 .nav-tabs > .active > a > [class^="icon-"],
 .nav-tabs > .active > a > [class*=" icon-"],
 .nav-pills > .active > a > [class^="icon-"],
@@ -2170,7 +2171,7 @@ table [class*=span],
 .dropdown-menu > li > a:hover > [class*=" icon-"],
 .dropdown-menu > .active > a > [class^="icon-"],
 .dropdown-menu > .active > a > [class*=" icon-"] {
-  background-image: url("../img/glyphicons-halflings-white.png");
+  background-image: url("../img/glyphicons-halflings-red.png");
 }
 
 .icon-glass {

@@ -16,6 +16,7 @@ if(!file_exists('inc/config.php')){
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include('inc/user.php');
 
 $error = "";
 if(isset($_POST['name'])){
@@ -141,7 +142,7 @@ if(!empty($error)){
     echo "<div class='alert alert-error'>$error</div>\n";
 }
 ?>
-<div>
+<div class="accordion-group">
     <form method="POST" class="well form-horizontal" >
         <fieldset>
             <div class="control-group">
