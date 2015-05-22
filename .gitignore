@@ -1,11 +1,10 @@
-.htpasswd
+/inc/config.php
 .htaccess
-/inc/*config*
+.htpasswd
+/tmp/
 /docs/
 /tests/
-/tmp/
 /demo/
 /modules/Test/
+/inc/config_1.php
 /nbproject/
-/serposcope.iml
-/.idea/
