@@ -30,7 +30,3 @@ Require valid-user
 </Files>
 
 ErrorDoc 401 /error_401.php
-
-:Location /*.php
-Use php53
-:Location
