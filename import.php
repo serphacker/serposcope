@@ -16,6 +16,7 @@ if(!file_exists('inc/config.php')){
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include('inc/user.php');
 
 
 $supportedImport = array(IMPORT_SERPOSCOPE_CSV,IMPORT_RANKSFR_CSV,IMPORT_MYPOSEO_CSV);
@@ -196,6 +197,10 @@ if( isset($_POST['group']) && is_numeric($_POST['group']) && isset($_POST['type'
 include("inc/header.php");
 ?>
 <h2>Import group</h2>
+<script>
+        $( "#btn_2" ).css("border","solid 2px #D64B46");
+        $( "#btn_2" ).css("border-radius","5px");
+</script>
 <?php
 if(isset($_GET['error'])){
     $error = $_GET['error'];
@@ -204,7 +209,7 @@ if(!empty($error)){
     echo "<div class='alert alert-error'>".nl2br(strip_tags($error))."</div>\n";
 }
 ?>
-<div>
+<div class="accordion-group">
     <form method="POST" class="well form-horizontal" action="import.php" enctype="multipart/form-data" >
     <fieldset>
         <div class="control-group">
@@ -250,8 +255,9 @@ while($resImportGroup && ($group=mysql_fetch_assoc($resImportGroup)) ){
             <div class="controls">
                 <input type="file" class="input-file" name="file" />
             </div>
-        </div>        
-        <button class="btn btn-primary" type="submit" name="import" value="import" >Import</button>            
+        </div><div class="finalize">
+        <button class="btn btn-primary" type="submit" name="import" value="import" >Import</button>
+      </div>
     </fieldset>
 </form>
 </div>
