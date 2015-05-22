@@ -17,7 +17,6 @@ if(!file_exists('inc/config.php')){
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
-include('inc/user.php');
 include("inc/header.php");
 
 
@@ -106,7 +105,7 @@ include("inc/header.php");
         });
 
         $('.btn-del-group').click(function(){
-            if(confirm("Czy napewno chcesz usunÄ…Ä‡ test " + $(this).attr('data-name') +"?")){
+            if(confirm("Czy napewno chcesz usun¹æ test " + $(this).attr('data-name') +"?")){
                 $.ajax({
                     type: "POST",
                     url: "ajax.php",
@@ -159,7 +158,7 @@ include("inc/header.php");
                     document.location.href = "index.php";
                     return;
                 }
-                if(!confirm("Zostanie uruchomiony skrypt skanowania domeny " + testy + ".\r\n\r\nCzy napewno chcesz kontynuowaÄ‡?")){
+                if(!confirm("Zostanie uruchomiony skrypt skanowania domeny " + testy + ".\r\n\r\nCzy napewno chcesz kontynuowaæ?")){
                     return;
                 }
                 var imgRun = new Image();
@@ -180,12 +179,10 @@ include("inc/header.php");
 <div>
 <div class='website'>
 <?php
-if(!$ID) {echo 'ustaw domyÅ›lny projekt!';}
-if(!$adminAcces) {$filter = "WHERE `".SQL_PREFIX."group`.`name` = '".ucfirst($groupd['name'])."' ";}
     $q="SELECT `".SQL_PREFIX."target`.name tname,idTarget, ".
             "`".SQL_PREFIX."group`.idGroup,`".SQL_PREFIX."group`.name gname ".
-            "FROM `".SQL_PREFIX."target`".
-            "JOIN `".SQL_PREFIX."group` USING(idGroup)".$filter;
+            "FROM `".SQL_PREFIX."target` ".
+            "JOIN `".SQL_PREFIX."group` USING(idGroup) ";
     $result = $db->query($q);
     
     while($result && ($row=mysql_fetch_assoc($result))){
@@ -193,13 +190,13 @@ if(!$adminAcces) {$filter = "WHERE `".SQL_PREFIX."group`.`name` = '".ucfirst($gr
             "<li class='name'>".str_replace('*','',h8($row['tname']))."</li> \r\n".
             "<li class='site'>".h8($row['gname'])."</li> \r\n".
             "<li class='bton'> \r\n".
-            " <a class='btn' href='edit.php?idGroup=".$row['idGroup']."#".h8($row['tname'])."' ><img src='img/setting.gif' rel='tooltip' title='ZmieÅ„ ustawienia' /></a> \r\n".
-            " <a class='btn group-btn-info' data-id='".$row['idTarget']."' ><img src='img/info.gif' rel='tooltip' title='ZmieÅ„ opis' /></a> \r\n".
-            " <a class='btn group-btn-calendar' data-id='".$row['idTarget']."'><img src='img/edit.gif' rel='tooltip' title='PrzeglÄ…daj notatki' /></a></li> \r\n".
-            " <a class='btn btn-danger btn-del-group' data-id='".$row['idTarget']."' data-name='".str_replace('*','',h8($row['gname']))."' ><img src='img/trash.png' rel='tooltip' title='UsuÅ„ test - ".str_replace('*','',h8($row['gname']))."' /></a> \r\n".
+            " <a class='btn' href='edit.php?idGroup=".$row['idGroup']."#".h8($row['tname'])."' ><img src='img/setting.gif' rel='tooltip' title='Zmieñ ustawienia' /></a> \r\n".
+            " <a class='btn group-btn-info' data-id='".$row['idTarget']."' ><img src='img/info.gif' rel='tooltip' title='Zmieñ opis' /></a> \r\n".
+            " <a class='btn group-btn-calendar' data-id='".$row['idTarget']."'><img src='img/edit.gif' rel='tooltip' title='Przegl¹daj otatki' /></a></li> \r\n".
+            " <a class='btn btn-danger btn-del-group' data-id='".$row['idTarget']."' data-name='".str_replace('*','',h8($row['gname']))."' ><img src='img/trash.png' rel='tooltip' title='Usuñ test - ".str_replace('*','',h8($row['gname']))."' /></a> \r\n".
             " <a class='btn btn-warning btn-force-run' data-id='".$row['idTarget']."' data-name='".str_replace('*','',h8($row['gname']))."' ><img src='img/play.gif' rel='tooltip' title='Uruchom test - ".str_replace('*','',h8($row['gname']))."' /></a> \r\n".
             "</ul></div> \r\n";
-        echo " <a class='btn btn-warning btn-view-group' href='/?idGroup=".$row['idGroup']."' ><img src='img/graph.png' rel='tooltip' title='Zobacz wykres domeny<br />".str_replace('*','',h8($row['tname']))."' /></a> \r\n";
+        echo " <a class='btn btn-warning btn-view-group' href='view.php?idGroup=".$row['idGroup']."#".h8($row['tname'])."' ><img src='img/graph.png' rel='tooltip' title='Zobacz wykres domeny<br />".str_replace('*','',h8($row['tname']))."' /></a> \r\n";
         echo '
         <div id="event-table-'.$row['idGroup'].'" class="table-event-container" >
         <form id="event-form-'.$row['idGroup'].'" class="form-event" action="ajax.php" >
@@ -217,7 +214,7 @@ if(!$adminAcces) {$filter = "WHERE `".SQL_PREFIX."group`.`name` = '".ucfirst($gr
             '<td rel="tooltip" title="'.$event['dateF'].'" class="dats" > ' . $event['dateF'] .
             "</td>" .
             "<td>" . ($event['event']) . "</td>" .
-            "<td><img class=del-event data-id=" . $event['idEvent'] . " src='img/trash.png' rel='tooltip' title='UsuÅ„ ten wpis' /></td>" .
+            "<td><img class=del-event data-id=" . $event['idEvent'] . " src='img/trash.png' rel='tooltip' title='Usuñ ten wpis' /></td>" .
             "</tr>";
         }
 echo'                <tr>

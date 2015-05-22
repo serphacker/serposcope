@@ -44,7 +44,7 @@ if(!$adminAcces && !$ID){
 $up_name = 'Wzloty';
 $dw_name = 'Spadki';
 $bz_name = 'W stawce';
-$out_name = 'Poza stawkÄ…';
+$out_name = 'Poza stawk¹';
 //$uuu = mysql_fetch_assoc($db->query("select max(idGroup) from `".SQL_PREFIX."check` where date(`date`) = curdate()" ));
 //    echo $uuu['max(idGroup)'];
 
@@ -58,11 +58,12 @@ $ile_grup = mysql_num_rows($moduls);
 $ile_jeszcze = $ile_grup - $ile_dzis;
 if($ile_jeszcze > 0 && !$ID){
 	if(!$adminAcces){
-			      echo "<div class='CloseScanInfo alert alert-info' >Zaplanowany skan w toku... Aby sprawdziÄ‡ wyniki, wrÃ³Ä‡ tutaj pÃ³Åºniej...<span style='float:right;'>[<a id='CloseScanInfo' href='#'>Zamknij</a>]</span></div>";
+			      echo "<div class='CloseScanInfo alert alert-info' >Zaplanowany skan w toku... Aby sprawdziæ wyniki, wróæ tutaj póŸniej...<span style='float:right;'>[<a id='CloseScanInfo' href='#'>Zamknij</a>]</span></div>";
 		} else {
-            echo "<div class='alert' >Ostatni scan nie zostaÅ‚ jeszcze wpeÅ‚ni ukoÅ„czony (pozostaÅ‚o ".$ile_jeszcze." testÃ³w)<span class='pull-right' >[<a href='logs.php'>LOG</a>]</span></div>";
+            echo "<div class='alert' >Ostatni scan nie zosta³ jeszcze wpe³ni ukoñczony (pozosta³o ".$ile_jeszcze." testów)<span class='pull-right' >[<a href='logs.php'>LOG</a>]</span></div>";
           }
 }
+while ($row = mysql_fetch_array($moduls, MYSQL_BOTH)) {$cdd .= $row[0]." ";}
 
 $res=$db->query("SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT 1"); 
 if(($res AND ($run=mysql_fetch_assoc($res))) AND $adminAcces){
@@ -304,7 +305,7 @@ displayRanks($unchanged);
 
 function displayRanks($ranks){
 $dt = date("Y-m-d");
-	global $db;
+	global $cdd; $module = explode(' ', $cdd);
 	global $top1;
 	global $top3;
 	global $top10;
@@ -336,27 +337,35 @@ echo "<div id='_".$rr."'><h4>".$tabela." (".count($ranks).")</h4>
    <table class='rankchange-table table' >
     <thead>
     <tr class='sort'>
-        <th data-sort='string' title='segreguj wg. sÅ‚Ã³w kluczowych' rel='tooltip'>sÅ‚owo kluczowe</th>
+        <th data-sort='string' title='segreguj wg. s³ów kluczowych' rel='tooltip'>s³owo kluczowe</th>
         <th data-sort='string' title='segreguj wg. domen' rel='tooltip'>domena</th>
         <th data-sort='change' colspan='2' title='segreguj wg. pozycji' rel='tooltip'>aktualna pozycja</th>
     </tr>
     </thead>
     <tbody>\r\n";
 //    var_dump($ranks);
-$uu=1;
     foreach ($ranks as $key => $rank) {
-        $modulesname = $db->query("SELECT `module` FROM `".SQL_PREFIX."group` WHERE `idGroup` =".$rank['group']);
-        while ($row = mysql_fetch_array($modulesname, MYSQL_BOTH)) {$cdd = $row[0];}
         $split=explode("-",$key);
         array_shift($split);
-     if ($cdd == 'Ask') 			{	$sUrl='http://www.ask.com/web?q=';}
-     if ($cdd == 'Exalead') 	{	$sUrl='http://www.exalead.com/search/web/results/?q=';}
-     if ($cdd == 'Yahoo') 		{$sUrl='https://search.yahoo.com/search?p=';}
-     if ($cdd == 'Google') 		{$sUrl='http://google.com/search?q=';}
-     if ($cdd == 'Bing') 			{$sUrl='http://www.bing.com/search?q=';}
+        
+     if ($module[$rank['group'] -1 ] == 'Exalead') {
         echo "    <tr class='".$rank['now']."'>
-        <td><a class='".strtolower($cdd)."' href='".$sUrl.str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>
-                <td><a href='http://".str_replace('*','',h8($rank['url']))."' target='_blanc'>".str_replace('*','',h8($rank['url']))."</a></td>\r\n";
+        <td><a class='exalead' href='http://www.exalead.com/search/web/results/?q=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
+     }
+     if ($module[$rank['group'] -1 ] == 'Yahoo') {
+        echo "    <tr class='".$rank['now']."'>
+        <td><a class='yahoo' href='https://search.yahoo.com/search?p=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
+     }
+     if ($module[$rank['group'] -1 ] == 'Google') {
+        echo "    <tr class='".$rank['now']."'>
+        <td><a class='google' href='http://google.com/search?q=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
+     }
+     if ($module[$rank['group'] -1 ] == 'Bing') {
+        echo "    <tr class='".$rank['now']."'>
+        <td><a class='bing' href='http://www.bing.com/search?q=".str_replace(' ','+',h8(implode($split,"-")))."' target='_blanc'>".h8(implode($split,"-"))."</a></td>\r\n";
+     }
+        
+        echo "        <td><a href='http://".str_replace('*','',h8($rank['url']))."' target='_blanc'>".str_replace('*','',h8($rank['url']))."</a></td>\r\n";
         if($rank['diff'] != 0){
         	echo "        <td rel='tooltip' data-placement='left' class='bz' title='Poprzednio na pozycji: ".(isset($rank['prev']) ? $rank['prev'] : "N/A")."'>".(isset($rank['now']) ? $rank['now'] : "&nbsp;");
         } else {
@@ -488,7 +497,7 @@ $(document).ready(function() {
 				},
         series: [{
             type: 'pie',
-            name: 'SÅ‚owa kluczowe',
+            name: 'S³owa kluczowe',
             data: [
 ";
 if($out){echo "           	 {name:'OUT',y:".$out.",tt:".$out.",color:Highcharts.getOptions().colors[5],sliced:true,selected:true,id:'4'},\r\n";}
@@ -500,7 +509,7 @@ if($top1){echo "           	 {name:'TOP 1',y:".$top1.",tt:".$top1.",color:Highch
 echo "            ],
         		tooltip: {
             shared: true,
-        	    pointFormat: '<b>SÅ‚owa kluczowe: {point.tt}</b>',
+        	    pointFormat: '<b>S³owa kluczowe: {point.tt}</b>',
        			},
             center: [720, 110],
             size: 220,
@@ -522,7 +531,7 @@ if($bz_cnt < 1){echo "           	 {name:'',y:null},\r\n";}else{echo "          
 if($out < 1){echo "                {name:'',y:null},\r\n";}else{echo "                {name: '".$out_name."',y:".$out.",color:Highcharts.getOptions().colors[5],rr:'_4'},\r\n";}
 echo "            ],
         		tooltip: {
-        	    pointFormat: '<b>SÅ‚owa kluczowe: {point.y}</b>',
+        	    pointFormat: '<b>S³owa kluczowe: {point.y}</b>',
         	    shared: true
        			},
             showInLegend: false,
@@ -636,11 +645,11 @@ echo "
 	<tr><td>".to_PL(date( "d M", strtotime( "$dt -5 day" ) ))."</td><td>".$upcnter[1]."</td><td>".$dwcnter[1]."</td><td>".$bzcnter[1]."</td><td>".$etop1."</td><td>".$etop3."</td><td>".$etop10."</td><td>".$etop50."</td><td>".$onday[1]."</td><td>".$pz5."</td></tr>
 	</tbody>
 	</table>
-	Åšrednio w zestawieniu: ".$middle." z ".$ilef." sÅ‚Ã³w kluczowych (".procent($middle).")
+	Œrednio w zestawieniu: ".$middle." z ".$ilef." s³ów kluczowych (".procent($middle).")
 </div>
 <div id='_4'>
 	<h4>".$out_name." (".$out.")</h4><span class='_4'>
-	W zestawieniu pominiÄ™to <b>".$out." z ".$ilef."</b> (".procent($out).") sÅ‚Ã³w kluczowych ktÃ³re nie znalazÅ‚y siÄ™ w pierwszej setce wyszukiwaÅ„.</span></div>
+	W zestawieniu pominiêto <b>".$out." z ".$ilef."</b> (".procent($out).") s³ów kluczowych które nie znalaz³y siê w pierwszej setce wyszukiwañ.</span></div>
 ";
 ?>
 <script>

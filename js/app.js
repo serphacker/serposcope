@@ -76,8 +76,8 @@ function domodal(title, data, onsave, cbdata) {
             '<textarea id="text-modal-value" style="width:96%; height:98%;"></textarea>' +
             '</div>' +
             '<div class="modal-footer">' +
-            '<a href="#" class="btn" data-dismiss="modal" >Close</a>' +
-            ((typeof(onsave) == 'function') ? '<a href="#" class="btn btn-primary" id="text-modal-save" >Save</a>' : '') +
+            '<a href="#" class="btn" data-dismiss="modal" >Zamknij</a>' +
+            ((typeof(onsave) == 'function') ? '<a href="#" class="btn btn-primary" id="text-modal-save" >Zapisz</a>' : '') +
             '</div>' +
             '</div>'
             ).appendTo('body');
@@ -228,19 +228,6 @@ $(function() {
     });
 
     // stats stuff and ads
-    $('#uzi_img')[0].onerror = function() {
-        $('#uzi_link').css("cursor", "default");
-        $('#uzi_link')[0].href = ".";
-        $('#uzi_img')[0].onload = null;
-        $('#uzi_img')[0].src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOoAAAA8CAMAAABfLdZOAAAAA1BMVEX6+vqsEtnpAAAAJElEQVR42u3BAQ0AAADCIPunfg43YAAAAAAAAAAAAAAAAABwIjcUAAHdSbRTAAAAAElFTkSuQmCC";
-    }
-
-    $('#uzi_img')[0].onload = function(elt) {
-        $('#uzi_link').css("cursor", "pointer");
-        $('#uzi_link')[0].href = "//stats.serphacker.com/serposcope/" + current_version + "/";
-    }
-
-    $('#uzi_img')[0].src = "//stats.serphacker.com/serposcope/" + current_version + "/banner.jpg";
 
     // check if new version available
     if (current_version !== undefined && latest_version !== undefined) {

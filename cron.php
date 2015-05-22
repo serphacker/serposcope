@@ -54,7 +54,6 @@ if(!$res || ( $runid=mysql_insert_id())==0 ){
     die();
 }
 
-
 l('Cron','Starting cron via "'.php_sapi_name().'"');
 if(ini_get('safe_mode')){
     e('Cron','safe_mode should be off, may trigger errors');
@@ -222,10 +221,8 @@ foreach ($allGroups as $group) {
         e('Cron','Module returned fatal error for group['.$group['id'].'] '.$group['name']);
         continue;
     }else if(isset($res['__have_error'])){
-    		n();
         e('Cron','Module have non fatal error for group['.$group['id'].'] '.$group['name'].'. All positions may have not been checked');
     }else{
-    		n();
         l('Cron','Checking done for group['.$group['id'].'] '.$group['name']);
     }
     
@@ -256,15 +253,14 @@ if($dbc != null){
 l('Cron','Clearing the cache (force='.strval(CACHE_RUN_CLEAR).')...');
 clear_cache(CACHE_RUN_CLEAR); 
 l('Cron','Cache clear');
-//$logid = $group['id'].' '.$group['name'].' '.$group['module'];
-//l('Cron',$logid);
+
 ob_end_flush();
+
 $db->query( 
     "UPDATE `".SQL_PREFIX."run` SET ".
     "dateStop = NOW(), ".
     "logs = '".addslashes($logs)."', ".
-    "haveError = ".($haveError ? 1 : 0).", ".
-    "id = ".$group['id']." ".
+    "haveError = ".($haveError ? 1 : 0)." ".
     "WHERE idRun = ".$runid
 );
 ?>

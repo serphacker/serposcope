@@ -39,7 +39,7 @@ class Bing extends GroupModule {
             array(
                 'parameters',
                 '',
-                'Dodatkowe parametry w wywo≈Çaniu',
+                'Dodatkowe parametry w wywo≥aniu',
                 '/^.*$/',
                 'text'
             ),
@@ -307,7 +307,8 @@ class Bing extends GroupModule {
                 }   
 
                 $start_index += 10;
-               sleep($options[get_class($this)]['page_sleep']); //slep losowo
+//                sleep($options[get_class($this)]['page_sleep']); //slep wg ustawien
+               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
             }while($start_index<100 && !$bAllWebsiteFound);
             
             $this->incrementProgressBarUnit();

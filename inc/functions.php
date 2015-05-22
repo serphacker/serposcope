@@ -53,7 +53,6 @@ function proxyToString($proxy){
 function buildCurlOptions($proxy){
     global $options;
     
-    $useragent = "Mozilla/".rand(10,30).".".rand(0,9)." (Windows NT ".rand(1,5).".".rand(0,9)."; rv:".rand(10,30).".".rand(0,9).") Gecko/20".rand(10,15)."0".rand(1,9).rand(10,28)." Firefox/".rand(10,30).".".rand(0,9);
     $cookiePath = COOKIE_DIR.preg_replace("/[^a-z0-9._]/", "", str_replace(":","_",proxyToString($proxy))).".txt";
     $opts=array(
         CURLOPT_COOKIEJAR => $cookiePath,
@@ -62,9 +61,8 @@ function buildCurlOptions($proxy){
         CURLOPT_TIMEOUT => (isset($options['general']['timeout']) ? $options['general']['timeout'] : 30 ),
         CURLOPT_AUTOREFERER => true,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_USERAGENT => $useragent,
 //        CURLOPT_USERAGENT => "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.".rand(10000,20000)." .NET CLR 3.5.".rand(10000,20000).")",
-//        CURLOPT_USERAGENT => "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
+        CURLOPT_USERAGENT => "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
         CURLINFO_HEADER_OUT => true,
         CURLOPT_HTTPHEADER => array(
             "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -113,9 +111,6 @@ function buildCurlOptions($proxy){
 function h8($string){
     return htmlentities($string, ENT_QUOTES, "UTF-8");
 }
-function h5($string){
-    return "'". $string ."'";
-}
 
 function wd_wildcard_to_preg($pattern){
     return '/^' . str_replace(array('\*'), array('.*'), preg_quote($pattern)) . '$/';
@@ -162,17 +157,21 @@ $generalOptions = array(
     array('fetch_retry','10','Maximum GET retry on HTTP error / captcha','/^[0-9]+$/','text'),
     array('rm_bad_proxies','2','Remove bad proxies after X fails, 0 to never remove bad proxy','/^[0-9]+$/','text'),
     array('proxy_auto_rotate','yes','Rotate the proxy on new keyword','/^yes|no$/','yesno'),
+    array('force_run','yes','Rotate the proxy on new keyword','/^yes|no$/','yesno'),
     
-    array('rendering','highcharts','Possible values : highcharts,table,social','/^highcharts|table|social$/','text'),
+    array('rendering','highcharts','Possible values : highcharts,table','/^highcharts|table|social$/','text'),
 
     // captcha options
     array('dbc_user','','DeathByCaptcha username','/^.+$/','text'),
     array('dbc_pass','','DeathByCaptcha password','/^.+$/','text'),
-    
+ 
     // hiddens options
     array('proxies_list_url','','',''), 
-    
+
+   
 );
+
+
 $options=array();
 
 function load_options(){
@@ -299,7 +298,7 @@ function curl_cache_exec($curl_opt, $proxy, $usecache=true){
                     $response['error'] = null;                    
                 }
                 
-//                d('Curl',"GOT status=200 cache=HIT age=".$response['cache_age']." (mem: ".  debug_memory().")");
+                d('Curl',"GOT status=200 cache=HIT age=".$response['cache_age']." (mem: ".  debug_memory().")");
                 return $response;
             }
         }
@@ -325,7 +324,7 @@ function curl_cache_exec($curl_opt, $proxy, $usecache=true){
             @file_put_contents($cacheFile, $data);
         }
         
-//        d('Curl',"GOT status=".$response['status']." cache=MISS age=0 (mem: ".  debug_memory().")");
+        d('Curl',"GOT status=".$response['status']." cache=MISS age=0 (mem: ".  debug_memory().")");
         return $response;
     }
     
@@ -395,18 +394,18 @@ function rm_cache($url){
 }
 
 function to_PL($dateo){
-        	$dateo = str_replace('Jan','Stycze≈Ñ',$dateo);
+        	$dateo = str_replace('Jan','StyczeÒ',$dateo);
         	$dateo = str_replace('Feb','Luty',$dateo);
 					$dateo = str_replace('Mar','Marzec',$dateo);
-					$dateo = str_replace('Apr','Kwiecie≈Ñ',$dateo);
+					$dateo = str_replace('Apr','KwiecieÒ',$dateo);
 					$dateo = str_replace('May','Maj',$dateo);
 					$dateo = str_replace('Jun','Czerwiec',$dateo);
 					$dateo = str_replace('Jul','Lipiec',$dateo);
-					$dateo = str_replace('Aug','Sierpie≈Ñ',$dateo);
-					$dateo = str_replace('Sep','Wrzesie≈Ñ',$dateo);
-					$dateo = str_replace('Oct','Pa≈∫dziernik',$dateo);
+					$dateo = str_replace('Aug','SierpieÒ',$dateo);
+					$dateo = str_replace('Sep','WrzesieÒ',$dateo);
+					$dateo = str_replace('Oct','Paüdziernik',$dateo);
 					$dateo = str_replace('Nov','Listopad',$dateo);
-					$dateo = str_replace('Dec','Grudzie≈Ñ',$dateo);
+					$dateo = str_replace('Dec','GrudzieÒ',$dateo);
 					return $dateo;
 }
 function to_mPL($datem){
@@ -419,7 +418,7 @@ $datem = str_replace('Jun','Cze',$datem);
 $datem = str_replace('Jul','Lip',$datem);
 $datem = str_replace('Aug','Sie',$datem);
 $datem = str_replace('Sep','Wrz',$datem);
-$datem = str_replace('Oct','Pa≈∫',$datem);
+$datem = str_replace('Oct','Paü',$datem);
 $datem = str_replace('Nov','Lis',$datem);
 $datem = str_replace('Dec','Gru',$datem);
 					return $datem;
@@ -433,8 +432,8 @@ $dates = str_replace('May','Maja',$dates);
 $dates = str_replace('Jun','Czerwca',$dates);
 $dates = str_replace('Jul','Lipca',$dates);
 $dates = str_replace('Aug','Sierpnia',$dates);
-$dates = str_replace('Sep','Wrze≈õnia',$dates);
-$dates = str_replace('Oct','Pa≈∫dziernika',$dates);
+$dates = str_replace('Sep','Wrzeúnia',$dates);
+$dates = str_replace('Oct','Paüdziernika',$dates);
 $dates = str_replace('Nov','Listopada',$dates);
 $dates = str_replace('Dec','Grudnia',$dates);
 					return $dates;

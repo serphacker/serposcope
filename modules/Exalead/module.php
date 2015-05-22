@@ -26,7 +26,7 @@ class Exalead extends GroupModule {
             array(
                 'local',
                 'pl',
-                'JÄ™zyk wyszukiwania: <strong>pl</strong>',
+                'Jêzyk wyszukiwania: <strong>pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),            
@@ -39,7 +39,7 @@ class Exalead extends GroupModule {
             array(
                 'local',
                 'pl',
-                'JÄ™zyk wyszukiwania <strong>pl</strong>',
+                'Jêzyk wyszukiwania <strong>pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),            
@@ -71,7 +71,7 @@ class Exalead extends GroupModule {
         
         $ranks =  array();
         
-        $domain = "exalead.com";
+        $domain = "www.exalead.com";
         
         $curl = null;
         foreach ($group['keywords'] as $keyKW => $keyword) {
@@ -101,11 +101,11 @@ class Exalead extends GroupModule {
             do{
                 
                 if($start_index==0){
-                    $url="http://www.$domain/search/web/results/?q=".urlencode($keyword).$lang;
-                    $referrer= "http://www.$domain/";                    
+                    $url="http://$domain/search/web/results/?q=".urlencode($keyword).$lang;
+                    $referrer= "http://$domain/";                    
                 }else{
                     $referrer=$url;
-                    $url="http://www.$domain/search/web/results/?q=".urlencode($keyword).$lang."&start_index=".($start_index);
+                    $url="http://$domain/search/web/results/?q=".urlencode($keyword).$lang."&start_index=".($start_index);
                 }
                 
                 if(!empty($group['options']['parameters'])){
@@ -284,7 +284,8 @@ class Exalead extends GroupModule {
                 }   
 
                 $start_index += 10;
-               sleep($options[get_class($this)]['page_sleep']); //slep losowo
+//                sleep($options[get_class($this)]['page_sleep']); //slep wg ustawien
+               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
             }while($start_index<100 && !$bAllWebsiteFound);
             
             $this->incrementProgressBarUnit();

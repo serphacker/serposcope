@@ -16,7 +16,6 @@ if(!file_exists('inc/config.php')){
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
-include('inc/user.php');
 
 
 $supportedImport = array(IMPORT_SERPOSCOPE_CSV,IMPORT_RANKSFR_CSV,IMPORT_MYPOSEO_CSV);
@@ -209,7 +208,7 @@ if(!empty($error)){
     echo "<div class='alert alert-error'>".nl2br(strip_tags($error))."</div>\n";
 }
 ?>
-<div class="accordion-group">
+<div>
     <form method="POST" class="well form-horizontal" action="import.php" enctype="multipart/form-data" >
     <fieldset>
         <div class="control-group">
@@ -255,9 +254,8 @@ while($resImportGroup && ($group=mysql_fetch_assoc($resImportGroup)) ){
             <div class="controls">
                 <input type="file" class="input-file" name="file" />
             </div>
-        </div><div class="finalize">
-        <button class="btn btn-primary" type="submit" name="import" value="import" >Import</button>
-      </div>
+        </div>        
+        <button class="btn btn-primary" type="submit" name="import" value="import" >Import</button>            
     </fieldset>
 </form>
 </div>

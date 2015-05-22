@@ -18,7 +18,7 @@ class Yahoo extends GroupModule {
         return array(
             array(
                 'page_sleep',
-                '1',
+                '30',
                 'pause in seconds between request to Yahoo',
                 '/^[0-9]+$/',
                 'text'
@@ -26,7 +26,7 @@ class Yahoo extends GroupModule {
             array(
                 'local',
                 'pl',
-                'JÄ™zyk wyszukiwania: <strong>pl</strong>',
+                'Jêzyk wyszukiwania: <strong>pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),            
@@ -39,7 +39,7 @@ class Yahoo extends GroupModule {
             array(
                 'local',
                 'pl',
-                'JÄ™zyk wyszukiwania <strong>pl</strong>',
+                'Jêzyk wyszukiwania <strong>pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),            
@@ -239,34 +239,33 @@ class Yahoo extends GroupModule {
                     return $ranks;
                 }
                 
-                $allh3 = $doc->getElementsByTagName("h3");
+                $allh3 = $doc->getElementsByTagName("h4");
                
                 foreach($allh3 as $h3){
-                    if($h3->getAttribute("class") == "title"){
+                    if($h3->getAttribute("class") == "media-heading"){
                         try {
                             $h3_a=$h3->getElementsByTagName('a');
                             if($h3_a == null || $h3_a->length == 0){
                                 continue;
                             }
                             $href = $h3_a->item(0)->getAttribute('href');
-                            $urla = urldecode(substr($href, strpos($href,'/RU=') + 4, strpos($href,'/RK=0') - strlen($href)));
-                            $parsed = @parse_url($urla);
+                            $parsed = @parse_url($href);
                             if($parsed !== FALSE && isset($parsed['host'])){
-             
+                                
                                 foreach ($group['sites'] as $keySite => $website) {
-                                   
+                                    
                                     // if we already have a rank for this keyword, continue
                                     if(isset($ranks[$keyKW][$keySite]))
                                         continue;
                                     
                                     // wildcard support
                                     $regex = wd_wildcard_to_preg($website);
-
+                                    
                                     if(preg_match($regex, $parsed['host'])){
                                         $ranks[$keyKW][$keySite][0]= $pos;
-                                        $ranks[$keyKW][$keySite][1]= $urla;
+                                        $ranks[$keyKW][$keySite][1]= $href;
                                         
-                                        $this->l("Rank[$pos] [$website] ".$urla."\r\n");
+                                        $this->l("Rank[$pos] [$website] ".$href."\r\n");
                                     }
                                 }                                
                                 $pos++;
@@ -285,8 +284,8 @@ class Yahoo extends GroupModule {
                 }   
 
                 $start_index += 10;
-                sleep(rand(1,$options[get_class($this)]['page_sleep'])); //slep wg ustawien
-//               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
+//                sleep($options[get_class($this)]['page_sleep']); //slep wg ustawien
+               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
             }while($start_index<100 && !$bAllWebsiteFound);
             
             $this->incrementProgressBarUnit();

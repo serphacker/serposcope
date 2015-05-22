@@ -12,31 +12,40 @@
 if(!defined('INCLUDE_OK'))
     die();
 
-class Ask extends GroupModule {
+class Exalead extends GroupModule {
     
     public function getGlobalOptions() {
         return array(
             array(
                 'page_sleep',
-                '3',
-                'pause in seconds between request to Ask',
+                '30',
+                'pause in seconds between request to Exalead',
                 '/^[0-9]+$/',
                 'text'
             ),
+            array(
+                'local',
+                'pl',
+                'Jêzyk wyszukiwania: <strong>pl</strong>',
+                '/^[a-zA-Z.]+$/',
+                'text'
+            ),            
         );
     }
+    
     public function getGroupOptions() {
         global $options;
         return array(
             array(
                 'local',
                 'pl',
-                'JÄ™zyk wyszukiwania <strong>pl</strong>',
+                'Jêzyk wyszukiwania <strong>pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),            
          );
-   }
+    }
+    
     private function init_session($domain, $proxy, $local){
         
         if(empty($local)){
@@ -62,7 +71,7 @@ class Ask extends GroupModule {
         
         $ranks =  array();
         
-        $domain = "www.ask.com";
+        $domain = "www.exalead.com";
         
         $curl = null;
         foreach ($group['keywords'] as $keyKW => $keyword) {
@@ -92,11 +101,11 @@ class Ask extends GroupModule {
             do{
                 
                 if($start_index==0){
-                    $url="http://$domain/web?q=".urlencode($keyword);
+                    $url="http://$domain/search/web/results/?q=".urlencode($keyword).$lang;
                     $referrer= "http://$domain/";                    
                 }else{
                     $referrer=$url;
-                    $url="http://$domain/web?q=".urlencode($keyword)."&page=".($start_index)/10;
+                    $url="http://$domain/search/web/results/?q=".urlencode($keyword).$lang."&start_index=".($start_index);
                 }
                 
                 if(!empty($group['options']['parameters'])){
@@ -140,10 +149,10 @@ class Ask extends GroupModule {
                                 
                                 if($data['status'] == 403){
                                     $proxies->ban($proxy);
-                                    $this->w("IP banned from Ask (no captcha), force proxy remove");
+                                    $this->w("IP banned from Exalead (no captcha), force proxy remove");
                                     $error = true;
                                 }else{
-                                    $this->w("Ask captcha");
+                                    $this->w("Exalead captcha");
                                     if($dbc == null){
                                         $rateLimitSleepTime = intval($options[get_class($this)]['captcha_basesleep']);
                                         $this->w("DeathByCaptcha not configured, sleeping $rateLimitSleepTime seconds");
@@ -185,7 +194,7 @@ class Ask extends GroupModule {
                     if($error){
                         // is it really google
                         if(strstr($data, "window.google=") === FALSE){
-                            $this->w("Not a valid Ask SERP");
+                            $this->w("Not a valid Exalead SERP");
 //                            file_put_contents("/tmp/noserp_". sha1("".time().rand(0, 10000)), $data);
                             $error=true;
                         }
@@ -229,18 +238,18 @@ class Ask extends GroupModule {
                     $ranks['__have_error'] = 1;
                     return $ranks;
                 }
-                $allh3 = $doc->getElementById("teoma-results")->getElementsByTagName("h3");
+                
+                $allh3 = $doc->getElementsByTagName("h4");
+               
                 foreach($allh3 as $h3){
-                	$hi3 = substr($h3->getAttribute("id"), 0, -1);
-                    if($hi3 == 'r_t'){
+                    if($h3->getAttribute("class") == "media-heading"){
                         try {
-                            $h3_a=$h3->getElementsByTagName("a");
+                            $h3_a=$h3->getElementsByTagName('a');
                             if($h3_a == null || $h3_a->length == 0){
                                 continue;
                             }
                             $href = $h3_a->item(0)->getAttribute('href');
                             $parsed = @parse_url($href);
-//                        	l('*D*E*B*U*G*',$pos.$href);
                             if($parsed !== FALSE && isset($parsed['host'])){
                                 
                                 foreach ($group['sites'] as $keySite => $website) {
@@ -276,7 +285,7 @@ class Ask extends GroupModule {
 
                 $start_index += 10;
 //                sleep($options[get_class($this)]['page_sleep']); //slep wg ustawien
-               sleep(rand(1,$options[get_class($this)]['page_sleep'])); //slep losowo 1 - 5 sekund
+               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
             }while($start_index<100 && !$bAllWebsiteFound);
             
             $this->incrementProgressBarUnit();

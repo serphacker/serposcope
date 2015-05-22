@@ -50,8 +50,8 @@ if (!empty($_POST)) {
                 // check if the line is not empty
                 if (!empty($line)) {
 
-                    //we explode again to split with '#'
-                    $proxy_line = explode('#', $line);
+                    //we explode again to split with ':'
+                    $proxy_line = explode(':', $line);
 
                     if (empty($proxy_line[0])) { // line with single :
                         $err = "bulkimport error line $linecount : each line should have at least an ip address";
@@ -253,6 +253,10 @@ if ($err != null) {
 
     });
 </script>
+<script>
+        $( "#btn_3" ).css("border","solid 2px #D64B46");
+        $( "#btn_3" ).css("border-radius","5px");
+</script>
 <h2>Proxies</h2>
 <table class='table'>
     <thead>
@@ -312,14 +316,14 @@ foreach ($dbproxies as $proxy) {
         <option>socks</option>
         <option>iface</option>
     </select>
-    <textarea name=bulkimport-proxies style="width:100%; height: 120px" placeholder="ip#port#username#password" ></textarea>
+    <textarea name=bulkimport-proxies style="width:100%; height: 120px" placeholder="ip:port:username:password" ></textarea>
     <input type=submit class="btn btn-primary" value="Bulk Import" />
     </form>
 
     <hr/>
     <h4>Lists URL</h4>
     <form method=POST>
-        <p class="help-block">If you use public proxies list,you need to  <a href='http://serposcope.serphacker.com/doc/proxies.html' >optimize the configuration</a>.</p>
+        <p class="help-block">If you use public proxies list,you need to  <a href='http://serphacker.com/serposcope/doc/proxies.html' >optimize the configuration</a>.</p>
         <textarea name=list-url-proxies style="width:100%; height: 120px" placeholder="http://domain.com/proxies-list.html" ><?php echo h8($options['general']['proxies_list_url']); ?></textarea>
         <input type=submit class="btn btn-primary" value="Update proxies list URL" />    
     </form>

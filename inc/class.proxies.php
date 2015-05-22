@@ -9,7 +9,7 @@ class Proxies {
     function __construct($prx_array) {
         if(is_null($prx_array) || !is_array($prx_array) || empty($prx_array) ){
             $this->proxies = array("DIRECT");
-            $this->mapFail["DIRECT"] = 0;
+            $this->mapFail[proxyToString($proxy)] = 0;
         }else{
             $this->mapFail = array();
             $this->proxies = array();

@@ -33,7 +33,7 @@ class Google extends GroupModule {
             array(
                 'tld',
                 'com',
-                'The google search engine top level domain: google.<strong>com</strong>, google.<strong>co.uk</strong>',
+                'Domena wyszukiwania: google.<strong>com</strong>, google<strong>.pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),            
@@ -46,28 +46,28 @@ class Google extends GroupModule {
             array(
                 'tld',
                 $options[get_class($this)]['tld'],
-                'The google search engine top level domain: google.<strong>com</strong>, google.<strong>co.uk</strong>',
+                'Domena wyszukiwania: google.<strong>com</strong>, google<strong>.pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),
             array(
                 'datacenter',
                 '',
-                'A specific datacenter. Leave empty to use standard google.tld',
+                'Wybrany datacenter - standard google.tld jeœli pole jest puste',
                 '/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|)$/',
                 'text'
             ),
             array(
                 'parameters',
                 '',
-                'Additional parameters in the request (like <strong>hl=fr&tbs=qdr:d</strong>)',
+                'dodatkowe requesty wyszukiwania (np: <strong>hl=fr&tbs=qdr:d</strong>)',
                 '/^.*$/',
                 'text'
             ),
             array(
                 'local',
                 '',
-                'City or place for local search, should be in the country of the tld',
+                'miejscowosc/region/kraj/puste - domyslnie',
                 '/^.*$/',
                 'text'
             ),            
@@ -142,7 +142,7 @@ class Google extends GroupModule {
                     $ranks['__have_error'] = 1;
                     return $ranks;
                 }else{
-                    $this->l("Switched to proxy ".proxyToString($proxy));
+                    $this->l("Switched to proxy ".proxyToString($proxy)."\r\n");
                 }
             }else{
                 $proxy=$proxies->current();
@@ -327,7 +327,7 @@ class Google extends GroupModule {
                                         $ranks[$keyKW][$keySite][0]= $pos;
                                         $ranks[$keyKW][$keySite][1]= $href;
                                         
-                                        $this->l("Rank[$pos] [$website] ".$href);
+                                        $this->l("Rank[$pos] [$website] ".$href."\r\n");
                                     }
                                 }                                
                                 $pos++;
@@ -346,8 +346,8 @@ class Google extends GroupModule {
                 }   
 
                 $start_index += 10;
-                sleep($options[get_class($this)]['page_sleep']);
-               
+//                sleep($options[get_class($this)]['page_sleep']); //slep wg ustawien
+               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
             }while($start_index<100 && !$bAllWebsiteFound);
             
             $this->incrementProgressBarUnit();
