@@ -1,8 +1,9 @@
+.htpasswd
+.htaccess
 /inc/*config*
 /docs/
 /tests/
-.htpasswd
-.htaccess
+/tmp/
 /demo/
 /modules/Test/
 /nbproject/
