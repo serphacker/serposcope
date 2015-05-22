@@ -33,7 +33,7 @@ class Google extends GroupModule {
             array(
                 'tld',
                 'com',
-                'The google search engine top level domain: google.<strong>com</strong>, google.<strong>co.uk</strong>',
+                'Domena wyszukiwania: google.<strong>com</strong>, google<strong>.pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),            
@@ -46,28 +46,28 @@ class Google extends GroupModule {
             array(
                 'tld',
                 $options[get_class($this)]['tld'],
-                'The google search engine top level domain: google.<strong>com</strong>, google.<strong>co.uk</strong>',
+                'Domena wyszukiwania: google.<strong>com</strong>, google<strong>.pl</strong>',
                 '/^[a-zA-Z.]+$/',
                 'text'
             ),
             array(
                 'datacenter',
                 '',
-                'A specific datacenter. Leave empty to use standard google.tld',
+                'Wybrany datacenter - standard google.tld jeœli pole jest puste',
                 '/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|)$/',
                 'text'
             ),
             array(
                 'parameters',
                 '',
-                'Additional parameters in the request (like <strong>hl=fr&tbs=qdr:d</strong>)',
+                'dodatkowe requesty wyszukiwania (np: <strong>hl=fr&tbs=qdr:d</strong>)',
                 '/^.*$/',
                 'text'
             ),
             array(
                 'local',
                 '',
-                'City or place for local search, should be in the country of the tld',
+                'miejscowosc/region/kraj/puste - domyslnie',
                 '/^.*$/',
                 'text'
             ),            
@@ -131,6 +131,8 @@ class Google extends GroupModule {
             $domain = "www.google.com";
         }        
         
+        $useragent = "Mozilla/".rand(10,30).".".rand(0,9)." (Windows NT ".rand(1,5).".".rand(0,9)."; rv:".rand(10,30).".".rand(0,9).") Gecko/20".rand(10,15)."0".rand(1,9).rand(10,28)." Firefox/".rand(10,30).".".rand(0,9);
+        $this->l("UserAgent: $useragent");
         
         $curl = null;
         foreach ($group['keywords'] as $keyKW => $keyword) {
@@ -142,7 +144,7 @@ class Google extends GroupModule {
                     $ranks['__have_error'] = 1;
                     return $ranks;
                 }else{
-                    $this->l("Switched to proxy ".proxyToString($proxy));
+                    $this->l("Switched to proxy ".proxyToString($proxy)."\r\n");
                 }
             }else{
                 $proxy=$proxies->current();
@@ -161,13 +163,15 @@ class Google extends GroupModule {
             $this->init_session($domain, $proxy, !empty($group['options']['local']) ? $group['options']['local'] : null);
 
             do{
-                
+            $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            $randomize = "&gws_rd=".strtolower(substr(str_shuffle($characters),0,2))."&ei=".substr(str_shuffle($characters),0,22)."&ved=".strtolower(substr(str_shuffle($characters),0,8))."&OP=".rand(1000,9999);
+
                 if($start_index==0){
-                    $url="https://$domain/search?q=".urlencode($keyword);
+                    $url="https://$domain/search?q=".urlencode($keyword).$randomize;
                     $referrer= "https://$domain/";                    
                 }else{
                     $referrer=$url;
-                    $url="https://$domain/search?q=".urlencode($keyword)."&start=".($start_index);
+                    $url="https://$domain/search?q=".urlencode($keyword).$randomize."&start=".($start_index);
                 }
                 
                 if(!empty($group['options']['parameters'])){
@@ -177,7 +181,7 @@ class Google extends GroupModule {
                 $fetchRetry=1;
                 
                 do {
-                    $opts = array(CURLOPT_URL => $url, CURLOPT_REFERER => $referrer);
+                    $opts = array(CURLOPT_URL => $url, CURLOPT_REFERER => $referrer, CURLOPT_USERAGENT => $useragent);
                     $curlout=curl_cache_exec($opts, $proxy, empty($group['options']['local'])); // don't use cache if local search
                     
                     $data=$curlout['data'];
@@ -327,7 +331,7 @@ class Google extends GroupModule {
                                         $ranks[$keyKW][$keySite][0]= $pos;
                                         $ranks[$keyKW][$keySite][1]= $href;
                                         
-                                        $this->l("Rank[$pos] [$website] ".$href);
+                                        $this->l("Rank[$pos] [$website] ".$href."\r\n");
                                     }
                                 }                                
                                 $pos++;
@@ -346,8 +350,8 @@ class Google extends GroupModule {
                 }   
 
                 $start_index += 10;
-                sleep($options[get_class($this)]['page_sleep']);
-               
+//                sleep($options[get_class($this)]['page_sleep']); //slep wg ustawien
+               sleep(rand(1,5)); //slep losowo 1 - 5 sekund
             }while($start_index<100 && !$bAllWebsiteFound);
             
             $this->incrementProgressBarUnit();

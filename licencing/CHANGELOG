@@ -1,0 +1,12 @@
+
+V 2.0
+new CSS skin for pannel and new graphics
+new modules: Ask, Yahoo, Bing, Exalead
+new index page from user acces privilege mode and summary diagram
+new render social, mobile score, speed score
+new view render summary for current selected test
+new privilege selector from test (edit.php)
+randomized browser agent for test 
+randomized sleep time for test
+
+todo - user acces from database records

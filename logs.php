@@ -16,6 +16,8 @@ if(!file_exists('inc/config.php')){
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include('inc/user.php');
+
 if(isset($_GET['id'])){
     $res = null;
     if(is_numeric($_GET['id'])){
@@ -78,10 +80,10 @@ if(isset($_GET['did'])){
 
 include("inc/header.php");
 if (!empty($error_msg)) {
-    echo "<div class='alert alert-error'>$error_msg</div>\n";
+    echo "<div class='CloseScanInfo alert alert-error'>$error_msg<span style='float:right;'>[<a id='CloseScanInfo' href='#'>Zamknij</a>]</span></div>\n";
 }
 if (!empty($info_msg)) {
-    echo "<div class='alert alert-info'>$info_msg</div>\n";
+    echo "<div class='CloseScanInfo alert alert-info'>$info_msg<span style='float:right;'>[<a id='CloseScanInfo' href='#'>Zamknij</a>]</span></div>\n";
 }
 ?>
 <script>
@@ -89,27 +91,38 @@ if (!empty($info_msg)) {
         return confirm("It will delete all the positions checked during this run, continue ?");
     }
 </script>
+<script>
+        $( "#btn_1" ).css("border","solid 2px #D64B46");
+        $( "#btn_1" ).css("border-radius","5px");
+        $(document).ready(function() { setTimeout(function(){ hMsg(); }, 5000); });
+        $( "#CloseScanInfo" ).click(function() { hMsg(); });
+        function hMsg() {$( ".CloseScanInfo" ).slideUp(900);}
+</script>
 <div>
-    <table class='table table-condensed table-bordered' >
+    <table class='table table-condensed table-bordered table-log' >
         <thead>
-            <tr><th>#</th><th>start</th><th>stop</th><th>length</th><th>logs</th><th>delete</th></tr>
+        	   <?php
+        	       if(!$ID && !$adminAcces) {echo 'ustaw domyœlny projekt!';}
+        	       if(($set->log || !$adminAcces) || ($adminAcces && $ID)) {$filtr ='WHERE `logs` LIKE \'%group['.$ID.']%\'';} 
+        	       if(!$adminAcces && !$ID){$filtr ='WHERE `logs` LIKE \'%'.$groupd['name'].' with module%\'';}
+        	       if($groupd['name']) {if($ID){$usunf =" <a href='logs.php'>Usuñ filtr</a>";}else {$groupd['module'] = 'tescie';} echo "<tr class='centered'><th colspan='7'>Filtrowanie wyników dla ".$groupd['name']." w ".$groupd['module'].$usunf." </th></tr>\n";}
+        	   ?>
+            <tr><th>#</th><?php if($adminAcces || (!$adminAcces && !$ID)){echo "<th>Test</th>";} ?><th>Start</th><th>Stop</th><th>Time</th><th>Logs</th><th class="<?php echo $hName; ?>">Delete</th></tr>
         </thead>
         <tbody>
 <?php
     
-    $perPage=20;
+    $perPage=23;
     $qCount = "SELECT count(*) FROM `".SQL_PREFIX."run`";
     $resultCount = $db->query($qCount);
     $rowCount = mysql_fetch_row($resultCount);
     $count = $rowCount[0];
-    
     $totalPages = ceil($count/$perPage);
     $page=isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']) : 1;
     
     
     $start = ($page-1)*$perPage;
-    
-    $q="SELECT idRun,dateStart,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ORDER BY dateStart DESC LIMIT $start,$perPage";
+    $q="SELECT idRun,dateStart,id,dateStop,pid,haveError,timediff(dateStop,dateStart) diff FROM `".SQL_PREFIX."run` ".$filtr." ORDER BY dateStart DESC LIMIT $start,$perPage";
     $result = $db->query($q);
     
     while($result && ($run=mysql_fetch_assoc($result))){
@@ -124,12 +137,14 @@ if (!empty($info_msg)) {
             }
         }
         echo " >";
+        $infor = mysql_fetch_assoc($db->query("SELECT * FROM `".SQL_PREFIX."group` WHERE idGroup = " . intval($run['id'])));
         echo "<td>".$run['idRun']."</td>";
+if($adminAcces || (!$adminAcces && !$ID)){echo "<td class='test' style='background-image:url(modules/".$infor['module']."/icon.png);'> ".$infor['name']."</td>";}
         echo "<td>".$run['dateStart']."</td>";
         echo "<td>".$run['dateStop']."</td>";
         echo "<td>".$run['diff']."</td>";
-        echo "<td><a href='logs.php?id=".$run['idRun']."' >logs</a></td>";
-        echo "<td><a href='logs.php?did=".$run['idRun']."' onclick='return warningDeleteRun()' >delete</a></td>";
+        echo "<td><a href='logs.php?id=".$run['idRun']."' target='log' >logs</a></td>";
+if($adminAcces){        echo "<td><a href='logs.php?did=".$run['idRun']."' onclick='return warningDeleteRun()' >delete</a></td>";}
         echo "</tr>";
     }
 ?>
@@ -140,13 +155,13 @@ if (!empty($info_msg)) {
     if($page===1){
         echo "<li class='disabled previous' ><a href='#' >&larr; Newer</a></li>";
     }else{
-        echo "<li class='previous' ><a href='?page=".($page-1)."' >&larr; Newer</a></li>";
+        echo "<li class='previous' ><a href='?idGroup=$ID&page=".($page-1)."' >&larr; Newer</a></li>";
     }
     
     if($page >= $totalPages){
         echo "<li class='disabled next' ><a href='#' >Older &rarr;</a></li>";
     }else{
-        echo "<li class='next' ><a href='?page=".($page+1)."' >Older &rarr;</a></li>";
+        echo "<li class='next' ><a href='?idGroup=$ID&page=".($page+1)."' >Older &rarr;</a></li>";
     }
 
 ?>

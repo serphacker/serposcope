@@ -13,7 +13,6 @@ if(!defined('INCLUDE_OK'))
     die();
 
 function render($ranks, $target, $keywords){  
-    
     $height=450;
     $idDiveu = rand(1000,3000);
     
@@ -44,14 +43,26 @@ $(document).ready(function() {
                 title: {
                         text: '',
                 },
+                plotOptions: {
+                series: {
+                cursor: 'pointer',
+                point: {
+                events: {
+                    click: function () {window.open(this.url,'_blanc');}
+                    }
+                    }
+                }
+            },
                 yAxis: {
-                    min : -10,
-                    max : 100,
+                showFirstLabel: false,
+                    allowDecimals: false,
+//                    min : 0,
+//                    max : 100,
                     endOnTick: false,
                     tickPixelInterval: 40,  
                     reversed : true,
                     title: {
-                            text: 'Position'
+                            text: 'Pozycja w wyszukiwarce'
                     },
                     subtitle: {
                         text: document.ontouchstart === undefined ?
@@ -59,62 +70,77 @@ $(document).ready(function() {
                         'Drag your finger over the plot to zoom in'
                     },
                 },
-
+                tooltip: {
+          },
                 legend: {
                     align: 'center',
                     verticalAlign: 'bottom',
                     borderWidth: 0
                 },
-
                 series: [
 ";
-    
+
     foreach ($keywords as $keyword) {
+    	$pass = '';
+    	$hide = '';
         echo "{\n";
-        echo "\tname: ".json_encode_tag($keyword).",\n";
+        echo "\tname: ".json_encode_tag($keyword).",stack:0,\n";
         echo "\tdata: [";
         foreach ($ranks as $rank) {
+        	$dateo = date('d M',strtotime($rank['date']));
+        	$dateo = to_PL($dateo);
             if(isset($rank[$target]) && isset($rank[$target][$keyword])){
-                echo "{y:".$rank[$target][$keyword][0].",name:'".date('d M',strtotime($rank['date']))."<br/>".h8($rank[$target][$keyword][1])."'},";
+            	if($rank[$target][$keyword][0] == 1){$hide++;  $false = 1;} else {$false = 0;}
+                echo "{y:".$rank[$target][$keyword][0].",name:'".$dateo."<br />".h8($rank[$target][$keyword][1])."',url:'".h8($rank[$target][$keyword][1])."'},";
+                $marker = 'true'; $pass++;
             }else{
-                echo "null,";                
+                echo "null,"; if($pass == 0){$marker = 'false';}
             }
         }
-        echo "]\n";
+        echo "],\n";
+        echo "\tmarker: {symbol: 'circle',enabled: ".$marker."},\n";
+        if($false == 1){$ready++;}
+        if(($ready > 1 && $false == 1) || $pass == 0){echo "visible:false,";}
         echo "},\n";
     }
-    echo "{\n";
+    echo "{tooltip: {pointFormat: '',},
+    events: {click: function () { $('.group-btn-calendar').click(); return this.point.url; } },\n";
     echo "\tlineWidth: 0,\n";
+    echo "\type: 'scatter',\n";
     echo "\tcolor: 'black',\n";
-    echo "\tmarker: {symbol: 'square'},\n";
+    echo "\tmarker: {symbol: 'triangle-down'},\n";
     echo "\tname: \"Events\",\n";
     echo "\tdata: [";
     foreach ($ranks as $check) {
         $hEvent = false;
         $event = date('d M',strtotime($check['date']))."<br/>";
+        	$event = to_PL($event);
         if(isset($check['__event']) && isset($check['__event'][$target]) && is_array($check['__event'][$target])){
             foreach ($check['__event'][$target] as $evt) {
                 $hEvent = true;
-                $event .= "<b>".h8($target)."</b>:<br/>".($evt)."<br/>";
+                //$event .= $evt;
             }
         }
         if($hEvent/*!empty($event)*/){
-            echo "{y: -2, name:'".addcslashes($event,"'")."'},";
+            echo "{y: 0.5, name:'".$event.$evt."',url:'".$evt."',},"; $show++;
         }else{
             echo "null,";
         }
     }
     echo "]\n";
+    if(!$show){echo ",visible:false";}
     echo "},\n";
     
     echo "
                 ],
                     
-                xAxis: {
+                xAxis: {tickInterval: 2,
                     categories: [
 ";
     foreach ($ranks as $rank) {
-        echo "'".date('d M',strtotime($rank['date']))."',";
+    	$datem = date('d M',strtotime($rank['date']));
+
+        echo "'".to_mPL($datem)."',";
     }
 echo "
                     ],

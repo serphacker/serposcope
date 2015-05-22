@@ -17,6 +17,7 @@ if (!file_exists('inc/config.php')) {
 require('inc/config.php');
 include('inc/define.php');
 include('inc/common.php');
+include('inc/user.php');
 
 function displayOptForm($groupName, $groupOptions) {
     global $options, $formErrors;
@@ -116,23 +117,29 @@ $options = load_options();
 
 include("inc/header.php");
 
-echo "<form method=POST class=\"well form-horizontal\" >
-    <fieldset>";
+echo '<script>
+        $( "#btn_4" ).css("border","solid 2px #D64B46");
+        $( "#btn_4" ).css("border-radius","5px");
+</script>
+<form method=POST class="well form-horizontal" >
+    <fieldset>';
 
-echo "<h4>General</h4>";
+echo "<div class='accordion-group'><h4>General</h4>";
 displayOptForm('general', $generalOptions);
-
+echo "</div>";
 foreach ($modules as $moduleName => $module) {
     $moduleGlobalOptions = $module->getGlobalOptions();
+        echo "<div class='accordion-group'>";
     if (is_array($moduleGlobalOptions)) {
         echo "<h4>" . h8($moduleName) . "</h4>";
         displayOptForm($moduleName, $moduleGlobalOptions);
     }
+        echo "</div>";
 }
 
-echo "
-    <div class='controls' >
-        <input type=submit class='btn btn-primary' />
+echo "<br />
+<div class='controls' >
+        <input type=submit class='btn btn-primary' value='Zapisz ustawienia' />
     </div>
 
     </fieldset>

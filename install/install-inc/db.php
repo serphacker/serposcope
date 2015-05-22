@@ -15,6 +15,7 @@ function drop_tables($prefix){
     @mysql_query("DROP TABLE IF EXISTS `".$prefix."target`;");
     @mysql_query("DROP TABLE IF EXISTS `".$prefix."run`;");
     @mysql_query("DROP TABLE IF EXISTS `".$prefix."group`;");
+    @mysql_query("DROP TABLE IF EXISTS `".$prefix."user`;");
 }
 
 function create_tables($prefix){
@@ -27,7 +28,8 @@ CREATE TABLE `".$prefix."group` (
     `name` text,
     `module` text,
     `options` text,
-    `position` int(11) DEFAULT NULL
+    `position` int(11) DEFAULT NULL,
+    `user` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
@@ -57,7 +59,8 @@ CREATE TABLE `".$prefix."run` (
     `dateStop` datetime DEFAULT NULL,
     `logs` mediumtext,
     `pid` int(11) NOT NULL,
-    `haveError` tinyint(4) DEFAULT '0'
+    `haveError` tinyint(4) DEFAULT '0',
+    `id` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
 
@@ -119,6 +122,18 @@ CREATE TABLE `".$prefix."version` (
     `version` TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ") &&
+
+mysql_query("
+CREATE TABLE `".$prefix."user` (
+    `name` TEXT,
+    `pass` TEXT,
+    `acces` TEXT,
+    `buttons` TEXT,
+    `role` TEXT,
+    `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+") &&
+
 mysql_query("INSERT INTO `".$prefix."version` VALUE ('".SQL_VERSION."')");
 }
 

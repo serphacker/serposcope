@@ -1,8 +1,8 @@
-/inc/*config*
+/inc/config.php
+/.*
+/tmp/
 /docs/
 /tests/
 /demo/
 /modules/Test/
 /nbproject/
-/serposcope.iml
-/.idea/
