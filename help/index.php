@@ -67,7 +67,7 @@
         <div class="container" id="bodycontainer" >
 <div id="1"><h5>Czym jest GoogleFly</h5>
 	<span>GoogleFly to zautomatyzowany system sprawdzaj¹cy indeksacje przez wyszukiwarki internetowe zdefiniowanych fraz (s³ów kluczowych) witryny.<br/>
-		Rozbudowany panel klienta umo¿liwia na bie¿¹co monitorowanie pozycji strony na dane zapytanie w popularnych wyszukiwarkach Google, Bing, Exalead<br/>
+		Rozbudowany panel klienta umo¿liwia na bie¿¹co monitorowanie pozycji strony na dane zapytanie w popularnych wyszukiwarkach Google, Bing, Ask, Yahoo, Exalead<br/>
 		</span>
 </div>
 
@@ -92,6 +92,23 @@
 <div id="4"><h5>Jak czêsto sprawdzana jest pozycja w wyszukiwarce</h5>
 	<span>Test pozycji odbywa siê codziennie w godzinach nocnych. S³owa kluczowe z poza listy TOP100 sprawdzane s¹ co tydzieñ. Po pojawieniu siê w TOP100 system sprawdza ich pozycje codziennie<br/>
 		</span>
+</div>
+<div id="5"><h5>Screeany ekranu</h5>
+<?php
+		$dir_to_search = scandir(getcwd());
+		$image_exts = array('gif', 'jpg', 'jpeg', 'png');
+		$excluded_filename = 'logo';
+		foreach ($dir_to_search as $image_file){
+			$dot = strrpos($image_file, '.');
+			$filename = substr($image_file, 0, $dot);
+			$filetype = substr($image_file, $dot+1);
+			$thumbnail_file = strrpos($filename, $excluded_filename);
+				if ((!$thumbnail_file) and array_search($filetype, $image_exts) !== false){
+					echo '	<a href="'.$image_dir.$image_file.'" data-lightbox="'.getcwd().'" data-title="'.$filename.'" title="'.$filename.'.'.$filetype.'"><img src="'.$image_dir.$image_file.'" style="height:100px; border:solid 1px gray; margin:5px;" /></a>
+';
+		}
+	}
+?>
 </div>
 <br /><br /><br />
 <div class="asti"><span class="aste">*</span> Wymaga aktywnego zalogowania do panelu klienta</div>
