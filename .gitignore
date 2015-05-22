@@ -1,5 +1,6 @@
 /inc/config.php
-.*
+/.htaccess
+/.htpasswd
 /tmp/
 /docs/
 /tests/
