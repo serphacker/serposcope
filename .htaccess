@@ -1,0 +1,36 @@
+# folder to domain redirect
+RewriteEngine On
+RewriteCond %{HTTP_HOST} !^our.domain.com [NC]
+RewriteCond %{HTTP_HOST} !^$
+RewriteRule ^/?(.*) http://our.domain.com/$1 [L,R,NE]
+
+AuthName "Restricted area"
+AuthType Basic
+AuthUserFile ".htpasswd"
+Require valid-user
+
+# excluding files
+<Files "cron.php" >
+        satisfy any
+</Files>
+<Files "error_401.php" >
+        satisfy any
+</Files>
+<Files "*.css" >
+        satisfy any
+</Files>
+<Files "img/*" >
+        satisfy any
+</Files>
+<Files "help/*" >
+        satisfy any
+</Files>
+<Files "tmp/*" >
+        satisfy any
+</Files>
+
+ErrorDoc 401 /error_401.php
+
+:Location /*.php
+Use php53
+:Location
