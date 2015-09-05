@@ -94,8 +94,8 @@ function render($ranks, $target, $keywords){
                 $tdclass="tdregress";
                 $tooltip="-".($now-$prev);
             }
-            
-            echo "<td class='$tdclass' data-toggle='tooltip' title='$tooltip' >";
+            $tooltip .= "<br/>".h8($check[$target][$keyword][1]);
+            echo "<td class='$tdclass' rel='tooltip' title='".$tooltip."' >";
             echo $now;
             echo "</td>";
             $prev=$now;

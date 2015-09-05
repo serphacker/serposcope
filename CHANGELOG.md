@@ -2,6 +2,7 @@
 
 ## UPCOMING
 
+* Display ranked page in table view
 * Prevent serposcope from running if php < 5.3.8 (CURLINFO_REDIRECT_URL bug)
 * Fix ipv6 bulk import
 * Fix proxy direct minor issue
