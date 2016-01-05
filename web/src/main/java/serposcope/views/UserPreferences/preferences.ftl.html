@@ -1,0 +1,67 @@
+<#assign sideMenu>
+<li>
+    <span class="first-level"><i class="fa fa-cubes fw"></i> ${i18n("label.groups")}</span>
+    <ul class="nav nav-second-level">
+        <li>
+            <div class="form-search form-group has-feedback has-feedback">
+                <input id="sidebar-group-search" type="text" class="form-control" placeholder="${i18n("label.searchGroup")} ..." />
+                <i class="form-control-feedback glyphicon glyphicon-search"></i>
+            </div>
+        </li>
+    </ul>
+</li>
+</#assign>
+<#import "../layout/root.ftl.html" as layout> 
+<@layout.rootLayout i18n("preferences.title") "${sideMenu}" >
+<div class="row" >
+    <div class="col-xs-12" >
+        <div class="col-xs-12 col-md-offset-3 col-md-6  setting-form" >
+            <form class="form" method="post" action="${reverseRoute("UserPreferences","update")}" >
+                <@authenticityForm/>
+                
+                <hr/>
+                <h2 class="styled-h2">${i18n("label.changePassword")}</h2>
+                <hr/>
+                
+                <p class="help-block">${i18n("preferences.leaveEmptyIfUnchanged")}</p>
+                
+                <div class="form-group" >
+                    <label for="password" >${i18n("label.newPassword")}</label>
+                    <input id="password" class="form-control" type="password" name="password" value="" >
+                </div>
+                
+                <div class="form-group" >
+                    <label for="passwordConfirm" >${i18n("label.confirmPassword")}</label>
+                    <input id="passwordConfirm" class="form-control" type="password" name="passwordConfirm" value="" >
+                </div>
+                
+                <div class="form-group" >
+                    <label for="passwordCurrent" >${i18n("label.currentPassword")}</label>
+                    <input id="passwordCurrent" class="form-control" type="password" name="passwordCurrent" value="" >
+                </div>                
+                
+                <hr/>
+                <h2 class="styled-h2">${i18n("label.preferences")}</h2>
+                <hr/>
+                
+                <div class="form-group" >
+                    <label for="searchLocal" >${i18n("label.lang")}</label>
+                    <div>
+                        <select id="lang" class="selectpicker" name="lang">
+                            <option value="auto" <#if ! lang?? >selected</#if> >auto</option>
+                            <option value="fr" <#if lang == "fr">selected</#if> >fr</option>
+                            <option value="en" <#if lang == "en">selected</#if> >en</option>
+                        </select>
+                    </div>
+                </div>                      
+
+                <hr/>
+                <input type="button" id="btn-reset-settings" class="btn btn-default" value="${i18n("label.reset")}" 
+                    data-action="${reverseRoute("admin.GoogleSettingsController","reset")}" />
+                <input type="submit" class="btn btn-primary" value="${i18n("label.save")}" />
+            </form>
+        </div>
+    </div>
+</div>
+<!--<div class="csp-script" data-src="adminGoogleSettingsController.settings" ></div>-->
+</@>

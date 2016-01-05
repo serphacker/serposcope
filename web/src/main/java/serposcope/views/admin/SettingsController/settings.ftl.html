@@ -1,0 +1,116 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../admin.ftl.html" as layout>
+<@layout.adminLayout i18n("admin.settings.title") >
+
+<div class="row" >
+    <div class="col-xs-12" >
+        <div class="col-xs-12 col-md-offset-3 col-md-6  setting-form" >
+            <form class="form" method="post" action="${reverseRoute("admin.SettingsController","update")}" >
+                <@authenticityForm/>
+                  
+                <hr/>
+                <h2 class="styled-h2">${i18n("label.cron")}</h2>
+                <hr/>
+
+                <div class="form-group" >
+                    <label for="cronTime" >${i18n("admin.settings.cronTime")} (${i18n("label.serverTime")} = ${serverTime})</label>
+                    <input id="cronTime" class="form-control" name="cronTime" placeholder="${i18n("admin.settings.cronTimeExample")}"
+                        value="<#if config.getCronTime()??><#if config.getCronTime().getHour() < 10>0</#if>${config.getCronTime().getHour()}:<#if config.getCronTime().getMinute() < 10>0</#if>${config.getCronTime().getMinute()}</#if>"
+                    >
+                    <span class="help-block">${i18n("admin.settings.cronTimeHelp")}</span>
+                </div>             
+                
+                <h2 class="styled-h2">${i18n("label.captcha")}</h2>
+                <hr/>
+
+                <div class="form-group" >
+                    <label for="service" >${i18n("admin.settings.service")}</label>
+                    <div>
+                        <select id="service" class="selectpicker" name="service">
+                            <option value="DISABLED" <#if config.getCaptchaService() == "DISABLED">selected</#if> >Disabled</option>
+                            <option value="DEATHBYCAPTCHA" <#if config.getCaptchaService() == "DEATHBYCAPTCHA">selected</#if> >DeathByCaptcha</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" >
+                    <label for="dbcUser" >${i18n("admin.settings.dbcuser")}</label>
+                    <input id="dbcUser" class="form-control" name="dbcUser" value="${config.getDbcUser()!""}" >
+                </div>
+
+                <div class="form-group" >
+                    <label for="dbcPass" >${i18n("admin.settings.dbcPass")}</label>
+                    <input id="dbcPass" class="form-control" name="dbcPass" value="${config.getDbcPass()!""}" >
+                </div>
+                
+                <hr/>
+                <h2 class="styled-h2">${i18n("label.display")}</h2>
+                <hr/>
+                
+                <div class="form-group" >
+                    <label for="displayHome" >${i18n("admin.settings.searchDisplayMode")}</label>
+                    <div>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default <#if config.getDisplayHome() == "summary" >active</#if>">
+                                <input type="radio" name="displayHome" value="summary" <#if config.getDisplayHome() == "summary" >checked="checked"</#if> > 
+                                <i class="fa fa-th-large" ></i> ${i18n("label.summary")}
+                            </label>
+                            <label class="btn btn-default <#if config.getDisplayHome() == "table" >active</#if>">
+                                <input type="radio" name="displayHome" value="table" <#if config.getDisplayGoogleTarget() == "table" >checked="checked"</#if>>
+                                <i class="fa fa-table" ></i> ${i18n("label.table")}
+                            </label>
+                        </div>         
+                    </div>
+                </div>                
+                
+                <div class="form-group" >
+                    <label for="displayGoogleTarget" >${i18n("admin.settings.targetDisplayMode")}</label>
+                    <div>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default <#if config.getDisplayGoogleTarget() == "variation" >active</#if>">
+                                <input type="radio" name="displayGoogleTarget" value="variation" <#if config.getDisplayGoogleTarget() == "variation" >checked="checked"</#if> > 
+                                <i class="fa fa-random" ></i> ${i18n("google.target.variations")}
+                            </label>                            
+                            <label class="btn btn-default <#if config.getDisplayGoogleTarget() == "chart" >active</#if>">
+                                <input type="radio" name="displayGoogleTarget" value="chart" <#if config.getDisplayGoogleTarget() == "chart" >checked="checked"</#if> > 
+                                <i class="glyphicon glyphicon-signal" ></i> ${i18n("label.chart")}
+                            </label>
+                            <label class="btn btn-default <#if config.getDisplayGoogleTarget() == "table" >active</#if>">
+                                <input type="radio" name="displayGoogleTarget" value="table" <#if config.getDisplayGoogleTarget() == "table" >checked="checked"</#if>>
+                                <i class="fa fa-table" ></i> ${i18n("label.table")}
+                            </label>
+                        </div>         
+                    </div>
+                </div>                
+
+                <div class="form-group" >
+                    <label for="displayGoogleSearch" >${i18n("admin.settings.searchDisplayMode")}</label>
+                    <div>
+                        <div class="btn-group" data-toggle="buttons">
+                            
+                            <label class="btn btn-default <#if config.getDisplayGoogleSearch() == "split" >active</#if>">
+                                <input type="radio" name="displayGoogleSearch" value="split" <#if config.getDisplayGoogleSearch() == "split" >checked="checked"</#if> > 
+                                <i class="glyphicon glyphicon-th-large" ></i> ${i18n("label.split")}
+                            </label>                            
+                            <label class="btn btn-default <#if config.getDisplayGoogleSearch() == "chart" >active</#if>">
+                                <input type="radio" name="displayGoogleSearch" value="chart" <#if config.getDisplayGoogleSearch() == "chart" >checked="checked"</#if>> 
+                                <i class="glyphicon glyphicon-signal" ></i> ${i18n("label.chart")}
+                            </label>
+                            <label class="btn btn-default <#if config.getDisplayGoogleSearch() == "table" >active</#if>">
+                                <input type="radio" name="displayGoogleSearch" value="table" <#if config.getDisplayGoogleSearch() == "table" >checked="checked"</#if>>
+                                <i class="glyphicon glyphicon-list-alt" ></i> SERP
+                            </label>                            
+                        </div>         
+                    </div>
+                </div>
+
+                <hr/>
+                <input type="button" id="btn-reset-settings" class="btn btn-default" value="${i18n("label.reset")}" 
+                       data-action="${reverseRoute("admin.SettingsController","reset")}" />
+                       <input type="submit" class="btn btn-primary" value="${i18n("label.save")}" />
+            </form>
+        </div>
+    </div>
+</div>
+<div class="csp-script" data-src="adminSettingsController.settings" ></div>
+</@>

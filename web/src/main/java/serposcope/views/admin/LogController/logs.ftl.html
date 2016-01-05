@@ -1,0 +1,19 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../admin.ftl.html" as layout>
+<@layout.adminLayout i18n("admin.log.title") >
+
+<div class="row" >
+    <div class="col-xs-12" >
+        <ul>
+        <#list logs as log>
+            <li>
+                <a href="${reverseRoute("admin.LogController","viewLog","log",log)}" >${log}</a>
+                (<a href="${reverseRoute("admin.LogController","viewLog","log",log, "ano", "1")}" >${i18n("label.anonymized")}</a>)
+            </li>
+        </#list>
+        </ul>
+    </div>
+</div>
+
+<!--<div class="csp-script" data-src="adminTaskController.render" ></div>-->
+</@>

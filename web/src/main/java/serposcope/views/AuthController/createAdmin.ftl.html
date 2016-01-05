@@ -1,0 +1,56 @@
+<#import "../layout/unlogged.ftl.html" as layout> 
+<@layout.unloggedLayout i18n("auth.createAdmin.title") >    
+
+<div class="login-box">
+
+    <div class="login-logo">
+        <h1>SERPOSCOPE</h1>
+        by <a href="https://serphacker.com/">serphacker.com</a>
+    </div>
+
+    <div class="login-form">
+        
+        <h2 class="text-center" >${i18n("auth.createAdmin.title")}</h2>
+
+        <div class="login-box-msg" >
+            <#include "../helpers/alerts.ftl.html" />
+        </div>
+        
+        <#if passwordResetFileExists >
+        <div class="login-box-msg" >
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">${i18n("label.close")}</span></button>
+                <div class="alert-upper">${i18n("auth.createAdmin.passwordResetFileExists")}</div>
+            </div>            
+        </div>
+        </#if>
+
+        <form action="${reverseRoute("AuthController","createAdmin")}" method="post">
+            <div class="form-group has-feedback">
+                <input type="email"  name="email" class="form-control" placeholder="${i18n("label.email")}">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="email"  name="email-confirm" class="form-control" placeholder="${i18n("label.confirmEmail")}">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>              
+            <div class="form-group has-feedback">
+                <input type="password" name="password" class="form-control" placeholder="${i18n("label.password")}">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" name="password-confirm" class="form-control" placeholder="${i18n("label.confirmPassword")}">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>              
+            <div class="row">
+                <div class="col-xs-offset-8 col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">${i18n("label.create")}</button>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+
+</div>
+
+</@>

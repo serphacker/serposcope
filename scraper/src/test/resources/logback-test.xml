@@ -1,0 +1,22 @@
+<configuration>
+    
+    <appender name="STDOUTx" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d] [%t] %-5p %c{5} - %m%n</pattern>
+        </encoder>
+    </appender>
+  
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUTx" />
+    </root>    
+    
+    <logger name="ch.qos.logback" level="ERROR" />
+    <logger name="com.serphacker" level="TRACE" />
+    <logger name="eu.medsea.mimeutil" level="ERROR" />
+    <logger name="org.apache.http" level="OFF" />
+    <logger name="org.apache.http.wire" level="OFF" />
+
+    <!--<logger name="org.apache.http.headers" level="DEBUG" />-->
+
+</configuration>

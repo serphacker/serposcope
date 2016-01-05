@@ -1,0 +1,83 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../admin.ftl.html" as layout>
+<@layout.adminLayout i18n("admin.title") >
+
+<h2 class="styled-h2">${i18n("admin.title")}</h2>
+
+<div class="row top15">
+    <a href="${reverseRoute("admin.SettingsController","settings")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+        <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="fa fa-wrench"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.settings")}</span>
+            </div>
+        </div>
+    </a>
+    <a href="${reverseRoute("admin.ProxyController","proxies")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+        <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-shield"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.proxies")}</span>
+            </div>
+        </div>
+    </a>
+    <a href="${reverseRoute("admin.GoogleSettingsController","settings")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-yellow"><i class="fa fa-google-plus-square"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.google")}</span>
+            </div>
+        </div>
+    </a>
+    <a href="${reverseRoute("admin.UsersController","users")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-navy"><i class="fa fa-group"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.users")}</span>
+            </div>
+        </div>
+    </a>    
+    <a href="${reverseRoute("admin.TaskController","tasks")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-purple"><i class="fa fa-cogs"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.tasks")}</span>
+            </div>
+        </div>
+    </a>
+    <a href="${reverseRoute("admin.LogController","logs")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-maroon"><i class="fa fa-file-text"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.logs")}</span>
+            </div>
+        </div>
+    </a>
+    <a href="${reverseRoute("admin.AdminController","sysconfig")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-gray"><i class="fa fa-desktop"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.sysconfig")}</span>
+            </div>
+        </div>
+    </a>    
+    <#if !global.prod >
+    <a href="${reverseRoute("admin.DebugController","debug")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-briefcase"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.debug")}</span>
+            </div>
+        </div>
+    </a>    
+    </#if>
+</div>
+</@>

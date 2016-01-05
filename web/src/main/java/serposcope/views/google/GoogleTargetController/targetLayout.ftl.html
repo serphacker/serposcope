@@ -1,0 +1,50 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#macro googleTargetLayout>
+<#import "../google.ftl.html" as layout>
+<@layout.googleLayout target.getName()>
+
+<div class="row">
+    <div class="col-sm-6" >
+        <ol class="breadcrumb" >
+            <li><a href="/"><i class="fa fa-home" ></i></a></li>
+            <li><a href="${reverseRoute("google.GoogleGroupController","view","groupId",group.getId())}">${group.getName()}</a></li>
+            <li><a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId())}">${target.getName()}</a></li>
+        </ol>        
+    </div>
+    <div class="col-sm-6" >
+        <div class="pull-right" >
+
+            <div class="inline-block" >
+                <div class="input-group" style="width: 190px;">
+                    <input id="daterange" type="text" class="form-control" value="${i18n("label.noDataAvailable")}" disabled />
+                </div> 
+            </div>
+
+            <div class="input-group inline-block" >
+                <div class="input-group-btn" style="width: 120px;">
+                    <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "variation", "startDate", startDate!"", "endDate", endDate!"")}" class="btn btn-default <#if display == "variation">active</#if>" data-toggle="tooltip" title="${i18n("google.target.variations")}" ><span class="fa fa-random"></span></a>                    
+                    <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "chart", "startDate", startDate!"", "endDate", endDate!"")}" class="btn btn-default <#if display == "chart">active</#if>" data-toggle="tooltip" title="${i18n("label.chart")}" ><span class="glyphicon glyphicon-signal"></span></a>
+                    <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "table", "startDate", startDate!"", "endDate", endDate!"")}" class="btn btn-default <#if display == "table">active</#if>" data-toggle="tooltip" title="${i18n("label.table")}" ><span class="fa fa-table"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#nested/>
+
+<div class="csp-script" data-src="googleTargetController.render" ></div>
+<div id="csp-vars"
+     data-display="${display}"
+     data-group-id="${group.getId()}"
+     data-target-id="${target.getId()}"
+     data-start-date="${startDate!""}"
+     data-end-date="${endDate!""}"
+     data-min-date="${minDate!""}"
+     data-max-date="${maxDate!""}"
+     data-chart="${ranksJson!"{}"}"
+     data-events="${eventsJson!"[]"}"     
+     ></div>
+
+</@>
+</#macro>

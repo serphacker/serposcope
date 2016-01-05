@@ -1,0 +1,162 @@
+/*
+MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
+
+@link https://serposcope.serphacker.com/ Serposcope rank checker
+@author Pierre Nogues <pierre@serphacker.com>
+@license https://opensource.org/licenses/MIT
+*/
+.setting-form {
+    background-color:white; 
+    border-radius: 5px; 
+    padding-bottom: 15px; 
+    margin-bottom: 30px;
+}
+
+/** search **/
+#google-search-chart-container {
+    background-color: white;
+}
+
+#google-search-chart {
+    border-width: 1px 1px 0px 1px;
+    border-color: lightgray;
+    border-style: solid;
+    background-color: white;
+}
+
+#google-search-legend {
+    border-width: 0px 1px 1px 1px;
+    border-color: lightgray;
+    border-style: solid;    
+    background-color: white;
+    min-height: 20px;
+}
+
+.calendar-annotation {
+    cursor: pointer;
+}
+
+/*.dygraph-legend {
+    font-weight: bold;
+}*/
+
+#google-rank-serp .rank {
+    width: 50px;
+    cursor: default;
+}
+
+#google-search-table {
+    overflow: auto;
+    background-color: white;
+    border: 1px solid lightgrey;
+}
+
+#google-search-table table {
+    margin-bottom: 0px;
+}
+
+#google-search-table th {
+    border-top: 0px;
+}
+
+.btn-draw-chart,
+.btn-add-favorite{
+    opacity: 0.3;
+}
+
+.btn-draw-chart.active,
+.btn-add-favorite.active {
+    opacity: 1;
+}
+
+/** target **/
+#btn-delete-target,
+#btn-delete-search {
+    margin-left: 10px;
+}
+
+.table-striped-column > tbody > tr td:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.table-striped-column > tbody > tr td:nth-of-type(even) {
+    background-color: white;
+}
+
+#google-target-variation-container {
+    background-color: white;
+    padding: 10px;
+}
+
+#google-target-table-container {
+    background-color: white;
+    overflow-x: scroll; 
+    white-space: nowrap;
+}
+
+#google-target-chart {
+    border-width: 1px 1px 0px 1px;
+    border-color: lightgray;
+    border-style: solid;
+    background-color: white;
+}
+
+#google-target-legend {
+    border-width: 0px 1px 1px 1px;
+    border-color: lightgray;
+    border-style: solid;    
+    background-color: white;
+    min-height: 20px;
+}
+
+#google-target-table thead th,
+#google-target-table thead td{
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#google-target-table .sortable th {
+    cursor: pointer;
+    background-color: #3c8dbc; 
+}
+
+#google-target-table th,
+#google-target-table td {
+    cursor: pointer;
+}
+
+#google-target-table .popover-content {
+    cursor: default;
+}
+
+#google-target-table .popover{
+    max-width: 100%;
+}
+
+#google-target-table .bestrank {
+    background-color: #FFFFA0; 
+    font-weight: bold;
+}
+
+.target-name {
+    margin-right: 10px;
+}
+
+/*#google-target-table .diff-,
+#google-target-table .diff-plus,
+#google-target-table .diff-minus{
+    cursor: default;
+}*/
+
+.diff-plus {
+    color: green;
+}
+
+.diff-minus {
+    color: red;
+}
+
+/* tab calendar */
+.toggle-event{
+    cursor: pointer;
+}

@@ -1,0 +1,1 @@
+INSERT INTO `CONFIG` VALUES ('app.dbversion','2') ON DUPLICATE KEY UPDATE `value` = '2';

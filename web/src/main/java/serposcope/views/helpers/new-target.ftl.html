@@ -1,0 +1,37 @@
+<div id="new-target" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">${i18n("label.newWebsite")}</h4>
+            </div>
+            <form class="form" method="post" action="${reverseRoute("google.GoogleGroupController","addTarget","groupId",group.getId())}" >
+                  <@authenticityForm/>
+                  <div class="modal-body">
+
+                    <div class="form-group" >
+                        <label for="targetName" >${i18n("label.name")}</label>
+                        <input id="targetName" class="form-control" name="name" >
+                    </div>
+                      
+                    <div class="form-group" >
+                        <label for="input-helper" >${i18n("label.pattern")}</label>
+                        <div class="top10">
+                            <input id="target-domain" class="target-radio" type="radio" name="target-radio" value="DOMAIN" checked="checked" 
+                                data-help="${i18n("google.group.targetType.domainHelper")}" > ${i18n("google.group.targetType.domain")}
+                            <input class="target-radio" type="radio" name="target-radio" value="SUBDOMAIN" 
+                                data-help="${i18n("google.group.targetType.subdomainHelper")}" > ${i18n("google.group.targetType.subdomain")}&nbsp; 
+                            <input class="target-radio" type="radio" name="target-radio" value="REGEX" 
+                            data-help="${i18n("google.group.targetType.regexHelper")}" > ${i18n("google.group.targetType.regex")}
+                        </div>
+                        <input id="pattern" name="pattern" class="form-control top10" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                    <input type="submit" class="btn btn-primary" value="${i18n("label.save")}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

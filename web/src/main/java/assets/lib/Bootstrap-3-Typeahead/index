@@ -1,0 +1,1070 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#">
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="viewport" content="width=1020">
+    
+    
+    <title>bassjobsen/Bootstrap-3-Typeahead · GitHub</title>
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
+    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144.png">
+    <meta property="fb:app_id" content="1401488693436528">
+
+      <meta content="@github" name="twitter:site" /><meta content="summary" name="twitter:card" /><meta content="bassjobsen/Bootstrap-3-Typeahead" name="twitter:title" /><meta content="Bootstrap-3-Typeahead - The Typeahead plugin from Twitter&#39;s Bootstrap 2 ready to use with Bootstrap 3" name="twitter:description" /><meta content="https://avatars2.githubusercontent.com/u/954055?v=3&amp;s=400" name="twitter:image:src" />
+      <meta content="GitHub" property="og:site_name" /><meta content="object" property="og:type" /><meta content="https://avatars2.githubusercontent.com/u/954055?v=3&amp;s=400" property="og:image" /><meta content="bassjobsen/Bootstrap-3-Typeahead" property="og:title" /><meta content="https://github.com/bassjobsen/Bootstrap-3-Typeahead" property="og:url" /><meta content="Bootstrap-3-Typeahead - The Typeahead plugin from Twitter&#39;s Bootstrap 2 ready to use with Bootstrap 3" property="og:description" />
+      <meta name="browser-stats-url" content="https://api.github.com/_private/browser/stats">
+    <meta name="browser-errors-url" content="https://api.github.com/_private/browser/errors">
+    <link rel="assets" href="https://assets-cdn.github.com/">
+    
+    <meta name="pjax-timeout" content="1000">
+    
+
+    <meta name="msapplication-TileImage" content="/windows-tile.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="selected-link" value="repo_source" data-pjax-transient>
+
+    <meta name="google-site-verification" content="KT5gs8h0wvaagLKAVWq8bbeNwnZZK1r1XQysX3xurLU">
+    <meta name="google-analytics" content="UA-3769691-2">
+
+<meta content="collector.githubapp.com" name="octolytics-host" /><meta content="collector-cdn.github.com" name="octolytics-script-host" /><meta content="github" name="octolytics-app-id" /><meta content="56C047D3:7D23:2DD11BB:561CDB77" name="octolytics-dimension-request_id" />
+
+<meta content="Rails, view, files#disambiguate" data-pjax-transient="true" name="analytics-event" />
+
+
+  <meta class="js-ga-set" name="dimension1" content="Logged Out">
+    <meta class="js-ga-set" name="dimension4" content="Current repo nav">
+
+
+
+
+    <meta name="is-dotcom" content="true">
+        <meta name="hostname" content="github.com">
+    <meta name="user-login" content="">
+
+      <link rel="mask-icon" href="https://assets-cdn.github.com/pinned-octocat.svg" color="#4078c0">
+      <link rel="icon" type="image/x-icon" href="https://assets-cdn.github.com/favicon.ico">
+
+      <!-- </textarea> --><!-- '"` --><meta content="authenticity_token" name="csrf-param" />
+<meta content="/UJOtzN7TPWoOKKe7DmSEvwduLYtdNXvPaBhEdePOUSdWX3a45sHVVPeEGJhRvBvNJ5up08Kcyq5NGproB/tSQ==" name="csrf-token" />
+    <meta content="5853bd7495fe8cde9f5958a25f6274fce97b5cb4" name="form-nonce" />
+
+    <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github-d1395afc00b6ef3ac00f47a810f675ac6ce6bc99e9eba88f96818421cb765c11.css" media="all" rel="stylesheet" />
+    <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github2-3f07a3d596406203493888fb13a6f616e5c934049b885f2cef2046ddf3f421be.css" media="all" rel="stylesheet" />
+    
+    
+    
+
+
+    <meta http-equiv="x-pjax-version" content="6b76d8a79fe43839fd266bb69529d902">
+
+      
+  <meta name="description" content="Bootstrap-3-Typeahead - The Typeahead plugin from Twitter&#39;s Bootstrap 2 ready to use with Bootstrap 3">
+  <meta name="go-import" content="github.com/bassjobsen/Bootstrap-3-Typeahead git https://github.com/bassjobsen/Bootstrap-3-Typeahead.git">
+
+  <meta content="954055" name="octolytics-dimension-user_id" /><meta content="bassjobsen" name="octolytics-dimension-user_login" /><meta content="12671473" name="octolytics-dimension-repository_id" /><meta content="bassjobsen/Bootstrap-3-Typeahead" name="octolytics-dimension-repository_nwo" /><meta content="true" name="octolytics-dimension-repository_public" /><meta content="false" name="octolytics-dimension-repository_is_fork" /><meta content="12671473" name="octolytics-dimension-repository_network_root_id" /><meta content="bassjobsen/Bootstrap-3-Typeahead" name="octolytics-dimension-repository_network_root_nwo" />
+  <link href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/commits/master.atom" rel="alternate" title="Recent Commits to Bootstrap-3-Typeahead:master" type="application/atom+xml">
+
+  </head>
+
+
+  <body class="logged_out   env-production  vis-public">
+    <a href="#start-of-content" tabindex="1" class="accessibility-aid js-skip-to-content">Skip to content</a>
+
+    
+    
+    
+
+
+
+      
+      <div class="header header-logged-out" role="banner">
+  <div class="container clearfix">
+
+    <a class="header-logo-wordmark" href="https://github.com/" data-ga-click="(Logged out) Header, go to homepage, icon:logo-wordmark">
+      <span class="mega-octicon octicon-logo-github"></span>
+    </a>
+
+    <div class="header-actions" role="navigation">
+        <a class="btn btn-primary" href="/join" data-ga-click="(Logged out) Header, clicked Sign up, text:sign-up">Sign up</a>
+      <a class="btn" href="/login?return_to=%2Fbassjobsen%2FBootstrap-3-Typeahead" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
+    </div>
+
+    <div class="site-search repo-scope js-site-search" role="search">
+      <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/bassjobsen/Bootstrap-3-Typeahead/search" class="js-site-search-form" data-global-search-url="/search" data-repo-search-url="/bassjobsen/Bootstrap-3-Typeahead/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+  <label class="js-chromeless-input-container form-control">
+    <div class="scope-badge">This repository</div>
+    <input type="text"
+      class="js-site-search-focus js-site-search-field is-clearable chromeless-input"
+      data-hotkey="s"
+      name="q"
+      placeholder="Search"
+      aria-label="Search this repository"
+      data-global-scope-placeholder="Search GitHub"
+      data-repo-scope-placeholder="Search"
+      tabindex="1"
+      autocapitalize="off">
+  </label>
+</form>
+    </div>
+
+      <ul class="header-nav left" role="navigation">
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="/explore" data-ga-click="(Logged out) Header, go to explore, text:explore">Explore</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="/features" data-ga-click="(Logged out) Header, go to features, text:features">Features</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="https://enterprise.github.com/" data-ga-click="(Logged out) Header, go to enterprise, text:enterprise">Enterprise</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="/pricing" data-ga-click="(Logged out) Header, go to pricing, text:pricing">Pricing</a>
+          </li>
+      </ul>
+
+  </div>
+</div>
+
+
+
+    <div id="start-of-content" class="accessibility-aid"></div>
+
+    <div id="js-flash-container">
+</div>
+
+
+    <div role="main" class="main-content">
+        <div itemscope itemtype="http://schema.org/WebPage">
+    <div class="pagehead repohead instapaper_ignore readability-menu">
+
+      <div class="container">
+
+        <div class="clearfix">
+          
+
+<ul class="pagehead-actions">
+
+  <li>
+      <a href="/login?return_to=%2Fbassjobsen%2FBootstrap-3-Typeahead"
+    class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+    aria-label="You must be signed in to watch a repository" rel="nofollow">
+    <span class="octicon octicon-eye"></span>
+    Watch
+  </a>
+  <a class="social-count" href="/bassjobsen/Bootstrap-3-Typeahead/watchers">
+    53
+  </a>
+
+  </li>
+
+  <li>
+      <a href="/login?return_to=%2Fbassjobsen%2FBootstrap-3-Typeahead"
+    class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+    aria-label="You must be signed in to star a repository" rel="nofollow">
+    <span class="octicon octicon-star"></span>
+    Star
+  </a>
+
+    <a class="social-count js-social-count" href="/bassjobsen/Bootstrap-3-Typeahead/stargazers">
+      650
+    </a>
+
+  </li>
+
+  <li>
+      <a href="/login?return_to=%2Fbassjobsen%2FBootstrap-3-Typeahead"
+        class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+        aria-label="You must be signed in to fork a repository" rel="nofollow">
+        <span class="octicon octicon-repo-forked"></span>
+        Fork
+      </a>
+
+    <a href="/bassjobsen/Bootstrap-3-Typeahead/network" class="social-count">
+      429
+    </a>
+  </li>
+</ul>
+
+          <h1 itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public ">
+  <span class="mega-octicon octicon-repo"></span>
+  <span class="author"><a href="/bassjobsen" class="url fn" itemprop="url" rel="author"><span itemprop="title">bassjobsen</span></a></span><!--
+--><span class="path-divider">/</span><!--
+--><strong><a href="/bassjobsen/Bootstrap-3-Typeahead" data-pjax="#js-repo-pjax-container">Bootstrap-3-Typeahead</a></strong>
+
+  <span class="page-context-loader">
+    <img alt="" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+  </span>
+
+</h1>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="repository-with-sidebar repo-container new-discussion-timeline with-full-navigation">
+        <div class="repository-sidebar clearfix">
+          
+<nav class="sunken-menu repo-nav js-repo-nav js-sidenav-container-pjax js-octicon-loaders"
+     role="navigation"
+     data-pjax="#js-repo-pjax-container"
+     data-issue-count-url="/bassjobsen/Bootstrap-3-Typeahead/issues/counts">
+  <ul class="sunken-menu-group">
+    <li class="tooltipped tooltipped-w" aria-label="Code">
+      <a href="/bassjobsen/Bootstrap-3-Typeahead" aria-label="Code" aria-selected="true" class="js-selected-navigation-item selected sunken-menu-item" data-hotkey="g c" data-selected-links="repo_source repo_downloads repo_commits repo_releases repo_tags repo_branches /bassjobsen/Bootstrap-3-Typeahead">
+        <span class="octicon octicon-code"></span> <span class="full-word">Code</span>
+        <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+</a>    </li>
+
+      <li class="tooltipped tooltipped-w" aria-label="Issues">
+        <a href="/bassjobsen/Bootstrap-3-Typeahead/issues" aria-label="Issues" class="js-selected-navigation-item sunken-menu-item" data-hotkey="g i" data-selected-links="repo_issues repo_labels repo_milestones /bassjobsen/Bootstrap-3-Typeahead/issues">
+          <span class="octicon octicon-issue-opened"></span> <span class="full-word">Issues</span>
+          <span class="js-issue-replace-counter"></span>
+          <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+</a>      </li>
+
+    <li class="tooltipped tooltipped-w" aria-label="Pull requests">
+      <a href="/bassjobsen/Bootstrap-3-Typeahead/pulls" aria-label="Pull requests" class="js-selected-navigation-item sunken-menu-item" data-hotkey="g p" data-selected-links="repo_pulls /bassjobsen/Bootstrap-3-Typeahead/pulls">
+          <span class="octicon octicon-git-pull-request"></span> <span class="full-word">Pull requests</span>
+          <span class="js-pull-replace-counter"></span>
+          <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+</a>    </li>
+
+  </ul>
+  <div class="sunken-menu-separator"></div>
+  <ul class="sunken-menu-group">
+
+    <li class="tooltipped tooltipped-w" aria-label="Pulse">
+      <a href="/bassjobsen/Bootstrap-3-Typeahead/pulse" aria-label="Pulse" class="js-selected-navigation-item sunken-menu-item" data-selected-links="pulse /bassjobsen/Bootstrap-3-Typeahead/pulse">
+        <span class="octicon octicon-pulse"></span> <span class="full-word">Pulse</span>
+        <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+</a>    </li>
+
+    <li class="tooltipped tooltipped-w" aria-label="Graphs">
+      <a href="/bassjobsen/Bootstrap-3-Typeahead/graphs" aria-label="Graphs" class="js-selected-navigation-item sunken-menu-item" data-selected-links="repo_graphs repo_contributors /bassjobsen/Bootstrap-3-Typeahead/graphs">
+        <span class="octicon octicon-graph"></span> <span class="full-word">Graphs</span>
+        <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+</a>    </li>
+  </ul>
+
+
+</nav>
+
+            <div class="only-with-full-nav">
+                
+<div class="js-clone-url clone-url open"
+  data-protocol-type="http">
+  <h3 class="text-small"><span class="text-emphasized">HTTPS</span> clone URL</h3>
+  <div class="input-group js-zeroclipboard-container">
+    <input type="text" class="input-mini text-small input-monospace js-url-field js-zeroclipboard-target"
+           value="https://github.com/bassjobsen/Bootstrap-3-Typeahead.git" readonly="readonly" aria-label="HTTPS clone URL">
+    <span class="input-group-button">
+      <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button tooltipped tooltipped-s" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+    </span>
+  </div>
+</div>
+
+  
+<div class="js-clone-url clone-url "
+  data-protocol-type="subversion">
+  <h3 class="text-small"><span class="text-emphasized">Subversion</span> checkout URL</h3>
+  <div class="input-group js-zeroclipboard-container">
+    <input type="text" class="input-mini text-small input-monospace js-url-field js-zeroclipboard-target"
+           value="https://github.com/bassjobsen/Bootstrap-3-Typeahead" readonly="readonly" aria-label="Subversion checkout URL">
+    <span class="input-group-button">
+      <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button tooltipped tooltipped-s" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+    </span>
+  </div>
+</div>
+
+
+
+<div class="clone-options text-small">You can clone with
+  <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/users/set_protocol?protocol_selector=http&amp;protocol_type=clone" class="inline-form js-clone-selector-form " data-form-nonce="5853bd7495fe8cde9f5958a25f6274fce97b5cb4" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="exPAwSBEMWHQPhI8rTPUcqnOGmloiI5cvYGNSdfaMv4iOVoyAb+oDZ3Vix4mwMWrn1eccjDCbm0RzroyX6JaMQ==" /></div><button class="btn-link js-clone-selector" data-protocol="http" type="submit">HTTPS</button></form> or <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/users/set_protocol?protocol_selector=subversion&amp;protocol_type=clone" class="inline-form js-clone-selector-form " data-form-nonce="5853bd7495fe8cde9f5958a25f6274fce97b5cb4" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="+CuoQQXORrMq7BpG7h7Ei5/+dQTCm+bEBjjI4BsBFVgFfFaL1csXTfJlgGoJGGYIcovmlt+3N/qgrE6x94aIow==" /></div><button class="btn-link js-clone-selector" data-protocol="subversion" type="submit">Subversion</button></form>.
+  <a href="https://help.github.com/articles/which-remote-url-should-i-use" class="help tooltipped tooltipped-n" aria-label="Get help on which URL is right for you.">
+    <span class="octicon octicon-question"></span>
+  </a>
+</div>
+
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/archive/master.zip"
+                 class="btn btn-sm sidebar-button"
+                 aria-label="Download the contents of bassjobsen/Bootstrap-3-Typeahead as a zip file"
+                 title="Download the contents of bassjobsen/Bootstrap-3-Typeahead as a zip file"
+                 rel="nofollow">
+                <span class="octicon octicon-cloud-download"></span>
+                Download ZIP
+              </a>
+            </div>
+        </div>
+        <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container>
+
+          
+<span id="js-show-full-navigation"></span>
+
+  <div class="repository-meta js-details-container ">
+    <div class="repository-description">
+      The Typeahead plugin from Twitter's Bootstrap 2 ready to use with Bootstrap 3
+    </div>
+
+
+</div>
+
+
+<div class="overall-summary overall-summary-bottomless">
+
+  <div class="stats-switcher-viewport js-stats-switcher-viewport">
+    <div class="stats-switcher-wrapper">
+    <ul class="numbers-summary">
+      <li class="commits">
+        <a data-pjax href="/bassjobsen/Bootstrap-3-Typeahead/commits/master">
+            <span class="octicon octicon-history"></span>
+            <span class="num text-emphasized">
+              125
+            </span>
+            commits
+        </a>
+      </li>
+      <li>
+        <a data-pjax href="/bassjobsen/Bootstrap-3-Typeahead/branches">
+          <span class="octicon octicon-git-branch"></span>
+          <span class="num text-emphasized">
+            2
+          </span>
+          branches
+        </a>
+      </li>
+
+      <li>
+        <a data-pjax href="/bassjobsen/Bootstrap-3-Typeahead/releases">
+          <span class="octicon octicon-tag"></span>
+          <span class="num text-emphasized">
+            5
+          </span>
+          releases
+        </a>
+      </li>
+
+      <li>
+        
+  <a href="/bassjobsen/Bootstrap-3-Typeahead/graphs/contributors">
+    <span class="octicon octicon-organization"></span>
+    <span class="num text-emphasized">
+      31
+    </span>
+    contributors
+  </a>
+      </li>
+    </ul>
+
+      <div class="repository-lang-stats">
+        <ol class="repository-lang-stats-numbers">
+          <li>
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/search?l=javascript">
+                <span class="color-block language-color" style="background-color:#f1e05a;"></span>
+                <span class="lang">JavaScript</span>
+                <span class="percent">100.0%</span>
+              </a>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <div class="repository-lang-stats-graph js-toggle-lang-stats" title="Click for language details">
+    <span class="language-color" aria-label="JavaScript 100.0%" style="width:100.0%; background-color:#f1e05a;" itemprop="keywords">JavaScript</span>
+  </div>
+
+<include-fragment src="/bassjobsen/Bootstrap-3-Typeahead/show_partial?partial=tree%2Frecently_touched_branches_list"></include-fragment>
+
+  <div class="file-navigation in-mid-page">
+  <a href="/bassjobsen/Bootstrap-3-Typeahead/find/master"
+        class="js-show-file-finder btn btn-sm empty-icon tooltipped tooltipped-s right"
+        data-pjax
+        data-hotkey="t"
+        aria-label="Quickly jump between files"
+        data-ga-click="Repository, find file, location:repo overview">
+    <span class="octicon octicon-list-unordered"></span>
+  </a>
+    <a href="/bassjobsen/Bootstrap-3-Typeahead/compare" aria-label="Compare, review, create a pull request" class="btn btn-sm btn-primary tooltipped tooltipped-se left compare-button" aria-label="Compare &amp; review" data-pjax data-ga-click="Repository, go to compare view, location:repo overview; icon:git-compare">
+      <span class="octicon octicon-git-compare"></span>
+    </a>
+
+  
+<div class="select-menu js-menu-container js-select-menu left">
+  <span class="btn btn-sm select-menu-button js-menu-target css-truncate" data-hotkey="w"
+    title="master"
+    role="button" aria-label="Switch branches or tags" tabindex="0" aria-haspopup="true">
+    <i>Branch:</i>
+    <span class="js-select-button css-truncate-target">master</span>
+  </span>
+
+  <div class="select-menu-modal-holder js-menu-content js-navigation-container" data-pjax aria-hidden="true">
+
+    <div class="select-menu-modal">
+      <div class="select-menu-header">
+        <span class="select-menu-title">Switch branches/tags</span>
+        <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+      </div>
+
+      <div class="select-menu-filters">
+        <div class="select-menu-text-filter">
+          <input type="text" aria-label="Filter branches/tags" id="context-commitish-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter branches/tags">
+        </div>
+        <div class="select-menu-tabs">
+          <ul>
+            <li class="select-menu-tab">
+              <a href="#" data-tab-filter="branches" data-filter-placeholder="Filter branches/tags" class="js-select-menu-tab" role="tab">Branches</a>
+            </li>
+            <li class="select-menu-tab">
+              <a href="#" data-tab-filter="tags" data-filter-placeholder="Find a tag…" class="js-select-menu-tab" role="tab">Tags</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="branches" role="menu">
+
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <a class="select-menu-item js-navigation-item js-navigation-open selected"
+               href="/bassjobsen/Bootstrap-3-Typeahead/tree/master"
+               data-name="master"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <span class="select-menu-item-text css-truncate-target" title="master">
+                master
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+               href="/bassjobsen/Bootstrap-3-Typeahead/tree/revert-88-master"
+               data-name="revert-88-master"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <span class="select-menu-item-text css-truncate-target" title="revert-88-master">
+                revert-88-master
+              </span>
+            </a>
+        </div>
+
+          <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tags">
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/tree/v3.1.1"
+                 data-name="v3.1.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v3.1.1">v3.1.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/tree/v3.1.0"
+                 data-name="v3.1.0"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v3.1.0">v3.1.0</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/tree/v3.0.5"
+                 data-name="v3.0.5"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v3.0.5">v3.0.5</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/tree/v3.0.4"
+                 data-name="v3.0.4"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v3.0.4">v3.0.4</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/tree/v3.0.3"
+                 data-name="v3.0.3"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v3.0.3">v3.0.3</a>
+            </div>
+        </div>
+
+        <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+  <div class="breadcrumb"><span class="repo-root js-repo-root"><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/bassjobsen/Bootstrap-3-Typeahead" class="" data-branch="master" data-pjax="true" itemscope="url"><span itemprop="title">Bootstrap-3-Typeahead</span></a></span></span><span class="separator">/</span>
+  <span class="tooltipped tooltipped-e disabled text-muted" aria-label="You must be signed in to make or propose changes">
+    <span class="octicon octicon-plus"></span>
+  </span>
+</div>
+</div>
+
+
+
+
+
+  <div class="commit commit-tease js-details-container" >
+    <p class="commit-title ">
+        <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/8c453acfc365666c0e99873d385bf5e0ad4637bf" class="message" data-pjax="true" title="Merge pull request #146 from JoshMcCullough/JoshMcCullough-patch-1
+
+Fixed some syntax (textual) errors in README.">Merge pull request</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/pull/146" class="issue-link" title="Fixed some syntax (textual) errors in README.">#146</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/8c453acfc365666c0e99873d385bf5e0ad4637bf" class="message" data-pjax="true" title="Merge pull request #146 from JoshMcCullough/JoshMcCullough-patch-1
+
+Fixed some syntax (textual) errors in README.">from JoshMcCullough/JoshMcCullough-patch-1</a>
+        <span class="hidden-text-expander inline"><a href="#" class="js-details-target">…</a></span>
+    </p>
+      <div class="commit-desc"><pre>Fixed some syntax (textual) errors in README.</pre></div>
+    <div class="commit-meta">
+      <button aria-label="Copy SHA" class="js-zeroclipboard zeroclipboard-link tooltipped tooltipped-s" data-clipboard-text="8c453acfc365666c0e99873d385bf5e0ad4637bf" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+      <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/8c453acfc365666c0e99873d385bf5e0ad4637bf" class="sha-block" data-pjax>latest commit <span class="sha">8c453acfc3</span></a>
+
+      <div class="authorship">
+        <img alt="@bassjobsen" class="avatar" height="20" src="https://avatars2.githubusercontent.com/u/954055?v=3&amp;s=40" width="20" />
+        <span class="author-name"><a href="/bassjobsen" rel="author">bassjobsen</a></span>
+        authored <time class="updated" datetime="2015-08-22T12:45:58Z" is="relative-time">Aug 22, 2015</time>
+
+      </div>
+    </div>
+  </div>
+
+
+<div class="file-wrap">
+  <a href="/bassjobsen/Bootstrap-3-Typeahead/tree/8c453acfc365666c0e99873d385bf5e0ad4637bf" class="hidden js-permalink-shortcut" data-hotkey="y">Permalink</a>
+
+  <table class="files js-navigation-container js-active-navigation-container" data-pjax>
+
+
+    <tbody>
+      <tr class="warning include-fragment-error">
+        <td class="icon"><span class="octicon octicon-alert"></span></td>
+        <td class="content" colspan="3">Failed to load latest commit information.</td>
+      </tr>
+
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/.gitignore" class="js-directory-link js-navigation-open" id="a084b794bc0759e7a6b77810e01874f2-84d48d86e28c87459c1983a44d436fb11249ce53" title=".gitignore">.gitignore</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/e52d9631bc121282b78b4e275bb36ba96b246a17" class="message" data-pjax="true" title="add grunt tests, see issue #87 (both tests fail now)">add grunt tests, see issue</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/87" class="issue-link" title="Syntax errors">#87</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/e52d9631bc121282b78b4e275bb36ba96b246a17" class="message" data-pjax="true" title="add grunt tests, see issue #87 (both tests fail now)">(both tests fail now)</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2014-12-03T00:10:47Z" is="time-ago">Dec 3, 2014</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/.jscsrc" class="js-directory-link js-navigation-open" id="e5b8cacefa8c329daed4f4b628f72e61-9612c1683328ccfb22758050fb48d6871d7a81b6" title=".jscsrc">.jscsrc</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/e52d9631bc121282b78b4e275bb36ba96b246a17" class="message" data-pjax="true" title="add grunt tests, see issue #87 (both tests fail now)">add grunt tests, see issue</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/87" class="issue-link" title="Syntax errors">#87</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/e52d9631bc121282b78b4e275bb36ba96b246a17" class="message" data-pjax="true" title="add grunt tests, see issue #87 (both tests fail now)">(both tests fail now)</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2014-12-03T00:10:47Z" is="time-ago">Dec 3, 2014</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/.jshintrc" class="js-directory-link js-navigation-open" id="4d5aa81bf4f18104bb6ea53a8b5d1f43-8e16297d79774014bffb504f2cc1350907fc6f61" title=".jshintrc">.jshintrc</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/01066a5d3955a19888ecb72ad60ec95359373bbd" class="message" data-pjax="true" title="Added option to append dropdown to another element.  Updated .jshintrc to handle module symbols and unused event params.  jscs is still complaining about many formatting issues">Added option to append dropdown to another element. Updated .jshintrc…</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2014-12-09T21:46:04Z" is="time-ago">Dec 10, 2014</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/Gruntfile.js" class="js-directory-link js-navigation-open" id="35b4a816e0441e6a375cd925af50752c-6f5a4d00b6d49dcb7a66b01115e0063f25cc1da6" title="Gruntfile.js">Gruntfile.js</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/e52d9631bc121282b78b4e275bb36ba96b246a17" class="message" data-pjax="true" title="add grunt tests, see issue #87 (both tests fail now)">add grunt tests, see issue</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/87" class="issue-link" title="Syntax errors">#87</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/e52d9631bc121282b78b4e275bb36ba96b246a17" class="message" data-pjax="true" title="add grunt tests, see issue #87 (both tests fail now)">(both tests fail now)</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2014-12-03T00:10:47Z" is="time-ago">Dec 3, 2014</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/README.md" class="js-directory-link js-navigation-open" id="04c6e90faac2675aa89e2176d2eec7d8-62d511dc0137ee4fd3fce14a9e738c78eefb5b3e" title="README.md">README.md</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/9d640e7a35198ccfd636e363f3f8e9706800c6cc" class="message" data-pjax="true" title="Fixed some syntax (textual) errors in README.">Fixed some syntax (textual) errors in README.</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-08-20T14:49:40Z" is="time-ago">Aug 20, 2015</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/bootstrap3-typeahead.js" class="js-directory-link js-navigation-open" id="726fcacbe6ca01b4d82c70622ea21461-476b34f8c0a672ec6740f1bca40610f57af25834" title="bootstrap3-typeahead.js">bootstrap3-typeahead.js</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/38f78ecba440794917adecb376e95317279c589f" class="message" data-pjax="true" title="Remove unnecessary stop propagation relates to #31">Remove unnecessary stop propagation relates to</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/31" class="issue-link" title="Keyup remove e.stopPropagation()">#31</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-04-20T07:54:08Z" is="time-ago">Apr 20, 2015</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/bootstrap3-typeahead.min.js" class="js-directory-link js-navigation-open" id="d50dde41ea672c745d83e03b84f76404-ae19ae38624d5f87138b150103e5db15f6bb391e" title="bootstrap3-typeahead.min.js">bootstrap3-typeahead.min.js</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">try to fix</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/114" class="issue-link" title="Last published version (3.1) includes v3.0.3 files">#114</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">and possible</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/111" class="issue-link" title="Can't get code to work. Tried everything.">#111</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">too</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-04-05T22:20:53Z" is="time-ago">Apr 6, 2015</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/bower.json" class="js-directory-link js-navigation-open" id="0a08a7565aba4405282251491979bb6b-188da68c801d96dd4cd30e328ff13b5eb29def79" title="bower.json">bower.json</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">try to fix</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/114" class="issue-link" title="Last published version (3.1) includes v3.0.3 files">#114</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">and possible</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/111" class="issue-link" title="Can't get code to work. Tried everything.">#111</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">too</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-04-05T22:20:53Z" is="time-ago">Apr 5, 2015</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/composer.json" class="js-directory-link js-navigation-open" id="b5d0ee8c97c7abd7e3fa29b9a27d1780-2caf6f74811305509c5ae762ca9b2c649a0fdfef" title="composer.json">composer.json</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/19b475b38efa2d6274008e3353635b5a2038b480" class="message" data-pjax="true" title="Added missing component type">Added missing component type</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2014-11-15T16:01:31Z" is="time-ago">Nov 15, 2014</time></span>
+          </td>
+        </tr>
+        <tr class="js-navigation-item">
+          <td class="icon">
+            <span class="octicon octicon-file-text"></span>
+            <img alt="" class="spinner" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16" />
+          </td>
+          <td class="content">
+            <span class="css-truncate css-truncate-target"><a href="/bassjobsen/Bootstrap-3-Typeahead/blob/master/package.json" class="js-directory-link js-navigation-open" id="b9cfc7f2cdf78a7f4b91a753d10865a2-e2356eb1ded9f18e7f3a45bf8e478a0d31ecd733" title="package.json">package.json</a></span>
+          </td>
+          <td class="message">
+            <span class="css-truncate css-truncate-target">
+              <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">try to fix</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/114" class="issue-link" title="Last published version (3.1) includes v3.0.3 files">#114</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">and possible</a> <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/111" class="issue-link" title="Can't get code to work. Tried everything.">#111</a> <a href="/bassjobsen/Bootstrap-3-Typeahead/commit/c65c829fe8411f6eadb88415d09c1e85bb4603d0" class="message" data-pjax="true" title="try to fix #114 and possible #111 too">too</a>
+            </span>
+          </td>
+          <td class="age">
+            <span class="css-truncate css-truncate-target"><time datetime="2015-04-05T22:20:53Z" is="time-ago">Apr 5, 2015</time></span>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+  <div id="readme" class="boxed-group flush clearfix announce instapaper_body md">
+    <h3>
+      <span class="octicon octicon-book"></span>
+      README.md
+    </h3>
+
+    <article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1><a id="user-content-bootstrap-3-typeahead" class="anchor" href="#bootstrap-3-typeahead" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bootstrap 3 Typeahead</h1>
+
+<p>For simple autocomplete use cases there seems to be nothing wrong with the dropped typeahead plugin. Here you will find the typeahead autocomplete plugin for Twitter's Bootstrap 2 ready to use with Twitter's Bootstrap 3. The original code is written by <a href="http://twitter.com/mdo">@mdo</a> and <a href="http://twitter.com/fat">@fat</a>.</p>
+
+<p>Users who migrate their website or app from Twitter's Bootstrap 2 to Bootstrap 3 can also use this plugin to keep their current autocomplete functions. See for a complete list of migrations steps: <a href="http://bassjobsen.weblogs.fm/migrate-your-templates-from-twitter-bootstrap-2-x-to-twitter-bootstrap-3/">Migrate your templates from Twitter Bootstrap 2.x to Twitter Bootstrap 3</a></p>
+
+<p>With Twitter Bootstrap 3 the typeahead plugin had been dropped. <a href="http://twitter.com/mdo">@mdo</a> says: "in favor of folks using <a href="https://github.com/twitter/typeahead.js">Twitter's typeahead</a>. Twitter's typeahead has more features than the old bootstrap-typeahead.js and less bugs." Twitter's typeahead don't work direct with Bootstrap 3. The DOM structure of the dropdown menu used by <code>typeahead.js</code> differs from the DOM structure of the Bootstrap dropdown menu. You'll need to load some additional CSS in order to get the <code>typeahead.js</code> dropdown menu to fit the default Bootstrap theme. Try <a href="https://github.com/bassjobsen/typeahead.js-bootstrap-css">extended Bootstrap LESS</a> or if your are looking for a more extended version try: <a href="https://github.com/hyspace/typeahead.js-bootstrap3.less/blob/master/typeahead.less">typeahead.js-bootstrap3.less</a>.</p>
+
+<p><del><code>Typeahead.js</code> doesn't seem ready for the new Twitter Bootstrap 3 at the moment. Code is not up to date and fixes are needed. See also:
+<a href="http://stackoverflow.com/questions/18167246/typeahead-problems-with-bootstrap-3-0-rc1">Typeahead problems with Bootstrap 3.0 RC1</a>.</del></p>
+
+<h1><a id="user-content-download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download</h1>
+
+<ul>
+<li><p>Download the latest <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/blob/master/bootstrap3-typeahead.js">bootstrap3-typeahead.js</a> or <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/blob/master/bootstrap3-typeahead.min.js">bootstrap3-typeahead.min.js</a>.</p></li>
+<li><p>Include it in your source after jQuery and Bootstrap's JavaScript.</p></li>
+</ul>
+
+<h2><a id="user-content-full-integration-with-bootstrap-3-typeahead" class="anchor" href="#full-integration-with-bootstrap-3-typeahead" aria-hidden="true"><span class="octicon octicon-link"></span></a>Full integration with Bootstrap 3 Typeahead</h2>
+
+<p>Download the latest version of Boostrap from <a href="https://github.com/twbs/bootstrap/archive/master.zip">Bootstrap</a>. Copy <code>bootstrap3-typeahead.js</code> to the js/ folder. Edit <code>gruntfile.js</code> and add <code>bootstrap3-typeahead.js</code> to the plugins list.
+Build your own version with typeahead with <code>grunt dist</code>.</p>
+
+<h1><a id="user-content-css" class="anchor" href="#css" aria-hidden="true"><span class="octicon octicon-link"></span></a>CSS</h1>
+
+<p>There is no additional CSS required to use the plugin. Bootstrap's CSS contains all required styles in the <code>.dropdown-menu</code> class. The original CSS adds a <code>z-index</code> of 1051 to the dropdownmenu via the typeahead class. You could add this if you need it.
+<code>.typeahead { z-index: 1051; }</code> (less or css).</p>
+
+<h1><a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<pre><code>&lt;input type="text" data-provide="typeahead"&gt;
+</code></pre>
+
+<p>You'll want to set <code>autocomplete="off"</code> to prevent default browser menus from appearing over the Bootstrap typeahead dropdown.</p>
+
+<h2><a id="user-content-via-data-attributes" class="anchor" href="#via-data-attributes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Via data attributes</h2>
+
+<p>Add data attributes to register an element with typeahead functionality as shown in the example above.</p>
+
+<h2><a id="user-content-via-javascript" class="anchor" href="#via-javascript" aria-hidden="true"><span class="octicon octicon-link"></span></a>Via JavaScript</h2>
+
+<p>Call the typeahead manually with:</p>
+
+<pre><code>$('.typeahead').typeahead()
+</code></pre>
+
+<p>Destroys previously initialized typeaheads. This entails reverting DOM modifications and removing event handlers:   </p>
+
+<pre><code>$('.typeahead').typeahead('destroy')
+</code></pre>
+
+<h1><a id="user-content-javascript-example" class="anchor" href="#javascript-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Javascript Example</h1>
+
+<h2><a id="user-content-loading-a-collection" class="anchor" href="#loading-a-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Loading a collection</h2>
+
+<pre><code>$.get('example_collection.json', function(data){
+    $("#name").typeahead({ source:data });
+},'json');
+//example_collection.json
+// ["item1","item2","item3"]
+</code></pre>
+
+<h2><a id="user-content-using-json-objects-instead-of-simple-strings" class="anchor" href="#using-json-objects-instead-of-simple-strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using JSON objects instead of simple strings</h2>
+
+<p>You can add all the properties you wish on your objects, as long as you provide a "name" attribute OR you provide your own displayText method. The other values allow you to match the selected item with something in your model.</p>
+
+<pre><code>var $input = $('.typeahead');
+$input.typeahead({source:[{id: "someId1", name: "Display name 1"}, 
+            {id: "someId2", name: "Display name 2"}], 
+            autoSelect: true}); 
+$input.change(function() {
+    var current = $input.typeahead("getActive");
+    if (current) {
+        // Some item from your model is active!
+        if (current.name == $input.val()) {
+            // This means the exact match is found. Use toLowerCase() if you want case insensitive match.
+        } else {
+            // This means it is only a partial match, you can either add a new item 
+            // or take the active if you don't want new items
+        }
+    } else {
+        // Nothing is active so it is a new value (or maybe empty value)
+    }
+});
+</code></pre>
+
+<h1><a id="user-content-options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h1>
+
+<p>Options can be passed via data attributes or JavaScript. For data attributes, append the option name to <code>data-</code>, as in <code>data-source=""</code>.</p>
+
+<table>
+              <thead>
+               <tr>
+                 <th>Name</th>
+                 <th>Type</th>
+                 <th>Default</th>
+                 <th>Description</th>
+               </tr>
+              </thead>
+              <tbody>
+                <tr>
+                 <td>source</td>
+                 <td>array, function</td>
+                 <td>[ ]</td>
+                 <td>The data source to query against. May be an array of strings, an array of JSON object with a name property or a function. The function accepts two arguments, the <code>query</code> value in the input field and the <code>process</code> callback. The function may be used synchronously by returning the data source directly or asynchronously via the <code>process</code> callback's single argument.</td>
+               </tr>
+               <tr>
+                 <td>items</td>
+                 <td>number</td>
+                 <td>8</td>
+                 <td>The max number of items to display in the dropdown. Can also be set to 'all'</td>
+               </tr>
+               <tr>
+                 <td>minLength</td>
+                 <td>number</td>
+                 <td>1</td>
+                 <td>The minimum character length needed before triggering autocomplete suggestions. You can set it to 0 so suggestion are shown even when there is no text when lookup function is called.</td>
+               </tr>
+               <tr>
+                 <td>showHintOnFocus</td>
+                 <td>boolean</td>
+                 <td>false</td>
+                 <td>If hints should be shown when applicable as soon as the input gets focus.</td>
+               </tr>
+              <tr>
+                 <td>scrollHeight</td>
+                 <td>number, function</td>
+                 <td>0</td>
+                 <td>Number of pixels the scrollable parent container scrolled down (scrolled out the viewport).</td>
+               </tr>
+               <tr>
+                 <td>matcher</td>
+                 <td>function</td>
+                 <td>case insensitive</td>
+                 <td>The method used to determine if a query matches an item. Accepts a single argument, the <code>item</code> against which to test the query. Access the current query with <code>this.query</code>. Return a boolean <code>true</code> if query is a match.</td>
+               </tr>
+               <tr>
+                 <td>sorter</td>
+                 <td>function</td>
+                 <td>exact match,<br> case sensitive,<br> case insensitive</td>
+                 <td>Method used to sort autocomplete results. Accepts a single argument <code>items</code> and has the scope of the typeahead instance. Reference the current query with <code>this.query</code>.</td>
+               </tr>
+               <tr>
+                 <td>updater</td>
+                 <td>function</td>
+                 <td>returns selected item</td>
+                 <td>The method used to return selected item. Accepts a single argument, the <code>item</code> and has the scope of the typeahead instance.</td>
+               </tr>
+               <tr>
+                 <td>highlighter</td>
+                 <td>function</td>
+                 <td>highlights all default matches</td>
+                 <td>Method used to highlight autocomplete results. Accepts a single argument <code>item</code> and has the scope of the typeahead instance. Should return html.</td>
+               </tr>
+               <tr>
+                 <td>displayText</td>
+                 <td>function</td>
+                 <td>item.name || item</td>
+                 <td>Method used to get textual representation of an item of the sources. Accepts a single argument <code>item</code> and has the scope of the typeahead instance. Should return a String.</td>
+               </tr>
+              <tr>
+                 <td>autoSelect</td>
+                 <td>boolean</td>
+                 <td>true</td>
+                 <td>Allows you to dictate whether or not the first suggestion is selected automatically. Turning autoselect off also means that the input won't clear if nothing is selected and <kbd>enter</kbd> or <kbd>tab</kbd> is hit.</td>
+               </tr>
+               <tr>
+                 <td>afterSelect</td>
+                 <td>function</td>
+                 <td>$.noop()</td>
+                 <td>Call back function to execute after selected an item. It gets the current active item in parameter if any.</td>
+               </tr>
+               <tr>
+                 <td>delay</td>
+                 <td>integer</td>
+                 <td>0</td>
+                 <td>Adds a delay between lookups.</td>
+               </tr>
+              <tr>
+              </tr><tr>
+                <td>addItem</td>
+                <td>JSON object</td>
+                <td>false</td>
+                <td>Adds an item to the end of the list, for example "New Entry". This could be used, for example, to pop a dialog when an item is not found in the list of data. Example: <a href="http://cl.ly/image/2u170I1q1G3A/addItem.png">http://cl.ly/image/2u170I1q1G3A/addItem.png</a></td>
+              </tr></tbody>
+            </table>
+
+<h1><a id="user-content-methods" class="anchor" href="#methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methods</h1>
+
+<pre><code>.typeahead(options): Initializes an input with a typeahead.
+.lookup: To trigger the lookup function externally
+.getActive: To get the currently active item, you will get a String or a JSOn object depending on how you initialized typeahead. Works only for the first match.
+</code></pre>
+
+<h1><a id="user-content-bower" class="anchor" href="#bower" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bower</h1>
+
+<p>To use with <a href="http://bower.io/">Bower</a>. Add to your bower.json file:</p>
+
+<pre><code>{
+        "name": "MyProject",
+        "dependencies": {
+        "bootstrap3-typeahead": "git@github.com:bassjobsen/Bootstrap-3-Typeahead.git#master"
+        }
+   }
+</code></pre>
+
+<h1><a id="user-content-bloodhound" class="anchor" href="#bloodhound" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bloodhound</h1>
+
+<p><a href="https://github.com/twitter/typeahead.js/blob/master/doc/bloodhound.md">Bloodhound</a> is the <a href="https://github.com/twitter/typeahead.js">typeahead.js</a> suggestion engine, since version 0.10.0. Bloodhound is robust, flexible, and offers advanced functionalities such as prefetching, intelligent caching, fast lookups, and backfilling with remote data. To use Bloodhound with Bootstrap-3-Typeahead:</p>
+
+<pre><code>// instantiate the bloodhound suggestion engine
+var numbers = new Bloodhound({
+datumTokenizer: Bloodhound.tokenizers.whitespace,
+queryTokenizer: Bloodhound.tokenizers.whitespace,
+local:  ["(A)labama","Alaska","Arizona","Arkansas","Arkansas2","Barkansas"]
+});
+
+// initialize the bloodhound suggestion engine
+numbers.initialize();
+
+$('.typeahead').typeahead(
+{
+items: 4,
+source:numbers.ttAdapter()  
+});
+</code></pre>
+
+<h1><a id="user-content-bootstrap-tags-input" class="anchor" href="#bootstrap-tags-input" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bootstrap Tags Input</h1>
+
+<p><a href="http://timschlechter.github.io/bootstrap-tagsinput/examples/">Bootstrap Tags Input</a> is a jQuery plugin providing a Twitter Bootstrap user interface for managing tags. Bootstrap Tags Input has a typeahead option which allows you to set the source:</p>
+
+<pre><code>$('input').tagsinput({
+  typeahead: {
+    source: ['Amsterdam', 'Washington', 'Sydney', 'Beijing', 'Cairo']
+  }
+});
+</code></pre>
+
+<p>or</p>
+
+<pre><code>$('input').tagsinput({
+  typeahead: {                  
+    source: function(query) {
+      return $.get('http://someservice.com');
+    }
+  }
+});
+</code></pre>
+
+<p>See also: <a href="https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/40">https://github.com/bassjobsen/Bootstrap-3-Typeahead/issues/40</a> </p>
+</article>
+  </div>
+
+
+        </div>
+      </div>
+      <div class="modal-backdrop"></div>
+    </div>
+  </div>
+
+
+    </div>
+
+      <div class="container">
+  <div class="site-footer" role="contentinfo">
+    <ul class="site-footer-links right">
+        <li><a href="https://status.github.com/" data-ga-click="Footer, go to status, text:status">Status</a></li>
+      <li><a href="https://developer.github.com" data-ga-click="Footer, go to api, text:api">API</a></li>
+      <li><a href="https://training.github.com" data-ga-click="Footer, go to training, text:training">Training</a></li>
+      <li><a href="https://shop.github.com" data-ga-click="Footer, go to shop, text:shop">Shop</a></li>
+        <li><a href="https://github.com/blog" data-ga-click="Footer, go to blog, text:blog">Blog</a></li>
+        <li><a href="https://github.com/about" data-ga-click="Footer, go to about, text:about">About</a></li>
+        <li><a href="https://github.com/pricing" data-ga-click="Footer, go to pricing, text:pricing">Pricing</a></li>
+
+    </ul>
+
+    <a href="https://github.com" aria-label="Homepage">
+      <span class="mega-octicon octicon-mark-github" title="GitHub"></span>
+</a>
+    <ul class="site-footer-links">
+      <li>&copy; 2015 <span title="0.04614s from github-fe127-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
+        <li><a href="https://github.com/site/terms" data-ga-click="Footer, go to terms, text:terms">Terms</a></li>
+        <li><a href="https://github.com/site/privacy" data-ga-click="Footer, go to privacy, text:privacy">Privacy</a></li>
+        <li><a href="https://github.com/security" data-ga-click="Footer, go to security, text:security">Security</a></li>
+        <li><a href="https://github.com/contact" data-ga-click="Footer, go to contact, text:contact">Contact</a></li>
+        <li><a href="https://help.github.com" data-ga-click="Footer, go to help, text:help">Help</a></li>
+    </ul>
+  </div>
+</div>
+
+
+
+    
+    
+    
+
+    <div id="ajax-error-message" class="flash flash-error">
+      <span class="octicon octicon-alert"></span>
+      <button type="button" class="flash-close js-flash-close js-ajax-error-dismiss" aria-label="Dismiss error">
+        <span class="octicon octicon-x"></span>
+      </button>
+      Something went wrong with that request. Please try again.
+    </div>
+
+
+      <script crossorigin="anonymous" src="https://assets-cdn.github.com/assets/frameworks-f8473dece7242da6a20d52313634881b3975c52cebaa1e6c38157c0f26185691.js"></script>
+      <script async="async" crossorigin="anonymous" src="https://assets-cdn.github.com/assets/github-c02f617f045c9fd332f5fdd9e4c170593f61255466d79f7e18750465ee292dc5.js"></script>
+      
+      
+    <div class="js-stale-session-flash stale-session-flash flash flash-warn flash-banner hidden">
+      <span class="octicon octicon-alert"></span>
+      <span class="signed-in-tab-flash">You signed in with another tab or window. <a href="">Reload</a> to refresh your session.</span>
+      <span class="signed-out-tab-flash">You signed out in another tab or window. <a href="">Reload</a> to refresh your session.</span>
+    </div>
+  </body>
+</html>
+

@@ -1,0 +1,141 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../google.ftl.html" as layout>
+<#function position current previous days>
+    <#if previous != 0>
+        <#assign class = "">
+        
+        <#if (previous > current) >
+            <#assign class = 'class="diff-plus"'>
+        <#elseif (previous <  current)>
+            <#assign class = 'class="diff-minus"'>
+        </#if>
+        
+        <#return '<a ${class} href="${reverseRoute(
+            "google.GoogleSearchController","search","groupId",group.getId(), "searchId", search.getId(), 
+            "startDate", startDate.minusDays(days).toString(),
+            "endDate", endDate.minusDays(days).toString()
+            )}" >${previous}</a>' >
+    <#else>
+    <#return '-' >
+    </#if>
+</#function>
+<@layout.googleLayout search.getKeyword()>
+
+<div class="row">
+    <div class="col-sm-6" >
+        <ol class="breadcrumb" >
+            <li><a href="/"><i class="fa fa-home" ></i></a></li>
+            <li><a href="${reverseRoute("google.GoogleGroupController","view","groupId",group.getId())}">${group.getName()}</a></li>
+            <li><#noescape>${fu.gsIcoInfos(search)}</#noescape>
+                <a href="${reverseRoute("google.GoogleSearchController","search","groupId",group.getId(), "searchId", search.getId())}">${search.getKeyword()}</a></li>
+        </ol>        
+    </div>
+    <div class="col-sm-6" >
+        <div class="pull-right" >
+
+            <div class="inline-block" >
+                <div class="input-group" style="width: 190px;">
+                    <input id="daterange-search" type="text" class="form-control" value="${i18n("label.noDataAvailable")}" disabled />
+                </div> 
+            </div>
+
+            <div class="input-group inline-block" >
+                <div class="input-group-btn" style="width: 120px;">
+                    <button type="button" class="btn btn-default btn-change-display-mode" id="display-mode-split"
+                            data-mode="split" data-toggle="tooltip" title="split" >
+                        <span class="glyphicon glyphicon-th-large"></span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-change-display-mode"  id="display-mode-chart"
+                            data-mode="chart" data-toggle="tooltip" title="chart" >
+                        <span class="glyphicon glyphicon-signal"></span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-change-display-mode" id="display-mode-table"
+                            data-mode="table" data-toggle="tooltip" title="serp" >
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                    </button>            
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" >
+    <div id="google-search-chart-container" class="top5">
+        <div class="col-xs-12" >
+            <div id="google-search-chart" style="width: 100%;">
+            </div>
+        </div>
+        <div class="col-xs-12" >
+            <div id="google-search-legend" ></div>
+        </div>    
+    </div>
+</div>
+
+<div class="row top5" >
+    <div class="col-xs-12" >
+        <div id="google-search-table"  >
+            <table id="google-rank-serp" class="table table-condensed table-striped" >
+                <tr>
+                    <th class="rank" >#</th>
+                    <th>URL [<#if serp??>${serp.getRunDay().toLocalDate()}</#if>]</th>
+                    <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(1).toString()}</#if>" data-toggle="tooltip">D-1</span></th>
+                    <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(7).toString()}</#if>" data-toggle="tooltip">D-7</span></th>
+                    <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(30).toString()}</#if>" data-toggle="tooltip">D-30</span></th>
+                    <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(90).toString()}</#if>" data-toggle="tooltip">D-90</span></th>
+                </tr>
+                <#if serp?? >
+                <#list serp.entries as entry>
+                <tr>
+                    <td>${entry_index + 1}</td>
+                    <td style="max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" >
+                        <#assign foundTarget = false>
+                        <#list targets as target>
+                            <#if target.match(entry.url) >
+                                <#assign foundTarget = true >
+                                <#assign theTarget = target >
+                                <#break>
+                            </#if>
+                        </#list>
+
+                        <#if foundTarget >
+                            <a href="#" ><i class="fa fa-fw" ></i></a>
+                            <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(),"targetId", theTarget.getId())}" 
+                               class="active" ><i class="glyphicon glyphicon-star" ></i></a>
+                        <#else>
+                            <#if user.isAdmin()>
+                            <a href="#" class="btn-draw-chart" data-url="${entry.url}" ><i class="fa fa-fw fa-line-chart" ></i></a>
+                            <a href="#" class="btn-add-favorite" data-url="${entry.url}" ><i class="glyphicon glyphicon-star" ></i></a>                                        <#else>
+                            <a href="#" ><i class="fa fa-fw" ></i></a>
+                            <a href="#" class="btn-draw-chart" data-url="${entry.url}" ><i class="fa fa-fw fa-line-chart" ></i></a>
+                            </#if>
+                        </#if>
+                        <a target="_blank" href="${fu.noreferrer(entry.url)}" data-toggle="tooltip" title="${entry.url}" >${entry.url}</a>
+                    </td>
+                    <td><#noescape>${position(entry_index + 1, entry.map?api.get(1), 1)}</#noescape></td>
+                    <td><#noescape>${position(entry_index + 1, entry.map?api.get(7), 7)}</#noescape></td>
+                    <td><#noescape>${position(entry_index + 1, entry.map?api.get(30), 30)}</#noescape></td>
+                    <td><#noescape>${position(entry_index + 1, entry.map?api.get(90), 90)}</#noescape></td>
+                </tr>
+                </#list>
+                </#if>
+            </table>
+        </div>
+    </div>
+</div>
+
+<#include "../../helpers/new-target.ftl.html" />
+
+<div class="csp-script" data-src="googleSearchController.renderSearch" ></div>
+<div id="csp-vars"
+     data-display-mode="${displayMode!"split"}"
+     data-group-id="${group.getId()}"
+     data-search-id="${search.getId()}"
+     data-chart="${chart!"{}"}"
+     data-events="${events!"[]"}"
+     data-start-date="${startDate!""}"
+     data-end-date="${endDate!""}"
+     data-min-date="${minDate!""}"
+     data-max-date="${maxDate!""}"
+     ></div>
+
+</@>

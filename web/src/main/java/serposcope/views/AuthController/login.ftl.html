@@ -1,0 +1,50 @@
+<#import "../layout/unlogged.ftl.html" as layout> 
+<@layout.unloggedLayout i18n("auth.login.title") >    
+
+<div class="login-box">
+
+    <div class="login-logo">
+        <h1>SERPOSCOPE</h1>
+        by <a href="https://serphacker.com/?pk_campaign=serposcope">serphacker.com</a>
+    </div>
+
+    <div class="login-form">
+
+        <h2 class="text-center" >${i18n("label.login")}</h2>
+
+        <div class="login-box-msg" >
+            <#include "../helpers/alerts.ftl.html" />
+        </div>
+
+        <form action="${reverseRoute("AuthController","login")}" method="post">
+            <div class="form-group has-feedback">
+                <input type="email" name="email" class="form-control" placeholder="Email">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="checkbox">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember" value="true"> ${i18n("auth.login.rememberMe")}
+                </label>
+            </div>
+           <div class="row">
+                <div class="col-xs-offset-8 col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Login</button>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-xs-12">
+                    <a href="https://serposcope.serphacker.com/doc/faq.html#lost-password">${i18n("auth.login.forgotpassword")}</a>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+
+</div>
+
+</@>

@@ -1,0 +1,27 @@
+
+<!--
+Serposcope - SEO rank checker https://serposcope.serphacker.com/
+
+Copyright (c) 2016 SERP Hacker
+@author Pierre Nogues <support@serphacker.com>
+@license https://opensource.org/licenses/MIT MIT License
+-->
+<configuration>
+    
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d] [%t] %-5p %c{5} - %m%n</pattern>
+        </encoder>
+    </appender>
+  
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT" />
+    </root>    
+    
+    <logger name="com.serphacker" level="TRACE" />
+    <logger name="conf" level="TRACE" />
+    <logger name="serposcope" level="TRACE" />
+<!--    <logger name="ninja" level="TRACE" />-->
+    
+</configuration>

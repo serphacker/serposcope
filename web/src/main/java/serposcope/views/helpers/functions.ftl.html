@@ -1,0 +1,66 @@
+<#function groupLink group>
+    <#if group.module == "GOOGLExxx">
+        <#return "google">
+    </#if>
+    <#return reverseRoute("google.GoogleGroupController", "view", "groupId", group.getId())>
+</#function>
+
+<#function groupIcon group>
+    <#if group.module == "GOOGLE">
+        <#return "fa-google-plus-square">
+    </#if>
+    <#if group.module == "TWITTER">
+        <#return "fa-twitter-square">
+    </#if>    
+    <#if group.module == "GITHUB">
+        <#return "fa-github-square">
+    </#if>    
+    <#return reverseRoute("google.GoogleGroupController", "view", "groupId", group.getId())>
+</#function>
+
+<#function noreferrer url>
+    <#assign urlx = url?html >
+    <#return 
+        "data:text/html," + 
+        "<html><head>" + 
+        "<title>Hiding referrer</title>" + 
+        "<meta http-equiv=refresh content=\"3;url=" + urlx + "\">" + 
+        "<meta charset=\"UTF-8\">" + 
+        "</head><body>Hiding referrer and redirecting to " + url + "</body></html>"
+    >
+</#function>
+
+<#function gsIcoInfos search>
+    <#assign tld = "<i data-toggle=\"tooltip\" title=\"TLD : " + search.getTld() + "\" class=\"fa fa-globe\" ></i>">
+    
+    <#if search.getDevice() == "MOBILE" >
+        <#assign device = "<i data-toggle=\"tooltip\" title=\"" + i18n("label.mobile") + "\" class=\"fa fa-mobile fa-fw\" ></i>">
+    <#else>
+        <#assign device = "">
+    </#if>
+    
+    <#if search.getLocal()?has_content >
+        <#assign local = "<i data-toggle=\"tooltip\" title=\"" + search.getLocal() + "\" class=\"fa fa-map-marker fa-fw\" ></i>">
+    <#else>
+        <#assign local = "">
+    </#if>
+    
+    <#if search.getDatacenter()?has_content >
+        <#assign datacenter = "<i data-toggle=\"tooltip\" title=\"Datacenter: " + search.getDatacenter() + "\" class=\"fa fa-building fa-fw\" ></i>">
+    <#else>
+        <#assign datacenter = "">
+    </#if>
+    
+    <#if search.getCustomParameters()?has_content >
+        <#assign params = "<i data-toggle=\"tooltip\" title=\"" + search.getCustomParameters() + "\" class=\"fa fa-question-circle fa-fw\" ></i>">
+    <#else>
+        <#assign params = "">
+    </#if>    
+    
+    <#return tld + device + local + datacenter + params>
+    <#--
+    " <a href=\"" + reverseRoute("google.GoogleSearchController","search", "groupId", groupId, "searchId", search.getId()) + "\"
+            data-toggle=\"tooltip\" + title=\"" + search.getKeyword() + "\" >" +search.getKeyword() +  "</a>"
+    >
+    -->
+</#function> 

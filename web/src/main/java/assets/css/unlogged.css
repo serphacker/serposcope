@@ -1,0 +1,52 @@
+
+/* unlogged */
+.unlogged a {
+    color: #3c8dbc;
+}
+
+.login-box {
+    margin: 10% auto;
+    width: 360px;
+}
+
+
+@media (max-width: 768px) {
+    .login-box {
+        width: 90%;
+        margin-top: 20px;
+    }
+}
+
+.login-logo {
+    color: #ecf0f5;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-logo h1 {
+    font-size: 50px;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+    .login-logo h1 {
+        font-size: 30px;
+    }
+}
+
+.login-box h2 {
+    font-size: 22px;
+    color: #ecf0f5;
+    margin: 0px 0px 20px 0px;
+    text-transform: uppercase;
+}
+
+.login-form {
+    border-radius: 5px;
+    padding: 20px;
+    background-color: #222d32;
+}
+
+.remember-me {
+    color: #ecf0f5;
+}

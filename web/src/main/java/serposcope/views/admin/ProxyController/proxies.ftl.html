@@ -1,0 +1,100 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../admin.ftl.html" as layout>
+<@layout.adminLayout i18n("admin.proxy.title") >
+<!--<div class="row" >
+    <div class="col-xs-12 text-center" >
+        <a href="http://www.google.fr/" ><img src="http://placehold.it/728x90" /></a>
+    </div>
+</div>-->
+
+<#if running >
+<div class="row top15">
+    <div class="col-xs-12" >
+        <div class="content-div" >
+            <p>${i18n("admin.proxy.checkTaskRunning")}</p>
+            <div class="progress" style="margin-bottom: 5px;" >
+                <div class="progress-bar progress-bar-striped active progress-bar-warning" style="min-width: 50px; width: ${progress}%;">
+                    <span>${progress}%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</#if>
+
+<div class="row top15">
+    <div class="col-xs-12" >
+        <div class="content-div" >
+            <table class="table table-condensed table-bordered table-proxy">
+                <thead>
+                    <tr>
+                        <th class="width30" ><a href="#" id="btn-chk-proxy">#</a></th>
+                        <th class="width100"  data-sort="string">${i18n("label.type")} <i class="fa fa-sort"></i></th>
+                        <th data-sort="string">IP:Port <i class="fa fa-sort"></i></th>
+                        <th data-sort="string">${i18n("label.user")} <i class="fa fa-sort"></i></th>
+                        <th data-sort="string">${i18n("label.password")} <i class="fa fa-sort"></i></th>
+                        <th class="width150" data-sort="string">${i18n("label.remoteIp")} <i class="fa fa-sort"></i></th>
+                        <th class="width150" data-sort="string">${i18n("label.lastCheck")} <i class="fa fa-sort"></i></th>
+                        <th class="width150" data-sort="string">${i18n("label.status")} <i class="fa fa-sort"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <#list proxies as proxy>
+                    <tr>
+                        <td><input class="chk-proxy" type="checkbox" name="id[]" value="${proxy.getId()}" /></td>
+                        <td>${proxy.getType()}</td>
+                        <td>${proxy.getIp()!""}:${proxy.getPort()!""}</td>
+                        <td>${proxy.getUsername()!""}</td>
+                        <td>${proxy.getPassword()!""}</td>
+                        <td>${proxy.getRemoteip()!""}</td>
+                        <td><#if proxy.getLastCheck()?? >${global.ldtf.format(proxy.getLastCheck())}</#if></td>                    
+                        <td class="<#if proxy.getStatus() == "ERROR" >text-danger<#elseif proxy.getStatus() == "OK" >text-success</#if>">${proxy.getStatus()}</td>
+                    </tr>
+                    </#list>
+                </tbody>
+            </table>
+            <input id="btn-add-proxy" type="button" class="btn btn-primary" value="${i18n("label.addProxy")}" 
+                   data-action="${reverseRoute("admin.ProxyController","add")}" />
+                   <input id="btn-delete-proxy" type="button" class="btn btn-danger" value="${i18n("label.delProxy")}" 
+                   data-action="${reverseRoute("admin.ProxyController","delete")}" />
+                   <input id="btn-check-proxy" type="button" class="btn btn-warning" value="${i18n("label.checkAll")}" 
+                   data-action="${reverseRoute("admin.ProxyController","startCheck")}" />
+                   <input id="btn-abort-proxy" type="button" class="btn btn-warning" value="${i18n("label.abort")}" 
+                   data-action="${reverseRoute("admin.ProxyController","abortCheck")}" />
+                   <br/>
+        </div>
+    </div>
+</div>
+
+<div id="new-proxy" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="${reverseRoute("admin.ProxyController","add")}" >
+                  <input type="hidden" name="_xsrf" value="${session.___AT}" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">${i18n("label.newProxy")}</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group" >
+                        <span class="help-block"><#noescape>${i18n("admin.proxy.bulkImportHelp")}</#noescape></span>
+                        <textarea name="proxies" class="form-control" rows="10" placeholder="type#ip#port#username#password"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="pull-left">
+                        <!--<button type="button" class="btn btn-default btn-add-search" >${i18n("label.singleImport")}</button>-->
+                    </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                    <input type="submit" id="bulk-import" class="btn btn-primary" value="${i18n("label.save")}"
+                           data-action="${reverseRoute("admin.ProxyController","add")}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="csp-script" data-src="adminProxyController.render" ></div>
+</@>

@@ -1,0 +1,118 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../admin.ftl.html" as layout>
+<@layout.adminLayout i18n("admin.task.title") >
+
+<div class="row" >
+    <div class="col-xs-12" >
+        <div class="content-div" >
+            <h2 class="styled-h2">${i18n("admin.task.runningTasks")}</h2>
+            <table class="table table-bordered table-condensed table-striped table-task">
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th style="width: 75px;">${i18n("label.mode")}</th>
+                    <th style="width: 100px;">${i18n("label.module")}</th>
+                    <th style="width: 180px;">${i18n("label.started")}</th>
+                    <th>${i18n("label.progress")}</th>
+                    <th style="width: 100px;">${i18n("label.captchas")}</th>
+                    <th style="width: 100px;">${i18n("label.errors")}</th>
+                    <th style="width: 150px;">${i18n("label.actions")}</th>
+                </tr>
+                <#list running as task>
+                <tr>
+                    <td>${task.getId()}</td>
+                    <td>${task.getMode()}</td>
+                    <td>${task.getModule()}</td>
+                    <td>${global.ldtf.format(task.getStarted())}</td>
+                    <td>
+                        <div class="progress" title="${i18n("admin.task.remainingTime")} : ${task.getRemainingTimeFormated()}" data-toggle="tooltip" >
+                            <div 
+                                class="progress-bar progress-bar-striped active <#if task.getStatus() != "RUNNING" >progress-bar-warning</#if>" 
+                                style="width: ${task.getProgress()}%; min-width: 50px;"
+                            >
+                                <span>
+                                    <#if task.getStatus() != "RUNNING" >
+                                        ${i18n("admin.task.aborting")}
+                                    <#else>
+                                        ${task.getProgress()} %
+                                    </#if>
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${task.getCaptchas()}</td>
+                    <td>${task.getErrors()}</td>
+                    <td>
+                        <a href="${reverseRoute("admin.TaskController","abortTask","id",task.getId(),"_xsrf", session.___AT)}" class="text-danger" >abort</a>
+                    </td>
+                </tr>
+                </#list>
+            </table>
+            <br/>
+
+            <h2 class="styled-h2">${i18n("admin.task.doneTasks")}</h2>
+            <table class="table table-bordered table-condensed table-task">
+                <tr>
+                    <th style="width: 30px;">#</th>
+                    <th style="width: 50px;">ID</th>
+                    <th style="width: 75px;">${i18n("label.mode")}</th>
+                    <th style="width: 100px;">${i18n("label.module")}</th>
+                    <th style="width: 150px;">${i18n("label.started")}</th>
+                    <th style="width: 150px;">${i18n("label.finished")}</th>
+                    <th>${i18n("label.duration")}</th>
+                    <th style="width: 100px;">${i18n("label.captchas")}</th>
+                    <th style="width: 100px;">${i18n("label.errors")}</th>
+                    <th>${i18n("label.status")}</th>
+                    <th style="width: 150px;">${i18n("label.actions")}</th>
+                </tr>            
+                <#list done as task>
+                <#if task.getStatus() == "DONE_SUCCESS" >
+                    <tr class="success" >
+                <#else>
+                    <tr class="danger" >
+                </#if>
+                
+                    <td></td>
+                    <td>${task.getId()}</td>
+                    <td>${task.getMode()}</td>
+                    <td>${task.getModule()}</td>
+                    <td>${global.ldtf.format(task.getStarted())}</td>
+                    <td>${global.ldtf.format(task.getFinished())}</td>
+                    <td>${task.getDurationFormated()}</td>
+                    <td>${task.getCaptchas()}</td>
+                    <td>${task.getErrors()}</td>
+                    <td>${task.getStatus()}</td>
+                    <td>
+                        <a href="${reverseRoute("admin.TaskController","deleteRun","runId",task.getId())}" 
+                           class="btn-delete-run text-danger" data-date="${task.getDay()}" 
+                           data-toggle="tooltip" title="${i18n("label.delete")}" >
+                           <i class="fa fa-fw fa-remove" ></i></a>
+                        <#if task.getModule() == "GOOGLE" >
+                        <a href="${reverseRoute("admin.TaskController","rescanSerp","runId",task.getId())}" 
+                            class="btn-rescan-serp text-warning" data-date="${task.getDay()}" 
+                            data-toggle="tooltip" title="${i18n("label.rescanSerp")}" >
+                            <i class="fa fa-fw fa-refresh" ></i></a>
+                        </#if>
+                    </td>
+                </tr>
+                </#list>
+            </table>
+            <nav>
+                <ul class="pager">
+                    <#if previousPage?? >
+                        <li class="previous"><a href="${reverseRoute("admin.TaskController","tasks","page",previousPage)}"> &larr; ${i18n("label.previous")}</a></li>
+                    <#else>
+                    <li class="previous disabled"><span>&larr; ${i18n("label.previous")}</span></li>
+                    </#if>
+                    <#if nextPage?? >
+                        <li class="next"><a href="${reverseRoute("admin.TaskController","tasks","page",nextPage)}">${i18n("label.next")} &rarr;</a></li>
+                    <#else>
+                    <li class="next disabled"><span>${i18n("label.next")} &rarr;</span></li>
+                    </#if>                    
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="csp-script" data-src="adminTaskController.render" ></div>
+</@>

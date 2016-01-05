@@ -1,0 +1,43 @@
+<#assign googleSideMenu>
+    <li>
+        <span class="first-level"><i class="fa fa-fw fa-cubes"></i> ${i18n("label.groups")}</span>
+        <ul class="nav nav-second-level">
+            <li>
+                <div class="form-search form-group has-feedback has-feedback">
+                    <input id="sidebar-group-search" type="text" class="form-control" placeholder="${i18n("label.searchGroup")} ..." />
+                    <i class="form-control-feedback glyphicon glyphicon-search"></i>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <span class="first-level"><i class="fa fa-fw fa-search"></i> ${i18n("label.searches")}</span>
+        <ul class="nav nav-second-level">
+            <li>
+                <div class="form-search form-group has-feedback has-feedback">
+                    <input id="sidebar-google-search-search" type="text" class="form-control" placeholder="${i18n("label.currentGroupKeyword")}" />
+                    <i class="form-control-feedback glyphicon glyphicon-search"></i>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <span class="first-level"><i class="fa fa-fw fa-star"></i> ${i18n("label.websites")}</span>
+        <ul class="nav nav-second-level">
+            <li>
+                <div class="form-search form-group has-feedback has-feedback">
+                    <input id="sidebar-target-search"  type="text" class="form-control" placeholder="${i18n("label.currentGroupWebsite")}" />
+                    <i class="form-control-feedback glyphicon glyphicon-search"></i>
+                </div>
+            </li>
+        </ul>
+    </li>
+</#assign>
+<#macro googleLayout title="" >
+<#import "../layout/root.ftl.html" as layout> 
+<@layout.rootLayout "${title}" "${googleSideMenu}" >
+
+<#nested/>
+<div class="csp-script" data-src="googleSidebar.render" ></div>
+</@>
+</#macro>

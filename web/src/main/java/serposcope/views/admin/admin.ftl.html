@@ -1,0 +1,57 @@
+<#assign sideMenu>
+<li>
+    <a href="${reverseRoute("admin.AdminController","admin")}"><i class="fa fa-cog fa-fw"></i> Administration</a>
+    <ul class="nav nav-second-level">
+        <li>
+            <a href="${reverseRoute("admin.SettingsController","settings")}">
+                <i class="fa fa-wrench fa-fw"></i> ${i18n("label.settings")}
+            </a>
+        </li>
+        <li>
+            <a href="${reverseRoute("admin.ProxyController","proxies")}">
+                <i class="fa fa-shield fa-fw"></i> ${i18n("label.proxies")}
+            </a>
+        </li>
+        <li>
+            <a href="${reverseRoute("admin.GoogleSettingsController","settings")}">
+               <i class="fa fa-google-plus-square fa-fw"></i> ${i18n("label.google")}
+            </a>
+        </li>
+        <li>
+            <a href="${reverseRoute("admin.UsersController","users")}">
+               <i class="fa fa-group fa-fw"></i> ${i18n("label.users")}
+            </a>
+        </li>
+        <li>
+            <a href="${reverseRoute("admin.TaskController","tasks")}">
+               <i class="fa fa-cogs fa-fw"></i> ${i18n("label.tasks")}
+            </a>
+        </li>
+        <li>
+            <a href="${reverseRoute("admin.LogController","logs")}">
+               <i class="fa fa-file-text fa-fw"></i> ${i18n("label.logs")}
+            </a>
+        </li>
+        <li>
+            <a href="${reverseRoute("admin.AdminController","sysconfig")}">
+               <i class="fa fa-desktop fa-fw"></i> ${i18n("label.sysconfig")}
+            </a>
+        </li>        
+        <#if !global.prod>
+        <li>
+            <a href="${reverseRoute("admin.DebugController","debug")}">
+               <i class="fa fa-briefcase fa-fw"></i> ${i18n("label.debug")}
+            </a>
+        </li>      
+        </#if>
+    </ul>
+</li>
+</#assign>
+<#macro adminLayout title="" >
+<#import "../layout/root.ftl.html" as layout> 
+<@layout.rootLayout "${title}" "${sideMenu}" >
+
+<#nested/>
+
+</@>
+</#macro>
