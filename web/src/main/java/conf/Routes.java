@@ -50,6 +50,7 @@ public class Routes implements ApplicationRoutes {
         router.POST().route("/admin/debug/dry-run").with(DebugController.class, "dryRun"); 
         router.GET().route("/admin/debug/test").with(DebugController.class, "test"); 
         router.GET().route("/admin/debug/shutdown").with(DebugController.class, "shutdown"); 
+        router.POST().route("/admin/debug/dummy-post").with(DebugController.class, "dummyPost"); 
 
         
         router.GET().route("/admin/settings").with(SettingsController.class, "settings");

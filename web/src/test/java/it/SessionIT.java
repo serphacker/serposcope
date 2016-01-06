@@ -34,7 +34,7 @@ import serposcope.helpers.CookieEncryptionOverride;
 import serposcope.helpers.CryptoOverride;
 
 
-public class SessionIT extends NinjaTest {
+public class SessionIT extends SerposcopeNinjaTest {
     
     private static final Logger LOG = LoggerFactory.getLogger(SessionIT.class);
     
@@ -102,17 +102,6 @@ public class SessionIT extends NinjaTest {
         
        ((DefaultHttpClient)ninjaTestBrowser.getHttpClient()).getCookieStore().addCookie(cookie);
         assertTrue(ninjaTestBrowser.makeRequest(getServerAddress() + "/").contains("<title>Home</title>"));
-    }
-    
-    protected User createAdmin() throws Exception {
-        BaseDB baseDB = getInjector().getInstance(BaseDB.class);
-        User user = new User();
-        user.setAdmin(true);
-        user.setEmail("email@email.com");
-        String password = "password";
-        user.setPassword(password);
-        baseDB.user.insert(user); 
-        return user;
     }
     
     protected void changeSecret(String secret) throws Exception{

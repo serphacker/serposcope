@@ -9,10 +9,11 @@ package serposcope.lifecycle;
 
 import conf.SerposcopeConf;
 import ninja.standalone.NinjaJetty;
+import org.eclipse.jetty.server.ServerConnector;
 
 
 public class MyNinjaJetty extends NinjaJetty {
-
+    
     @Override
     protected void doConfigure() throws Exception {
         SerposcopeConf conf = new SerposcopeConf(System.getProperty("serposcope.conf"));
@@ -20,14 +21,17 @@ public class MyNinjaJetty extends NinjaJetty {
         conf.logEnv();
         conf.assertValid();
         
-        port = conf.listenPort;
-        host = conf.listenAddress;
         super.doConfigure(); //To change body of generated methods, choose Tools | Templates.
         
+        ServerConnector http = (ServerConnector)jetty.getConnectors()[0];
+        http.setPort(conf.listenPort);
+        if(conf.listenAddress != null){
+            http.setHost(conf.listenAddress);
+        }
+
+        jetty.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", "2000000");
+        jetty.setAttribute("org.eclipse.jetty.server.Request.maxFormKeys", "100000");
     }
-    
-    
-    
     
 
 }

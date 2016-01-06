@@ -42,6 +42,7 @@ import ninja.utils.NinjaProperties;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serposcope.controllers.AuthController;
 import serposcope.controllers.BaseController;
 import serposcope.controllers.admin.DebugController.DebugFilter;
 import serposcope.filters.AdminFilter;
@@ -65,10 +66,10 @@ public class DebugController extends BaseController {
         @Override
         public Result filter(FilterChain filterChain, Context context) {
 
-//            if(!props.isDev()){
-//                context.getFlashScope().error("error.unauthorizedAccess");
-//                return Results.redirect(router.getReverseRoute(AuthController.class, "login"));
-//            }
+            if(props.isProd()){
+                context.getFlashScope().error("error.unauthorizedAccess");
+                return Results.redirect(router.getReverseRoute(AuthController.class, "login"));
+            }
 
             return filterChain.next(context);
         }
@@ -271,6 +272,11 @@ public class DebugController extends BaseController {
     public Result shutdown(){
         System.exit(0);
         return Results.ok();
+    }
+    
+    @FilterWith(XSRFFilter.class)
+    public Result dummyPost(){
+        return Results.ok().text().render("dummyPost");
     }
     
     
