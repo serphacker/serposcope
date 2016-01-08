@@ -1,13 +1,8 @@
 #!/bin/bash
 
-#if [ $# -eq 0 ]; then
-#    echo "$0 <sqlfiles> ..."
-#    exit 1
-#fi
-
 COREPATH=`readlink -f "$(dirname "$0")/.."`
 JAR=$COREPATH/lib/*.jar
-DBPATH=/var/tmp/serposcope-codegen
+DBPATH=$COREPATH/codegen/h2
 
 cd $COREPATH/src/main/resources/db/
 

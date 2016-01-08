@@ -105,9 +105,7 @@ public class SerposcopeConf {
     
     protected void configureTestEnv(){
         datadir = props.getProperty("serposcope.datadir", 
-            isWindows() ?
-            (System.getenv("TMP") + "/serposcope/" + (100000 +r.nextInt(100000))) :
-            ("/tmp/serposcope/" + (100000 +r.nextInt(100000)))
+            System.getProperty("java.io.tmpdir") + "/serposcope/" + (100000 +r.nextInt(100000))
         );        
         logdir = props.getProperty("serposcope.logdir", datadir + "/logs");
         dbUrl = props.getProperty("serposcope.db.url", "jdbc:h2:mem:integrationtest");

@@ -383,10 +383,6 @@ public class GoogleTaskIT extends AbstractDBIT {
         
     }    
     
-//    protected String getDbUrl(){
-//        return "jdbc:h2:/tmp/oxo;AUTO_SERVER=TRUE;MODE=MySQL";
-//    }    
-    
     @Test
     public void testPreviousRankings() throws Exception {
         gsf = new GoogleScraperFactory() {

@@ -23,3 +23,6 @@ nbactions.xml
 #idea
 *.iml
 .idea/
+/core/codegen/
+/web/src/main/java/assets/combined.min.js
+/web/src/main/java/assets/combined.js

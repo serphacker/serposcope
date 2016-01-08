@@ -150,7 +150,7 @@
             <id>package</id>
             <activation>
                 <property>
-                    <name>buildPackage</name>
+                    <name>singlejar</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -197,6 +197,72 @@
                 </plugins>
             </build>
         </profile>
+        
+        <profile>
+            <id>minify</id>
+            <activation>
+                <property>
+                    <name>minify</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.samaxes.maven</groupId>
+                        <artifactId>minify-maven-plugin</artifactId>
+                        <version>1.7.4</version>
+                        <executions>
+                            <execution>
+                                <id>default-minify</id>
+                                <configuration>
+                                    <webappSourceDir>${basedir}/src/main/java/</webappSourceDir>
+                                    <webappTargetDir>${basedir}/src/main/java/assets</webappTargetDir>
+                                    <jsEngine>YUI</jsEngine>
+                                    <jsSourceDir>/</jsSourceDir>
+                                    <jsSourceFiles>
+                                        <jsSourceFile>/assets/js/init.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/jquery/dist/jquery.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/moment/moment.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/bootstrap/dist/js/bootstrap.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/bootstrap-daterangepicker/daterangepicker.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/bootstrap-select/dist/js/bootstrap-select.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/lib/bootstrap3-typeahead.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/jquery-sparkline/jquery.sparkline.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/Chart.js/Chart.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/dygraphs/dygraph-combined-dev.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/lib/dygraph-annotations-override.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/lib/dygraph-serposcope-plugins.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/lib/dygraph-plugins-loader.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/jquery-stupid-table/stupidtable.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/utils.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/theme.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/sidebar.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/HomeController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/GroupController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/admin/SettingsController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/admin/UsersController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/admin/DebugController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/admin/GoogleSettingsController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/admin/TaskController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/admin/ProxyController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/google/GoogleSidebar.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/google/GoogleGroupController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/google/GoogleSearchController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/google/GoogleTargetController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/loader.js</jsSourceFile>
+                                    </jsSourceFiles>
+                                    <jsFinalFile>combined.js</jsFinalFile>
+                                </configuration>
+                                <goals>
+                                    <goal>minify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>        
         
     </profiles>        
     

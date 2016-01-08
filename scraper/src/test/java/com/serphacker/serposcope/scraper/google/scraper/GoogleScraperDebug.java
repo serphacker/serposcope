@@ -133,7 +133,7 @@ public class GoogleScraperDebug {
 
                 assertEquals(OK, scraper.downloadSerp(url, null, search));
                 Files.write(
-                    new File("/tmp/serps/" + keyword + "-"
+                    new File(System.getProperty("java.io.tmpdir") + "/serps/" + keyword + "-"
                         + search.getTld() + "-"
                         + device.toString().toLowerCase()).toPath(),
                     scraper.getHttp().getContent()
@@ -159,7 +159,7 @@ public class GoogleScraperDebug {
             String url = scraper.buildRequestUrl(search, 1);
 
             assertEquals(OK, scraper.downloadSerp(url, null, search));
-            Files.write(new File("/tmp/serps/last-page." + device.toString().toLowerCase()).toPath(), scraper.getHttp().getContent());
+            Files.write(new File(System.getProperty("java.io.tmpdir") + "/serps/last-page." + device.toString().toLowerCase()).toPath(), scraper.getHttp().getContent());
             Thread.sleep(1000l);
         }
     }

@@ -119,7 +119,7 @@
                 <configuration>
                     <packageName>com.serphacker.serposcope.querybuilder</packageName>
                     <jdbcDriver>org.h2.Driver</jdbcDriver>
-                    <jdbcUrl>jdbc:h2:/var/tmp/serposcope-codegen</jdbcUrl>                            
+                    <jdbcUrl>jdbc:h2:${project.basedir}/codegen/h2</jdbcUrl>                            
                     <targetFolder>${project.basedir}/target/generated-sources/java</targetFolder>
                 </configuration>
 

@@ -46,7 +46,7 @@ public class GoogleRankDBBench {
     BaseDB db;
     
     protected String getDbUrl(){
-        return "jdbc:h2:/var/tmp/serposcope_test;MODE=MySQL";
+        return "jdbc:h2:" + System.getProperty("java.io.tmpdir") + "/serposcope_test;MODE=MySQL";
     }
     
     protected List<Module> getModule() {
