@@ -2,7 +2,7 @@
 
 Serposcope rely on these libraries (among many other).
 
-* The web framework [ninjaframework](http://www.ninjaframework.org/) handles the webserver.
+* The web framework [ninjaframework](http://www.ninjaframework.org/).
 * [Guice](https://github.com/google/guice) for dependency injection.
 * The query builder [querydsl](http://querydsl.com) allows autocompletion of SQL query, prevents SQL injections, etc.
 
