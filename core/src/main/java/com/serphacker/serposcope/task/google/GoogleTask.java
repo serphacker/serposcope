@@ -49,6 +49,7 @@ import com.serphacker.serposcope.models.base.Config;
 import com.serphacker.serposcope.models.google.GoogleBest;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.logging.Level;
 
 public class GoogleTask extends AbstractTask {
@@ -105,7 +106,9 @@ public class GoogleTask extends AbstractTask {
         solver = initializeCaptchaSolver();
         
         googleOptions = googleDB.options.get();
-        searches = new LinkedBlockingQueue<>(googleDB.search.list());
+        List<GoogleSearch> searchList = googleDB.search.list();
+        Collections.shuffle(searchList);
+        searches = new LinkedBlockingQueue<>(searchList);
         
         int nThread = googleOptions.getMaxThreads();
         List<ScrapProxy> proxies = baseDB.proxy.list().stream().map(Proxy::toScrapProxy).collect(Collectors.toList());
