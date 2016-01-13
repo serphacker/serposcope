@@ -32,7 +32,10 @@
                             <option value="DECAPTCHER" <#if config.getCaptchaService() == "DECAPTCHER">selected</#if> >de-captcher.com</option>
                             <option value="ANTICAPTCHA" <#if config.getCaptchaService() == "ANTICAPTCHA">selected</#if> >anti-captcha.com</option>
                         </select>
-                        <a href="https://serposcope.serphacker.com/fr/doc/faq.html?pk_campaign=serposcope#captcha" >${i18n("label.help")}</a>
+                        <a href="https://serposcope.serphacker.com/fr/doc/faq.html?pk_campaign=serposcope#captcha" target="_blank" >${i18n("label.help")}</a>
+                        <div class="pull-right">
+                            <a href="${reverseRoute("admin.SettingsController","testCaptcha")}" class="btn btn-default" id="btn-test-captcha">${i18n("admin.settings.testCredentials")}</a>
+                        </div>
                     </div>
                 </div>
 
