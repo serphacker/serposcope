@@ -102,6 +102,9 @@ public class SettingsController extends BaseController {
                 config.setDbcUser(captchaUser);
                 config.setDbcPass(captchaPass);
                 break;
+            case ANTICAPTCHA:
+                config.setDbcApi(captchaApiKey);
+                break;
         }
         
         if(displayHome != null && !Config.DEFAULT_DISPLAY_HOME.equals(displayHome) && Config.VALID_DISPLAY_HOME.contains(displayHome)){

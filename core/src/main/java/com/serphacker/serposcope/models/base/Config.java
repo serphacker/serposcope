@@ -23,7 +23,8 @@ public class Config {
         DISABLE,
         SWINGUI,
         DEATHBYCAPTCHA,
-        DECAPTCHER;
+        DECAPTCHER,
+        ANTICAPTCHA;
         
         public static CaptchaService fromString(String name){
             if(name != null){
@@ -42,6 +43,7 @@ public class Config {
     CaptchaService captchaService = DISABLE;
     String dbcUser;
     String dbcPass;
+    String dbcApi;
     
     public final static String DEFAULT_DISPLAY_HOME = "summary";
     public final static List<String> VALID_DISPLAY_HOME = Arrays.asList("summary","table");
@@ -72,6 +74,14 @@ public class Config {
 
     public String getDbcPass() {
         return dbcPass;
+    }
+
+    public String getDbcApi() {
+        return dbcApi;
+    }
+
+    public void setDbcApi(String dbcApi) {
+        this.dbcApi = dbcApi;
     }
 
     public void setDbcPass(String dbcPass) {

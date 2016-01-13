@@ -137,11 +137,5 @@ public class DecaptcherSolverIT extends DeepIntegrationTest {
 //        }
 //    }    
     
-//    @Test
-//    public void testExtractId() throws Exception {
-//        DecaptcherSolver solver = new DecaptcherSolver(login, password);
-//        assertEquals("1477215", solver.extractId("http://api.dbcapi.me/api/captcha/1477215"));
-//    }
-    
     
 }

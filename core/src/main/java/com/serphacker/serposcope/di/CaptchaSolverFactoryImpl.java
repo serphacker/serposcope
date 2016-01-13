@@ -8,6 +8,7 @@
 package com.serphacker.serposcope.di;
 
 import com.serphacker.serposcope.models.base.Config;
+import com.serphacker.serposcope.scraper.captcha.solver.AntiCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DeathByCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DecaptcherSolver;
@@ -41,6 +42,12 @@ public class CaptchaSolverFactoryImpl implements CaptchaSolverFactory {
             case DECAPTCHER:
                 if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
                     return new DecaptcherSolver(config.getDbcUser(), config.getDbcPass());
+                }
+                break;
+                
+            case ANTICAPTCHA:
+                if(!StringUtils.isEmpty(config.getDbcApi())){
+                    return new AntiCaptchaSolver(config.getDbcApi());
                 }
                 break;
         }

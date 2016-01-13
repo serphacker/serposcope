@@ -25,34 +25,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DeathByCaptchaSolver implements CaptchaSolver {
+public class AntiCaptchaSolver implements CaptchaSolver {
     
-    final static Logger LOG = LoggerFactory.getLogger(DeathByCaptchaSolver.class);
+    final static Logger LOG = LoggerFactory.getLogger(AntiCaptchaSolver.class);
 
     public final static long DEFAULT_POLLING_MS = 45000l;
     public final static long DEFAULT_POLLING_INCREMENT_MS = 2500l;
     public final static int DEFAULT_TIMEOUT_MS = 30000;
 
-    private String apiUrl = "http://api.dbcapi.me/api/";
-    private String login;
-    private String password;
+    private String apiUrl = "http://anti-captcha.com/";
+    private String apiKey;
     private long timeoutMS;
     private int maxRetryOnOverload;    
     Random random = new Random();
     
     AtomicInteger captchaCount=new AtomicInteger();
 
-    public DeathByCaptchaSolver(String login, String password) {
-        this(login, password, DEFAULT_TIMEOUT_MS);
+    public AntiCaptchaSolver(String apiKey) {
+        this(apiKey, DEFAULT_TIMEOUT_MS);
     }
     
-    public DeathByCaptchaSolver(String login, String password, long timeoutMS) {
-        this(login, password, timeoutMS, 3);
+    public AntiCaptchaSolver(String apiKey, long timeoutMS) {
+        this(apiKey, timeoutMS, 3);
     }    
 
-    public DeathByCaptchaSolver(String login, String password, long timeoutMS, int maxRetryOnOverload) {
-        this.login = login;
-        this.password = password;
+    public AntiCaptchaSolver(String apiKey, long timeoutMS, int maxRetryOnOverload) {
+        this.apiKey = apiKey;
         this.timeoutMS = timeoutMS;
         this.maxRetryOnOverload = maxRetryOnOverload;
     }
@@ -81,22 +79,14 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
         this.apiUrl = apiUrl;
     }
 
-    public String getLogin() {
-        return login;
+    public String getApiKey() {
+        return apiKey;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
     @Override
     public boolean solve(Captcha cap) {
         if(!(cap instanceof CaptchaImage)){
@@ -125,17 +115,20 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
             filename = "image.png";
         }
         
-        Map<String,Object> data = getMapWithCredentials();
-        data.put("captchafile",new ByteArrayBody(captcha.getImage(), ContentType.create(textMimeType), filename));
+        Map<String,Object> data = new HashMap<>();
+        data.put("method", "post");
+        data.put("key", apiKey);
+        data.put("file",new ByteArrayBody(captcha.getImage(), ContentType.create(textMimeType), filename));
         
         long started = System.currentTimeMillis();
         captcha.setStatus(Captcha.Status.SUBMITTED);
         try(ScrapClient http = new ScrapClient()){
-            int httpStatus=0;
+            String response;
             int retry = 0;
             while(true){
-                httpStatus = http.post(apiUrl + "captcha", data, ScrapClient.PostType.MULTIPART);
-                if(!isRetryableStatus(httpStatus)){
+                http.post(apiUrl + "in.php", data, ScrapClient.PostType.MULTIPART);
+                response = http.getContentAsString();
+                if(!isRetryable(response)){
                     break;
                 }
                 
@@ -145,52 +138,64 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
                 
                 try {
                     Long sleep = 5000l*retry;
-                    LOG.debug("server is overloaded, sleeping {} ms", sleep);
+                    LOG.debug("server is overloaded \"{}\", sleeping {} ms", response, sleep);
                     Thread.sleep(sleep);
                 }catch(InterruptedException ex){
                     break;
                 }
             }
             
-            if(httpStatus >= 500){
-                captcha.setError(Captcha.Error.SERVICE_OVERLOADED);
-                return false;
-            } else if(httpStatus == 403){
-                captcha.setError(Captcha.Error.INVALID_CREDENTIALS);
-                return false;
-            } else if(httpStatus == 400){
-                captcha.setError(Captcha.Error.INVALID_CREDENTIALS);
-                return false;
-            } else if(httpStatus != 303){
+            if(response == null){
                 captcha.setError(Captcha.Error.NETWORK_ERROR);
                 return false;
             }
             
-            String location = http.getResponseHeader("location");
-            if(location == null || !location.startsWith(apiUrl)){
-                LOG.warn("invalid location : {}", location);
-                captcha.setError(Captcha.Error.NETWORK_ERROR);
-                return false;
+            if(!response.startsWith("OK|") || response.length() < 4){
+                switch(response){
+                    case "ERROR_WRONG_USER_KEY":
+                    case "ERROR_KEY_DOES_NOT_EXIST":
+                        captcha.setError(Captcha.Error.INVALID_CREDENTIALS);
+                        return false;
+                        
+                    case "ERROR_ZERO_BALANCE":
+                        captcha.setError(Captcha.Error.OUT_OF_CREDITS);
+                        return false;
+                        
+                    case "ERROR_NO_SLOT_AVAILABLE":
+                        captcha.setError(Captcha.Error.SERVICE_OVERLOADED);
+                        return false;
+                        
+                    default:
+                        captcha.setError(Captcha.Error.NETWORK_ERROR);
+                        return false;
+                }
             }
             
-            String captchaId = extractId(location);
-            if(captchaId == null){
-                captcha.setError(Captcha.Error.NETWORK_ERROR);
-                return false;
-            }
-            captcha.setId(captchaId);
+            captcha.setId(response.substring(3));
             
             long timeLimit=System.currentTimeMillis() + DEFAULT_POLLING_MS;
             while(System.currentTimeMillis() < timeLimit){
 
-                int status = http.get(location + "?" + random.nextInt(Integer.MAX_VALUE));
-                if(status == 200){
-                    Map<String, String> answer = parseAnswer(http.getContentAsString());
-                    if(answer.get("text") != null && !answer.get("text").isEmpty()){
-                        captcha.setResponse(answer.get("text"));
+                int status = http.get(apiUrl + "res.php?key=" + apiKey + 
+                    "&action=get" + 
+                    "&id=" + captcha.getId() + 
+                    "&random=" + random.nextInt(Integer.MAX_VALUE));
+                
+                String res = http.getContentAsString();
+                if(res == null){
+                    captcha.setError(Captcha.Error.NETWORK_ERROR);
+                    return false;
+                }
+                
+                if(!"CAPCHA_NOT_READY".equals(apiKey)){
+                    if(res.startsWith("OK|")){
+                        captcha.setResponse(res.substring(3));
                         captcha.setStatus(Captcha.Status.SOLVED);
                         return true;
                     }
+                    
+                    captcha.setError(Captcha.Error.NETWORK_ERROR);
+                    captcha.setStatus(Captcha.Status.ERROR);
                 }
 
                 try {
@@ -213,86 +218,59 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
         return false;
     }
     
-    public boolean isRetryableStatus(int status){
-        return status == 0 || status >= 500 && status <= 599;
-    }
-    
-    private final static Pattern pExtractId = Pattern.compile("([0-9]+)$");
-    protected String extractId(String location){
-        Matcher matcher = pExtractId.matcher(location);
-        if(matcher.find()){
-            return matcher.group(1);
-        }
-        return null;
+    public boolean isRetryable(String response){
+        return response == null || "ERROR_NO_SLOT_AVAILABLE".equals(response);
     }
     
     @Override
     public boolean reportIncorrect(Captcha captcha) {
-        try(ScrapClient http = new ScrapClient()){
-            return http.get(apiUrl + "/captcha/" + captcha.getId() + "/report") == 200;
-        }catch(Exception ex){
-            LOG.warn("exception ", ex);
-        }
         return false;
     }
 
     @Override
     public String getFriendlyName() {
-        return "deathbycaptcha";
+        return "anticaptcha";
     }
 
     @Override
     public boolean testLogin() {
-        Map<String, String> userData = getUserData();
-        if(userData == null){
+        String balance = getRawBalance();
+        if(balance == null || balance.isEmpty()){
             return false;
         }
-        return userData.containsKey("user");
+        try {
+            Float.parseFloat(getRawBalance());
+            return true;
+        } catch(Exception ex){
+        }
+        return false;
     }    
 
     @Override
     public float getCredit() {
-        Map<String, String> userData = getUserData();
-        if(userData == null){
-            return 0;
-        }
         try {
-            return Float.parseFloat(userData.get("balance"));
+            return Float.parseFloat(getRawBalance());
         }catch(Exception ex){
             return 0;
         }
     }
     
-    protected Map<String,String> getUserData() {
-        Map<String,String> userData = new HashMap<>();
+    protected String getRawBalance() {
         try(ScrapClient cli = new ScrapClient()){
-            int status = cli.post(apiUrl + "user", getMapWithCredentials(), ScrapClient.PostType.URL_ENCODED);
+            int status = cli.get(apiUrl + "/res.php?key=" + apiKey + "&action=getbalance");
             if(status != 200){
-                return userData;
+                return "";
             }
-            
-            userData = parseAnswer(cli.getContentAsString());
-
+            return cli.getContentAsString();
         }catch(Exception ex){
             LOG.error("exception", ex);
         }
-        return userData;
+        return "";
     }    
 
     @Override
     public boolean hasCredit() {
-        Map<String, String> userData = getUserData();
-        if(userData == null){
-            return false;
-        }
-        
-        try {
-            float rate = Float.parseFloat(userData.get("rate"));
-            float balance = Float.parseFloat(userData.get("balance"));
-            return rate < balance;
-        }catch(Exception ex){
-            return false;
-        }
+        return getCredit() > 0.001f;
         
     }
 
@@ -314,13 +292,6 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
                 data.put(keyvalue[0], keyvalue[1]);
             }
         }
-        return data;
-    }
-    
-    protected Map<String,Object> getMapWithCredentials(){
-        Map<String,Object> data = new HashMap<>();
-        data.put("username", this.login);
-        data.put("password",this.password);
         return data;
     }
     

@@ -32,6 +32,7 @@ public abstract class Captcha {
         INVALID_CREDENTIALS,
         OUT_OF_CREDITS,
         NETWORK_ERROR,
+        TIMEOUT,
         EXCEPTION
     };
     
@@ -61,6 +62,9 @@ public abstract class Captcha {
 
     public void setStatus(Status status) {
         this.status = status;
+        if(status == Status.SOLVED){
+            this.error = SUCCESS;
+        }
     }
 
     public Error getError() {
@@ -70,7 +74,7 @@ public abstract class Captcha {
     public void setError(Error error) {
         this.error = error;
         if(error != SUCCESS){
-            setStatus(Status.ERROR);
+            this.status = Status.ERROR;
         }
     }
 
