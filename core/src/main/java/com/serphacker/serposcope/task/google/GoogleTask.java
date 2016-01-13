@@ -308,18 +308,8 @@ public class GoogleTask extends AbstractTask {
         
     }
     
-    protected Map<String,String> getCaptchaConfig(Config config){
-        Map<String,String> map = new HashMap<>();
-        
-        map.put("service", config.getCaptchaService().toString().toLowerCase());
-        map.put("dbcuser", config.getDbcUser() != null ? config.getDbcUser() : "");
-        map.put("dbcpass", config.getDbcPass() != null ? config.getDbcPass() : "");
-        
-        return map;
-    }
-    
     protected final CaptchaSolver initializeCaptchaSolver(){
-        solver = captchaSolverFactory.get(getCaptchaConfig(baseDB.config.getConfig()));
+        solver = captchaSolverFactory.get(baseDB.config.getConfig());
         if(solver != null){
             LOG.info("captcha service : {}", solver.getFriendlyName());
             if(!solver.init()){

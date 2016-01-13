@@ -22,6 +22,7 @@ import com.serphacker.serposcope.di.GoogleScraperFactory;
 import com.serphacker.serposcope.di.db.ConfigurationProvider;
 import com.serphacker.serposcope.di.db.DataSourceProvider;
 import com.serphacker.serposcope.di.TaskFactory;
+import com.serphacker.serposcope.models.base.Config;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.SwingUICaptchaSolver;
 import com.serphacker.serposcope.scraper.google.scraper.GoogleScraper;
@@ -71,7 +72,7 @@ public class Module extends AbstractModule {
         
         // debugging
         if(NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet().equals(NinjaMode.dev)){
-            bind(CaptchaSolverFactory.class).toInstance((CaptchaSolverFactory) (Map<String,String> properties) -> null);
+            bind(CaptchaSolverFactory.class).toInstance((CaptchaSolverFactory) (Config config) -> null);
             bind(GoogleScraperFactory.class).toInstance((GoogleScraperFactory) (ScrapClient http, CaptchaSolver solver) -> new RandomGScraper(http, solver));
         }        
     }

@@ -8,6 +8,8 @@
 package com.serphacker.serposcope.scraper.google.scraper;
 
 import com.google.common.io.ByteStreams;
+import com.serphacker.serposcope.scraper.DeepIntegrationTest;
+import com.serphacker.serposcope.scraper.captcha.solver.DecaptcherSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.SwingUICaptchaSolver;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult;
@@ -37,20 +39,32 @@ import org.slf4j.LoggerFactory;
  * @author admin
  */
 @RunWith(MockitoJUnitRunner.class)
-public class GoogleScraperDebug {
+public class GoogleScraperDebug extends DeepIntegrationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GoogleScraperDebug.class);
 
     @Test
     public void debugScrap() throws IOException, InterruptedException {
-        SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
-        solver.init();        
+//        SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
+//        solver.init();     
+        DecaptcherSolver solver = new DecaptcherSolver(props.getProperty("decaptcher.login"), props.getProperty("decaptcher.password"));
+        solver.init();
         
         ScrapClient http = new ScrapClient(true);
         http.setProxy(new HttpProxy("127.0.0.1", 8080));
         GoogleScraper scraper = new GoogleScraper(http, solver);
+        System.out.println(props.getProperty("decaptcher.login") + "|" + props.getProperty("decaptcher.password"));
 
         String[] keywords = new String[]{
+            "kolozsvr",
+            "leyden",
+            "liberatory",
+            "barcarole",
+            "bedlamise",
+            "unfreed",
+            "unsacked",
+            "criminative",
+            "hippiatric",
             "banque",
             "banques",
             "banque en ligne",

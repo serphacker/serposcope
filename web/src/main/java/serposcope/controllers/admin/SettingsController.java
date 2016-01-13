@@ -64,8 +64,9 @@ public class SettingsController extends BaseController {
         @Param("displayGoogleSearch") String displayGoogleSearch,
         @Param("cronTime") String cronTime,
         @Param("service") String captchaService,
-        @Param("dbcUser") String dbcUser,
-        @Param("dbcPass") String dbcPass
+        @Param("captchaUser") String captchaUser,
+        @Param("captchaPass") String captchaPass,
+        @Param("captchaApiKey") String captchaApiKey
     ){
         FlashScope flash = context.getFlashScope();
         
@@ -73,8 +74,8 @@ public class SettingsController extends BaseController {
 
         Config.CaptchaService service = Config.CaptchaService.fromString(captchaService);
         if(Config.CaptchaService.DISABLE.equals(service)){
-            dbcUser = null;
-            dbcPass = null;
+            captchaUser = null;
+            captchaPass = null;
         }
         
         if(cronTime == null || cronTime.isEmpty()){
@@ -95,8 +96,13 @@ public class SettingsController extends BaseController {
         }
             
         config.setCaptchaService(service);
-        config.setDbcUser(dbcUser != null && dbcUser.isEmpty() ? null : dbcUser);
-        config.setDbcPass(dbcPass != null && dbcPass.isEmpty() ? null : dbcPass);
+        switch(service){
+            case DEATHBYCAPTCHA:
+            case DECAPTCHER:
+                config.setDbcUser(captchaUser);
+                config.setDbcPass(captchaPass);
+                break;
+        }
         
         if(displayHome != null && !Config.DEFAULT_DISPLAY_HOME.equals(displayHome) && Config.VALID_DISPLAY_HOME.contains(displayHome)){
             config.setDisplayHome(displayHome);

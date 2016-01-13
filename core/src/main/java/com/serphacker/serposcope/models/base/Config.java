@@ -21,12 +21,16 @@ public class Config {
     
     public enum CaptchaService {
         DISABLE,
-        DEATHBYCAPTCHA;
+        SWINGUI,
+        DEATHBYCAPTCHA,
+        DECAPTCHER;
         
         public static CaptchaService fromString(String name){
             if(name != null){
-                if(DEATHBYCAPTCHA.toString().equals(name.toUpperCase())){
-                    return DEATHBYCAPTCHA;
+                for (CaptchaService service : CaptchaService.values()) {
+                    if(service.toString().equals(name.toUpperCase())){
+                        return service;
+                    }
                 }
             }
             return DISABLE;
