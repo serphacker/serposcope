@@ -152,18 +152,19 @@ serposcope.googleGroupController = function () {
             'type': 'hidden'
         }));
         
+        var inputs = [];
         for(var i=0; i<keyword.length; i++){
             if(typeof(keyword[i]) == "undefined"){
                 continue;
             }
-            form.append($('<input>', {'name': 'keyword[]','value': keyword[i],'type': 'hidden'}));
-            form.append($('<input>', {'name': 'tld[]','value': tld[i],'type': 'hidden'}));
-            form.append($('<input>', {'name': 'datacenter[]','value': datacenter[i],'type': 'hidden'}));
-            form.append($('<input>', {'name': 'device[]','value': device[i],'type': 'hidden'}));
-            form.append($('<input>', {'name': 'local[]','value': local[i],'type': 'hidden'}));
-            form.append($('<input>', {'name': 'custom[]','value': custom[i],'type': 'hidden'}));
+            inputs.push($('<input>', {'name': 'keyword[]','value': keyword[i],'type': 'hidden'})[0]);
+            inputs.push($('<input>', {'name': 'tld[]','value': tld[i],'type': 'hidden'})[0]);
+            inputs.push($('<input>', {'name': 'datacenter[]','value': datacenter[i],'type': 'hidden'})[0]);
+            inputs.push($('<input>', {'name': 'device[]','value': device[i],'type': 'hidden'})[0]);
+            inputs.push($('<input>', {'name': 'local[]','value': local[i],'type': 'hidden'})[0]);
+            inputs.push($('<input>', {'name': 'custom[]','value': custom[i],'type': 'hidden'})[0]);
         }
-        
+        form.append(inputs);
         form.appendTo(document.body).submit();
         
         return false;
