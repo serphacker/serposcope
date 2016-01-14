@@ -29,7 +29,7 @@ serposcope.adminSettingsController = function () {
                 service: $('#service').val(),
                 user: $('#captchaUser').val(),
                 pass: $('#captchaPass').val(),
-                api: $('#captchaApiKey').val(),
+                api: $('#captchaApiKey').val()
             },
             success: function(result){
                 alert(result);

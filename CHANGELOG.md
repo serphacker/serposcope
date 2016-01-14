@@ -2,9 +2,14 @@
 
 ## 2.1.0 - unreleased
 
+* add https://anti-captcha.com/ captcha service (#58)
+* add http://de-captcher.com/ captcha service (#58)
+* ability to check captcha balance from settings
+* randomized keywords before checking  (#40)
+* improve keyword bulk import speed
 * Windows binaries are signed
 * FIX Avast false positive
-* FIX incorrect .deb packages
+* FIX incorrect .deb packages (#47)
 
 ## 2.0.0 - 05/01/2016
 

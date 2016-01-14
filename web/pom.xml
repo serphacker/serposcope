@@ -215,6 +215,10 @@
                         <executions>
                             <execution>
                                 <id>default-minify</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>minify</goal>
+                                </goals>
                                 <configuration>
                                     <webappSourceDir>${basedir}/src/main/java/</webappSourceDir>
                                     <webappTargetDir>${basedir}/src/main/java/assets</webappTargetDir>
@@ -254,9 +258,6 @@
                                     </jsSourceFiles>
                                     <jsFinalFile>combined.js</jsFinalFile>
                                 </configuration>
-                                <goals>
-                                    <goal>minify</goal>
-                                </goals>
                             </execution>
                         </executions>
                     </plugin>
