@@ -1,10 +1,10 @@
 <#assign sideMenu>
 <li>
-    <a href="${reverseRoute("admin.AdminController","admin")}"><i class="fa fa-cog fa-fw"></i> Administration</a>
+    <a href="${reverseRoute("admin.AdminController","admin")}"><i class="fa fa-cog fa-fw"></i> ${i18n("label.settings")}</a>
     <ul class="nav nav-second-level">
         <li>
             <a href="${reverseRoute("admin.SettingsController","settings")}">
-                <i class="fa fa-wrench fa-fw"></i> ${i18n("label.settings")}
+                <i class="fa fa-wrench fa-fw"></i> ${i18n("label.general")}
             </a>
         </li>
         <li>

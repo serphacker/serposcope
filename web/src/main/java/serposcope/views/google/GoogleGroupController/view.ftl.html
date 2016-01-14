@@ -27,9 +27,9 @@
             </a>            
             <a href="${reverseRoute("google.GoogleGroupController","delete", "groupId",group.getId())}" class="btn btn-danger btn-delete-group" 
                data-id="${group.getId()}" data-name="${group.getName()}"
-               title="${i18n("label.delete")}" data-toggle="tooltip" 
+               title="${i18n("google.group.deleteGroup")}" data-toggle="tooltip" 
                >
-               <i class="glyphicon glyphicon-remove hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("label.delete")}</span>
+               <i class="glyphicon glyphicon-remove hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("google.group.deleteGroup")}</span>
             </a>
             </#if>
         </div>
@@ -146,9 +146,9 @@
                             </#list>
                         </table>
                         <div>
-                            <input id="btn-export-searches" type="button" class="btn btn-primary" value="${i18n("label.exportKeywords")}"
+                            <input id="btn-export-searches" type="button" class="btn btn-primary" value="${i18n("google.group.exportKeywords")}"
                                    data-action="${reverseRoute("google.GoogleGroupController","exportSearches","groupId",group.getId())}" />
-                            <input id="btn-delete-searches" type="button" class="btn btn-danger" value="${i18n("label.delete")}" 
+                            <input id="btn-delete-searches" type="button" class="btn btn-danger" value="${i18n("google.group.deleteKeywords")}" 
                                 data-action="${reverseRoute("google.GoogleGroupController","delSearch","groupId",group.getId())}" />
                         </div>
                     </div>
