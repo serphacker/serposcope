@@ -16,7 +16,7 @@ import javax.inject.Singleton;
 public class Version implements Comparable<Version> {
 
     private final static Pattern PATTERN = Pattern.compile("^([0-9]+)\\.([0-9]+)\\.([0-9]+)(-[A-Z]+[0-9]+)?$");
-    public final static Version CURRENT = new Version("2.1.0");
+    public final static Version CURRENT = new Version("2.2.0");
 
     int major;
     int minor;
