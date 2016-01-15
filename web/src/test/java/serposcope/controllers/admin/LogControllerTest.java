@@ -29,7 +29,12 @@ public class LogControllerTest {
         map.put("c","3");
         map.put("111","1");
         map.put("22","2");
-        map.put("3","3");        
+        map.put("3","3");    
+        map.put("3","");
+        map.put("","3");
+        map.put("",null);
+        map.put("y",null);
+        map.put(null,"o");        
         LogController ctrl = new LogController();
         System.out.println(ctrl.getSortedMapByReverseLength(map));
     }
