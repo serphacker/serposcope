@@ -1,6 +1,6 @@
 # serposcope changelog
 
-## 2.1.0 - unreleased
+## 2.1.0 - 15/01/2016
 
 * add https://anti-captcha.com/ captcha service (#58)
 * add http://de-captcher.com/ captcha service (#58)
@@ -10,6 +10,7 @@
 * Windows binaries are signed
 * FIX Avast false positive
 * FIX incorrect .deb packages (#47)
+* FIX invalid log link on home
 
 ## 2.0.0 - 05/01/2016
 
