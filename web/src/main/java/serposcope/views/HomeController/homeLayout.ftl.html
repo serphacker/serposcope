@@ -38,7 +38,7 @@
             
             <div class="home-left-progress">
                 <#if currentRun?? && currentRun.isRunning() >
-                <span class="progress-label">${i18n("home.currentCheck")} <a href="${reverseRoute("admin.LogController","viewLog","log",global.lastlog)}")} >logs</a></span>
+                <span class="progress-label">${i18n("home.currentCheck")} <a href="${reverseRoute("admin.LogController","viewLog","log",.now?date?iso_utc + ".log")}")} >logs</a></span>
                 <div class="progress" style="width: 100%; display: block;" title="${i18n("admin.task.remainingTime")} : ${currentRun.getRemainingTimeFormated()}" data-toggle="tooltip" >
                      <div 
                         class="progress-bar progress-bar-striped active <#if currentRun.getStatus() != "RUNNING" >progress-bar-warning</#if>" 

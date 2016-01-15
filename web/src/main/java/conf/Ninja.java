@@ -70,7 +70,6 @@ public class Ninja extends NinjaDefault {
             global.put("version", Version.CURRENT);
             global.put("prod", props.isProd());
             global.put("update", update);
-            global.put("lastlog", LocalDate.now().toString() + ".log");
             freemarker.getConfiguration().setSharedVariable("global", global);
             freemarker.getConfiguration().addAutoImport("fu","/serposcope/views/helpers/functions.ftl.html");
             
