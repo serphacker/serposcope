@@ -73,10 +73,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
+import org.apache.http.ConnectionReuseStrategy;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.SocketConfig;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -84,43 +86,58 @@ import org.apache.http.entity.mime.content.AbstractContentBody;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.DefaultConnectionReuseStrategy;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 
-/***
+/**
+ * *
  * not thread safe
+ *
  * @author admin
  */
 public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProvider, HttpRequestInterceptor {
-    
+
     public enum PostType {
         URL_ENCODED,
         MULTIPART
     }
-    
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ScrapClient.class);
-    
+
     public final static String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0";
     public final static int DEFAULT_TIMEOUT_MS = 30000;
-    public final static int DEFAULT_MAX_RESPONSE_LENGTH = (1024*1024*4)-1;// 4MB
+    public final static int DEFAULT_MAX_RESPONSE_LENGTH = (1024 * 1024 * 4) - 1;// 4MB
 
     CloseableHttpClient client;
     BasicCredentialsProvider credentialProvider = new BasicCredentialsProvider();
     BasicCookieStore basicCookieStore = new BasicCookieStore();
-    
+
     String useragent = DEFAULT_USER_AGENT;
     Integer timeoutMS = DEFAULT_TIMEOUT_MS;
     ScrapProxy proxy;
     int maxResponseLength;
     byte[] buffer;
     List<Header> requestHeaders = new ArrayList<>();
-    Map<HttpHost,HttpHost> routes = new HashMap<>();
-    
+    Map<HttpHost, HttpHost> routes = new HashMap<>();
+
     CloseableHttpResponse response;
     byte[] content;
     int statusCode;
     Exception exception;
-
+    
+    class ConnectionReuseStrategy extends DefaultConnectionReuseStrategy {
+        @Override
+        public boolean keepAlive(HttpResponse response, HttpContext context) {
+            if(proxy == null || (proxy instanceof BindProxy)){
+                return super.keepAlive(response, context);
+            } else {
+                return false;
+            }
+        }
+    }
+    
     public ScrapClient() {
         this(false);
     }
@@ -134,7 +151,7 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
                     .loadTrustMaterial(null, (X509Certificate[] chain, String authType) -> true)
                     .build();
                 sslFactory = new SSLConnectionSocketFactory(sslContext, (String string, SSLSession ssls) -> true);
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 LOG.error("ssl exception", ex);
             }
         } else {
@@ -147,8 +164,9 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
             .setDefaultCredentialsProvider(this)
             .setDefaultCookieStore(basicCookieStore)
             .setSSLSocketFactory(sslFactory)
+            .setConnectionReuseStrategy(this.new ConnectionReuseStrategy())
             .addInterceptorFirst(this)
-//            .addInterceptorLast(this)
+            //            .addInterceptorLast(this)
             .disableRedirectHandling()
             .disableContentCompression()
             .build();
@@ -161,8 +179,8 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public void addCookies(Cookie[] cookies) {
         basicCookieStore.addCookies(cookies);
     }
-    
-    public void addCookies(Collection<Cookie> cookies){
+
+    public void addCookies(Collection<Cookie> cookies) {
         for (Cookie cooky : cookies) {
             basicCookieStore.addCookie(cooky);
         }
@@ -175,8 +193,8 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public boolean clearExpiredCookies(Date date) {
         return basicCookieStore.clearExpired(date);
     }
-    
-    public void clearCookies(){
+
+    public void clearCookies() {
         basicCookieStore.clear();
     }
 
@@ -187,9 +205,9 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public void setUseragent(String useragent) {
         this.useragent = useragent;
     }
-    
+
     public void setProxy(ScrapProxy proxy) {
-        if(proxy != null && proxy instanceof DirectNoProxy){
+        if (proxy != null && proxy instanceof DirectNoProxy) {
             this.proxy = null;
         } else {
             this.proxy = proxy;
@@ -213,10 +231,10 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     }
 
     public final void setMaxResponseLength(int maxResponseLength) {
-        this.maxResponseLength = maxResponseLength+1;
+        this.maxResponseLength = maxResponseLength + 1;
         buffer = new byte[this.maxResponseLength];
     }
-    
+
     public CloseableHttpResponse getResponse() {
         return response;
     }
@@ -224,69 +242,71 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public byte[] getContent() {
         return content;
     }
-    
+
     public String getContentAsString() {
-        if(response == null || content == null){
+        if (response == null || content == null) {
             return null;
         }
-        
+
         Charset charset = getDetectedCharset();
-        
-        if(charset == null){
+
+        if (charset == null) {
             charset = Charset.forName("UTF-8");
         }
-        
+
         return new String(content, charset);
     }
-    
-    public Charset getDetectedCharset(){
+
+    public Charset getDetectedCharset() {
         ContentType contentType = null;
         try {
-           contentType = ContentType.get(response.getEntity());
-        } catch(Exception ex){}
-        
+            contentType = ContentType.get(response.getEntity());
+        } catch (Exception ex) {
+        }
+
         Charset charset = null;
         if (contentType != null) {
             try {
                 charset = contentType.getCharset();
             } catch (final Exception ex) {
             }
-            
-            if(charset == null){
-                if(contentType.getMimeType().contains("text/html")){
+
+            if (charset == null) {
+                if (contentType.getMimeType().contains("text/html")) {
                     charset = detectCharsetFromHtmlMeta();
                 }
             }
-            
+
         }
-        
+
         return charset;
     }
-    
+
     final static Pattern pcharset = Pattern.compile("charset=['\"]?([^\"'\\s]+)");
-    protected Charset detectCharsetFromHtmlMeta(){
-        if(content == null){
+
+    protected Charset detectCharsetFromHtmlMeta() {
+        if (content == null) {
             return null;
         }
-        
+
         int len = content.length > 4096 ? 4096 : content.length;
         Matcher matcher = pcharset.matcher(new ByteCharSequence(content, 0, len));
-        if(matcher.find()){
+        if (matcher.find()) {
             try {
                 return Charset.forName(matcher.group(1));
-            } catch(Exception ex){
+            } catch (Exception ex) {
             }
         }
-        
+
         return null;
     }
-    
-    public String getResponseHeader(String key){
-        if(response == null){
+
+    public String getResponseHeader(String key) {
+        if (response == null) {
             return null;
         }
         Header header = response.getFirstHeader(key);
-        if(header == null){
+        if (header == null) {
             return null;
         }
         return header.getValue();
@@ -299,161 +319,161 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public Exception getException() {
         return exception;
     }
-    
-    public int get(String url){
-        return get(url,null);
+
+    public int get(String url) {
+        return get(url, null);
     }
-    
-    public int get(String url, String referrer){
-        clearPreviousRequest();
+
+    public int get(String url, String referrer) {
         return performRequest(new HttpGet(url), referrer);
     }
-    
-    public int post(String url, Map<String,Object> data, PostType dataType){
+
+    public int post(String url, Map<String, Object> data, PostType dataType) {
         return post(url, data, dataType, null);
     }
-    
-    public int post(String url, Map<String,Object> data, PostType dataType, String charset){
+
+    public int post(String url, Map<String, Object> data, PostType dataType, String charset) {
         return post(url, data, dataType, charset, null);
-    }    
-    
-    public int post(String url, Map<String,Object> data, PostType dataType, String charset, String referrer){
+    }
+
+    public int post(String url, Map<String, Object> data, PostType dataType, String charset, String referrer) {
         clearPreviousRequest();
-        
+
         HttpPost request = new HttpPost(url);
         HttpEntity entity = null;
-        
-        if(charset == null){
+
+        if (charset == null) {
             charset = "utf-8";
         }
-        
+
         Charset detectedCharset = null;
         try {
             detectedCharset = Charset.forName(charset);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             LOG.warn("invalid charset name {}, switching to utf-8");
             detectedCharset = Charset.forName("utf-8");
         }
-        
+
         data = handleUnsupportedEncoding(data, detectedCharset);
-        
-        switch(dataType){
+
+        switch (dataType) {
             case URL_ENCODED:
                 List<NameValuePair> formparams = new ArrayList<>();
                 for (Map.Entry<String, Object> entry : data.entrySet()) {
-                    if(entry.getValue() instanceof String){
+                    if (entry.getValue() instanceof String) {
                         formparams.add(new BasicNameValuePair(entry.getKey(), (String) entry.getValue()));
                     } else {
                         LOG.warn("trying to url encode non string data");
                         formparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
                     }
                 }
-                
+
                 try {
                     entity = new UrlEncodedFormEntity(formparams, detectedCharset);
-                }catch(Exception ex){
-                    statusCode= -1;
+                } catch (Exception ex) {
+                    statusCode = -1;
                     exception = ex;
                     return statusCode;
                 }
                 break;
-                
+
             case MULTIPART:
                 MultipartEntityBuilder builder = MultipartEntityBuilder.create()
                     .setCharset(detectedCharset)
                     .setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                
+
                 ContentType formDataCT = ContentType.create("form-data", detectedCharset);
 //                formDataCT = ContentType.DEFAULT_TEXT;
-                
+
                 for (Map.Entry<String, Object> entry : data.entrySet()) {
                     String key = entry.getKey();
-                    
-                    if(entry.getValue() instanceof String){
+
+                    if (entry.getValue() instanceof String) {
                         builder = builder.addTextBody(key, (String) entry.getValue(), formDataCT);
-                    } else if(entry.getValue() instanceof byte[]){
+                    } else if (entry.getValue() instanceof byte[]) {
                         builder = builder.addBinaryBody(key, (byte[]) entry.getValue());
-                    } else if(entry.getValue() instanceof ContentBody){
-                        builder = builder.addPart(key, (ContentBody)entry.getValue());
+                    } else if (entry.getValue() instanceof ContentBody) {
+                        builder = builder.addPart(key, (ContentBody) entry.getValue());
                     } else {
                         exception = new UnsupportedOperationException("unssuported body type " + entry.getValue().getClass());
                         return statusCode = -1;
                     }
                 }
-                
+
                 entity = builder.build();
                 break;
-                
+
             default:
                 exception = new UnsupportedOperationException("unspported PostType " + dataType);
                 return statusCode = -1;
         }
-        
+
         request.setEntity(entity);
         return performRequest(request, referrer);
     }
-    
-    protected Map<String,Object> handleUnsupportedEncoding(Map<String,Object> data, Charset detectedCharset){
-        
-        Map<String,Object> cleanedData = new HashMap<>();
-        
+
+    protected Map<String, Object> handleUnsupportedEncoding(Map<String, Object> data, Charset detectedCharset) {
+
+        Map<String, Object> cleanedData = new HashMap<>();
+
         boolean hasUnsupportedEncoding = false;
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            
-            if(!EncodeUtils.canEncode(key, detectedCharset.name())){
+
+            if (!EncodeUtils.canEncode(key, detectedCharset.name())) {
                 hasUnsupportedEncoding = true;
                 key = EncodeUtils.forceASCII(key);
             }
-            
-            if(value instanceof String){
-                if(!EncodeUtils.canEncode((String) value, detectedCharset.name())){
+
+            if (value instanceof String) {
+                if (!EncodeUtils.canEncode((String) value, detectedCharset.name())) {
                     hasUnsupportedEncoding = true;
                     value = EncodeUtils.forceASCII((String) value);
                 }
             }
-            
+
             cleanedData.put(key, value);
         }
-        
-        if(hasUnsupportedEncoding){
+
+        if (hasUnsupportedEncoding) {
             LOG.warn("failed to encode some post data to {} forced to ascii", detectedCharset.name());
         }
-        
+
         return cleanedData;
     }
-    
-    protected void clearPreviousRequest(){
-        content=null;
-        exception=null;
-        response=null;
-        statusCode=0;
+
+    protected void clearPreviousRequest() {
+        content = null;
+        exception = null;
+        response = null;
+        statusCode = 0;
     }
-    
+
     protected int performRequest(
         HttpRequestBase request,
         String referrer
-    ){
+    ) {
         try {
-            
-            if(referrer != null){
+            clearPreviousRequest();
+
+            if (referrer != null) {
                 request.addHeader("Referer", referrer);
             }
-            
+
             response = execute(request);
             statusCode = response.getStatusLine().getStatusCode();
-            
+
             HttpEntity entity = response.getEntity();
             long contentLength = entity.getContentLength();
-            
-            if(contentLength > maxResponseLength){
+
+            if (contentLength > maxResponseLength) {
                 throw new ResponseTooBigException(
-                    "content length (" + contentLength + ") " +
-                    "is greater than max response leength (" + maxResponseLength + ")"
+                    "content length (" + contentLength + ") "
+                    + "is greater than max response leength (" + maxResponseLength + ")"
                 );
-            } 
-            
+            }
+
             Header ceheader = entity.getContentEncoding();
             if (ceheader != null) {
                 HeaderElement[] codecs = ceheader.getElements();
@@ -469,45 +489,42 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
                     }
                 }
             }
-            
+
             InputStream stream = entity.getContent();
             int totalRead = 0;
             int read = 0;
 
-            while(
-                totalRead < maxResponseLength && 
-                (read=stream.read(buffer, totalRead, maxResponseLength-totalRead)) != -1
-            ){
+            while (totalRead < maxResponseLength
+                && (read = stream.read(buffer, totalRead, maxResponseLength - totalRead)) != -1) {
                 totalRead += read;
             }
-            
-            if(totalRead == maxResponseLength && read != 0){
+
+            if (totalRead == maxResponseLength && read != 0) {
                 throw new ResponseTooBigException("already read " + totalRead + " bytes");
             }
             content = Arrays.copyOfRange(buffer, 0, totalRead);
-            
-        }catch(Exception ex){
+
+        } catch (Exception ex) {
             content = null;
             statusCode = -1;
             exception = ex;
-        }finally{
+        } finally {
             closeResponse();
         }
-        
-        return statusCode;        
+
+        return statusCode;
     }
-    
-    
+
     public void closeResponse() {
-        if(response != null){
-            try{
+        if (response != null) {
+            try {
                 response.close();
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 LOG.warn("Exception while closing response", ex);
             }
         }
     }
-    
+
     @Override
     public void close() throws IOException {
         closeResponse();
@@ -515,20 +532,20 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
             client.close();
         }
     }
-    
-    public void setRoute(HttpHost to, HttpHost via){
+
+    public void setRoute(HttpHost to, HttpHost via) {
         routes.put(to, via);
     }
-    
-    public void removeRouteVia(HttpHost host){
+
+    public void removeRouteVia(HttpHost host) {
         routes.remove(host);
     }
-    
-    public void removeRoutesTo(String host){
+
+    public void removeRoutesTo(String host) {
         routes.entrySet().removeIf((Map.Entry<HttpHost, HttpHost> t) -> host.equals(t.getValue().getHostName()));
     }
-    
-    public void removeRoutes(){
+
+    public void removeRoutes() {
         routes.clear();
     }
 
@@ -536,7 +553,7 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public HttpRoute determineRoute(HttpHost originaltarget, HttpRequest request, HttpContext context) throws HttpException {
         boolean ssl = "https".equalsIgnoreCase(originaltarget.getSchemeName());
         HttpHost target = routes.getOrDefault(originaltarget, originaltarget);
-        
+
         if (proxy == null) {
             return new HttpRoute(target);
         }
@@ -590,36 +607,36 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public void clear() {
         credentialProvider.clear();
     }
-    
+
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
         request.setHeader("Accept-Encoding", "gzip");
-        if(request.getFirstHeader("user-agent") == null){
+        if (request.getFirstHeader("user-agent") == null) {
             request.setHeader("User-Agent", useragent);
         }
-        
+
         for (Header requestHeader : requestHeaders) {
             request.setHeader(requestHeader);
         }
-        
-        RequestConfig baseConfig = (RequestConfig)context.getAttribute(HttpClientContext.REQUEST_CONFIG);
+
+        RequestConfig baseConfig = (RequestConfig) context.getAttribute(HttpClientContext.REQUEST_CONFIG);
         RequestConfig.Builder builder = RequestConfig.copy(baseConfig == null ? RequestConfig.DEFAULT : baseConfig);
-        
-        if(timeoutMS != null){
+
+        if (timeoutMS != null) {
             builder.setConnectTimeout(timeoutMS);
             builder.setConnectionRequestTimeout(timeoutMS);
             builder.setSocketTimeout(timeoutMS);
         }
-        
+
         context.setAttribute(HttpClientContext.REQUEST_CONFIG, builder.build());
-    }    
-    
-    public void setRequestHeader(Header header){
+    }
+
+    public void setRequestHeader(Header header) {
         removeRequestHeadersByName(header.getName());
         requestHeaders.add(header);
     }
-    
-    public void removeRequestHeadersByName(String name){
+
+    public void removeRequestHeadersByName(String name) {
         requestHeaders.removeIf((Header t) -> t.getName().toLowerCase().equals(name.toLowerCase()));
     }
 
@@ -654,5 +671,5 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException, ClientProtocolException {
         return client.execute(target, request, responseHandler, context);
     }
-    
+
 }

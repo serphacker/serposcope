@@ -10,10 +10,15 @@ package com.serphacker.serposcope.scraper.http;
 import com.serphacker.serposcope.scraper.DeepIntegrationTest;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -51,8 +56,8 @@ public class ScrapClientSSLIT extends DeepIntegrationTest {
         CloseableHttpResponse response = client.execute(new HttpGet("https://selfsigned.indahax.com"));
         assertEquals(200, response.getStatusLine().getStatusCode());
     }    
-    
 
+    
     @Test(expected = SSLHandshakeException.class)
     public void testMitmSslProxyWithSelfSignedCertificateFail() throws Exception {
         ScrapClient client = new ScrapClient(false);
@@ -66,6 +71,21 @@ public class ScrapClientSSLIT extends DeepIntegrationTest {
         client.setProxy(new HttpProxy("127.0.0.1", 8080));
         CloseableHttpResponse response = client.execute(new HttpGet("https://httpbin.org"));
         assertEquals(200, response.getStatusLine().getStatusCode());
+    }
+    
+    
+    @Test
+    public void testBadProxy1() throws Exception {
+        ScrapClient dl = new ScrapClient(true);
+        dl.setProxy(new HttpProxy("127.0.0.1", 8080));
+        Map<String,Object> postdata = new HashMap<>();
+        String remoteUrl = "https://proxychecker.serphacker.com";
+        
+        postdata.put("bla", "testing");
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
     }
 
 }
