@@ -50,7 +50,8 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
         DecaptcherSolver solver = new DecaptcherSolver(props.getProperty("decaptcher.login"), props.getProperty("decaptcher.password"));
         solver.init();
         
-        ScrapClient http = new ScrapClient(true);
+        ScrapClient http = new ScrapClient();
+        http.setInsecureSSL(true);
         http.setProxy(new HttpProxy("127.0.0.1", 8080));
         GoogleScraper scraper = new GoogleScraper(http, solver);
         System.out.println(props.getProperty("decaptcher.login") + "|" + props.getProperty("decaptcher.password"));

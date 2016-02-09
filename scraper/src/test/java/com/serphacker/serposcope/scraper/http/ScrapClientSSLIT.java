@@ -9,16 +9,10 @@ package com.serphacker.serposcope.scraper.http;
 
 import com.serphacker.serposcope.scraper.DeepIntegrationTest;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,59 +27,65 @@ public class ScrapClientSSLIT extends DeepIntegrationTest {
     
     @Test(expected = SSLPeerUnverifiedException.class)
     public void testSslWithInvalidHostnameFail() throws Exception {
-        ScrapClient client = new ScrapClient(false);
+        ScrapClient client = new ScrapClient();
         CloseableHttpResponse response = client.execute(new HttpGet("https://54.175.219.8"));
     }
     
     @Test
     public void testSslWithInvalidHostname() throws Exception {
-        ScrapClient client = new ScrapClient(true);
+        ScrapClient client = new ScrapClient();
+        client.setInsecureSSL(true);
         CloseableHttpResponse response = client.execute(new HttpGet("https://54.175.219.8"));
         assertEquals(200, response.getStatusLine().getStatusCode());
     }    
     
-    @Test(expected = SSLHandshakeException.class)
-    public void testSslWithSelfSignedFail() throws Exception {
-        ScrapClient client = new ScrapClient(false);
-        CloseableHttpResponse response = client.execute(new HttpGet("https://selfsigned.indahax.com"));
-    }
+//    @Test(expected = SSLHandshakeException.class)
+//    public void testSslWithSelfSignedFail() throws Exception {
+//        ScrapClient client = new ScrapClient(false);
+//        CloseableHttpResponse response = client.execute(new HttpGet("https://selfsigned.indahax.com"));
+//    }
     
-    @Test
-    public void testSslWithSelfSigned() throws Exception {
-        ScrapClient client = new ScrapClient(true);
-        CloseableHttpResponse response = client.execute(new HttpGet("https://selfsigned.indahax.com"));
-        assertEquals(200, response.getStatusLine().getStatusCode());
-    }    
+//    @Test
+//    public void testSslWithSelfSigned() throws Exception {
+//        ScrapClient client = new ScrapClient(true);
+//        CloseableHttpResponse response = client.execute(new HttpGet("https://selfsigned.indahax.com"));
+//        assertEquals(200, response.getStatusLine().getStatusCode());
+//    }    
 
     
     @Test(expected = SSLHandshakeException.class)
     public void testMitmSslProxyWithSelfSignedCertificateFail() throws Exception {
-        ScrapClient client = new ScrapClient(false);
+        ScrapClient client = new ScrapClient();
         client.setProxy(new HttpProxy("127.0.0.1", 8080));
         client.execute(new HttpGet("https://httpbin.org"));
     }
 
     @Test
     public void testMitmSslProxyWithSelfSignedCertificateSuccess() throws Exception {
-        ScrapClient client = new ScrapClient(true);
+        ScrapClient client = new ScrapClient();
+        client.setInsecureSSL(true);
         client.setProxy(new HttpProxy("127.0.0.1", 8080));
         CloseableHttpResponse response = client.execute(new HttpGet("https://httpbin.org"));
         assertEquals(200, response.getStatusLine().getStatusCode());
     }
     
-    
     @Test
-    public void testBadProxy1() throws Exception {
-        ScrapClient dl = new ScrapClient(true);
-        dl.setProxy(new HttpProxy("127.0.0.1", 8080));
-        Map<String,Object> postdata = new HashMap<>();
-        String remoteUrl = "https://proxychecker.serphacker.com";
+    public void testInsecureSwitching() throws Exception {
+        ScrapClient client = new ScrapClient();
+        client.setInsecureSSL(true);
+        client.setProxy(new HttpProxy("127.0.0.1", 8080));
+        CloseableHttpResponse response = client.execute(new HttpGet("https://httpbin.org"));
+        assertEquals(200, response.getStatusLine().getStatusCode());
         
-        postdata.put("bla", "testing");
-        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
-        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
-        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
-        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
-    }
-
+        boolean occured=false;
+        client.setInsecureSSL(false);
+        try {
+            client.execute(new HttpGet("https://httpbin.org"));
+        }catch(Exception ex){
+            occured=true;
+        }
+        assertTrue(occured);
+    }    
+    
+    
 }

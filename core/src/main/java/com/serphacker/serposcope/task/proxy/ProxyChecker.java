@@ -75,7 +75,7 @@ public class ProxyChecker extends Thread {
             executor.submit(new Runnable() {
                 @Override
                 public void run() {
-                    ScrapClient cli = new ScrapClient(true);
+                    ScrapClient cli = new ScrapClient();
                     
                     cli.setTimeout(timeoutMS);
                     ScrapProxy scrapProxy = proxy.toScrapProxy();

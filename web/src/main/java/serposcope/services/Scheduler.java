@@ -47,7 +47,7 @@ public class Scheduler {
             "&version=" + Version.CURRENT + 
             "&os=" + URLEncoder.encode(osVersion(), "utf-8");
         
-        ScrapClient httpClient = new ScrapClient(true);
+        ScrapClient httpClient = new ScrapClient();
         httpClient.get(url);
         try  {
             lastVersion = new Version(httpClient.getContentAsString().replaceAll("(^\\s+)|(\\s+$)", ""));

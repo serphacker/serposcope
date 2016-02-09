@@ -7,6 +7,7 @@
   
     <logger name="p6spy" level="TRACE"/>
     <logger name="com.serphacker" level="TRACE"/>
+    <logger name="com.serphacker.serposcope.scraper.http.extensions" level="ERROR" />
     <root level="WARN">
         <appender-ref ref="A1"/>
     </root>

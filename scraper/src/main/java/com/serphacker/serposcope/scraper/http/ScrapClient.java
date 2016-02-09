@@ -7,10 +7,10 @@
  */
 package com.serphacker.serposcope.scraper.http;
 
+import com.serphacker.serposcope.scraper.http.extensions.TweakableSSLConnectionFactory;
 import com.serphacker.serposcope.scraper.http.proxy.BindProxy;
 import com.serphacker.serposcope.scraper.http.proxy.DirectNoProxy;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,15 +18,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -42,7 +38,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.DeflateDecompressingEntity;
 import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -52,7 +47,6 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.routing.RouteInfo;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -60,35 +54,26 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
 import com.serphacker.serposcope.scraper.utils.EncodeUtils;
-import java.nio.CharBuffer;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
-import org.apache.http.ConnectionReuseStrategy;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.AbstractContentBody;
-import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -113,7 +98,9 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     CloseableHttpClient client;
     BasicCredentialsProvider credentialProvider = new BasicCredentialsProvider();
     BasicCookieStore basicCookieStore = new BasicCookieStore();
-
+    BasicHttpClientConnectionManager connManager = new BasicHttpClientConnectionManager();
+    TweakableSSLConnectionFactory sslConFactory = new TweakableSSLConnectionFactory();
+    
     String useragent = DEFAULT_USER_AGENT;
     Integer timeoutMS = DEFAULT_TIMEOUT_MS;
     ScrapProxy proxy;
@@ -122,12 +109,13 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     List<Header> requestHeaders = new ArrayList<>();
     Map<HttpHost, HttpHost> routes = new HashMap<>();
 
+    long executionTimeMS;
     CloseableHttpResponse response;
     byte[] content;
     int statusCode;
     Exception exception;
     
-    class ConnectionReuseStrategy extends DefaultConnectionReuseStrategy {
+    class SCliConnectionReuseStrategy extends DefaultConnectionReuseStrategy {
         @Override
         public boolean keepAlive(HttpResponse response, HttpContext context) {
             if(proxy == null || (proxy instanceof BindProxy)){
@@ -139,37 +127,31 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     }
     
     public ScrapClient() {
-        this(false);
-    }
-
-    public ScrapClient(boolean trustAllCert) {
         setMaxResponseLength(DEFAULT_MAX_RESPONSE_LENGTH);
-        SSLConnectionSocketFactory sslFactory = null;
-        if (trustAllCert) {
-            try {
-                SSLContext sslContext = SSLContexts.custom()
-                    .loadTrustMaterial(null, (X509Certificate[] chain, String authType) -> true)
-                    .build();
-                sslFactory = new SSLConnectionSocketFactory(sslContext, (String string, SSLSession ssls) -> true);
-            } catch (Exception ex) {
-                LOG.error("ssl exception", ex);
-            }
-        } else {
-            sslFactory = SSLConnectionSocketFactory.getSocketFactory();
-        }
-
+        
+        sslConFactory.setInsecure(false);
+        
+        connManager = new BasicHttpClientConnectionManager(
+            RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslConFactory)
+                .build()
+        );
+        
         client = HttpClients
             .custom()
             .setRoutePlanner(this)
             .setDefaultCredentialsProvider(this)
             .setDefaultCookieStore(basicCookieStore)
-            .setSSLSocketFactory(sslFactory)
-            .setConnectionReuseStrategy(this.new ConnectionReuseStrategy())
+            .setConnectionReuseStrategy(this.new SCliConnectionReuseStrategy())
+            .setConnectionManager(connManager)
             .addInterceptorFirst(this)
             //            .addInterceptorLast(this)
             .disableRedirectHandling()
             .disableContentCompression()
             .build();
+        
+        setTimeout(timeoutMS);
     }
 
     public void addCookie(Cookie cookie) {
@@ -222,8 +204,13 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
         return timeoutMS;
     }
 
-    public void setTimeout(Integer timeoutMS) {
+    public final void setTimeout(Integer timeoutMS) {
         this.timeoutMS = timeoutMS;
+        SocketConfig.Builder newSocketConfig = SocketConfig.custom();
+        if(timeoutMS != null){
+            newSocketConfig.setSoTimeout(timeoutMS);
+        }
+        connManager.setSocketConfig(newSocketConfig.build());
     }
 
     public int getMaxResponseLength() {
@@ -456,7 +443,7 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     ) {
         try {
             clearPreviousRequest();
-
+            executionTimeMS = System.currentTimeMillis();
             if (referrer != null) {
                 request.addHeader("Referer", referrer);
             }
@@ -510,6 +497,7 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
             exception = ex;
         } finally {
             closeResponse();
+            executionTimeMS = System.currentTimeMillis() - executionTimeMS;
         }
 
         return statusCode;
@@ -640,6 +628,18 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
         requestHeaders.removeIf((Header t) -> t.getName().toLowerCase().equals(name.toLowerCase()));
     }
 
+    public long getExecutionTimeMS() {
+        return executionTimeMS;
+    }
+
+    public boolean isInsecureSSL() {
+        return sslConFactory.isInsecure();
+    }
+
+    public void setInsecureSSL(boolean insecureSSL) {
+        this.sslConFactory.setInsecure(insecureSSL);
+    }
+    
     public CloseableHttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
         return client.execute(target, request, context);
     }

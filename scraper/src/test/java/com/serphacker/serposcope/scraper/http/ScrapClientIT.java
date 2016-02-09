@@ -83,7 +83,7 @@ public class ScrapClientIT {
     
     @Test
     public void testHeaders() throws Exception {
-        ScrapClient cli = new ScrapClient(true);
+        ScrapClient cli = new ScrapClient();
 //        cli.setProxy(new HttpProxy("127.0.0.1",8080));
         cli.setRequestHeader(new BasicHeader("host", "www.google.com"));
         System.out.println(cli.get("https://173.194.32.247/"));
@@ -99,7 +99,7 @@ public class ScrapClientIT {
         
         CloseableHttpResponse response = null;
         
-        response = cli.execute(new HttpGet("http://httpbin.org/cookies/set?testcookie1=value1"));
+        cli.get("http://httpbin.org/cookies/set?testcookie1=value1");
         
         response = cli.execute(new HttpGet("http://httpbin.org/cookies"));
         assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("\"testcookie1\": \"value1\""));
@@ -382,7 +382,8 @@ public class ScrapClientIT {
     
     @Test
     public void testSetRoute() throws Exception {
-        ScrapClient client = new ScrapClient(true);
+        ScrapClient client = new ScrapClient();
+        client.setInsecureSSL(true);
         client.setRoute(new HttpHost("www.google.fr", -1, "https"), new HttpHost("54.175.219.8", -1, "https"));
         client.get("https://www.google.fr/headers");
         assertTrue(client.getContentAsString().contains("\"Host\": \"www.google.fr\""));
@@ -390,7 +391,8 @@ public class ScrapClientIT {
     
     @Test
     public void testSetRouteWithProxy() throws Exception {
-        ScrapClient client = new ScrapClient(true);
+        ScrapClient client = new ScrapClient();
+        client.setInsecureSSL(true);
         client.setProxy(new HttpProxy("127.0.0.1",3128, "user", "pass"));
         
         client.setRoute(new HttpHost("www.google.fr", -1, "https"), new HttpHost("54.175.219.8", -1, "https"));

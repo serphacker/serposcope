@@ -38,7 +38,8 @@ public class GoogleScraperIT {
         SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
         solver.init();
 
-        ScrapClient http = new ScrapClient(true);
+        ScrapClient http = new ScrapClient();
+        http.setInsecureSSL(true);
 //        http.setProxy(new HttpProxy("127.0.0.1", 8080));
         GoogleScraper scraper = new GoogleScraper(http, solver);
         assertEquals(OK, scraper.handleCaptchaRedirect("https://ipv4.google.com/sorry/IndexRedirect?continue=https://www.google.fr/"));
@@ -48,8 +49,8 @@ public class GoogleScraperIT {
     public void testUule() throws Exception {
         SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
         solver.init();
-        ScrapClient http = new ScrapClient(true);
-
+        ScrapClient http = new ScrapClient();
+        http.setInsecureSSL(true);
         String[] places = new String[]{"Paris", "Lille"};
 
         for (String place : places) {
@@ -75,13 +76,13 @@ public class GoogleScraperIT {
         }
     }
 
-    @Test
+//    @Test
     public void testDatacenter() throws Exception {
         SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
         solver.init();
 
-        ScrapClient http = new ScrapClient(true);
-        
+        ScrapClient http = new ScrapClient();
+        http.setInsecureSSL(true);
         GoogleScraper scraper = new GoogleScraper(http, solver);
 
         {

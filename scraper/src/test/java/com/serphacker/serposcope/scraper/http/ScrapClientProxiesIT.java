@@ -14,9 +14,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -121,5 +124,55 @@ tcp_outgoing_address 127.0.0.3 src3
             }
         }
     }
+    
+    @Test
+    public void testBadProxy1() throws Exception {
+        ScrapClient dl = new ScrapClient();
+        dl.setInsecureSSL(true);
+        dl.setProxy(new HttpProxy("127.0.0.1", 8080));
+        Map<String,Object> postdata = new HashMap<>();
+        String remoteUrl = "https://proxychecker.serphacker.com";
+        
+        postdata.put("bla", "testing");
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
+        assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
+    }
+
+    @Test
+    public void testUnresponsiveProxy() throws Exception {
+        ScrapClient dl = new ScrapClient();
+        dl.setProxy(new HttpProxy("127.0.0.1", 1234));
+        String remoteUrl = "https://127.0.0.1:1235";
+        
+        int timeoutMS = 3333;
+        dl.setTimeout(timeoutMS);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+        
+        dl.setTimeout(timeoutMS = 1250);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+    }    
+    
+    @Test
+    public void testUnresponsiveHttpServer() throws Exception {
+        ScrapClient dl = new ScrapClient();
+        int statusCode = 0;
+//        dl.setProxy(new HttpProxy("127.0.0.1", 1234));
+        
+        String remoteUrl = "http://127.0.0.1:1234";
+        
+        int timeoutMS = 3333;
+        dl.setTimeout(timeoutMS);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+        
+        dl.setTimeout(timeoutMS = 1250);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+        
+    }     
     
 }
