@@ -5,29 +5,26 @@
         <#if ranks?? >
         <thead>
             <tr>
-                <th></th>
-                <th></th>
+                <th rowspan="2"></th>
                 <#list years?keys as year>
                 <td colspan="${years[year]}">${year}</td>
                 </#list>
+                <th rowspan="2"></th>
             </tr>
             <tr>
-                <th></th>
-                <th></th>
                 <#list months?keys as month>
                 <td colspan="${months[month]}" >${month?substring(5)}</td>
                 </#list>
             </tr>
             <tr class="sortable" >
                 <th data-sort="string" ><i class="glyphicon glyphicon-sort"></i></th>
-                <th data-sort="stripint" ><i class="fa fa-trophy" data-toggle="tooltip" title="${i18n("label.best")}" style="color: gold;" ></i></th>
                 <#list ranks?keys as day>
                 <th data-sort="stripint" ><span data-toggle="tooltip" title="${day}" >${day?substring(8,10)}</span></th>
                 </#list>
+                <th data-sort="stripint" ><i class="fa fa-trophy" data-toggle="tooltip" title="${i18n("label.best")}" style="color: gold;" ></i></th>
             </tr>
             <tr>
                 <th><em>#${i18n("label.calendar")}#</em></th>
-                <th></th>
                 <#list ranks?keys as day>
                 <td>
                     <#list events as event>
@@ -39,6 +36,7 @@
                     </#list>
                 </td>
                 </#list>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -53,12 +51,6 @@
                 <th>
                     <#noescape>${fu.gsIcoInfos(search)}</#noescape>
                     <a href="${reverseRoute("google.GoogleSearchController","search","groupId",group.getId(),"searchId", search.getId())}" >${search.getKeyword()}</a></th>
-                <td class="bestrank">
-                    <span class="poptarget" data-t-title="${bestRunDay}"
-                          data-p-title="${bestRunDay}" data-content="${best.getUrl()!"not provided"}">
-                          <#if best.getRank() != 32767>${best.getRank()}<#else>-</#if>
-                    </span>
-                </td>
                 <#list ranks?keys as dayx>
                 <#assign search_ranks = ranks?api.get(dayx) >
                 <td>
@@ -69,6 +61,12 @@
                     </#if>
                 </td>
                 </#list>                    
+                <td class="bestrank">
+                    <span class="poptarget" data-t-title="${bestRunDay}"
+                          data-p-title="${bestRunDay}" data-content="${best.getUrl()!"not provided"}">
+                          <#if best.getRank() != 32767>${best.getRank()}<#else>-</#if>
+                    </span>
+                </td>                
             </tr>
             </#list>
             </#if>
