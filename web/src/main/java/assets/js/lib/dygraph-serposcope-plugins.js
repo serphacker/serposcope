@@ -6,7 +6,7 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-/* global Dygraph */
+/* global Dygraph, serposcope */
 
 Dygraph.Plugins.Serposcope = (function () {
 
@@ -63,7 +63,7 @@ Dygraph.Plugins.Serposcope = (function () {
         div.style.display = "block";
         div.innerHTML = 
             '<span>' +  moment(point.xval).format('YYYY-MM-DD') + '</span><br/>' + 
-            '<strong>' + point.name + " : " + point.yval + '</strong>';
+            '<strong>' + serposcope.utils.escapeHTML(point.name) + " : " + serposcope.utils.escapeHTML(point.yval) + '</strong>';
         div.style.left = (parseInt(point.canvasx - (div.offsetWidth+10))) + 'px';
         div.style.top = (parseInt(point.canvasy) - 10) + 'px';        
         div.style.borderColor = serieProp.color;
@@ -124,7 +124,7 @@ Dygraph.Plugins.Serposcope = (function () {
             a.href="#";
             a.style.color = serie.color;
             a.style.paddingLeft = "5px";
-            a.innerHTML = labels[i];
+            a.innerHTML = serposcope.utils.escapeHTML(labels[i]);
             a.dataIndex = i;
             a.dataSerie = serie;
             a.dataChart = e.dygraph;

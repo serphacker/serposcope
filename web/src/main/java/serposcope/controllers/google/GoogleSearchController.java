@@ -35,6 +35,7 @@ import ninja.Router;
 import ninja.i18n.Messages;
 import ninja.params.Param;
 import ninja.params.PathParam;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 
 @Singleton
@@ -143,7 +144,7 @@ public class GoogleSearchController extends GoogleController {
         StringBuilder builder = new StringBuilder("{\"targets\":[");
         for (GoogleTarget target : targets) {
             builder.append("{\"id\":").append(target.getId())
-            .append(",\"name\":\"").append(target.getName()).append("\"},");
+            .append(",\"name\":\"").append(StringEscapeUtils.escapeJson(target.getName())).append("\"},");
         }
         if(builder.charAt(builder.length()-1) == ','){
             builder.setCharAt(builder.length()-1, ']');

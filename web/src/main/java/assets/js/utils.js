@@ -55,7 +55,15 @@ serposcope.utils = function () {
         return eventDate;
     };
     
+    var escapeHTML = function(html){
+        return document.createElement('div')
+            .appendChild(document.createTextNode(html))
+            .parentNode
+            .innerHTML;
+    };
+    
     var oPublic = {
+        escapeHTML: escapeHTML,
         rainbow: rainbow,
         eventDate: eventDate
     };

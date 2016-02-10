@@ -43,6 +43,7 @@ import ninja.Context;
 import ninja.Router;
 import ninja.params.Param;
 import ninja.params.PathParam;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 
 @Singleton
@@ -331,7 +332,7 @@ public class GoogleTargetController extends GoogleController {
         String display = "chart";
         StringBuilder builder = new StringBuilder("{\"searches\": [");
         for (GoogleSearch search : searches) {
-            builder.append("\"").append(search.getKeyword()).append("\",");
+            builder.append("\"").append(StringEscapeUtils.escapeJson(search.getKeyword())).append("\",");
         }
         builder.setCharAt(builder.length()-1, ']');
         builder.append(",\"ranks\": [");
