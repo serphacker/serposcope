@@ -48,6 +48,7 @@ import ninja.params.Param;
 import ninja.params.Params;
 import ninja.session.FlashScope;
 import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
@@ -401,12 +402,12 @@ public class GoogleGroupController extends GoogleController {
 
         StringBuilder builder = new StringBuilder();
         for (GoogleSearch search : searches) {
-            builder.append(search.getKeyword()).append(",");
+            builder.append(StringEscapeUtils.escapeCsv(search.getKeyword())).append(",");
             builder.append(search.getTld() != null ? search.getTld() : "com").append(",");
             builder.append(search.getDatacenter() != null ? search.getDatacenter() : "").append(",");
             builder.append(search.getDevice() != null ? search.getDevice() : "").append(",");
-            builder.append(search.getLocal() != null ? search.getLocal() : "").append(",");
-            builder.append(search.getCustomParameters() != null ? search.getCustomParameters() : "").append("\n");
+            builder.append(StringEscapeUtils.escapeCsv(search.getLocal() != null ? search.getLocal() : "")).append(",");
+            builder.append(StringEscapeUtils.escapeCsv(search.getCustomParameters() != null ? search.getCustomParameters() : "")).append("\n");
         }
 
         return Results.ok().text().render(builder.toString());

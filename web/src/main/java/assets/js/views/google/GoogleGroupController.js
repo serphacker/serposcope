@@ -6,7 +6,7 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-/* global serposcope, canonLoc */
+/* global serposcope, canonLoc, Papa */
 
 serposcope.googleGroupController = function () {
     
@@ -119,7 +119,12 @@ serposcope.googleGroupController = function () {
                 continue;
             }
             
-            var params = lines[i].split(/,/);
+            var params = Papa.parse(lines[i]);
+            if(params.data.length != 1){
+                alert("error at line " + i + " : " + lines[i]);
+                return;
+            }
+            params = params.data[0];
             keyword[i] = params[0];
             tld[i] = params.length > 1 ? params[1] : $('#csp-vars').attr('data-default-tld');
             datacenter[i] = params.length > 2 ? params[2]  : $('#csp-vars').attr('data-default-datacenter');

@@ -239,6 +239,7 @@
                                         <jsSourceFile>/assets/js/lib/dygraph-serposcope-plugins.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/lib/dygraph-plugins-loader.js</jsSourceFile>
                                         <jsSourceFile>/assets/lib/jquery-stupid-table/stupidtable.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/papaparse/papaparse.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/utils.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/theme.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/sidebar.js</jsSourceFile>
