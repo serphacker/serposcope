@@ -42,6 +42,7 @@ public class Routes implements ApplicationRoutes {
         // admin
         router.GET().route("/admin").with(AdminController.class, "admin");
         router.GET().route("/admin/sysconfig").with(AdminController.class, "sysconfig");
+        router.GET().route("/admin/stackdump").with(AdminController.class, "stackdump");
         
         router.GET().route("/admin/debug").with(DebugController.class, "debug");
         router.POST().route("/admin/debug/wipe-rankings").with(DebugController.class, "wipeRankings");

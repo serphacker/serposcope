@@ -67,6 +67,15 @@
                 <span class="info-box-text">${i18n("label.sysconfig")}</span>
             </div>
         </div>
+    </a>
+    <a href="${reverseRoute("admin.AdminController","stackdump")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-olive"><i class="fa fa-support"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("label.stackdump")}</span>
+            </div>
+        </div>
     </a>    
     <#if !global.prod >
     <a href="${reverseRoute("admin.DebugController","debug")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
