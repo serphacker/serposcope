@@ -421,6 +421,30 @@ public class ScrapClientIT {
 //        assertTrue(client.getContentAsString().contains("\"Host\": \"www.google.fr\""));
     }        
     
+    @Test
+    public void testSimpleGet() throws Exception {
+        int statusCode;String htmlContent;
+        ScrapClient client = new ScrapClient();
+        client.setInsecureSSL(true);
+        
+        assertEquals(200, client.get("http://httpbin.org/get"));
+        htmlContent = client.getContentAsString();
+        assertTrue(htmlContent.contains("http://httpbin.org/get") && !htmlContent.contains("https://httpbin.org/get"));
+        
+        assertEquals(200, client.get("https://httpbin.org/get"));
+        htmlContent = client.getContentAsString();
+        assertTrue(htmlContent.contains("https://httpbin.org/get") && !htmlContent.contains("http://httpbin.org/get"));
+        
+        assertEquals(200, client.get("http://httpbin.org/get"));
+        htmlContent = client.getContentAsString();
+        assertTrue(htmlContent.contains("http://httpbin.org/get") && !htmlContent.contains("https://httpbin.org/get"));
+        
+        assertEquals(200, client.get("https://httpbin.org/get"));
+        htmlContent = client.getContentAsString();
+        assertTrue(htmlContent.contains("https://httpbin.org/get") && !htmlContent.contains("http://httpbin.org/get"));        
+    }
+    
+    
     /*
     @Test
     public void testDeflateOnWebsites() throws Exception {

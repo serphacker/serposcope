@@ -110,8 +110,9 @@ public class ProxyController extends BaseController {
             
             switch(split[0]){
                 
+                case "socks":
                 case "http":
-                    proxy.setType(Proxy.Type.HTTP);
+                    proxy.setType("http".equals(split[0]) ? Proxy.Type.HTTP : Proxy.Type.SOCKS);
                     try {
                         proxy.setPort(Integer.parseInt(split[2]));
                     } catch(Exception ex){

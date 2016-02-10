@@ -8,17 +8,20 @@
 package com.serphacker.serposcope.scraper.http;
 
 import com.serphacker.serposcope.scraper.DeepIntegrationTest;
+import com.serphacker.serposcope.scraper.http.extensions.ScrapClientSocksAuthenticator;
 import com.serphacker.serposcope.scraper.http.proxy.BindProxy;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
+import com.serphacker.serposcope.scraper.http.proxy.SocksProxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -50,7 +53,7 @@ tcp_outgoing_address 127.0.0.2 src2
 acl src3 localip 127.0.0.3/32
 tcp_outgoing_address 127.0.0.3 src3
      */
-    /*
+ /*
         TODO : use jetty for unit tests
         <?php
         header('Content-Type: text/plain');
@@ -124,15 +127,15 @@ tcp_outgoing_address 127.0.0.3 src3
             }
         }
     }
-    
+
     @Test
     public void testBadProxy1() throws Exception {
         ScrapClient dl = new ScrapClient();
         dl.setInsecureSSL(true);
         dl.setProxy(new HttpProxy("127.0.0.1", 8080));
-        Map<String,Object> postdata = new HashMap<>();
+        Map<String, Object> postdata = new HashMap<>();
         String remoteUrl = "https://proxychecker.serphacker.com";
-        
+
         postdata.put("bla", "testing");
         assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
         assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
@@ -140,39 +143,223 @@ tcp_outgoing_address 127.0.0.3 src3
         assertEquals(200, dl.post(remoteUrl, postdata, ScrapClient.PostType.URL_ENCODED));
     }
 
+    // socat TCP-LISTEN:1234,FORK -
     @Test
-    public void testUnresponsiveProxy() throws Exception {
+    public void testUnresponsiveHttpProxy() throws Exception {
         ScrapClient dl = new ScrapClient();
         dl.setProxy(new HttpProxy("127.0.0.1", 1234));
         String remoteUrl = "https://127.0.0.1:1235";
-        
+
         int timeoutMS = 3333;
         dl.setTimeout(timeoutMS);
         assertEquals(-1, dl.get(remoteUrl));
         assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
-        
+
+        dl.setTimeout(timeoutMS = 1250);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+    }
+    
+    @Test
+    public void testUnresponsiveSocksProxy() throws Exception {
+        ScrapClient dl = new ScrapClient();
+        dl.setProxy(new SocksProxy("127.0.0.1", 1234));
+        String remoteUrl = "https://127.0.0.1:1235";
+
+        int timeoutMS = 3333;
+        dl.setTimeout(timeoutMS);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+
         dl.setTimeout(timeoutMS = 1250);
         assertEquals(-1, dl.get(remoteUrl));
         assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
     }    
     
     @Test
-    public void testUnresponsiveHttpServer() throws Exception {
+    public void testUnresponsiveDirectToHttp() throws Exception {
         ScrapClient dl = new ScrapClient();
-        int statusCode = 0;
-//        dl.setProxy(new HttpProxy("127.0.0.1", 1234));
-        
         String remoteUrl = "http://127.0.0.1:1234";
-        
+
         int timeoutMS = 3333;
         dl.setTimeout(timeoutMS);
         assertEquals(-1, dl.get(remoteUrl));
         assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
-        
+
         dl.setTimeout(timeoutMS = 1250);
         assertEquals(-1, dl.get(remoteUrl));
         assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
-        
-    }     
+    }        
     
+    @Test
+    public void testUnresponsiveDirectToSSL() throws Exception {
+        ScrapClient dl = new ScrapClient();
+        String remoteUrl = "https://127.0.0.1:1234";
+
+        int timeoutMS = 3333;
+        dl.setTimeout(timeoutMS);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+
+        dl.setTimeout(timeoutMS = 1250);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+    }     
+
+    @Test
+    public void testUnresponsiveHttpServer() throws Exception {
+        ScrapClient dl = new ScrapClient();
+        int statusCode = 0;
+//        dl.setProxy(new HttpProxy("127.0.0.1", 1234));
+
+        String remoteUrl = "http://127.0.0.1:1234";
+
+        int timeoutMS = 3333;
+        dl.setTimeout(timeoutMS);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+
+        dl.setTimeout(timeoutMS = 1250);
+        assertEquals(-1, dl.get(remoteUrl));
+        assertTrue("Execution time : " + dl.getExecutionTimeMS(), dl.getExecutionTimeMS() >= timeoutMS);
+
+    }
+    
+    @Test
+    public void testSocksAuth() throws Exception {
+        ScrapClient httpClient1 = new ScrapClient();
+        SocksProxy socksProxy1 = new SocksProxy(
+            props.getProperty("socks2.ip"), Integer.parseInt(props.getProperty("socks2.port")),
+            props.getProperty("socks2.login"), props.getProperty("socks2.pass")
+        );
+        httpClient1.setProxy(socksProxy1);
+        
+        ScrapClient httpClient2 = new ScrapClient();
+        SocksProxy socksProxy2 = new SocksProxy(
+            props.getProperty("socks3.ip"), Integer.parseInt(props.getProperty("socks3.port")),
+            props.getProperty("socks3.login"), props.getProperty("socks3.pass")
+        );
+        httpClient2.setProxy(socksProxy2);
+        
+        ScrapClient httpClient3 = new ScrapClient();
+        SocksProxy socksProxy3 = new SocksProxy(
+            props.getProperty("socks4.ip"), Integer.parseInt(props.getProperty("socks4.port")),
+            props.getProperty("socks4.login"), props.getProperty("socks4.pass")
+        );
+        httpClient3.setProxy(socksProxy3);
+        
+        assertEquals(200, httpClient1.get("http://httpbin.org/ip"));
+        assertTrue(httpClient1.getContentAsString().contains(socksProxy1.getIp()));
+        
+        assertEquals(200, httpClient2.get("http://httpbin.org/ip"));
+        assertTrue(httpClient2.getContentAsString().contains(socksProxy2.getIp()));        
+        
+        assertEquals(200, httpClient3.get("http://httpbin.org/ip"));
+        assertTrue(httpClient3.getContentAsString().contains(props.getProperty("socks4.eip")));
+        
+        assertEquals(200, httpClient1.get("http://httpbin.org/ip"));
+        assertTrue(httpClient1.getContentAsString().contains(socksProxy1.getIp()));
+        
+        assertEquals(200, httpClient2.get("http://httpbin.org/ip"));
+        assertTrue(httpClient2.getContentAsString().contains(socksProxy2.getIp()));       
+        
+        assertEquals(200, httpClient3.get("http://httpbin.org/ip"));
+        assertTrue(httpClient3.getContentAsString().contains(props.getProperty("socks4.eip")));        
+        
+    }
+
+    @Test
+    public void testSocksMix() throws Exception {
+        int statusCode;
+        String html;
+        ScrapClient httpClient = new ScrapClient();
+        String remoteIp = "";
+        SocksProxy socksProxy = new SocksProxy(
+            props.getProperty("socks2.ip"), Integer.parseInt(props.getProperty("socks2.port")),
+            props.getProperty("socks2.login"), props.getProperty("socks2.pass")
+        );
+
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));        
+        
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));         
+
+        
+        
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("http://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));        
+        
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(socksProxy);
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertTrue(httpClient.getContentAsString().contains(socksProxy.getIp()));
+        
+        httpClient.setProxy(null);
+        assertEquals(200, httpClient.get("https://httpbin.org/ip"));
+        assertFalse(httpClient.getContentAsString().contains(socksProxy.getIp()));  
+    }
+
 }

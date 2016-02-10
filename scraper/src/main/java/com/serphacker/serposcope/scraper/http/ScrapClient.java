@@ -7,7 +7,10 @@
  */
 package com.serphacker.serposcope.scraper.http;
 
-import com.serphacker.serposcope.scraper.http.extensions.TweakableSSLConnectionFactory;
+import com.serphacker.serposcope.scraper.http.extensions.CloseableBasicHttpClientConnectionManager;
+import com.serphacker.serposcope.scraper.http.extensions.ScrapClientPlainConnectionFactory;
+import com.serphacker.serposcope.scraper.http.extensions.ScrapClientSSLConnectionFactory;
+import com.serphacker.serposcope.scraper.http.extensions.ScrapClientSocksAuthenticator;
 import com.serphacker.serposcope.scraper.http.proxy.BindProxy;
 import com.serphacker.serposcope.scraper.http.proxy.DirectNoProxy;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
@@ -57,7 +60,10 @@ import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
+import com.serphacker.serposcope.scraper.http.proxy.SocksProxy;
 import com.serphacker.serposcope.scraper.utils.EncodeUtils;
+import java.net.Inet4Address;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,7 +88,7 @@ import org.apache.http.message.BasicNameValuePair;
  *
  * @author admin
  */
-public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProvider, HttpRequestInterceptor {
+public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestInterceptor {
 
     public enum PostType {
         URL_ENCODED,
@@ -98,9 +104,10 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     CloseableHttpClient client;
     BasicCredentialsProvider credentialProvider = new BasicCredentialsProvider();
     BasicCookieStore basicCookieStore = new BasicCookieStore();
-    BasicHttpClientConnectionManager connManager = new BasicHttpClientConnectionManager();
-    TweakableSSLConnectionFactory sslConFactory = new TweakableSSLConnectionFactory();
-    
+    final CloseableBasicHttpClientConnectionManager connManager;
+    ScrapClientPlainConnectionFactory plainConnectionFactory = new ScrapClientPlainConnectionFactory();
+    ScrapClientSSLConnectionFactory sslConnectionFactory = new ScrapClientSSLConnectionFactory(plainConnectionFactory);
+
     String useragent = DEFAULT_USER_AGENT;
     Integer timeoutMS = DEFAULT_TIMEOUT_MS;
     ScrapProxy proxy;
@@ -108,39 +115,85 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     byte[] buffer;
     List<Header> requestHeaders = new ArrayList<>();
     Map<HttpHost, HttpHost> routes = new HashMap<>();
+    boolean proxyChangedSinceLastRequest;
 
     long executionTimeMS;
     CloseableHttpResponse response;
     byte[] content;
     int statusCode;
     Exception exception;
-    
+
     class SCliConnectionReuseStrategy extends DefaultConnectionReuseStrategy {
+
         @Override
         public boolean keepAlive(HttpResponse response, HttpContext context) {
-            if(proxy == null || (proxy instanceof BindProxy)){
+            if (!proxyChangedSinceLastRequest && (proxy == null || (proxy instanceof BindProxy))) {
                 return super.keepAlive(response, context);
             } else {
                 return false;
             }
         }
     }
-    
+
+    class SCliHttpRoutePlanner implements HttpRoutePlanner {
+
+        @Override
+        public HttpRoute determineRoute(HttpHost originaltarget, HttpRequest request, HttpContext context) throws HttpException {
+            boolean ssl = "https".equalsIgnoreCase(originaltarget.getSchemeName());
+            HttpHost target = routes.getOrDefault(originaltarget, originaltarget);
+
+            if (proxy == null) {
+                return new HttpRoute(target);
+            }
+
+            if (proxy instanceof SocksProxy) {
+                SocksProxy socksProxy = (SocksProxy) proxy;
+                context.setAttribute("proxy.socks", new InetSocketAddress(socksProxy.getIp(), socksProxy.getPort()));
+                return new HttpRoute(target);
+            }
+
+            if (proxy instanceof BindProxy) {
+                BindProxy bindProxy = (BindProxy) proxy;
+                try {
+                    return new HttpRoute(target, InetAddress.getByName(bindProxy.ip), ssl);
+                } catch (UnknownHostException cause) {
+                    throw new HttpException("invalid bind ip", cause);
+                }
+            }
+
+            if (proxy instanceof HttpProxy) {
+                HttpProxy httpProxy = (HttpProxy) proxy;
+
+                return new HttpRoute(
+                    target,
+                    null,
+                    new HttpHost(httpProxy.getIp(), httpProxy.getPort()),
+                    ssl,
+                    ssl ? RouteInfo.TunnelType.TUNNELLED : RouteInfo.TunnelType.PLAIN,
+                    ssl ? RouteInfo.LayerType.LAYERED : RouteInfo.LayerType.PLAIN
+                );
+            }
+
+            throw new UnsupportedOperationException("unsupported proxy type : " + proxy);
+        }
+
+    }
+
     public ScrapClient() {
         setMaxResponseLength(DEFAULT_MAX_RESPONSE_LENGTH);
-        
-        sslConFactory.setInsecure(false);
-        
-        connManager = new BasicHttpClientConnectionManager(
+
+        sslConnectionFactory.setInsecure(false);
+
+        connManager = new CloseableBasicHttpClientConnectionManager(
             RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", sslConFactory)
-                .build()
+            .register("http", plainConnectionFactory)
+            .register("https", sslConnectionFactory)
+            .build()
         );
-        
+
         client = HttpClients
             .custom()
-            .setRoutePlanner(this)
+            .setRoutePlanner(this.new SCliHttpRoutePlanner())
             .setDefaultCredentialsProvider(this)
             .setDefaultCookieStore(basicCookieStore)
             .setConnectionReuseStrategy(this.new SCliConnectionReuseStrategy())
@@ -150,7 +203,7 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
             .disableRedirectHandling()
             .disableContentCompression()
             .build();
-        
+
         setTimeout(timeoutMS);
     }
 
@@ -189,10 +242,18 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     }
 
     public void setProxy(ScrapProxy proxy) {
+        synchronized (connManager) {
+            connManager.closeConnection();
+        }
+        proxyChangedSinceLastRequest = true;
         if (proxy != null && proxy instanceof DirectNoProxy) {
             this.proxy = null;
         } else {
             this.proxy = proxy;
+        }
+
+        if (proxy instanceof SocksProxy) {
+            ScrapClientSocksAuthenticator.INSTANCE.addProxy((SocksProxy) proxy);
         }
     }
 
@@ -207,7 +268,7 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     public final void setTimeout(Integer timeoutMS) {
         this.timeoutMS = timeoutMS;
         SocketConfig.Builder newSocketConfig = SocketConfig.custom();
-        if(timeoutMS != null){
+        if (timeoutMS != null) {
             newSocketConfig.setSoTimeout(timeoutMS);
         }
         connManager.setSocketConfig(newSocketConfig.build());
@@ -312,7 +373,11 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     }
 
     public int get(String url, String referrer) {
-        return performRequest(new HttpGet(url), referrer);
+        HttpGet request = new HttpGet(url);
+        if (referrer != null) {
+            request.addHeader("Referer", referrer);
+        }
+        return performRequest(request);
     }
 
     public int post(String url, Map<String, Object> data, PostType dataType) {
@@ -396,7 +461,10 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
         }
 
         request.setEntity(entity);
-        return performRequest(request, referrer);
+        if (referrer != null) {
+            request.addHeader("Referer", referrer);
+        }
+        return performRequest(request);
     }
 
     protected Map<String, Object> handleUnsupportedEncoding(Map<String, Object> data, Charset detectedCharset) {
@@ -437,70 +505,67 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
         statusCode = 0;
     }
 
-    protected int performRequest(
-        HttpRequestBase request,
-        String referrer
-    ) {
-        try {
-            clearPreviousRequest();
-            executionTimeMS = System.currentTimeMillis();
-            if (referrer != null) {
-                request.addHeader("Referer", referrer);
-            }
+    public int performRequest(HttpRequestBase request) {
+        synchronized (connManager) {
+            try {
+                clearPreviousRequest();
+                executionTimeMS = System.currentTimeMillis();
 
-            response = execute(request);
-            statusCode = response.getStatusLine().getStatusCode();
+                response = execute(request);
+                statusCode = response.getStatusLine().getStatusCode();
 
-            HttpEntity entity = response.getEntity();
-            long contentLength = entity.getContentLength();
+                HttpEntity entity = response.getEntity();
+                long contentLength = entity.getContentLength();
 
-            if (contentLength > maxResponseLength) {
-                throw new ResponseTooBigException(
-                    "content length (" + contentLength + ") "
-                    + "is greater than max response leength (" + maxResponseLength + ")"
-                );
-            }
+                if (contentLength > maxResponseLength) {
+                    throw new ResponseTooBigException(
+                        "content length (" + contentLength + ") "
+                        + "is greater than max response leength (" + maxResponseLength + ")"
+                    );
+                }
 
-            Header ceheader = entity.getContentEncoding();
-            if (ceheader != null) {
-                HeaderElement[] codecs = ceheader.getElements();
-                for (int i = 0; i < codecs.length; i++) {
+                Header ceheader = entity.getContentEncoding();
+                if (ceheader != null) {
+                    HeaderElement[] codecs = ceheader.getElements();
+                    for (int i = 0; i < codecs.length; i++) {
 
-                    if (codecs[i].getName().equalsIgnoreCase("gzip")) {
-                        entity = new GzipDecompressingEntity(entity);
-                    }
+                        if (codecs[i].getName().equalsIgnoreCase("gzip")) {
+                            entity = new GzipDecompressingEntity(entity);
+                        }
 
-                    if (codecs[i].getName().equalsIgnoreCase("deflate")) {
-                        throw new UnsupportedEncodingException("deflate");
+                        if (codecs[i].getName().equalsIgnoreCase("deflate")) {
+                            throw new UnsupportedEncodingException("deflate");
 //                        entity = new DeflateDecompressingEntity(entity);
+                        }
                     }
                 }
+
+                InputStream stream = entity.getContent();
+                int totalRead = 0;
+                int read = 0;
+
+                while (totalRead < maxResponseLength
+                    && (read = stream.read(buffer, totalRead, maxResponseLength - totalRead)) != -1) {
+                    totalRead += read;
+                }
+
+                if (totalRead == maxResponseLength && read != 0) {
+                    throw new ResponseTooBigException("already read " + totalRead + " bytes");
+                }
+                content = Arrays.copyOfRange(buffer, 0, totalRead);
+
+            } catch (Exception ex) {
+                content = null;
+                statusCode = -1;
+                exception = ex;
+            } finally {
+                proxyChangedSinceLastRequest = false;
+                closeResponse();
+                executionTimeMS = System.currentTimeMillis() - executionTimeMS;
             }
 
-            InputStream stream = entity.getContent();
-            int totalRead = 0;
-            int read = 0;
-
-            while (totalRead < maxResponseLength
-                && (read = stream.read(buffer, totalRead, maxResponseLength - totalRead)) != -1) {
-                totalRead += read;
-            }
-
-            if (totalRead == maxResponseLength && read != 0) {
-                throw new ResponseTooBigException("already read " + totalRead + " bytes");
-            }
-            content = Arrays.copyOfRange(buffer, 0, totalRead);
-
-        } catch (Exception ex) {
-            content = null;
-            statusCode = -1;
-            exception = ex;
-        } finally {
-            closeResponse();
-            executionTimeMS = System.currentTimeMillis() - executionTimeMS;
+            return statusCode;
         }
-
-        return statusCode;
     }
 
     public void closeResponse() {
@@ -535,40 +600,6 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
 
     public void removeRoutes() {
         routes.clear();
-    }
-
-    @Override
-    public HttpRoute determineRoute(HttpHost originaltarget, HttpRequest request, HttpContext context) throws HttpException {
-        boolean ssl = "https".equalsIgnoreCase(originaltarget.getSchemeName());
-        HttpHost target = routes.getOrDefault(originaltarget, originaltarget);
-
-        if (proxy == null) {
-            return new HttpRoute(target);
-        }
-
-        if (proxy instanceof BindProxy) {
-            BindProxy bindProxy = (BindProxy) proxy;
-            try {
-                return new HttpRoute(target, InetAddress.getByName(bindProxy.ip), ssl);
-            } catch (UnknownHostException cause) {
-                throw new HttpException("invalid bind ip", cause);
-            }
-        }
-
-        if (proxy instanceof HttpProxy) {
-            HttpProxy httpProxy = (HttpProxy) proxy;
-
-            return new HttpRoute(
-                target,
-                null,
-                new HttpHost(httpProxy.getIp(), httpProxy.getPort()),
-                ssl,
-                ssl ? RouteInfo.TunnelType.TUNNELLED : RouteInfo.TunnelType.PLAIN,
-                ssl ? RouteInfo.LayerType.LAYERED : RouteInfo.LayerType.PLAIN
-            );
-        }
-
-        throw new UnsupportedOperationException("unsupported proxy type : " + proxy);
     }
 
     @Override
@@ -633,13 +664,13 @@ public class ScrapClient implements Closeable, HttpRoutePlanner, CredentialsProv
     }
 
     public boolean isInsecureSSL() {
-        return sslConFactory.isInsecure();
+        return sslConnectionFactory.isInsecure();
     }
 
     public void setInsecureSSL(boolean insecureSSL) {
-        this.sslConFactory.setInsecure(insecureSSL);
+        this.sslConnectionFactory.setInsecure(insecureSSL);
     }
-    
+
     public CloseableHttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
         return client.execute(target, request, context);
     }

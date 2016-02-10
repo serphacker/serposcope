@@ -11,6 +11,7 @@ import static com.serphacker.serposcope.models.base.Proxy.Status.UNCHECKED;
 import com.serphacker.serposcope.scraper.http.proxy.BindProxy;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
+import com.serphacker.serposcope.scraper.http.proxy.SocksProxy;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -25,7 +26,8 @@ public class Proxy {
     
     public enum Type {
         BIND,
-        HTTP
+        HTTP,
+        SOCKS
     }
 
     public Proxy() {
@@ -51,6 +53,12 @@ public class Proxy {
             port = ((HttpProxy) proxy).getPort();
             username = ((HttpProxy) proxy).getUsername();
             password = ((HttpProxy) proxy).getPassword();
+        } else if(proxy instanceof SocksProxy){
+            type = Type.SOCKS;
+            ip = ((SocksProxy) proxy).getIp();
+            port = ((SocksProxy) proxy).getPort();
+            username = ((SocksProxy) proxy).getUsername();
+            password = ((SocksProxy) proxy).getPassword();            
         } else {
             throw new IllegalStateException("unsupported proxy type");
         }
@@ -154,6 +162,9 @@ public class Proxy {
     
     public ScrapProxy toScrapProxy(){
         switch(type){
+            case SOCKS:
+                return new SocksProxy(ip, port, username, password);
+                
             case HTTP:
                 return new HttpProxy(ip, port, username, password);
                 

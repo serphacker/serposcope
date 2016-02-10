@@ -5,7 +5,6 @@
  * @author Pierre Nogues <support@serphacker.com>
  * @license https://opensource.org/licenses/MIT MIT License
  */
-
 package com.serphacker.serposcope.scraper.http.extensions;
 
 import java.io.IOException;
@@ -47,14 +46,14 @@ import org.slf4j.LoggerFactory;
  * Allow to switch from secure SSL (with host verification) to unsafe SSL
  */
 @ThreadSafe
-public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFactory {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(TweakableSSLConnectionFactory.class);
+public class ScrapClientSSLConnectionFactory implements LayeredConnectionSocketFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ScrapClientSSLConnectionFactory.class);
     static SSLSocketFactory DEFAULT_SSL_SOCKET_FACTORY = null;
     static SSLSocketFactory INSECURE_SSL_SOCKET_FACTORY = null;
     static HostnameVerifier DEFAULT_HOSTNAME_VERIFIER = new DefaultHostnameVerifier();
     static HostnameVerifier INSECURE_HOSTNAME_VERIFIER = (String string, SSLSession ssls) -> true;
-    
+
     static {
         try {
             INSECURE_SSL_SOCKET_FACTORY = SSLContexts.custom()
@@ -62,13 +61,13 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
                 .build()
                 .getSocketFactory();
             DEFAULT_SSL_SOCKET_FACTORY = SSLContexts.createDefault().getSocketFactory();
-        }catch(Exception ex){
+        } catch (Exception ex) {
             LOG.error("ex in ssl socket initialization", ex);
         }
     }
 
-    public static final String TLS   = "TLS";
-    public static final String SSL   = "SSL";
+    public static final String TLS = "TLS";
+    public static final String SSL = "SSL";
     public static final String SSLV2 = "SSLv2";
 
     private final Log log = LogFactory.getLog(getClass());
@@ -80,6 +79,7 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
         return s.split(" *, *");
     }
 
+    private final ScrapClientPlainConnectionFactory plainConnectionSocketFactory;
     private final javax.net.ssl.SSLSocketFactory defaultSSLSocketFactory;
     private final javax.net.ssl.SSLSocketFactory insecoreSSLSocketfactory;
     private final HostnameVerifier defaultHostnameVerifier;
@@ -88,12 +88,13 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
     private final String[] supportedCipherSuites;
     private boolean insecure;
 
-    public TweakableSSLConnectionFactory() {
-        this(false);
+    public ScrapClientSSLConnectionFactory(ScrapClientPlainConnectionFactory plainConnectionSocketFactory) {
+        this(plainConnectionSocketFactory, false);
     }
-    
-    public TweakableSSLConnectionFactory(boolean insecure) {
+
+    public ScrapClientSSLConnectionFactory(ScrapClientPlainConnectionFactory plainConnectionSocketFactory, boolean insecure) {
         this(
+            plainConnectionSocketFactory,
             DEFAULT_SSL_SOCKET_FACTORY,
             INSECURE_SSL_SOCKET_FACTORY,
             DEFAULT_HOSTNAME_VERIFIER,
@@ -101,16 +102,18 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
             null, null, insecure
         );
     }
-    
-    public TweakableSSLConnectionFactory(
-            final javax.net.ssl.SSLSocketFactory defaultSSLSocketFactory,
-            final javax.net.ssl.SSLSocketFactory insecoreSSLSocketfactory,
-            final HostnameVerifier defaultHostnameVerifier,
-            final HostnameVerifier insecureHostnameVerifier,
-            final String[] supportedProtocols,
-            final String[] supportedCipherSuites,
-            final boolean insecure
+
+    public ScrapClientSSLConnectionFactory(
+        ScrapClientPlainConnectionFactory plainConnectionSocketFactory,
+        javax.net.ssl.SSLSocketFactory defaultSSLSocketFactory,
+        javax.net.ssl.SSLSocketFactory insecoreSSLSocketfactory,
+        HostnameVerifier defaultHostnameVerifier,
+        HostnameVerifier insecureHostnameVerifier,
+        String[] supportedProtocols,
+        String[] supportedCipherSuites,
+        boolean insecure
     ) {
+        this.plainConnectionSocketFactory = plainConnectionSocketFactory;
         this.defaultSSLSocketFactory = defaultSSLSocketFactory;
         this.insecoreSSLSocketfactory = insecoreSSLSocketfactory;
         this.defaultHostnameVerifier = defaultHostnameVerifier;
@@ -121,11 +124,11 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
     }
 
     /**
-     * Performs any custom initialization for a newly created SSLSocket
-     * (before the SSL handshake happens).
+     * Performs any custom initialization for a newly created SSLSocket (before the SSL handshake happens).
      *
-     * The default implementation is a no-op, but could be overridden to, e.g.,
-     * call {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])}.
+     * The default implementation is a no-op, but could be overridden to, e.g., call
+     * {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])}.
+     *
      * @throws IOException may be thrown if overridden
      */
     protected void prepareSocket(final SSLSocket socket) throws IOException {
@@ -133,17 +136,17 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
 
     @Override
     public Socket createSocket(final HttpContext context) throws IOException {
-        return SocketFactory.getDefault().createSocket();
+        return plainConnectionSocketFactory.createSocket(context);
     }
 
     @Override
     public Socket connectSocket(
-            final int connectTimeout,
-            final Socket socket,
-            final HttpHost host,
-            final InetSocketAddress remoteAddress,
-            final InetSocketAddress localAddress,
-            final HttpContext context) throws IOException {
+        final int connectTimeout,
+        final Socket socket,
+        final HttpHost host,
+        final InetSocketAddress remoteAddress,
+        final InetSocketAddress localAddress,
+        final HttpContext context) throws IOException {
         Args.notNull(host, "HTTP host");
         Args.notNull(remoteAddress, "Remote address");
         final Socket sock = socket != null ? socket : createSocket(context);
@@ -179,26 +182,26 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
 
     @Override
     public Socket createLayeredSocket(
-            final Socket socket,
-            final String target,
-            final int port,
-            final HttpContext context) throws IOException {
-        
+        final Socket socket,
+        final String target,
+        final int port,
+        final HttpContext context) throws IOException {
+
         SSLSocketFactory sslSocketFactory = insecure ? insecoreSSLSocketfactory : defaultSSLSocketFactory;
-        
+
         final SSLSocket sslsock = (SSLSocket) sslSocketFactory.createSocket(
-                socket,
-                target,
-                port,
-                true);
-        
+            socket,
+            target,
+            port,
+            true);
+
         if (supportedProtocols != null) {
             sslsock.setEnabledProtocols(supportedProtocols);
         } else {
             // If supported protocols are not explicitly set, remove all SSL protocol versions
             final String[] allProtocols = sslsock.getEnabledProtocols();
             final List<String> enabledProtocols = new ArrayList<String>(allProtocols.length);
-            for (String protocol: allProtocols) {
+            for (String protocol : allProtocols) {
                 if (!protocol.startsWith("SSL")) {
                     enabledProtocols.add(protocol);
                 }
@@ -290,13 +293,16 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
                 final Certificate[] certs = session.getPeerCertificates();
                 final X509Certificate x509 = (X509Certificate) certs[0];
                 final X500Principal x500Principal = x509.getSubjectX500Principal();
-                throw new SSLPeerUnverifiedException("Host name '" + hostname + "' does not match " +
-                        "the certificate subject provided by the peer (" + x500Principal.toString() + ")");
+                throw new SSLPeerUnverifiedException("Host name '" + hostname + "' does not match "
+                    + "the certificate subject provided by the peer (" + x500Principal.toString() + ")");
             }
             // verifyHostName() didn't blowup - good!
         } catch (final IOException iox) {
             // close the socket before re-throwing the exception
-            try { sslsock.close(); } catch (final Exception x) { /*ignore*/ }
+            try {
+                sslsock.close();
+            } catch (final Exception x) {
+                /*ignore*/ }
             throw iox;
         }
     }
@@ -308,5 +314,5 @@ public class TweakableSSLConnectionFactory implements LayeredConnectionSocketFac
     public void setInsecure(boolean insecure) {
         this.insecure = insecure;
     }
-    
+
 }
