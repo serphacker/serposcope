@@ -30,6 +30,19 @@ serposcope.adminProxyController = function () {
         .appendTo(document.body).submit();
     };
     
+    var deleteProxiesInvalid = function(elt){
+        $('<form>', {
+            'action': $(elt.currentTarget).attr("data-action"),
+            'method': 'post',
+            'target': '_top'
+        }).append($('<input>', {
+            'name': '_xsrf',
+            'value': $('#_xsrf').attr("data-value"),
+            'type': 'hidden'
+        })).append($('.chk-proxy'))
+        .appendTo(document.body).submit();
+    };    
+    
     var checkProxies = function(elt){
         $('<form>', {
             'action': $(elt.currentTarget).attr("data-action"),
@@ -61,6 +74,7 @@ serposcope.adminProxyController = function () {
     var render = function() {
         $("#btn-chk-proxy").click(checkproxies);
         $("#btn-delete-proxy").click(deleteProxies);
+        $("#btn-delete-proxy-invalid").click(deleteProxiesInvalid);
         $("#btn-add-proxy").click(newProxyModal);
         $("#btn-check-proxy").click(checkProxies);
         $("#btn-abort-proxy").click(abortCheck);

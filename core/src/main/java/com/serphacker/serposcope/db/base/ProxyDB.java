@@ -120,6 +120,18 @@ public class ProxyDB extends AbstractDB {
         return deleted;        
     }
     
+    public long deleteByStatus(Proxy.Status status){
+        long deleted = -1l;
+        try(Connection con = ds.getConnection()){
+            deleted = new SQLDeleteClause(con, dbTplConf, t_proxy)
+                .where(t_proxy.status.eq((byte)status.ordinal()))
+                .execute();
+        } catch(Exception ex){
+            LOG.error("SQL Error", ex);
+        }
+        return deleted;        
+    }    
+    
     protected Proxy fromTuple(Tuple tuple){
         if(tuple == null){
             return null;

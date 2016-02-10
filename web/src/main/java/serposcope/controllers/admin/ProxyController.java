@@ -165,7 +165,15 @@ public class ProxyController extends BaseController {
             flash.put("warning","admin.proxy.proxyDeleted");
         }
         return Results.redirect(router.getReverseRoute(ProxyController.class, "proxies"));
-    }    
+    } 
+    
+    @FilterWith(XSRFFilter.class)
+    public Result deleteInvalid(Context context){
+        FlashScope flash = context.getFlashScope();
+        baseDB.proxy.deleteByStatus(Proxy.Status.ERROR);
+        flash.put("warning","admin.proxy.proxyDeleted");
+        return Results.redirect(router.getReverseRoute(ProxyController.class, "proxies"));
+    }        
     
     @FilterWith(XSRFFilter.class)
     public Result abortCheck(Context context){

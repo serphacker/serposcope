@@ -80,6 +80,7 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/admin/proxies").with(ProxyController.class, "proxies");
         router.POST().route("/admin/proxies/add").with(ProxyController.class, "add");
         router.POST().route("/admin/proxies/delete").with(ProxyController.class, "delete");
+        router.POST().route("/admin/proxies/delete-invalid").with(ProxyController.class, "deleteInvalid");
         router.POST().route("/admin/proxies/check").with(ProxyController.class, "startCheck");
         router.POST().route("/admin/proxies/abort").with(ProxyController.class, "abortCheck");
         

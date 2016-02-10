@@ -57,6 +57,8 @@
                    data-action="${reverseRoute("admin.ProxyController","add")}" />
                    <input id="btn-delete-proxy" type="button" class="btn btn-danger" value="${i18n("label.delProxy")}" 
                    data-action="${reverseRoute("admin.ProxyController","delete")}" />
+                   <input id="btn-delete-proxy-invalid" type="button" class="btn btn-danger" value="${i18n("label.delInvalidProxy")}" 
+                   data-action="${reverseRoute("admin.ProxyController","deleteInvalid")}" />                   
                    <input id="btn-check-proxy" type="button" class="btn btn-warning" value="${i18n("label.checkAll")}" 
                    data-action="${reverseRoute("admin.ProxyController","startCheck")}" />
                    <input id="btn-abort-proxy" type="button" class="btn btn-warning" value="${i18n("label.abort")}" 
