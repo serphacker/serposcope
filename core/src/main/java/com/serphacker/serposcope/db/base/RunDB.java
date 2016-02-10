@@ -97,6 +97,9 @@ public class RunDB extends AbstractDB {
         try(Connection conn = ds.getConnection()){
             updated = new SQLUpdateClause(conn, dbTplConf, t_run)
                 .set(t_run.finished, run.getFinished() == null ? null : Timestamp.valueOf(run.getFinished()))
+                .set(t_run.progress, run.getProgress())
+                .set(t_run.captchas, run.getCaptchas())
+                .set(t_run.errors, run.getErrors())
                 .where(t_run.id.eq(run.getId()))
                 .execute() == 1;
                 
@@ -111,13 +114,24 @@ public class RunDB extends AbstractDB {
      * @param run
      * @return 
      */
-    public boolean updateStates(Run run){
+    public boolean updateProgress(Run run){
         boolean updated = false;
         try(Connection conn = ds.getConnection()){
             updated = new SQLUpdateClause(conn, dbTplConf, t_run)
                 .set(t_run.progress, run.getProgress())
+                .where(t_run.id.eq(run.getId()))
+                .execute() == 1;
+        }catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        return updated;        
+    }
+    
+    public boolean updateCaptchas(Run run){
+        boolean updated = false;
+        try(Connection conn = ds.getConnection()){
+            updated = new SQLUpdateClause(conn, dbTplConf, t_run)
                 .set(t_run.captchas, run.getCaptchas())
-                .set(t_run.errors, run.getErrors())
                 .where(t_run.id.eq(run.getId()))
                 .execute() == 1;
         }catch(Exception ex){

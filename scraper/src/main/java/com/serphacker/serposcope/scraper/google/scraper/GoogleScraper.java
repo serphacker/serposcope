@@ -64,6 +64,7 @@ public class GoogleScraper {
     Random random = new Random();
     
     Document lastSerpHtml = null;
+    int captchas=0;
 
     public GoogleScraper(ScrapClient client, CaptchaSolver solver) {
 //        this.search = search;
@@ -72,6 +73,8 @@ public class GoogleScraper {
     }
     
     public GoogleScrapResult scrap(GoogleScrapSearch search) throws InterruptedException {
+        lastSerpHtml = null;
+        captchas = 0;
         List<String> urls = new ArrayList<>();
         prepareHttpClient(search);
         
@@ -103,7 +106,7 @@ public class GoogleScraper {
             }
             
             if(status != Status.OK){
-                return new GoogleScrapResult(status, urls);
+                return new GoogleScrapResult(status, urls, captchas);
             }
             
             if(!hasNextPage()){
@@ -120,7 +123,7 @@ public class GoogleScraper {
                 }                
             }
         }
-        return new GoogleScrapResult(Status.OK, urls);
+        return new GoogleScrapResult(Status.OK, urls, captchas);
     }
     
     protected void prepareHttpClient(GoogleScrapSearch search){
@@ -162,6 +165,7 @@ public class GoogleScraper {
                 return Status.OK;
 
             case 302:
+                ++captchas;
                 return handleCaptchaRedirect(http.getResponseHeader("location"));
         }
         

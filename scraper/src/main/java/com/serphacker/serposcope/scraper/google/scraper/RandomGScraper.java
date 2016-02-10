@@ -46,7 +46,7 @@ public class RandomGScraper extends GoogleScraper {
                 urls.add(url);
             }
             
-//            long pauseMS = random.nextLong(options.getMinPauseBetweenPage(), options.getMaxPauseBetweenPage() + 1l);
+//            long pauseMS = options.getRandomPagePauseMS();
 //            if (pauseMS > 0) {
 //                LOG.debug("KW {} page {} sleeping {} ms interrupt={}",
 //                    new Object[]{options.getKeyword(), page, pauseMS, Thread.currentThread().isInterrupted()}
@@ -56,7 +56,7 @@ public class RandomGScraper extends GoogleScraper {
         }
         
         Collections.shuffle(urls, random);
-        return new GoogleScrapResult(GoogleScrapResult.Status.OK, urls);
+        return new GoogleScrapResult(GoogleScrapResult.Status.OK, urls, random.nextInt(5) + 5);
     }
 
 }

@@ -71,6 +71,7 @@ public class GoogleTask extends AbstractTask {
     LinkedBlockingQueue<GoogleSearch> searches;
     GoogleSettings googleOptions;
     AtomicInteger searchDone;
+    AtomicInteger captchaCount;
     
     Thread[] threads;
     volatile int totalSearch;
@@ -126,6 +127,7 @@ public class GoogleTask extends AbstractTask {
         
         rotator = new ProxyRotator(proxies);
         searchDone = new AtomicInteger();
+        captchaCount = new AtomicInteger();
         totalSearch = searches.size();
         
         startThreads(nThread);
@@ -141,6 +143,7 @@ public class GoogleTask extends AbstractTask {
         
         int remainingSearch = totalSearch - searchDone.get();
         if(remainingSearch > 0){
+            run.setErrors(remainingSearch);
             LOG.warn("{} searches have not been checked", remainingSearch);
             return Run.Status.DONE_WITH_ERROR;
         }
@@ -188,17 +191,19 @@ public class GoogleTask extends AbstractTask {
         return false;
     }
     
+    protected void incCaptchaCount(int captchas){
+        run.setCaptchas(captchaCount.addAndGet(captchas));
+        baseDB.run.updateCaptchas(run);
+    }
+    
     protected void onSearchDone(GoogleSearch search, GoogleScrapResult res){
         insertSearchResult(search, res);
         incSearchDone();
     }
     
     protected void incSearchDone(){
-        if(solver != null){
-            run.setCaptchas(solver.getCaptchaCount());
-        }
         run.setProgress((int) (((float)searchDone.incrementAndGet()/(float)totalSearch)*100f) );
-        baseDB.run.updateStates(run);
+        baseDB.run.updateProgress(run);
     }
     
     protected void insertSearchResult(GoogleSearch search, GoogleScrapResult res) {

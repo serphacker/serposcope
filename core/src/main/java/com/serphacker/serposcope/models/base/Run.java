@@ -119,6 +119,10 @@ public class Run {
     public void setCaptchas(int captchas) {
         this.captchas = captchas;
     }
+    
+    public void incCaptchas(int captchas) {
+        this.captchas += captchas;
+    }
 
     public int getErrors() {
         return errors;

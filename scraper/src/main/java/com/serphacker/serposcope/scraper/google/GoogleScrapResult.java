@@ -24,8 +24,14 @@ public class GoogleScrapResult {
         this.status = status;
         this.urls = urls;
     }
+
+    public GoogleScrapResult(Status status, List<String> urls, int captchas) {
+        this.status = status;
+        this.urls = urls;
+        this.captchas = captchas;
+    }
     
     public Status status;
     public List<String> urls;
-    public int captcha;
+    public int captchas;
 }

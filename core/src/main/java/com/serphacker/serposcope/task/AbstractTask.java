@@ -28,7 +28,7 @@ public abstract class AbstractTask extends Thread {
     protected BaseDB baseDB;
     
     protected long startMilliseconds;
-    protected Run run;
+    protected final Run run;
     
     public AbstractTask(Run run) {
         this.run = run;

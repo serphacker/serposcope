@@ -102,6 +102,10 @@ public class GoogleTaskRunnable implements Runnable {
                     LOG.error("interrupted while scraping, aborting the thread");
                     break;
                 }
+                
+                if( res.captchas > 0 ){
+                    controller.incCaptchaCount(res.captchas);
+                }
 
                 if (res.status != OK) {
                     LOG.warn("scrap failed for {} because of {}", search.getKeyword(), res.status);
