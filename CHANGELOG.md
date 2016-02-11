@@ -1,5 +1,18 @@
 # serposcope changelog
 
+## 2.2.0 - 11/02/216
+
+* IMPORTANT FIX task won't stop when using proxies [#80](https://github.com/serphacker/serposcope/issues/80)
+* comptabile with 64 bits Java version on Windows
+* support SOCKS proxy [#79](https://github.com/serphacker/serposcope/issues/79)
+* best ranking is next to last ranking (website table view)
+* ability to delete invalid proxy in one click
+* display number of captchas displayed even without solver [#54](https://github.com/serphacker/serposcope/issues/54)
+* ability to do a stackdump (debugging utility)
+* FIX bulk import bug with canonical location [#63](https://github.com/serphacker/serposcope/issues/63)
+* FIX javascript when using quotes in website name or search [#81](https://github.com/serphacker/serposcope/issues/81)
+* FIX typos [#74](https://github.com/serphacker/serposcope/issues/74)
+
 ## 2.1.0 - 15/01/2016
 
 * add https://anti-captcha.com/ captcha service [#58](https://github.com/serphacker/serposcope/issues/58)
