@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.3.0 - 15/02/16
+
+* IMPORTANT Google task crash when checking with multiple threads [#85](https://github.com/serphacker/serposcope/issues/85)
+
 ## 2.2.0 - 11/02/216
 
 * IMPORTANT FIX task may not stop when using proxies [#80](https://github.com/serphacker/serposcope/issues/80)
