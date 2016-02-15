@@ -80,7 +80,7 @@ public class GoogleTargetSummary {
         this.previousScore = previousScore;
     }
     
-    public void addRankCandidat(GoogleRank rank){
+    public synchronized void addRankCandidat(GoogleRank rank){
         score += getRankScore(rank.rank);
         
         if(rank.rank <=3 ){

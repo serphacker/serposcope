@@ -84,4 +84,45 @@ public class GoogleTargetSummaryTest {
         }        
     }
     
+    
+    @Test
+    public void testMT() throws Exception{
+        final List<GoogleRank> ranks = new ArrayList<>();
+        final GoogleTargetSummary summary = new GoogleTargetSummary();        
+        
+        for (int i = 0; i < 100; i++) {
+            ranks.add(new GoogleRank(0, 0, 0, 0, r.nextInt(100), r.nextInt(100), null));
+        }
+        Collections.shuffle(ranks);
+                
+        Thread[] threads = new Thread[100];
+        for (int i = 0; i < threads.length; i++) {
+            final int j = i;
+            threads[i] = new Thread(() -> {summary.addRankCandidat(ranks.get(j));}, "th-" + j);
+        }
+        
+        for (int i = 0; i < threads.length; i++) {
+            threads[i].start();
+        }
+        
+        for (int i = 0; i < threads.length; i++) {
+            threads[i].join();
+        }        
+        
+        System.out.println("TOP-RANKS");
+        for (GoogleRank rank : summary.getTopRanks()) {
+            System.out.println("PREV:" + rank.previousRank + " => NOW:" + rank.rank + "|DIFF:" + rank.diff);
+        }        
+        
+        System.out.println("TOP-IMPROVEMENTS");
+        for (GoogleRank rank : summary.getTopImprovements()) {
+            System.out.println("PREV:" + rank.previousRank + " => NOW:" + rank.rank + "|DIFF:" + rank.diff);
+        }
+        
+        System.out.println("TOP-LOSTS");
+        for (GoogleRank rank : summary.getTopLosts()) {
+            System.out.println("PREV:" + rank.previousRank + " => NOW:" + rank.rank + "|DIFF:" + rank.diff);
+        }        
+    }    
+    
 }

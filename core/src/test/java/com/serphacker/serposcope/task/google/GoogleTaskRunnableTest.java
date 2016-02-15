@@ -83,7 +83,7 @@ public class GoogleTaskRunnableTest {
         reconfigureLogger();
         taskController = mock(GoogleTask.class);
         taskController.rotator = new ProxyRotator(Collections.EMPTY_LIST);
-        taskController.searchDone = new AtomicInteger();
+//        taskController.searchDone = new AtomicInteger();
         taskController.totalSearch = 0;        
         taskController.googleOptions = new GoogleSettings();
         

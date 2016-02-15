@@ -7,7 +7,6 @@
  */
 package com.serphacker.serposcope.task.google;
 
-import com.google.inject.Inject;
 import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
-import com.serphacker.serposcope.di.GoogleScraperFactory;
+import com.serphacker.serposcope.task.google.GoogleTask;
 import java.util.List;
 import org.apache.http.cookie.Cookie;
 
@@ -94,7 +93,7 @@ public class GoogleTaskRunnable implements Runnable {
                 ++searchTry;
                 GoogleScrapResult res = null;
                 LOG.info("search \"{}\" | try {} | total search done : {}/{}",
-                    new Object[]{search.getKeyword(), searchTry, controller.searchDone.get(), controller.totalSearch});
+                    new Object[]{search.getKeyword(), searchTry, controller.getSearchDone(), controller.totalSearch});
 
                 try {
                     res = scraper.scrap(getScrapConfig(controller.googleOptions, search));

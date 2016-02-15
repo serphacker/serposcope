@@ -27,30 +27,26 @@ import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult;
 import com.serphacker.serposcope.scraper.google.scraper.GoogleScraper;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
-import com.serphacker.serposcope.scraper.http.proxy.BindProxy;
 import com.serphacker.serposcope.scraper.http.proxy.DirectNoProxy;
 import com.serphacker.serposcope.scraper.http.proxy.ProxyRotator;
 import com.serphacker.serposcope.task.AbstractTask;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
 import java.util.stream.Collectors;
 import com.serphacker.serposcope.di.GoogleScraperFactory;
-import com.serphacker.serposcope.models.base.Config;
 import com.serphacker.serposcope.models.google.GoogleBest;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.logging.Level;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GoogleTask extends AbstractTask {
 
@@ -64,14 +60,14 @@ public class GoogleTask extends AbstractTask {
     ProxyRotator rotator;
 
     Run previousRun;
-    Map<Short,Integer> previousRunsByDay;
-    Map<Integer,List<GoogleTarget>> targetsByGroup;
-    Map<Integer,GoogleTargetSummary> summariesByTarget;
+    final Map<Short,Integer> previousRunsByDay = new ConcurrentHashMap<>();
+    final Map<Integer,List<GoogleTarget>> targetsByGroup = new ConcurrentHashMap<>();
+    final Map<Integer,GoogleTargetSummary> summariesByTarget = new ConcurrentHashMap<>();
     
     LinkedBlockingQueue<GoogleSearch> searches;
     GoogleSettings googleOptions;
-    AtomicInteger searchDone;
-    AtomicInteger captchaCount;
+    protected final AtomicInteger searchDone = new AtomicInteger();
+    final AtomicInteger captchaCount = new AtomicInteger();
     
     Thread[] threads;
     volatile int totalSearch;
@@ -126,8 +122,6 @@ public class GoogleTask extends AbstractTask {
         }
         
         rotator = new ProxyRotator(proxies);
-        searchDone = new AtomicInteger();
-        captchaCount = new AtomicInteger();
         totalSearch = searches.size();
         
         startThreads(nThread);
@@ -254,8 +248,6 @@ public class GoogleTask extends AbstractTask {
     }    
     
     protected void initializeTargets() {
-        targetsByGroup = new HashMap<>();
-        summariesByTarget = new HashMap<>();
         Map<Integer, Integer> previousSummary = new HashMap<>();
         
         if(previousRun != null){
@@ -273,7 +265,6 @@ public class GoogleTask extends AbstractTask {
     }
     
     protected void initializePreviousRuns(){
-        previousRunsByDay = new HashMap<>();
         previousRun = baseDB.run.findPrevious(run.getId());
         if(previousRun == null){
             return;
@@ -339,6 +330,10 @@ public class GoogleTask extends AbstractTask {
             return null;
         }
         
+    }
+    
+    int getSearchDone(){
+        return searchDone != null ? searchDone.get() : 0;
     }
 
 }

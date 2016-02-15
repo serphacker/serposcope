@@ -112,11 +112,13 @@ public class ScrapClientSlowLorisIT extends DeepIntegrationTest {
 
     @Test
     public void testSlowLorisClientSide() throws Exception {
+        Thread.sleep(2500);
         ScrapClient dl = new ScrapClient();
         String remoteUrl = "http://127.0.0.1:" + port;
         
-        dl.setTimeout(10000);
+        dl.setTimeout(5000);
         assertEquals(-1, dl.get(remoteUrl));
         assertTrue(dl.getExecutionTimeMS() < dl.getTimeout()+1000);
+        LOG.info("test done");
     }
 }
