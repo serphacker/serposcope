@@ -2,7 +2,7 @@
 
 ## 2.3.0 - 15/02/16
 
-* IMPORTANT Google task crash when checking with multiple threads [#85](https://github.com/serphacker/serposcope/issues/85)
+* IMPORTANT Google task crash when checking with multiple threads [#82](https://github.com/serphacker/serposcope/issues/82)
 
 ## 2.2.0 - 11/02/216
 
