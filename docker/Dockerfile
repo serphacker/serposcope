@@ -1,11 +1,9 @@
-FROM java:8
+FROM java:8-jre
 
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
-
-RUN wget https://serposcope.serphacker.com/download/2.3.0/serposcope_2.3.0_all.deb -O /tmp/serposcope.deb
-RUN dpkg -i /tmp/serposcope.deb
-RUN rm /tmp/serposcope.deb
 COPY serposcope /etc/default/serposcope
+RUN wget https://serposcope.serphacker.com/download/2.3.0/serposcope_2.3.0_all.deb -O /tmp/serposcope.deb
+RUN dpkg --force-confold -i /tmp/serposcope.deb
+RUN rm /tmp/serposcope.deb
 
 VOLUME /var/lib/serposcope/
 
