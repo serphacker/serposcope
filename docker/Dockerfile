@@ -11,4 +11,4 @@ VOLUME /var/lib/serposcope/
 
 EXPOSE 7134
 
-CMD java -jar /usr/share/serposcope/serposcope.jar >$LOGDIR/startup.log
+CMD service serposcope start && tail -F /var/log/serposcope/startup.log
