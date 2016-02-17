@@ -48,8 +48,6 @@ Your running Serposcope version should now be up-to-date.
 
  ```docker commit my_serposcope yourname/serposcope```
 
- test.
-
 ## TODO
 
  Enable configuration of Serposcope options through environment variables.
