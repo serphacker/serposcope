@@ -48,6 +48,15 @@ Your running Serposcope version should now be up-to-date.
 
  ```docker commit my_serposcope yourname/serposcope```
 
-## TODO
+## Environment variables
 
- Enable configuration of Serposcope options through environment variables.
+You can customize your Serposcope installation by passing environment variables to the container.
+There are three available environment variables that you can use to change the default configuration:
+
+- ```SERPOSCOPE_DB_URL``` which amends serposcope.db.url
+- ```SERPOSCOPE_DB_OPTIONS``` which amends serposcope.db.options
+- ```SERPOSCOPE_DB_OPTIONS``` which amends serposcope.db.options
+
+You can set one or more of them at the container creation like this:
+
+```docker run -e "SERPOSCOPE_DB_URL=jdbc:mysql://HOSTNAME/DATABASE?user=USER&password=PASS&allowMultiQueries=true" -d -p 7134:7134 --name my_serposcope yourname/serposcope``` 
