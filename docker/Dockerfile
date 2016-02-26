@@ -9,4 +9,5 @@ VOLUME /var/lib/serposcope/
 
 EXPOSE 7134
 
-CMD service serposcope start && tail -F /var/log/serposcope/startup.log
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
