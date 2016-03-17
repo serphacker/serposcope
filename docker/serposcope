@@ -1,0 +1,6 @@
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+LOGDIR=/var/log/serposcope
+DATADIR=/var/lib/serposcope
+CONF=/etc/serposcope.conf
+PARAMS="-Dserposcope.conf=$CONF"

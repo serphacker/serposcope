@@ -26,3 +26,6 @@ nbactions.xml
 /core/codegen/
 /web/src/main/java/assets/combined.min.js
 /web/src/main/java/assets/combined.js
+
+#OSX specific
+.DS_Store
