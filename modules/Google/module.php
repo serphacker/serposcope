@@ -379,11 +379,21 @@ class Google extends GroupModule {
             foreach ($elts as $elt){
                 $src=$elt->getAttribute("src");
                 if($src != null && strncmp($src,"/sorry/image",12) === 0){
-                    $imgsrc = "http://".$dc.$src;
+                    $imgsrc = "http://ipv4.google.com".$src;
                 }
             }
         }
-
+        
+        $qValue = "";
+        $elts = $docCaptcha->getElementsByTagName("input");
+        if($elts != null){
+            foreach ($elts as $elt){
+                if($elt->getAttribute("name") === "q"){
+                    $qValue = $elt->getAttribute("value");
+                }
+            }
+        }
+        
         $groupRegex=array();
         if($imgsrc == null || !preg_match("|/sorry/image\?id=([0-9]+)&?|", $imgsrc, $groupRegex)){
             $this->w("Can't extract captcha from HTML");
@@ -394,6 +404,7 @@ class Google extends GroupModule {
         $params['id'] = $groupRegex[1];
         $params['continue'] = $origUrl;
         $params['submit']="Submit";
+        $params['q'] = $qValue;
 
         $data = curl_cache_exec(array(CURLOPT_URL => $imgsrc), $proxy, false);
 
@@ -428,7 +439,7 @@ class Google extends GroupModule {
         
         $params['captcha'] = $solved['text'];
         
-        $sendUrl = "http://".$dc."/sorry/Captcha?";
+        $sendUrl = "http://ipv4.google.com/sorry/CaptchaRedirect?";
         foreach ($params as $key => $value) {
             $sendUrl .= $key."=".urlencode($value)."&";
         }
@@ -451,13 +462,17 @@ class Google extends GroupModule {
             return null;
         }
         
-        if(!strstr($data['data'],'<TITLE>Redirecting</TITLE>')){
-            $this->w("Can't send captcha answer [1]");
+        if(empty($data['redir'])){
+            $this->w("Invalid redirection after captcha");
             return null;            
         }
         
         $this->l("Captcha succesfully solved");
-        $data = curl_cache_exec(array(CURLOPT_URL => $origUrl), $proxy, false);
+        $data = curl_cache_exec(array(CURLOPT_URL => $data['redir']), $proxy, false);
+        
+        if($data['status'] == 302 && !empty($data['redir'])){
+            $data = curl_cache_exec(array(CURLOPT_URL => $data['redir']), $proxy, false);
+        }
 
         if($data['status'] != 200 ){
             $this->w("Bad redirection after captcha solving");

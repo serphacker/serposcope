@@ -1,7 +1,8 @@
 # Serposcope changelog
 
-## UPCOMING
+## 1.0.8 - 17/03/2016
 
+* [critical] handle new parameter on google captcha form
 * Display ranked page in table view
 * Prevent serposcope from running if php < 5.3.8 (CURLINFO_REDIRECT_URL bug)
 * Fix ipv6 bulk import
