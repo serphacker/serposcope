@@ -38,7 +38,7 @@ if(isset($_POST['action'])){
                     die(json_encode(array("result" => "no proxy with this id")));
                 }
                 $opts = array(
-                    CURLOPT_URL => "http://revolt.vu.cx/"
+                    CURLOPT_URL => "http://proxychecker.serphacker.com/"
                 ) + buildCurlOptions($proxy);
                 
                 if(isset($_POST['to']) && is_numeric($_POST['to'])){
