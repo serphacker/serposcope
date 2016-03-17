@@ -45,9 +45,8 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
 
     @Test
     public void debugScrap() throws IOException, InterruptedException {
-//        SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
-//        solver.init();     
-        DecaptcherSolver solver = new DecaptcherSolver(props.getProperty("decaptcher.login"), props.getProperty("decaptcher.password"));
+        SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
+//        DecaptcherSolver solver = new DecaptcherSolver(props.getProperty("decaptcher.login"), props.getProperty("decaptcher.password"));
         solver.init();
         
         ScrapClient http = new ScrapClient();

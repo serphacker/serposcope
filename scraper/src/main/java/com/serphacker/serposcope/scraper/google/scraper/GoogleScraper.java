@@ -328,6 +328,8 @@ public class GoogleScraper {
         String continueValue = null;
         String captchaId = null;
         String action = form.attr("abs:action");
+        String qValue = null;
+        
         Element elementCaptchaId = form.getElementsByAttributeValue("name", "id").first();
         if(elementCaptchaId != null){
             captchaId = elementCaptchaId.attr("value");
@@ -335,6 +337,10 @@ public class GoogleScraper {
         Element elementContinue = form.getElementsByAttributeValue("name", "continue").first();
         if(elementContinue != null){
             continueValue = elementContinue.attr("value");
+        }
+        Element elementQ = form.getElementsByAttributeValue("name", "q").first();
+        if(elementQ != null){
+            qValue = elementQ.attr("value");
         }
         
         
@@ -362,6 +368,9 @@ public class GoogleScraper {
         }catch(Exception ex){}
         action += "&id=" + captchaId;
         action += "&captcha=" + captcha.getResponse();
+        if(qValue != null){
+            action += "&q=" + qValue;
+        }
         
         int postCaptchaStatus = http.get(action, captchaRedirect);
         

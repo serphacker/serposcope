@@ -33,7 +33,7 @@ public class GoogleScraperIT {
     }
 
 
-    @Test
+//    @Test
     public void testHandleCaptcha() throws Exception {
         SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
         solver.init();
