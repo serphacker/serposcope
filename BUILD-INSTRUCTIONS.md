@@ -50,3 +50,8 @@ cd /work/java/serposcope/web; mvn -Dtest=all failsafe:integration-test
 ```
 
 Check also for testconfig.DEFAULT.properties in test resources if you want to run extensive integration tests relying on credentials or whatever
+
+
+## DOCKER DEV
+
+You can [build ](dev/README.md) Serposcope in Docker.

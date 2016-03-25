@@ -1,0 +1,20 @@
+serposcope:
+  build: .
+  command: "sh dev/entrypoint.sh"
+  ports:
+   - "7134:7134"
+  volumes:
+   - ../:/serposcope
+  links:
+   - db
+db:
+  image: mysql:5.7
+  volumes:
+    - serposcope_db:/var/lib/mysql
+  ports:
+   - "3306:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: "ROOT_PASS"
+    MYSQL_DATABASE: "DEV_DATABASE"
+    MYSQL_USER: "DEV_USER"
+    MYSQL_PASSWORD: "DEV_PASS"
