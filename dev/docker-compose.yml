@@ -14,7 +14,7 @@ db:
   ports:
    - "3306:3306"
   environment:
-    MYSQL_ROOT_PASSWORD: "ROOT_PASS"
-    MYSQL_DATABASE: "DEV_DATABASE"
-    MYSQL_USER: "DEV_USER"
-    MYSQL_PASSWORD: "DEV_PASS"
+    MYSQL_ROOT_PASSWORD: "root_pass"
+    MYSQL_DATABASE: "dev_database"
+    MYSQL_USER: "dev_user"
+    MYSQL_PASSWORD: "dev_pass"

@@ -54,4 +54,4 @@ Check also for testconfig.DEFAULT.properties in test resources if you want to ru
 
 ## DOCKER DEV
 
-You can [build ](dev/README.md) Serposcope in Docker.
+You can [build&run](dev/README.md) Serposcope in Docker.
