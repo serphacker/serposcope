@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.5.0 - UNRELEASED
+
+* FIX incorrect random pause between request to Google[#100](https://github.com/serphacker/serposcope/issues/100)
+
 ## 2.4.0 - 2016-03-17
 
 * IMPORTANT Google added a new "q" parameter to its captcha form (upgrade highly recommended).

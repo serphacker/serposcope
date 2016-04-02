@@ -104,7 +104,7 @@ public class GoogleScrapSearch {
         if(minPauseBetweenPageMS == maxPauseBetweenPageMS){
             return maxPauseBetweenPageMS;
         }
-        return minPauseBetweenPageMS + (random.nextLong()%(maxPauseBetweenPageMS-minPauseBetweenPageMS));
+        return minPauseBetweenPageMS + Math.abs(random.nextLong()%(maxPauseBetweenPageMS-minPauseBetweenPageMS));
     }
 
 }
