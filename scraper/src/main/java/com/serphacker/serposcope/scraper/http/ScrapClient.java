@@ -17,7 +17,6 @@ import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
@@ -27,25 +26,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.HttpRoutePlanner;
@@ -62,25 +54,22 @@ import org.slf4j.LoggerFactory;
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
 import com.serphacker.serposcope.scraper.http.proxy.SocksProxy;
 import com.serphacker.serposcope.scraper.utils.EncodeUtils;
-import java.net.Inet4Address;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.DeflateDecompressingEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -89,7 +78,7 @@ import org.apache.http.message.BasicNameValuePair;
  *
  * @author admin
  */
-public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestInterceptor {
+public class ScrapClient implements Closeable, CredentialsProvider {
 
     public enum PostType {
         URL_ENCODED,
@@ -117,6 +106,7 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
     List<Header> requestHeaders = new ArrayList<>();
     Map<HttpHost, HttpHost> routes = new HashMap<>();
     boolean proxyChangedSinceLastRequest;
+    int maxRedirect = 0;
 
     long executionTimeMS;
     CloseableHttpResponse response;
@@ -199,8 +189,6 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
             .setDefaultCookieStore(basicCookieStore)
             .setConnectionReuseStrategy(this.new SCliConnectionReuseStrategy())
             .setConnectionManager(connManager)
-            .addInterceptorFirst(this)
-//            .disableRedirectHandling()
             .build();
 
         setTimeout(timeoutMS);
@@ -376,7 +364,7 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
         if (referrer != null) {
             request.addHeader("Referer", referrer);
         }
-        return performRequest(request);
+        return request(request);
     }
 
     public int post(String url, Map<String, Object> data, PostType dataType) {
@@ -463,7 +451,7 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
         if (referrer != null) {
             request.addHeader("Referer", referrer);
         }
-        return performRequest(request);
+        return request(request);
     }
 
     protected Map<String, Object> handleUnsupportedEncoding(Map<String, Object> data, Charset detectedCharset) {
@@ -504,13 +492,16 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
         statusCode = 0;
     }
 
-    public int performRequest(HttpRequestBase request) {
+    public int request(HttpRequestBase request) {
         synchronized (connManager) {
             try {
                 clearPreviousRequest();
                 executionTimeMS = System.currentTimeMillis();
+                
+                HttpClientContext context = HttpClientContext.create();
+                initializeRequest(request, context);
 
-                response = client.execute(request);
+                response = client.execute(request, context);
                 statusCode = response.getStatusLine().getStatusCode();
 
                 HttpEntity entity = response.getEntity();
@@ -550,7 +541,37 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
             return statusCode;
         }
     }
+    
+    protected void initializeRequest(HttpRequestBase request, HttpClientContext context){
+        if (request.getFirstHeader("user-agent") == null) {
+            request.setHeader("User-Agent", useragent);
+        }
 
+        for (Header requestHeader : requestHeaders) {
+            request.setHeader(requestHeader);
+        }
+        
+        RequestConfig.Builder configBuilder = 
+            RequestConfig.copy(request.getConfig() == null ? RequestConfig.DEFAULT : request.getConfig());
+        
+        if (timeoutMS != null) {
+            configBuilder.setConnectTimeout(timeoutMS);
+            configBuilder.setConnectionRequestTimeout(timeoutMS);
+            configBuilder.setSocketTimeout(timeoutMS);
+        }
+        
+        if(maxRedirect == 0){
+             configBuilder.setRedirectsEnabled(false);
+        } else {
+            configBuilder.setMaxRedirects(maxRedirect);
+        }
+         
+        RequestConfig config = configBuilder.build();
+        
+        context.setAttribute(HttpClientContext.REQUEST_CONFIG, config);
+        request.setConfig(config);
+    }
+    
     public void closeResponse() {
         if (response != null) {
             try {
@@ -610,30 +631,6 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
         credentialProvider.clear();
     }
 
-    @Override
-    public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-        if (request.getFirstHeader("user-agent") == null) {
-            request.setHeader("User-Agent", useragent);
-        }
-
-        for (Header requestHeader : requestHeaders) {
-            request.setHeader(requestHeader);
-        }
-
-        RequestConfig baseConfig = (RequestConfig) context.getAttribute(HttpClientContext.REQUEST_CONFIG);
-        RequestConfig.Builder builder = RequestConfig.copy(baseConfig == null ? RequestConfig.DEFAULT : baseConfig);
-
-        if (timeoutMS != null) {
-            builder.setConnectTimeout(timeoutMS);
-            builder.setConnectionRequestTimeout(timeoutMS);
-            builder.setSocketTimeout(timeoutMS);
-        }
-        
-        builder.setMaxRedirects(1);
-        
-        context.setAttribute(HttpClientContext.REQUEST_CONFIG, builder.build());
-    }
-
     public void setRequestHeader(Header header) {
         removeRequestHeadersByName(header.getName());
         requestHeaders.add(header);
@@ -655,38 +652,20 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
         this.sslConnectionFactory.setInsecure(insecureSSL);
     }
 
-    /*
-    public CloseableHttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
-        return client.execute(target, request, context);
+    public int getMaxRedirect() {
+        return maxRedirect;
     }
 
-    public CloseableHttpResponse execute(HttpUriRequest request, HttpContext context) throws IOException, ClientProtocolException {
-        return client.execute(request, context);
+    public void setMaxRedirect(int maxRedirect) {
+        this.maxRedirect = maxRedirect;
     }
-
-    public CloseableHttpResponse execute(HttpUriRequest request) throws IOException, ClientProtocolException {
-        return client.execute(request);
+    
+    public void enableFollowRedirect(){
+        maxRedirect = 10;
     }
-
-    public CloseableHttpResponse execute(HttpHost target, HttpRequest request) throws IOException, ClientProtocolException {
-        return client.execute(target, request);
+    
+    public void disableFollowRedirect(){
+        maxRedirect = 0;
     }
-
-    public <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-        return client.execute(request, responseHandler);
-    }
-
-    public <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException, ClientProtocolException {
-        return client.execute(request, responseHandler, context);
-    }
-
-    public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-        return client.execute(target, request, responseHandler);
-    }
-
-    public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException, ClientProtocolException {
-        return client.execute(target, request, responseHandler, context);
-    }
-    */
-
+    
 }

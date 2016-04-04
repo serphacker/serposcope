@@ -10,20 +10,16 @@ package com.serphacker.serposcope.scraper.http;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
-import java.io.InterruptedIOException;
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.http.HttpHost;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.RedirectException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -65,7 +61,7 @@ public class ScrapClientIT {
         {
             HttpGet getRequest = new HttpGet("http://httpbin.org/user-agent");
             getRequest.setHeader("user-agent", "xxxx");
-            cli.performRequest(getRequest);
+            cli.request(getRequest);
             Assert.assertThat(cli.getContentAsString(), CoreMatchers.containsString("xxxx"));
         }
         
@@ -122,46 +118,24 @@ public class ScrapClientIT {
     public void testRedirects() throws Exception {
         int status = 0;
         ScrapClient cli = new ScrapClient();
-        
-//        try(CloseableHttpResponse response = cli.execute(new HttpGet("https://httpbin.org/redirect/1"))){
-//            assertEquals(302, response.getStatusLine().getStatusCode());
-//        }
 
-        status = cli.get("https://httpbin.org/redirect/1");
-        System.out.println(status);
-        
-//        status = cli.get("https://httpbin.org/redirect/2");
-//        System.out.println(status);
-//        
-//        status = cli.get("https://httpbin.org/redirect/3");
-//        System.out.println(status);
-        
-        status = cli.get("https://httpbin.org/redirect/4");
-        System.out.println(status);
-
+        for (int i = 0; i < 2; i++) {
+            assertEquals(302, cli.get("https://httpbin.org/redirect/1"));
+            
+            cli.setMaxRedirect(1);
+            assertEquals(200, cli.get("https://httpbin.org/redirect/1"));
+            assertEquals(-1, cli.get("https://httpbin.org/redirect/2"));
+            assertTrue(cli.getException().getCause() instanceof RedirectException);
+            
+            cli.setMaxRedirect(2);
+            assertEquals(200, cli.get("https://httpbin.org/redirect/2"));
+            assertEquals(-1, cli.get("https://httpbin.org/redirect/3"));
+            assertTrue(cli.getException().getCause() instanceof RedirectException);
+            
+            cli.disableFollowRedirect();
+            assertEquals(302, cli.get("https://httpbin.org/redirect/1"));
+        }
     }
-    
-    @Test
-    public void testTimeouts() throws Exception{
-        int status = 0;
-        ScrapClient cli = new ScrapClient();
-        
-        status = cli.get("https://httpbin.org/delay/2");
-        assertEquals(200, status);
-        
-        cli.setTimeout(100);
-        
-        status = cli.get("https://httpbin.org/delay/2");
-        assertEquals(-1, status);
-        assertTrue(cli.getException() instanceof InterruptedIOException);
-        
-        
-        cli.setTimeout(null);
-        
-        status = cli.get("https://httpbin.org/delay/2");
-        assertEquals(200, status);
-    }
-    
     
     @Test
     public void testMaxResponseLength() throws Exception{
