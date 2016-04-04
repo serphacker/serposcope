@@ -200,7 +200,7 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
             .setConnectionReuseStrategy(this.new SCliConnectionReuseStrategy())
             .setConnectionManager(connManager)
             .addInterceptorFirst(this)
-            .disableRedirectHandling()
+//            .disableRedirectHandling()
             .build();
 
         setTimeout(timeoutMS);
@@ -510,7 +510,7 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
                 clearPreviousRequest();
                 executionTimeMS = System.currentTimeMillis();
 
-                response = execute(request);
+                response = client.execute(request);
                 statusCode = response.getStatusLine().getStatusCode();
 
                 HttpEntity entity = response.getEntity();
@@ -628,7 +628,9 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
             builder.setConnectionRequestTimeout(timeoutMS);
             builder.setSocketTimeout(timeoutMS);
         }
-
+        
+        builder.setMaxRedirects(1);
+        
         context.setAttribute(HttpClientContext.REQUEST_CONFIG, builder.build());
     }
 
@@ -653,6 +655,7 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
         this.sslConnectionFactory.setInsecure(insecureSSL);
     }
 
+    /*
     public CloseableHttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
         return client.execute(target, request, context);
     }
@@ -684,5 +687,6 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
     public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException, ClientProtocolException {
         return client.execute(target, request, responseHandler, context);
     }
+    */
 
 }

@@ -66,14 +66,17 @@ tcp_outgoing_address 127.0.0.3 src3
     public void testInterfaces() throws Exception {
         String[] interfaces = new String[]{"127.0.0.2", "127.0.0.3"};
         try (ScrapClient cli = new ScrapClient()) {
-            assertEquals("127.0.0.1", EntityUtils.toString(cli.execute(new HttpGet(LOCAL_IP_WEBSERVICE)).getEntity()));
+            cli.get(LOCAL_IP_WEBSERVICE);
+            assertEquals("127.0.0.1", cli.getContentAsString());
 
             for (String aInterface : interfaces) {
                 cli.setProxy(new BindProxy(aInterface));
-                assertEquals(aInterface, EntityUtils.toString(cli.execute(new HttpGet(LOCAL_IP_WEBSERVICE)).getEntity()));
+                cli.get(LOCAL_IP_WEBSERVICE);
+                assertEquals(aInterface, cli.getContentAsString());
             }
             cli.setProxy(null);
-            assertEquals("127.0.0.1", EntityUtils.toString(cli.execute(new HttpGet(LOCAL_IP_WEBSERVICE)).getEntity()));
+            cli.get(LOCAL_IP_WEBSERVICE);
+            assertEquals("127.0.0.1", cli.getContentAsString());
         }
     }
 
@@ -81,26 +84,18 @@ tcp_outgoing_address 127.0.0.3 src3
     public void testHttpProxy() throws Exception {
         try (ScrapClient cli = new ScrapClient()) {
             cli.setProxy(new HttpProxy("127.0.0.1", 3128));
-            try (CloseableHttpResponse response = cli.execute(new HttpGet(LOCAL_IP_WEBSERVICE))) {
-                assertEquals(407, response.getStatusLine().getStatusCode());
-            }
-
+            assertEquals(407, cli.get(LOCAL_IP_WEBSERVICE));
+            
             cli.setProxy(new HttpProxy("127.0.0.1", 3128, "userx", "passx"));
-            try (CloseableHttpResponse response = cli.execute(new HttpGet(LOCAL_IP_WEBSERVICE))) {
-                assertEquals(407, response.getStatusLine().getStatusCode());
-            }
+            assertEquals(407, cli.get(LOCAL_IP_WEBSERVICE));
 
             cli.setProxy(new HttpProxy("127.0.0.2", 3128, "user", "pass"));
-            try (CloseableHttpResponse response = cli.execute(new HttpGet(LOCAL_IP_WEBSERVICE))) {
-                assertEquals(200, response.getStatusLine().getStatusCode());
-                assertEquals("127.0.0.2", EntityUtils.toString(response.getEntity()));
-            }
+            assertEquals(200, cli.get(LOCAL_IP_WEBSERVICE));
+            assertEquals("127.0.0.2", cli.getContentAsString());
 
             cli.setProxy(null);
-            try (CloseableHttpResponse response = cli.execute(new HttpGet(LOCAL_IP_WEBSERVICE))) {
-                assertEquals(200, response.getStatusLine().getStatusCode());
-                assertEquals("127.0.0.1", EntityUtils.toString(response.getEntity()));
-            }
+            assertEquals(200, cli.get(LOCAL_IP_WEBSERVICE));
+            assertEquals("127.0.0.1", cli.getContentAsString());
         }
     }
 
@@ -115,16 +110,8 @@ tcp_outgoing_address 127.0.0.3 src3
             cli.setCredentials(new AuthScope("httpbin.org", 443), new UsernamePasswordCredentials(username, password));
             cli.setProxy(new HttpProxy("127.0.0.1", 3128, "user", "pass"));
 
-            {
-                CloseableHttpResponse response = cli.execute(new HttpGet(url));
-                assertEquals(200, response.getStatusLine().getStatusCode());
-                EntityUtils.consumeQuietly(response.getEntity());
-            }
-            {
-                CloseableHttpResponse response = cli.execute(new HttpGet(url));
-                assertEquals(200, response.getStatusLine().getStatusCode());
-                EntityUtils.consumeQuietly(response.getEntity());
-            }
+            assertEquals(200, cli.get(url));
+            assertEquals(200, cli.get(url));
         }
     }
 

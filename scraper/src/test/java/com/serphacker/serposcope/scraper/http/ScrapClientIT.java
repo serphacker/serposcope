@@ -52,32 +52,32 @@ public class ScrapClientIT {
         ScrapClient cli = new ScrapClient();
         
         {
-            CloseableHttpResponse response = cli.execute(new HttpGet("http://httpbin.org/user-agent"));
-            Assert.assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString(ScrapClient.DEFAULT_USER_AGENT));
+            cli.get("http://httpbin.org/user-agent");
+            Assert.assertThat(cli.getContentAsString(), CoreMatchers.containsString(ScrapClient.DEFAULT_USER_AGENT));
         }
         
         cli.setUseragent("lolua");
         {
-            CloseableHttpResponse response = cli.execute(new HttpGet("http://httpbin.org/user-agent"));
-            Assert.assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("lolua"));
+            cli.get("http://httpbin.org/user-agent");
+            Assert.assertThat(cli.getContentAsString(), CoreMatchers.containsString("lolua"));
         }
         
         {
             HttpGet getRequest = new HttpGet("http://httpbin.org/user-agent");
             getRequest.setHeader("user-agent", "xxxx");
-            CloseableHttpResponse response = cli.execute(getRequest);
-            Assert.assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("xxxx"));
+            cli.performRequest(getRequest);
+            Assert.assertThat(cli.getContentAsString(), CoreMatchers.containsString("xxxx"));
         }
         
         {
-            CloseableHttpResponse response = cli.execute(new HttpGet("http://httpbin.org/user-agent"));
-            Assert.assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("lolua"));
+            cli.get("http://httpbin.org/user-agent");
+            Assert.assertThat(cli.getContentAsString(), CoreMatchers.containsString("lolua"));
         }
         
         cli.setUseragent(null);
         {
-            CloseableHttpResponse response = cli.execute(new HttpGet("http://httpbin.org/user-agent"));
-            Assert.assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("\"user-agent\": \"\""));
+            cli.get("http://httpbin.org/user-agent");
+            Assert.assertThat(cli.getContentAsString(), CoreMatchers.containsString("\"user-agent\": \"\""));
         }        
     }
     
@@ -97,18 +97,15 @@ public class ScrapClientIT {
     public void testCookies() throws Exception{
         ScrapClient cli = new ScrapClient();
         
-        CloseableHttpResponse response = null;
         
         cli.get("http://httpbin.org/cookies/set?testcookie1=value1");
         
-        response = cli.execute(new HttpGet("http://httpbin.org/cookies"));
-        assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("\"testcookie1\": \"value1\""));
+        cli.get("http://httpbin.org/cookies");
+        assertThat(cli.getContentAsString(), CoreMatchers.containsString("\"testcookie1\": \"value1\""));
         
-        // test if we survive full response .close
-        response.close();
         
-        response = cli.execute(new HttpGet("http://httpbin.org/cookies"));
-        assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("\"testcookie1\": \"value1\""));
+        cli.get("http://httpbin.org/cookies");
+        assertThat(cli.getContentAsString(), CoreMatchers.containsString("\"testcookie1\": \"value1\""));
         
         List<Cookie> cookies = cli.getCookies();
         assertEquals("testcookie1", cookies.get(0).getName());
@@ -117,43 +114,52 @@ public class ScrapClientIT {
         cli.clearCookies();
         assertTrue(cli.getCookies().isEmpty());
         
-        response = cli.execute(new HttpGet("http://httpbin.org/cookies"));
-        assertThat(EntityUtils.toString(response.getEntity()), CoreMatchers.containsString("\"cookies\": {}"));
+        cli.get("http://httpbin.org/cookies");
+        assertThat(cli.getContentAsString(), CoreMatchers.containsString("\"cookies\": {}"));
     }
     
     @Test
     public void testRedirects() throws Exception {
+        int status = 0;
         ScrapClient cli = new ScrapClient();
         
-        try(CloseableHttpResponse response = cli.execute(new HttpGet("https://httpbin.org/redirect/1"))){
-            assertEquals(302, response.getStatusLine().getStatusCode());
-        }
+//        try(CloseableHttpResponse response = cli.execute(new HttpGet("https://httpbin.org/redirect/1"))){
+//            assertEquals(302, response.getStatusLine().getStatusCode());
+//        }
+
+        status = cli.get("https://httpbin.org/redirect/1");
+        System.out.println(status);
+        
+//        status = cli.get("https://httpbin.org/redirect/2");
+//        System.out.println(status);
+//        
+//        status = cli.get("https://httpbin.org/redirect/3");
+//        System.out.println(status);
+        
+        status = cli.get("https://httpbin.org/redirect/4");
+        System.out.println(status);
+
     }
     
     @Test
     public void testTimeouts() throws Exception{
+        int status = 0;
         ScrapClient cli = new ScrapClient();
         
-        try(CloseableHttpResponse response = cli.execute(new HttpGet("https://httpbin.org/delay/2"))){
-            assertEquals(200, response.getStatusLine().getStatusCode());
-        }
+        status = cli.get("https://httpbin.org/delay/2");
+        assertEquals(200, status);
         
         cli.setTimeout(100);
         
-        Exception ex = null;
-        try(CloseableHttpResponse response = cli.execute(new HttpGet("https://httpbin.org/delay/2"))){
-            assertEquals(200, response.getStatusLine().getStatusCode());
-        } catch(Exception io){
-            ex = io;
-        }
-        
-        assertTrue(ex instanceof InterruptedIOException);
+        status = cli.get("https://httpbin.org/delay/2");
+        assertEquals(-1, status);
+        assertTrue(cli.getException() instanceof InterruptedIOException);
         
         
         cli.setTimeout(null);
-        try(CloseableHttpResponse response = cli.execute(new HttpGet("https://httpbin.org/delay/2"))){
-            assertEquals(200, response.getStatusLine().getStatusCode());
-        }        
+        
+        status = cli.get("https://httpbin.org/delay/2");
+        assertEquals(200, status);
     }
     
     

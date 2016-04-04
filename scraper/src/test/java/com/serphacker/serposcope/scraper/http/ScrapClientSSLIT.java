@@ -25,18 +25,18 @@ public class ScrapClientSSLIT extends DeepIntegrationTest {
     public ScrapClientSSLIT() {
     }
     
-    @Test(expected = SSLPeerUnverifiedException.class)
+    @Test
     public void testSslWithInvalidHostnameFail() throws Exception {
         ScrapClient client = new ScrapClient();
-        CloseableHttpResponse response = client.execute(new HttpGet("https://54.175.219.8"));
+        client.get("https://54.175.219.8");
+        assertTrue(client.getException() instanceof SSLPeerUnverifiedException);
     }
     
     @Test
     public void testSslWithInvalidHostname() throws Exception {
         ScrapClient client = new ScrapClient();
         client.setInsecureSSL(true);
-        CloseableHttpResponse response = client.execute(new HttpGet("https://54.175.219.8"));
-        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals(200, client.get("https://54.175.219.8"));
     }    
     
 //    @Test(expected = SSLHandshakeException.class)
@@ -53,20 +53,20 @@ public class ScrapClientSSLIT extends DeepIntegrationTest {
 //    }    
 
     
-    @Test(expected = SSLHandshakeException.class)
-    public void testMitmSslProxyWithSelfSignedCertificateFail() throws Exception {
+    @Test
+    public void testMitmSslProxyWithSelfSignedCertificateFail() {
         ScrapClient client = new ScrapClient();
         client.setProxy(new HttpProxy("127.0.0.1", 8080));
-        client.execute(new HttpGet("https://httpbin.org"));
+        client.get("https://httpbin.org");
+        assertTrue(client.getException() instanceof SSLHandshakeException);
     }
 
     @Test
-    public void testMitmSslProxyWithSelfSignedCertificateSuccess() throws Exception {
+    public void testMitmSslProxyWithSelfSignedCertificateSuccess() {
         ScrapClient client = new ScrapClient();
         client.setInsecureSSL(true);
         client.setProxy(new HttpProxy("127.0.0.1", 8080));
-        CloseableHttpResponse response = client.execute(new HttpGet("https://httpbin.org"));
-        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals(200, client.get("https://httpbin.org"));
     }
     
     @Test
@@ -74,17 +74,11 @@ public class ScrapClientSSLIT extends DeepIntegrationTest {
         ScrapClient client = new ScrapClient();
         client.setInsecureSSL(true);
         client.setProxy(new HttpProxy("127.0.0.1", 8080));
-        CloseableHttpResponse response = client.execute(new HttpGet("https://httpbin.org"));
-        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals(200, client.get("https://httpbin.org"));
         
         boolean occured=false;
         client.setInsecureSSL(false);
-        try {
-            client.execute(new HttpGet("https://httpbin.org"));
-        }catch(Exception ex){
-            occured=true;
-        }
-        assertTrue(occured);
+        assertEquals(-1, client.get("https://httpbin.org"));
     }    
     
     
