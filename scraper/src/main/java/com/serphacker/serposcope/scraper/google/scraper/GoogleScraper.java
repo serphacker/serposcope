@@ -55,6 +55,7 @@ public class GoogleScraper {
     }
     
     public final static String DEFAULT_DESKTOP_UA = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0";
+    public final static String DEFAULT_SMARTPHONE_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
     public final static String DEFAULT_MOBILE_UA = "Mozilla/5.0 (Android; Mobile; rv:37.0) Gecko/37.0 Firefox/37.0";
     
     private static final Logger LOG = LoggerFactory.getLogger(GoogleScraper.class);
@@ -127,10 +128,17 @@ public class GoogleScraper {
     }
     
     protected void prepareHttpClient(GoogleScrapSearch search){
-        if(MOBILE.equals(search.getDevice())){
-            http.setUseragent(DEFAULT_MOBILE_UA);
-        } else {
-            http.setUseragent(DEFAULT_DESKTOP_UA);
+        
+        switch(search.getDevice()){
+            case DESKTOP:
+                http.setUseragent(DEFAULT_DESKTOP_UA);
+                break;
+            case SMARTPHONE:
+                http.setUseragent(DEFAULT_SMARTPHONE_UA);
+                break;
+            case MOBILE:
+                http.setUseragent(DEFAULT_MOBILE_UA);
+                break;
         }
         
         if("com".equals(search.getTld())){
@@ -183,12 +191,12 @@ public class GoogleScraper {
             return Status.ERROR_NETWORK;
         }
         
-        Elements resultDivs = lastSerpHtml.getElementsByClass("g");
-        for (Element resultDiv : resultDivs) {
-            String link = extractLink(resultDiv.getElementsByTag("a").first());
+        Elements h3Elts = lastSerpHtml.getElementsByTag("h3");
+        for (Element h3Elt : h3Elts) {
+            String link = extractLink(h3Elt.getElementsByTag("a").first());
             if(link != null){
                 urls.add(link);
-            }
+            }            
         }
         
         return Status.OK;
@@ -198,13 +206,22 @@ public class GoogleScraper {
         if(element == null){
             return null;
         }
+        
         String attr = element.attr("href");
         if(attr == null){
             return null;
         }
+        
+        if ((attr.startsWith("http://www.google") || attr.startsWith("https://www.google"))){
+            if(attr.contains("/aclk?")){
+                return null;
+            }
+        }
+        
         if(attr.startsWith("http://") || attr.startsWith("https://")){
             return attr;
         }
+        
         if(attr.startsWith("/url?")){
             try {
                 List<NameValuePair> parse = URLEncodedUtils.parse(attr.substring(5), Charset.forName("utf-8"));
@@ -214,6 +231,7 @@ public class GoogleScraper {
                 return null;
             }
         }
+        
         return null;
     }
     

@@ -14,6 +14,9 @@ import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -101,7 +104,7 @@ public class GoogleScraperTest {
         }
 
     }
-
+    
     @Test
     public void testDownloadNetworkError() throws Exception {
         ScrapClient http = mock(ScrapClient.class);

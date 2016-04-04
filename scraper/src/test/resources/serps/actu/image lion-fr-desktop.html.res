@@ -1,0 +1,9 @@
+https://pixabay.com/fr/photos/lion/
+https://pixabay.com/fr/lion-lionceau-des-animaux-b%C3%A9b%C3%A9-441971/
+http://www.fotosearch.fr/photos-images/lion.html
+http://www.photos-animaux.com/photos,autres,lion.html
+http://www.vive-internet-gratuit.com/galerie_animaux_Lion.html
+http://fr.123rf.com/images-libres-de-droits/lion_dessin.html
+http://fr.123rf.com/images-libres-de-droits/lion_rugissant.html
+http://animals.nationalgeographic.com/animals/photos/lions/
+http://www.canstockphoto.fr/photos-images/lion.html

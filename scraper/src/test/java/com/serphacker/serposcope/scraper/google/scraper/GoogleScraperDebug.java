@@ -123,14 +123,12 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
 
     }
 
-//    @Test
+    @Test
     public void debugScrapSomeSerp() throws Exception {
 
-        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.MOBILE};
+        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.SMARTPHONE, GoogleDevice.MOBILE};
         String[] keywords = new String[]{
-            //            "politique", // has link to news
-            "serposcope", // has sitelink
-        //            "logo" // has link to google images
+            "image lion"
         };
         for (String keyword : keywords) {
             for (GoogleDevice device : devices) {
@@ -149,11 +147,36 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
                 Files.write(
                     new File(System.getProperty("java.io.tmpdir") + "/serps/" + keyword + "-"
                         + search.getTld() + "-"
-                        + device.toString().toLowerCase()).toPath(),
+                        + device.toString().toLowerCase() + ".html"
+                    ).toPath(),
                     scraper.getHttp().getContent()
                 );
                 Thread.sleep(1000l);
             }
+        }
+    }
+    
+    @Test
+    public void debugParseSomeSerp() throws Exception{
+        ScrapClient http = mock(ScrapClient.class);
+        GoogleScraper scraper = new GoogleScraper(http, null);
+        
+        //String[] splits = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/actu"))).split("\n");
+        String[] splits  = new String[]{
+            "image lion-fr-desktop.html"
+        };
+        for (String split : splits) {
+            String content = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/actu/" + split)));
+            when(http.getContentAsString()).thenReturn(content);
+            List<String> urls = new ArrayList<>();
+            
+            System.out.println(split);
+            scraper.parseSerp(urls);
+            for (int i = 0; i < urls.size(); i++) {
+                System.out.println(urls.get(i));
+            }
+            System.out.println("---");
+            
         }
     }
 
