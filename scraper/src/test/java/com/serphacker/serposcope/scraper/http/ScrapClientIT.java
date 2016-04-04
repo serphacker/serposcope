@@ -251,7 +251,10 @@ public class ScrapClientIT {
         int status = cli.get("https://httpbin.org/get");
         HashMap<String,Object> props = new ObjectMapper()
             .readValue(cli.getContentAsString(), new TypeReference<HashMap<String,Object>>() {});
-        assertEquals("gzip",((Map)props.get("headers")).get("Accept-Encoding"));
+        
+        String encoding = (String)((Map)props.get("headers")).get("Accept-Encoding");
+        Assert.assertThat(encoding, CoreMatchers.containsString("gzip"));
+        Assert.assertThat(encoding, CoreMatchers.containsString("deflate"));
     }
     
     
@@ -267,6 +270,40 @@ public class ScrapClientIT {
         
         assertTrue((boolean)props.get("gzipped"));
     }
+    
+    @Test
+    public void testDefalte() throws Exception {
+        ScrapClient cli = new ScrapClient();
+        
+        int status = cli.get("https://httpbin.org/deflate");
+        assertEquals(200, status);
+        
+        HashMap<String,Object> props = new ObjectMapper()
+            .readValue(cli.getContentAsString(), new TypeReference<HashMap<String,Object>>() {});
+        
+        assertTrue((boolean)props.get("deflated"));
+    }    
+    
+    @Test
+    public void testDeflateOnWebsites() throws Exception {
+        ScrapClient cli = new ScrapClient();
+        
+        String[] urls = new String[]{
+            "http://www.bing.com",
+            "https://twitter.com",
+            "http://vk.com",
+            "http://edition.cnn.com",
+            "http://espn.go.com",
+            "http://www.jd.com",
+            "http://www.flipkart.com",
+            "http://www.nytimes.com"
+        };
+        
+        for (String url : urls) {
+            int status = cli.get(url);
+            System.out.println(url + "|" + status + "|" + cli.getException());
+        }
+    }    
     
     @Test
     public void testPostForm() throws Exception  {
@@ -444,35 +481,4 @@ public class ScrapClientIT {
         assertTrue(htmlContent.contains("https://httpbin.org/get") && !htmlContent.contains("http://httpbin.org/get"));        
     }
     
-    
-    /*
-    @Test
-    public void testDeflateOnWebsites() throws Exception {
-        ScrapClient cli = new ScrapClient();
-        
-        String[] urls = new String[]{
-            "http://www.bing.com",
-            "https://twitter.com",
-            "http://vk.com",
-            "http://edition.cnn.com",
-            "http://espn.go.com",
-            "http://www.jd.com",
-            "http://www.flipkart.com",
-            "http://www.nytimes.com"
-        };
-        
-        for (String url : urls) {
-            int status = cli.get(url);
-            System.out.println(url + "|" + status + "|" + cli.getException());
-        }
-    }    
-    
-    @Test
-    public void testDeflate() throws Exception {
-        ScrapClient cli = new ScrapClient();
-        
-        int status = cli.get("https://httpbin.org/deflate");
-        assertTrue(cli.getException() instanceof UnsupportedEncodingException);
-    }
-    */
 }

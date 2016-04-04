@@ -69,6 +69,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.DeflateDecompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.RegistryBuilder;
@@ -199,9 +200,7 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
             .setConnectionReuseStrategy(this.new SCliConnectionReuseStrategy())
             .setConnectionManager(connManager)
             .addInterceptorFirst(this)
-            //            .addInterceptorLast(this)
             .disableRedirectHandling()
-            .disableContentCompression()
             .build();
 
         setTimeout(timeoutMS);
@@ -524,22 +523,6 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
                     );
                 }
 
-                Header ceheader = entity.getContentEncoding();
-                if (ceheader != null) {
-                    HeaderElement[] codecs = ceheader.getElements();
-                    for (int i = 0; i < codecs.length; i++) {
-
-                        if (codecs[i].getName().equalsIgnoreCase("gzip")) {
-                            entity = new GzipDecompressingEntity(entity);
-                        }
-
-                        if (codecs[i].getName().equalsIgnoreCase("deflate")) {
-                            throw new UnsupportedEncodingException("deflate");
-//                        entity = new DeflateDecompressingEntity(entity);
-                        }
-                    }
-                }
-
                 InputStream stream = entity.getContent();
                 int totalRead = 0;
                 int read = 0;
@@ -629,7 +612,6 @@ public class ScrapClient implements Closeable, CredentialsProvider, HttpRequestI
 
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-        request.setHeader("Accept-Encoding", "gzip");
         if (request.getFirstHeader("user-agent") == null) {
             request.setHeader("User-Agent", useragent);
         }
