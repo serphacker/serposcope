@@ -11,11 +11,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.http.HttpHost;
 import org.apache.http.client.RedirectException;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -135,6 +137,17 @@ public class ScrapClientIT {
             cli.disableFollowRedirect();
             assertEquals(302, cli.get("https://httpbin.org/redirect/1"));
         }
+    }
+    
+    @Test
+    public void testGetLastRedirect(){
+        ScrapClient cli = new ScrapClient();
+        cli.setMaxRedirect(10);
+        cli.get("https://httpbin.org/redirect/2");
+        assertEquals("https://httpbin.org/get", cli.getLastRedirect());
+        
+        cli.get("https://httpbin.org/get");
+        assertNull(cli.getLastRedirect());
     }
     
     @Test

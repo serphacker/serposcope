@@ -70,6 +70,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
+import org.apache.http.impl.client.RedirectLocations;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
@@ -113,6 +114,7 @@ public class ScrapClient implements Closeable, CredentialsProvider {
     byte[] content;
     int statusCode;
     Exception exception;
+    String lastRedirect;
 
     class SCliConnectionReuseStrategy extends DefaultConnectionReuseStrategy {
 
@@ -490,6 +492,7 @@ public class ScrapClient implements Closeable, CredentialsProvider {
         exception = null;
         response = null;
         statusCode = 0;
+        lastRedirect = null;
     }
 
     public int request(HttpRequestBase request) {
@@ -503,6 +506,10 @@ public class ScrapClient implements Closeable, CredentialsProvider {
 
                 response = client.execute(request, context);
                 statusCode = response.getStatusLine().getStatusCode();
+                RedirectLocations redirects = context.getAttribute(HttpClientContext.REDIRECT_LOCATIONS, RedirectLocations.class);
+                if(redirects != null && !redirects.isEmpty()){
+                    lastRedirect = redirects.get(redirects.size()-1).toString();
+                }
 
                 HttpEntity entity = response.getEntity();
                 long contentLength = entity.getContentLength();
@@ -666,6 +673,10 @@ public class ScrapClient implements Closeable, CredentialsProvider {
     
     public void disableFollowRedirect(){
         maxRedirect = 0;
+    }
+
+    public String getLastRedirect() {
+        return lastRedirect;
     }
     
 }
