@@ -168,6 +168,8 @@ public class GoogleScraper {
     
     protected Status downloadSerp(String url, String referrer, GoogleScrapSearch search){
         int status = http.get(url, referrer);
+        LOG.info("GOT status=[{}] exception=[{}]", status, http.getException() == null ? "none" : 
+            (http.getException().getClass().getSimpleName() + " : " + http.getException().getMessage()));
         switch(status){
             case 200:
                 return Status.OK;

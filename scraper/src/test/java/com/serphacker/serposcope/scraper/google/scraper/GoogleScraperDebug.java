@@ -42,6 +42,39 @@ import org.slf4j.LoggerFactory;
 public class GoogleScraperDebug extends DeepIntegrationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GoogleScraperDebug.class);
+    
+    @Test
+    public void debugScrapSingle() throws IOException, InterruptedException {
+        SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
+//        DecaptcherSolver solver = new DecaptcherSolver(props.getProperty("decaptcher.login"), props.getProperty("decaptcher.password"));
+        solver.init();
+        
+        ScrapClient http = new ScrapClient();
+        http.setInsecureSSL(true);
+        http.setProxy(new HttpProxy("127.0.0.1", 8181));
+        GoogleScraper scraper = new GoogleScraper(http, solver);
+        System.out.println(props.getProperty("decaptcher.login") + "|" + props.getProperty("decaptcher.password"));
+
+        String[] keywords = new String[]{
+            "forex"
+        };
+        
+        for (String keyword : keywords) {
+            GoogleScrapSearch search = new GoogleScrapSearch();
+            search.setKeyword(keyword);
+            search.setPages(10);
+            search.setResultPerPage(100);
+//            search.setDatacenter("173.194.32.238");
+//            search.setMinPauseBetweenPage(1000);
+//            search.setMaxPauseBetweenPage(5000);
+            search.setTld("fr");
+            search.setCustomParameters("filter=0");
+
+            GoogleScrapResult res = scraper.scrap(search);
+            System.out.println(res.status);
+            System.out.println(res.urls.size() + "|" + new HashSet<>(res.urls).size());
+        }
+    }    
 
     @Test
     public void debugScrap() throws IOException, InterruptedException {
