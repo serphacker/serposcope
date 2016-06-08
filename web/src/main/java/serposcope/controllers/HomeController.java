@@ -35,6 +35,7 @@ import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
 import ninja.Router;
+import ninja.params.PathParam;
 import serposcope.filters.AuthFilter;
 
 @Singleton
@@ -132,101 +133,19 @@ public class HomeController extends BaseController {
             ;
     }
 
-//    public static class GoogleHomeEntry {
-//
-//        public GoogleHomeEntry(GoogleTarget target, GoogleSearch search, GoogleRank rank) {
-//            this.target = target;
-//            this.search = search;
-//            this.rank = rank;
-//        }
-//                
-//        public GoogleTarget target;
-//        public GoogleSearch search;
-//        public GoogleRank rank;
-//
-//        public GoogleTarget getTarget() {
-//            return target;
-//        }
-//
-//        public GoogleSearch getSearch() {
-//            return search;
-//        }
-//
-//        public GoogleRank getRank() {
-//            return rank;
-//        }
-//        
-//    }
-//    public Result home(Context context) throws JsonProcessingException{
-//        
-//        List<GoogleHomeEntry> googleRanksUp = new ArrayList<>();
-//        List<GoogleHomeEntry> googleRanksDown = new ArrayList<>();
-//        List<GoogleHomeEntry> googleRanksSame = new ArrayList<>();
-//        
-//        Run lastRun = baseDB.run.findLastDone();
-//        if(lastRun == null){
-//            return Results
-//                .ok()
-//                .render("groups", context.getAttribute("groups"));
-//        }
-//        
-//        
-//        List<Group> groups = context.getAttribute("groups", List.class);
-//        for (Group group : groups) {
-//            Run run = baseDB.run.findLastDone(group.getId());
-//            if(run == null){
-//                continue;
-//            }
-//            
-//            List<GoogleRank> ranks = googleDB.rank.list(run.getId(), group.getId());
-//            
-//            Map<Integer, GoogleTarget> targets = googleDB.target.list(Arrays.asList(group.getId()))
-//                .stream().collect(Collectors.toMap(GoogleTarget::getId, Function.identity()));
-//            
-//            Map<Integer, GoogleSearch> searches = googleDB.search.listByGroup(Arrays.asList(group.getId()))
-//                .stream().collect(Collectors.toMap(GoogleSearch::getId, Function.identity()));            
-//            
-//            for (GoogleRank rank : ranks) {
-//                
-//                GoogleTarget target = targets.get(rank.googleTargetId);
-//                GoogleSearch search = searches.get(rank.googleSearchId);
-//                
-//                if(target == null || search == null){
-//                    continue;
-//                }
-//                
-//                GoogleHomeEntry entry = new GoogleHomeEntry(target,search, rank);
-//                if(rank.diff > 0){
-//                    googleRanksDown.add(entry);
-//                } else if(rank.diff < 0){
-//                    googleRanksUp.add(entry);
-//                } else {
-//                    googleRanksSame.add(entry);
-//                }
-//            }
-//        }
-//        
-//        Collections.sort(googleRanksUp, (GoogleHomeEntry o1, GoogleHomeEntry o2) -> 
-//            Integer.compare(o1.getRank().diff, o2.getRank().diff));
-//        Collections.sort(googleRanksDown, (GoogleHomeEntry o1, GoogleHomeEntry o2) -> 
-//            -Integer.compare(o1.getRank().diff, o2.getRank().diff));        
-//        Collections.sort(googleRanksSame, (GoogleHomeEntry o1, GoogleHomeEntry o2) -> 
-//            Integer.compare(o1.getRank().rank, o2.getRank().rank));        
-//        
-//        Run currentRun = new Run();
-//        currentRun.setProgress(14);
-//        currentRun.setStarted(LocalDateTime.now().minusMinutes(30));
-//        currentRun.setStatus(Run.Status.RUNNING); 
-//        
-//        return Results
-//            .ok()
-//            .render("groups", context.getAttribute("groups"))
-//            .render("lastRun", lastRun)
-//            .render("task", currentRun)
-//            .render("googleRanksUp", googleRanksUp)
-//            .render("googleRanksDown", googleRanksDown)
-//            .render("googleRanksSame", googleRanksSame)
-//            ;
-//    }
+    public Result taskStatus(@PathParam("taskId") Integer taskId){
+        
+        Map<String,Object> map = new HashMap<>();
+        
+        if(taskId != null){
+            Run run = baseDB.run.find(taskId);
+            if(run != null){
+                map.put("progress", run.getProgress());
+                map.put("status", run.getStatus());
+            }
+        }
+        
+        return Results.ok().json().render(map);
+    }
     
 }

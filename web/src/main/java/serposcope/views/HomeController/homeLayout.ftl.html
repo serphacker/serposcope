@@ -85,7 +85,7 @@
                 </div>                
                 
                 <#if currentRun?? && currentRun.isRunning() >
-                <div class="progress" style="width: 100%; display: block;" title="${i18n("admin.task.remainingTime")} : ${currentRun.getRemainingTimeFormated()}" data-toggle="tooltip" >
+                <div class="progress" style="width: 100%; display: block;" title="${i18n("admin.task.remainingTime")} : ${currentRun.getRemainingTimeFormated()}" data-toggle="tooltip" data-id="${currentRun.getId()}" >
                      <div 
                         class="progress-bar progress-bar-striped active <#if currentRun.getStatus() != "RUNNING" >progress-bar-warning</#if>" 
                         style="width: ${currentRun.getProgress()}%; min-width: 50px;"
@@ -95,8 +95,6 @@
                         </span>
                     </div>
                 </div>
-                <#else>
-                Aucune tâche en cours
                 </#if>
             </div>
             
@@ -122,6 +120,10 @@
     </#if>
 </div>
 <div class="csp-script" data-src="HomeController.home" ></div>
-
+<#if currentRun?? && currentRun.isRunning() >
+|
+<a href="${reverseRoute("admin.TaskController","abortTask","id",currentRun.getId(),"_xsrf", session.___AT)}" class="text-danger" >
+   ${i18n("label.abort")}</a>
+</#if>
 </@>
 </#macro>

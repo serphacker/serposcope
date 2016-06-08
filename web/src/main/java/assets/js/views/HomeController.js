@@ -65,6 +65,25 @@ serposcope.HomeController = function () {
         });
     };
     
+    var updateProgressBar = function() {
+        var id = $('.progress').attr('data-id');
+        if(typeof(id) !== "undefined"){
+            $.ajax({
+                url: '/task-status/' + id,
+                success: function (data) {
+                    if(typeof(data.progress) !== "undefined"){
+                        $('.progress .progress-bar').css('width', data.progress + '%');
+                        $('.progress .progress-bar span').html(data.progress + '%');
+                        if(data.progress != 100){
+                            setTimeout(updateProgressBar, 3000);
+                        }
+                    }
+                    
+                }
+            });            
+        }
+    };
+    
     var home = function() {
         $(window).bind("load resize", function () {
             resizeTabContent();
@@ -80,6 +99,8 @@ serposcope.HomeController = function () {
         renderCharts();
         $('.table-summary').stupidtable();
         $('#summary-filter').bind("keyup paste change", onFilterChange);
+        
+        updateProgressBar();
     };
     
     var oPublic = {
