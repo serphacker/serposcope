@@ -24,7 +24,7 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     background-color: white;
 }
 
-#google-search-legend {
+.google-dygraph-legend {
     border-width: 0px 1px 1px 1px;
     border-color: lightgray;
     border-style: solid;    
@@ -102,14 +102,6 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     border-color: lightgray;
     border-style: solid;
     background-color: white;
-}
-
-#google-target-legend {
-    border-width: 0px 1px 1px 1px;
-    border-color: lightgray;
-    border-style: solid;    
-    background-color: white;
-    min-height: 20px;
 }
 
 #google-target-table thead th,
