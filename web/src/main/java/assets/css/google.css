@@ -30,6 +30,9 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     border-style: solid;    
     background-color: white;
     min-height: 20px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    white-space: nowrap;
 }
 
 .calendar-annotation {

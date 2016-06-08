@@ -134,10 +134,34 @@ serposcope.googleSearchController = function () {
             });
         });
     };
-
-    var drawDomain = function (event) {
+    
+    var drawTop10Click = function() {
+        var allActive = true;
+        var btns = $('.btn-draw-chart');
+        for(var i = 0; i<Math.min(btns.size(), 10); i++){
+            var $btn = $(btns[i]);
+            allActive = $btn.hasClass('active') && allActive;
+        }
+        
+        for(var i = 0; i<Math.min(btns.size(), 10); i++){
+            var $btn = $(btns[i]);
+            if(allActive || !$btn.hasClass('active')){
+                drawDomain($btn.attr('data-url'), $btn);
+            }
+        }        
+        
+        return false;
+    };
+    
+    var drawDomainClick = function(event) {
         var btn = event.currentTarget;
         var url = $(btn).attr('data-url');
+        drawDomain(url, btn);
+        return false;
+    };
+
+    var drawDomain = function (url, btn) {
+//        url = url.replace("http://", "").replace("https://", "");
         
         var index = getChartDataIndex(url);
 
@@ -243,7 +267,8 @@ serposcope.googleSearchController = function () {
         }); 
         $('.btn-change-display-mode').click(changeDisplayMode);        
         
-        $('.btn-draw-chart').click(drawDomain);
+        $('.btn-draw-top10').click(drawTop10Click);
+        $('.btn-draw-chart').click(drawDomainClick);
         $('#new-target').on('shown.bs.modal', function(){ $('#targetName').focus(); });
         $('.btn-add-favorite').click(btnAddFavorite);
         

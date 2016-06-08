@@ -77,7 +77,11 @@
             <table id="google-rank-serp" class="table table-condensed table-striped" >
                 <tr>
                     <th class="rank" >#</th>
-                    <th>URL [<#if serp??>${serp.getRunDay().toLocalDate()}</#if>]</th>
+                    <th>
+                        URL [<#if serp??>${serp.getRunDay().toLocalDate()}</#if>] 
+                        | 
+                        [ <a href="#" class="btn-draw-top10" ><i class="fa fa-fw fa-line-chart" ></i> TOP 10</a> ]
+                    </th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(1).toString()}</#if>" data-toggle="tooltip">D-1</span></th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(7).toString()}</#if>" data-toggle="tooltip">D-7</span></th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(30).toString()}</#if>" data-toggle="tooltip">D-30</span></th>
