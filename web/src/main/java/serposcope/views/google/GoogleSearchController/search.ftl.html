@@ -80,7 +80,9 @@
                     <th>
                         URL [<#if serp??>${serp.getRunDay().toLocalDate()}</#if>] 
                         | 
-                        [ <a href="#" class="btn-draw-top10" ><i class="fa fa-fw fa-line-chart" ></i> TOP 10</a> ]
+                        [ <a href="#" class="btn-draw-top10" data-toggle="tooltip" title="${i18n("google.search.drawTop10")}" >
+                             <i class="fa fa-fw fa-line-chart" ></i> TOP 10
+                        </a> ]
                     </th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(1).toString()}</#if>" data-toggle="tooltip">D-1</span></th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(7).toString()}</#if>" data-toggle="tooltip">D-7</span></th>
@@ -104,13 +106,22 @@
                         <#if foundTarget >
                             <a href="#" ><i class="fa fa-fw" ></i></a>
                             <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(),"targetId", theTarget.getId())}" 
-                               class="active" ><i class="glyphicon glyphicon-star" ></i></a>
+                               class="active" data-toggle="tooltip" title="${i18n("google.search.viewAllRankings")}" >
+                               <i class="glyphicon glyphicon-new-window" ></i>
+                            </a>
                         <#else>
                             <#if user.isAdmin()>
-                            <a href="#" class="btn-draw-chart" data-url="${entry.url}" ><i class="fa fa-fw fa-line-chart" ></i></a>
-                            <a href="#" class="btn-add-favorite" data-url="${entry.url}" ><i class="glyphicon glyphicon-star" ></i></a>                                        <#else>
+                            <a href="#" class="btn-draw-chart" data-url="${entry.url}" data-toggle="tooltip" title="${i18n("google.search.drawChart")}" >
+                                <i class="fa fa-fw fa-line-chart" ></i>
+                            </a>
+                            <a href="#" class="btn-add-favorite" data-url="${entry.url}" data-toggle="tooltip" title="${i18n("google.search.addWebsite")}" >
+                                <i class="glyphicon glyphicon-plus" ></i>
+                            </a>                                        
+                            <#else>
                             <a href="#" ><i class="fa fa-fw" ></i></a>
-                            <a href="#" class="btn-draw-chart" data-url="${entry.url}" ><i class="fa fa-fw fa-line-chart" ></i></a>
+                            <a href="#" class="btn-draw-chart" data-url="${entry.url}" data-toggle="tooltip" title="${i18n("google.search.drawChart")}" >
+                                <i class="fa fa-fw fa-line-chart" ></i>
+                            </a>
                             </#if>
                         </#if>
                         <a target="_blank" href="${fu.noreferrer(entry.url)}" data-toggle="tooltip" title="${entry.url}" >${entry.url}</a>
