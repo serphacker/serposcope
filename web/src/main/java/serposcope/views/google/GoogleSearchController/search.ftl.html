@@ -88,6 +88,7 @@
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(7).toString()}</#if>" data-toggle="tooltip">D-7</span></th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(30).toString()}</#if>" data-toggle="tooltip">D-30</span></th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(90).toString()}</#if>" data-toggle="tooltip">D-90</span></th>
+                    <th class="rank"><span title="${i18n("google.search.bestRanking")}" data-toggle="tooltip"><i class="fa fa-trophy" ></i></span></th>
                 </tr>
                 <#if serp?? >
                 <#list serp.entries as entry>
@@ -130,6 +131,14 @@
                     <td><#noescape>${position(entry_index + 1, entry.map?api.get(7), 7)}</#noescape></td>
                     <td><#noescape>${position(entry_index + 1, entry.map?api.get(30), 30)}</#noescape></td>
                     <td><#noescape>${position(entry_index + 1, entry.map?api.get(90), 90)}</#noescape></td>
+                    <td>
+                        <#if foundTarget && bestRankings?api.get(theTarget.id)??>
+                            <#assign best = bestRankings?api.get(theTarget.id)>
+                            <span data-toggle="tooltip" title="${best.runDay?substring(0,10)}" style="color: darkgoldenrod; cursor: pointer;" >${best.rank}</span>
+                        <#else>
+                            -
+                        </#if>
+                    </td>                    
                 </tr>
                 </#list>
                 </#if>

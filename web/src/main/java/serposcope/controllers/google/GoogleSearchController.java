@@ -22,6 +22,7 @@ import com.serphacker.serposcope.models.base.Config;
 import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Group.Module;
 import com.serphacker.serposcope.models.base.Run;
+import com.serphacker.serposcope.models.google.GoogleBest;
 import static com.serphacker.serposcope.models.google.GoogleRank.UNRANKED;
 import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleSearch;
@@ -29,7 +30,10 @@ import com.serphacker.serposcope.models.google.GoogleSerp;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import ninja.Context;
 import ninja.Router;
 import ninja.i18n.Messages;
@@ -121,6 +125,16 @@ public class GoogleSearchController extends GoogleController {
         
         List<GoogleTarget> targets = getTargets(context);
         
+        Map<Integer, GoogleBest> bestRankings = new HashMap<>();
+        for (GoogleTarget target : targets) {
+            GoogleBest best = googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId());
+            if(best != null){
+                bestRankings.put(best.getGoogleTargetId(), best);
+            }
+        }
+        
+        
+        
         String jsonRanks = getJsonRanks(group, targets, firstRun, lastRun, searchId);
         Config config = baseDB.config.getConfig();
         
@@ -134,7 +148,8 @@ public class GoogleSearchController extends GoogleController {
             .render("startDate", startDate)
             .render("endDate", endDate)
             .render("minDate", minDay)
-            .render("maxDate", maxDay)            
+            .render("maxDate", maxDay)
+            .render("bestRankings", bestRankings)
             ;
     }
 
