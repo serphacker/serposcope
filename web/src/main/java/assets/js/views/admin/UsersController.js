@@ -60,6 +60,7 @@ serposcope.adminUsersController = function () {
         $(window).bind("load resize", function () {
             resizeTabContent();
         });
+        $('#add-user-modal').on('shown.bs.modal', function(){ $('#userEmail').focus(); });
         $('#add-user-btn').click(addUserModal);
         $('.del-user-btn').click(delUser);
         $('.btn-toggle-perm').click(togglePermission);

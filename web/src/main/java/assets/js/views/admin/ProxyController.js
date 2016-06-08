@@ -75,6 +75,7 @@ serposcope.adminProxyController = function () {
         $("#btn-chk-proxy").click(checkproxies);
         $("#btn-delete-proxy").click(deleteProxies);
         $("#btn-delete-proxy-invalid").click(deleteProxiesInvalid);
+        $('#new-proxy').on('shown.bs.modal', function(){ $('textarea[name="proxies"]').focus(); });
         $("#btn-add-proxy").click(newProxyModal);
         $("#btn-check-proxy").click(checkProxies);
         $("#btn-abort-proxy").click(abortCheck);

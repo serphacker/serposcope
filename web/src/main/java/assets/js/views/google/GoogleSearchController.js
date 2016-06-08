@@ -244,6 +244,7 @@ serposcope.googleSearchController = function () {
         $('.btn-change-display-mode').click(changeDisplayMode);        
         
         $('.btn-draw-chart').click(drawDomain);
+        $('#new-target').on('shown.bs.modal', function(){ $('#targetName').focus(); });
         $('.btn-add-favorite').click(btnAddFavorite);
         
         if($('#csp-vars').attr('data-min-date') !== ""){
