@@ -120,10 +120,5 @@
     </#if>
 </div>
 <div class="csp-script" data-src="HomeController.home" ></div>
-<#if currentRun?? && currentRun.isRunning() >
-|
-<a href="${reverseRoute("admin.TaskController","abortTask","id",currentRun.getId(),"_xsrf", session.___AT)}" class="text-danger" >
-   ${i18n("label.abort")}</a>
-</#if>
 </@>
 </#macro>
