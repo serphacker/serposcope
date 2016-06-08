@@ -18,6 +18,10 @@ serposcope.HomeController = function () {
         $('.hb-piechart').each(function(){
             var canvas = $(this).children("canvas");
             var ctx = canvas[0].getContext("2d");
+            var sum =   parseInt($(canvas).attr('data-top3')) + 
+                        parseInt($(canvas).attr('data-top10')) + 
+                        parseInt($(canvas).attr('data-top100')) + 
+                        parseInt($(canvas).attr('data-out'));
             var data = [
                 {color:"#eDc007",label: "top3",value: $(canvas).attr('data-top3')},
                 {color:"#31a354",label: "top10",value: $(canvas).attr('data-top10')},
@@ -28,6 +32,10 @@ serposcope.HomeController = function () {
                 animation: true,
                 animationSteps: 20,
                 animationEasing: "linear",
+                tooltipTemplate: function(obj){
+                    var percent = Math.round((obj.value/sum)*10000)/100;
+                    return obj.label + " : " + percent + " %";
+                },
                 legendTemplate : "<% for (var i=0; i<segments.length; i++){%>" + 
                         "<span style=\"color:<%=segments[i].fillColor%>\"><%=segments[i].label%></span> <%=segments[i].value%> <%}%>"
             });            
@@ -63,6 +71,8 @@ serposcope.HomeController = function () {
             else 
                 $(row).hide();
         });
+        
+        
     };
     
     var updateProgressBar = function() {

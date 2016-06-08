@@ -226,6 +226,10 @@ public class GoogleTargetSummary {
         return totalOut;
     }
     
+    public int getTotalKeywords(){
+        return totalTop3 + totalTop10 + totalTop100 + totalOut;
+    }
+    
     public String getSerialized(Queue<GoogleRank> ranks){
         if(ranks == null || ranks.isEmpty()){
             return null;

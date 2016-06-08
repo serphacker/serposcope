@@ -963,3 +963,19 @@ ul.typeahead.dropdown-menu {
     border: 1px solid grey;
     color: red;
 }
+
+.td-top-kw {
+    width: 120px;
+}
+
+.td-top-kw .progress {
+    position: relative;
+    background-color: #444;
+}
+
+.td-top-kw .progress span {
+    position: absolute;
+    display: block;
+    width: 100%;
+    color: white;
+}
