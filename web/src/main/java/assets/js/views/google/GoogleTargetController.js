@@ -151,6 +151,7 @@ serposcope.googleTargetController = function () {
             $('#daterange').daterangepicker({
                 "ranges": {
                     'Last 30 days': [moment(maxDate).subtract(30, 'days'), moment(maxDate)],
+                    'Last 90 days': [moment(maxDate).subtract(90, 'days'), moment(maxDate)],
                     'Current Month': [moment(maxDate).startOf('month'), moment(maxDate).endOf('month')],
                     'Previous Month': [moment(maxDate).subtract(1, 'month').startOf('month'), moment(maxDate).subtract(1, 'month').endOf('month')]
                 },
@@ -161,7 +162,8 @@ serposcope.googleTargetController = function () {
                 startDate: $('#csp-vars').attr('data-start-date'),
                 endDate: $('#csp-vars').attr('data-end-date'),
                 minDate: $('#csp-vars').attr('data-min-date'),
-                maxDate: $('#csp-vars').attr('data-max-date')
+                maxDate: $('#csp-vars').attr('data-max-date'),
+                singleDatePicker: $('#csp-vars').attr('data-display') == "variation"
             }, refresh);
         }
 
