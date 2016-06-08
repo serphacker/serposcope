@@ -124,6 +124,8 @@ public class HomeController extends BaseController {
             .render("groups", context.getAttribute("groups"))
             .render("currentRun", currentRun)
             .render("lastRun", lastRun)
+            .render("lastRuns", baseDB.run.listByStatus(null, 7l, 0l))
+            .render("hasTarget", googleDB.target.hasTarget())
             .render("summaries", summaries)
             .render("searches", googleDB.search.mapBySearchId(searchIds))
             .render("lastlog", LocalDate.now().toString() + ".log")

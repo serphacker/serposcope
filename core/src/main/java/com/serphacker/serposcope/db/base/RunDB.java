@@ -206,19 +206,23 @@ public class RunDB extends AbstractDB {
     public final static Collection<Run.Status> STATUSES_RUNNING = Arrays.asList(RUNNING,ABORTING);
     public final static Collection<Run.Status> STATUSES_DONE = Arrays.asList(DONE_ABORTED,DONE_CRASHED,DONE_SUCCESS,DONE_WITH_ERROR);
     public List<Run> listByStatus(Collection<Run.Status> statuses, Long limit, Long offset){
-        if(statuses == null || statuses.isEmpty()){
-            return Collections.EMPTY_LIST;
+        List<Integer> statusesVal = null;
+        if(statuses != null && !statuses.isEmpty()){
+            statusesVal = statuses.stream().map(Run.Status::ordinal).collect(Collectors.toList());
         }
-        List<Integer> statusesVal = statuses.stream().map(Run.Status::ordinal).collect(Collectors.toList());
         
         List<Run> runs = new ArrayList<>();
         try(Connection conn = ds.getConnection()){
             
             SQLQuery<Tuple> query = new SQLQuery<>(conn, dbTplConf)
                 .select(t_run.all())
-                .from(t_run)
-                .where(t_run.status.in(statusesVal))
-                .orderBy(t_run.id.desc());
+                .from(t_run);
+            
+            if(statusesVal != null){
+                query.where(t_run.status.in(statusesVal));
+            }
+                
+            query.orderBy(t_run.id.desc());
             
             if(limit != null){
                 query.limit(limit);

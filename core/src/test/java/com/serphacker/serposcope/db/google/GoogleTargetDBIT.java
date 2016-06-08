@@ -115,4 +115,26 @@ public class GoogleTargetDBIT extends AbstractDBIT {
         
     }
     
+    @Test
+    public void testHasTarget() {
+        
+        Group grp1 = new Group(Group.Module.GOOGLE, "google #1");
+        Group grp2 = new Group(Group.Module.GOOGLE, "google #2");
+        
+        baseDB.group.insert(grp1);
+        baseDB.group.insert(grp2);
+        
+        assertFalse(googleDB.target.hasTarget());
+        
+        List<GoogleTarget> targets = Arrays.asList(
+            new GoogleTarget(grp1.getId(), "t1-1", PatternType.REGEX, "^target1$"),
+            new GoogleTarget(grp1.getId(), "t1-2", PatternType.REGEX, "^target1$"),
+            new GoogleTarget(grp2.getId(), "t2-1", PatternType.REGEX, "^target2$")
+        );
+        
+        assertEquals(3, googleDB.target.insert(targets));
+        assertTrue(googleDB.target.hasTarget());
+    }
+    
+    
 }

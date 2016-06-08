@@ -855,19 +855,9 @@ ul.typeahead.dropdown-menu {
     font-size: 30px;
 }
 
-.home .notrunning {
-    text-align: right;
-    color: gray;
-}
-
 .home .progress {
     margin-bottom: 0px;
 }
-
-.progress-label {
-    color: gray;
-}
-
 
 .hb-left-container {
     display: block;
@@ -959,8 +949,17 @@ ul.typeahead.dropdown-menu {
     float: right;
 }
 
-.home-left-progress {
+.home-task-summary {
+    color: grey;
     padding-right: 20px;
     width: auto;
     overflow: hidden;
+}
+
+.task-badge {
+    display: inline-block;
+    width: 16px;
+    height: 16px;    
+    border: 1px solid grey;
+    color: red;
 }

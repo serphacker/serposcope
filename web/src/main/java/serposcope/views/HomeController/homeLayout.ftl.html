@@ -18,7 +18,10 @@
     <div class="row" >
         <div class="col-xs-6 last-check" >
             <#if lastRun??>
-                ${i18n("label.lastCheck")} : ${lastRun.getDay()}
+                ${i18n("home.lastTask")} : ${lastRun.getDay()} 
+                <#if lastRun.status != "DONE_SUCCESS" >
+                    (<a class="text-danger" href="${reverseRoute("admin.TaskController","tasks")}" >${i18n("home.taskFailure")}</a>)
+                </#if>
             <#else>
                 ${i18n("home.noSummary")}
             </#if>
@@ -36,9 +39,52 @@
                 </div>    
             </div>            
             
-            <div class="home-left-progress">
+            <div class="home-task-summary">
+                <div>
+                    <span style="padding-right: 5px;">${i18n("home.lastTasks")} : </span>
+                    <#if lastRuns?? && lastRuns?has_content >
+                        <#list lastRuns as task>
+                            <#switch task.status>
+                                <#case "RUNNING">
+                                    <#assign taskLabel="primary" >
+                                    <#assign taskCaption=i18n("home.taskRunning") >
+                                    <#break>
+
+                                <#case "ABORTING">
+                                    <#assign taskLabel="warning" >
+                                    <#assign taskCaption=i18n("home.taskAborting") >
+                                    <#break>
+                                    
+                                <#case "DONE_SUCCESS">
+                                    <#assign taskLabel="success" >
+                                    <#assign taskCaption=i18n("home.taskOk") >
+                                    <#break>                                    
+                                    
+                                <#default>
+                                    <#assign taskLabel="danger" >
+                                    <#assign taskCaption=i18n("home.taskFailure") >
+                            </#switch>
+                        
+                            <a  href="${reverseRoute("admin.TaskController","tasks")}" 
+                                class="task-badge label-${taskLabel}" 
+                                data-toggle="tooltip" title="${task.day} - ${taskCaption}" ></a>
+                        </#list>
+                    <#else>
+                        -
+                    </#if>
+                    <span class="pull-right" >
+                        <a href="${reverseRoute("admin.TaskController","tasks")}" >${i18n("label.tasks")}</a>
+                        |
+                        <a href="${reverseRoute("admin.LogController","viewLog","log",.now?date?iso_utc + ".log")}" >${i18n("label.logs")}</a>
+                        <#if currentRun?? && currentRun.isRunning() >
+                        |
+                        <a href="${reverseRoute("admin.TaskController","abortTask","id",currentRun.getId(),"_xsrf", session.___AT)}" class="text-danger" >
+                           ${i18n("label.abort")}</a>
+                        </#if>
+                    </span>
+                </div>                
+                
                 <#if currentRun?? && currentRun.isRunning() >
-                <span class="progress-label">${i18n("home.currentCheck")} <a href="${reverseRoute("admin.LogController","viewLog","log",.now?date?iso_utc + ".log")}")} >logs</a></span>
                 <div class="progress" style="width: 100%; display: block;" title="${i18n("admin.task.remainingTime")} : ${currentRun.getRemainingTimeFormated()}" data-toggle="tooltip" >
                      <div 
                         class="progress-bar progress-bar-striped active <#if currentRun.getStatus() != "RUNNING" >progress-bar-warning</#if>" 
@@ -50,7 +96,7 @@
                     </div>
                 </div>
                 <#else>
-                <div class="notrunning">${i18n("home.noRunningTask")}</div>
+                Aucune tâche en cours
                 </#if>
             </div>
             
@@ -58,7 +104,13 @@
     </div>
 
     <#if lastRun?? >
-    <#nested/>
+        <#if hasTarget >
+            <#nested>
+        <#else>
+            <div class="text-center" style="margin-top: 100px;" >
+                <h1>${i18n("home.noTarget")}</h1>
+            </div>
+        </#if>
     <#else>
     <div class="text-center" style="margin-top: 100px;" >
         <h1>${i18n("home.welcome")}</h1>

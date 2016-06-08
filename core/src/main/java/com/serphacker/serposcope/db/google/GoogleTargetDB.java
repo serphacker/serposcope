@@ -9,6 +9,8 @@ package com.serphacker.serposcope.db.google;
 
 import com.google.inject.Singleton;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
@@ -79,6 +81,23 @@ public class GoogleTargetDB extends AbstractDB {
      */
     public List<GoogleTarget> list(){
         return list(null);
+    }
+    
+    public boolean hasTarget(){
+        Integer hasOne=null;
+        
+        try(Connection con = ds.getConnection()){
+            
+            hasOne = new SQLQuery<Void>(con, dbTplConf)
+                .select(Expressions.ONE)
+                .from(t_target)
+                .limit(1)
+                .fetchFirst();
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }        
+        
+        return hasOne != null;
     }
     
     /***
