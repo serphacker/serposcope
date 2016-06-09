@@ -53,49 +53,51 @@
                 <div class="row top5" >
                     <div class="col-xs-12" >
 
-                        <table class="table-header-rotated">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <#list groups as group>
-                                    <th class="rotate">
-                            <div><span>${group.getName()}</span></div>
-                            </th>
-                            </#list>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <#list users as user>
-                                <tr>
-                                    <th class="row-header">
-                                        <#if user.isAdmin()>
-                                        <span class="fa-stack" title="${i18n("label.admin")}" data-toggle="tooltip">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-user fa-stack-1x fa-inverse"></i> 
-                                        </span>
-                                        <#else>
-                                        <span class="fa-stack" title="${i18n("label.user")}" data-toggle="tooltip">
-                                            <!--<i class="fa fa-circle fa-stack-2x"></i>-->
-                                            <i class="fa fa-user fa-stack-1x"></i> 
-                                        </span>
-                                        </#if>
-                                        ${user.getEmail()}
-                                    </th>
-                                    <#list groups as group>
-                                    <td>
-                                        <#if user.isAdmin()>
-                                        <input checked="checked" disabled type="checkbox" >
-                                        <#else>
-                                        <input class="btn-toggle-perm" type="checkbox"
-                                               ${user.canRead(group.getId())?string("checked=checked","")}
-                                               data-user="${user.getId()}" data-group="${group.getId()}" >
-                                        </#if>
-                                    </td>                                    
-                                    </#list>
-                                </tr>
-                                </#list>                                
-                            </tbody>
-                        </table>
+                        <div style="overflow-x: auto;" >
+                            <table class="table-header-rotated">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <#list groups as group>
+                                        <th class="rotate">
+                                            <div><span>${group.getName()}</span></div>
+                                        </th>
+                                        </#list>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <#list users as user>
+                                    <tr>
+                                        <th class="row-header" style="white-space: nowrap;">
+                                            <#if user.isAdmin()>
+                                            <span class="fa-stack" title="${i18n("label.admin")}" data-toggle="tooltip">
+                                                  <i class="fa fa-circle fa-stack-2x"></i>
+                                                <i class="fa fa-user fa-stack-1x fa-inverse"></i> 
+                                            </span>
+                                            <#else>
+                                            <span class="fa-stack" title="${i18n("label.user")}" data-toggle="tooltip">
+                                                  <!--<i class="fa fa-circle fa-stack-2x"></i>-->
+                                                  <i class="fa fa-user fa-stack-1x"></i> 
+                                            </span>
+                                            </#if>
+                                            ${user.getEmail()}
+                                        </th>
+                                        <#list groups as group>
+                                        <td>
+                                            <#if user.isAdmin()>
+                                            <input checked="checked" disabled type="checkbox" >
+                                            <#else>
+                                            <input class="btn-toggle-perm" type="checkbox"
+                                                   ${user.canRead(group.getId())?string("checked=checked","")}
+                                                   data-user="${user.getId()}" data-group="${group.getId()}" >
+                                            </#if>
+                                        </td>                                    
+                                        </#list>
+                                    </tr>
+                                    </#list>                                
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
