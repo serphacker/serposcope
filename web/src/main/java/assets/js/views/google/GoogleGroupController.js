@@ -350,6 +350,7 @@ serposcope.googleGroupController = function () {
         $('#btn-chk-search').click(checksearch);
         $('#btn-export-searches').click(exportSearches);
         $('#btn-delete-searches').click(deleteSearches);
+        $('#table-target').stupidtable();
         renderScoreHistory();
         loadAsyncCanonical();
     };

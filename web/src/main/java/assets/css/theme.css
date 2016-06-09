@@ -28,6 +28,7 @@ body {
 .width45 { width:45px; }
 .width50 { width:50px; }
 .width60 { width:60px; }
+.width60 { width:70px; }
 .width80 { width:80px; }
 .width100 { width:100px; }
 .width150 { width:150px; }
@@ -971,6 +972,7 @@ ul.typeahead.dropdown-menu {
 .td-top-kw .progress {
     position: relative;
     background-color: #444;
+    margin-bottom: 0px;
 }
 
 .td-top-kw .progress span {

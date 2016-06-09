@@ -116,7 +116,8 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
 }
 
 #google-target-table th,
-#google-target-table td {
+#google-target-table td,
+#table-target th{
     cursor: pointer;
 }
 

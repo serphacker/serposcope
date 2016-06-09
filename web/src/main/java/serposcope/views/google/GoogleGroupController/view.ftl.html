@@ -61,25 +61,32 @@
                 <div class="row top5" >
                     <div class="col-xs-12" >
                         <h2 class="styled-h2">${i18n("label.websites")} (${targets?size})</h2>
-                        <table class="table table-condensed table-bordered table-striped" >
+                        <table class="table table-condensed table-bordered table-striped" id="table-target" >
+                            <thead>
                             <tr>
                                 <th class="width30" ></th>
                                 <!--<th style="width:120px;"></th>-->
-                                <th>${i18n("label.name")}</th>
-                                <th class="width50">Score</th>
-                                <th>${i18n("label.history")}</th>
-                                <th>${i18n("label.type")}</th>
-                                <th>${i18n("label.pattern")}</th>
+                                <th data-sort="string" >${i18n("label.name")} <i class="fa fa-sort" ></i></th>
+                                <th class="width60">${i18n("label.type")}</th>
+                                <th>${i18n("label.pattern")}</th>                                
+                                <th data-sort="int"  class="width60">Score <i class="fa fa-sort" ></i></th>
+                                <th style="width: 100px;">${i18n("label.history")}</th>
+                                <th data-sort="int" >top 3 <i class="fa fa-sort" ></i></th>
+                                <th data-sort="int" >top 10 <i class="fa fa-sort" ></i></th>
+                                <th data-sort="int" >top 100 <i class="fa fa-sort" ></i></th>
+                                <th data-sort="int" >out <i class="fa fa-sort" ></i></th>                                
                             </tr>
+                            </thead>
+                            <tbody>
                             <#list targets as target>
-                            
+                            <#assign summary = summaries?api.get(target.getId()) >
                             <tr id="target-${target.getId()}">
                                 <td>
                                     <#if user.isAdmin()>
                                     <a  href="${reverseRoute("google.GoogleGroupController","delTarget","groupId",group.getId())}" 
                                         data-toggle="tooltip" title="${i18n("label.delete")}" 
                                         class="btn-delete-target" data-id="${target.getId()}" >
-                                        <i class="glyphicon glyphicon-remove"></i></a>
+                                        <i class="glyphicon glyphicon-remove text-danger"></i></a>
                                     </#if>
                                 </td>
                                 <!--<td></td>-->                                
@@ -89,9 +96,10 @@
                                     <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "chart")}" data-toggle="tooltip" title="${i18n("label.chart")}" ><span class="glyphicon glyphicon-signal"></span></a>
                                     <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "table")}" data-toggle="tooltip" title="${i18n("label.table")}" ><span class="fa fa-table"></span></a>                                    
                                 </td>
+                                <td>${target.getType().toString()?lower_case}</td>
+                                <td>${target.getPattern()}</td>                                
                                 <td>
-                                    <#if summaries?api.get(target.getId())?? >
-                                        <#assign summary = summaries?api.get(target.getId()) >
+                                    <#if summary?? >
                                         <span class="<#if (summary.getDiff() > 0) >text-success<#elseif (summary.getDiff() < 0)>text-danger</#if>" data-toggle="tooltip" 
                                     title="${i18n("label.previous")} : ${summary.getPreviousScore()}" >${summary.getScore()}</span>
                                     </#if>
@@ -102,10 +110,53 @@
                                         <span class="score-history-inline" data-values="<#list history as score>${score}<#sep>,</#list>" ></span>
                                     </#if>
                                 </td>
-                                <td>${target.getType().toString()?lower_case}</td>
-                                <td>${target.getPattern()}</td>
+                                <td class="td-top-kw">
+                                    <#if summary?? >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop3()/summary.getTotalKeywords()*100)?string["0.##"]}%">
+                                        <div class="progress-bar" style="width: ${summary.getTotalTop3()/summary.getTotalKeywords()*100}%;">
+                                            <span >
+                                                ${summary.getTotalTop3()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </#if>
+                                </td>
+                                <td class="td-top-kw">
+                                    <#if summary?? >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop10()/summary.getTotalKeywords()*100)?string["0.##"]}%">
+                                        <div class="progress-bar" style="width: ${summary.getTotalTop10()/summary.getTotalKeywords()*100}%;">
+                                            <span >
+                                                ${summary.getTotalTop10()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </#if>
+                                </td>
+                                <td class="td-top-kw">
+                                    <#if summary?? >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop100()/summary.getTotalKeywords()*100)?string["0.##"]}%">
+                                        <div class="progress-bar" style="width: ${summary.getTotalTop100()/summary.getTotalKeywords()*100}%;">
+                                            <span >
+                                                ${summary.getTotalTop100()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </#if>
+                                </td>
+                                <td class="td-top-kw">
+                                    <#if summary?? >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalOut()/summary.getTotalKeywords()*100)?string["0.##"]}%">
+                                        <div class="progress-bar" style="width: ${summary.getTotalOut()/summary.getTotalKeywords()*100}%;">
+                                            <span >
+                                                ${summary.getTotalOut()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </#if>
+                                </td>                                
                             </tr>
                             </#list>
+                            </tbody>
                         </table>
                     </div>
                 </div>      
@@ -132,7 +183,7 @@
                                     <a  href="${reverseRoute("google.GoogleGroupController","delSearch","groupId",group.getId())}" 
                                         data-toggle="tooltip" title="${i18n("label.delete")}" 
                                         class="btn-delete-search" data-id="${search.getId()}" >
-                                        <i class="glyphicon glyphicon-remove"></i></a>
+                                        <i class="glyphicon glyphicon-remove text-danger"></i></a>
                                     </#if>
                                 </td>
                                 <td><a class="search-keyword" href="${reverseRoute("google.GoogleSearchController", "search", 
