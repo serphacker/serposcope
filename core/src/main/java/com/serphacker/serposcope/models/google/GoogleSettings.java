@@ -14,10 +14,10 @@ import java.util.List;
 
 public class GoogleSettings {
     
-    int resultPerPage = 10;
-    int pages = 5;
-    int minPauseBetweenPageSec = 10;
-    int maxPauseBetweenPageSec = 10;
+    int resultPerPage = 100;
+    int pages = 1;
+    int minPauseBetweenPageSec = 3;
+    int maxPauseBetweenPageSec = 3;
     int maxThreads = 1;
     int fetchRetry = 3;    
     
