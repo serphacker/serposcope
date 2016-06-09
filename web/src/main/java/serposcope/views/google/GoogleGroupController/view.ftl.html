@@ -64,6 +64,7 @@
                         <table class="table table-condensed table-bordered table-striped" id="table-target" >
                             <thead>
                             <tr>
+                                <th class="compact-col text-center" ><a href="#" id="btn-chk-target">#</a></th>
                                 <th class="compact-col" ></th>
                                 <!--<th style="width:120px;"></th>-->
                                 <th data-sort="string" >${i18n("label.name")} <i class="fa fa-sort" ></i></th>
@@ -83,6 +84,7 @@
                                 <#assign summary = summaries?api.get(target.getId()) >
                             </#if>
                             <tr id="target-${target.getId()}">
+                                <td><input class="chk-target" type="checkbox" name="id[]" value="${target.getId()}" /></td>
                                 <td  class="compact-col">
                                     <#if user.isAdmin()>
                                     <a  href="${reverseRoute("google.GoogleGroupController","delTarget","groupId",group.getId())}" 
@@ -164,6 +166,10 @@
                             </#list>
                             </tbody>
                         </table>
+                        <div style="margin-bottom: 20px;">
+                            <input id="btn-delete-targets" type="button" class="btn btn-danger" value="${i18n("google.group.deleteWebsites")}" 
+                                data-action="${reverseRoute("google.GoogleGroupController","delTarget","groupId",group.getId())}" />
+                        </div>                        
                     </div>
                 </div>      
 
@@ -172,12 +178,12 @@
                         <h2 class="styled-h2">${i18n("label.searches")} (${searches?size})</h2>
                         <table class="table table-condensed table-bordered table-striped" >
                             <tr>
-                                <th class="width30" ><a href="#" id="btn-chk-search">#</a></th>
-                                <th class="width30" ></th>
+                                <th class="compact-col text-center" ><a href="#" id="btn-chk-search">#</a></th>
+                                <th class="compact-col" ></th>
                                 <th>${i18n("label.keyword")}</th>
-                                <th class="width30" ><abbr title="${i18n("label.topLevelDomain")}" data-toggle="tooltip" >TLD</abbr></th>
+                                <th class="compact-col" >${i18n("label.device")}</th>
+                                <th class="compact-col" ><abbr title="${i18n("label.topLevelDomain")}" data-toggle="tooltip" >TLD</abbr></th>
                                 <th class="width150" >${i18n("label.datacenter")}</th>
-                                <th class="width30" >${i18n("label.device")}</th>
                                 <th>${i18n("label.local")}</th>
                                 <th>${i18n("label.customParameters")}</th>
                             </tr>
@@ -194,9 +200,9 @@
                                 </td>
                                 <td><a class="search-keyword" href="${reverseRoute("google.GoogleSearchController", "search", 
                                        "groupId", group.getId(), "searchId", search.getId())}" >${search.getKeyword()}</a></td>
+                                <td class="search-device">${search.getDevice()!""}</td>
                                 <td class="search-tld">${search.getTld()!""}</td>
                                 <td class="search-datacenter">${search.getDatacenter()!""}</td>
-                                <td class="search-device">${search.getDevice()!""}</td>
                                 <td class="search-keyword">${search.getLocal()!""}</td>
                                 <td class="search-custom">${search.getCustomParameters()!""}</td>
                             </tr>

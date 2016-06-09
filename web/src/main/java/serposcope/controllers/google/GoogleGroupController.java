@@ -356,27 +356,40 @@ public class GoogleGroupController extends GoogleController {
     })
     public Result delTarget(
         Context context,
-        @Param("id[]") Integer targetId
+        @Params("id[]") String[] ids
     ) {
         FlashScope flash = context.getFlashScope();
         Group group = context.getAttribute("group", Group.class);
-
-        GoogleTarget target = getTarget(context, targetId);
-        if (target == null) {
-            flash.error("error.invalidWebsite");
-            return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
-        }
-
+        
         // TODO FIX ME locking until database modification done
         if (taskManager.isGoogleRunning()) {
             flash.error("admin.google.errorTaskRunning");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+        }        
+        
+        if (ids == null || ids.length == 0) {
+            flash.error("error.noWebsiteSelected");
+            return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
         }
 
-        googleDB.targetSummary.deleteByTarget(target.getId());
-        googleDB.rank.deleteByTarget(group.getId(), target.getId());
-        googleDB.target.delete(target.getId());
+        for (String id : ids) {
+            GoogleTarget target = null;
+            try {
+                target = getTarget(context, Integer.parseInt(id));
+            } catch (Exception ex) {
+                target = null;
+            }
 
+            if (target == null) {
+                flash.error("error.invalidWebsite");
+                return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+            }
+            
+            googleDB.targetSummary.deleteByTarget(target.getId());
+            googleDB.rank.deleteByTarget(group.getId(), target.getId());
+            googleDB.target.delete(target.getId());
+        }
+        
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
 

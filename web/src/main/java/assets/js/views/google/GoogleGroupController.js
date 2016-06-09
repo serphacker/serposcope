@@ -103,6 +103,25 @@ serposcope.googleGroupController = function () {
         return false;
     };
     
+    var deleteTargets = function(elt){
+        if(!confirm("Delete targets ?\nAll history will be erased.")){
+            return false;
+        }        
+        
+        $('<form>', {
+            'action': $(elt.currentTarget).attr("data-action"),
+            'method': 'post',
+            'target': '_top'
+        }).append($('<input>', {
+            'name': '_xsrf',
+            'value': $('#_xsrf').attr("data-value"),
+            'type': 'hidden'
+        })).append($('.chk-target'))
+        .appendTo(document.body).submit();        
+        
+        return false;
+    };    
+    
     var deleteSearches = function(elt){
         if(!confirm("Delete searches ?\nAll history will be erased.")){
             return false;
@@ -346,6 +365,12 @@ serposcope.googleGroupController = function () {
         return false;
     };
     
+    var targetChecked = false;
+    var checkTarget = function(){
+        $('.chk-target').prop('checked',targetChecked=!targetChecked ? 'checked' : '');
+        return false;
+    };    
+    
     var exportSearches = function(elt){
         $('<form>', {
             'action': $(elt.currentTarget).attr("data-action"),
@@ -429,8 +454,10 @@ serposcope.googleGroupController = function () {
         $('.btn-delete-search').click(deleteSearch);
         
         $('#btn-chk-search').click(checksearch);
+        $('#btn-chk-target').click(checkTarget);
         $('#btn-export-searches').click(exportSearches);
         $('#btn-delete-searches').click(deleteSearches);
+        $('#btn-delete-targets').click(deleteTargets);
         $('#table-target').stupidtable();
         renderScoreHistory();
         loadAsyncCanonical();

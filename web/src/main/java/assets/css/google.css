@@ -115,6 +115,10 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     background-color: #3c8dbc; 
 }
 
+#manage .table {
+    margin-bottom: 5px;
+}
+
 #google-target-table th,
 #google-target-table td,
 #table-target th{
