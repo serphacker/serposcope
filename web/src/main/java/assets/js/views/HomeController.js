@@ -82,8 +82,8 @@ serposcope.HomeController = function () {
                 url: '/task-status/' + id,
                 success: function (data) {
                     if(typeof(data.progress) !== "undefined"){
-                        $('.progress .progress-bar').css('width', data.progress + '%');
-                        $('.progress .progress-bar span').html(data.progress + '%');
+                        $('.home-task-progress .progress-bar').css('width', data.progress + '%');
+                        $('.home-task-progress .progress-bar span').html(data.progress + '%');
                         if(data.progress != 100){
                             setTimeout(updateProgressBar, 3000);
                         }
