@@ -19,6 +19,7 @@ import com.serphacker.serposcope.models.google.GoogleSerp;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +29,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class GoogleSerpRescanDB {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(GoogleSerpRescanDB.class);
     
     @Inject
     GoogleSearchDB searchDB;
@@ -47,7 +53,9 @@ public class GoogleSerpRescanDB {
     @Inject
     RunDB runDB;
     
-    public void rescan(Integer specificRunId, List<GoogleTarget> targets, List<GoogleSearch> searches,  boolean updateSummary) {
+    public void rescan(Integer specificRunId, Collection<GoogleTarget> targets, Collection<GoogleSearch> searches,  boolean updateSummary) {
+        LOG.debug("SERP rescan : starting");
+        long _start = System.currentTimeMillis();
         Run specPrevRun = null;
         Map<Integer, GoogleTargetSummary> specPrevRunSummaryByTarget = new HashMap<>();
         
@@ -144,6 +152,7 @@ public class GoogleSerpRescanDB {
                 }
             }
         }
+        LOG.debug("SERP rescan : done, duration = {}", DurationFormatUtils.formatDurationHMS(System.currentTimeMillis()-_start));
     }
     
     /*
