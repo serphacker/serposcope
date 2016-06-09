@@ -8,6 +8,7 @@
 package com.serphacker.serposcope.models.google;
 
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
+import java.util.Objects;
 
 
 public class GoogleSearch {
@@ -89,6 +90,51 @@ public class GoogleSearch {
 
     public void setCustomParameters(String customParameters) {
         this.customParameters = customParameters;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.keyword);
+        hash = 71 * hash + Objects.hashCode(this.tld);
+        hash = 71 * hash + Objects.hashCode(this.datacenter);
+        hash = 71 * hash + Objects.hashCode(this.device);
+        hash = 71 * hash + Objects.hashCode(this.local);
+        hash = 71 * hash + Objects.hashCode(this.customParameters);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GoogleSearch other = (GoogleSearch) obj;
+        if (!Objects.equals(this.keyword, other.keyword)) {
+            return false;
+        }
+        if (!Objects.equals(this.tld, other.tld)) {
+            return false;
+        }
+        if (!Objects.equals(this.datacenter, other.datacenter)) {
+            return false;
+        }
+        if (!Objects.equals(this.local, other.local)) {
+            return false;
+        }
+        if (!Objects.equals(this.customParameters, other.customParameters)) {
+            return false;
+        }
+        if (this.device != other.device) {
+            return false;
+        }
+        return true;
     }
     
 }

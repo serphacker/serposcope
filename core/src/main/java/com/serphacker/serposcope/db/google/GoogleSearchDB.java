@@ -32,7 +32,7 @@ public class GoogleSearchDB extends AbstractDB {
     QGoogleSearch t_gs = QGoogleSearch.googleSearch;
     QGoogleSearchGroup t_gsg = QGoogleSearchGroup.googleSearchGroup;
 
-    public int insert(List<GoogleSearch> searches, int groupId){
+    public int insert(Collection<GoogleSearch> searches, int groupId){
         int inserted = 0;
         
         try(Connection con = ds.getConnection()){

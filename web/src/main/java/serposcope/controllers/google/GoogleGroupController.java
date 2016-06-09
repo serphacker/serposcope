@@ -33,8 +33,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -135,7 +137,7 @@ public class GoogleGroupController extends GoogleController {
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
         }
 
-        List<GoogleSearch> searches = new ArrayList<>();
+        Set<GoogleSearch> searches = new HashSet<>();
 
         for (int i = 0; i < keywords.length; i++) {
             GoogleSearch search = new GoogleSearch();
