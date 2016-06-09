@@ -16,8 +16,8 @@ public class GoogleSettings {
     
     int resultPerPage = 100;
     int pages = 1;
-    int minPauseBetweenPageSec = 3;
-    int maxPauseBetweenPageSec = 3;
+    int minPauseBetweenPageSec = 5;
+    int maxPauseBetweenPageSec = 5;
     int maxThreads = 1;
     int fetchRetry = 3;    
     
