@@ -39,6 +39,11 @@ body {
 .width280 { width:280px; }
 .width300 { width:300px; }
 
+.compact-col {
+    width: 1px;
+    white-space: nowrap;
+}
+
 .inline {
     display: inline;
 }

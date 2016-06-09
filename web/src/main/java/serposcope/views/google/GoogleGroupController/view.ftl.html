@@ -64,13 +64,13 @@
                         <table class="table table-condensed table-bordered table-striped" id="table-target" >
                             <thead>
                             <tr>
-                                <th class="width30" ></th>
+                                <th class="compact-col" ></th>
                                 <!--<th style="width:120px;"></th>-->
                                 <th data-sort="string" >${i18n("label.name")} <i class="fa fa-sort" ></i></th>
-                                <th class="width60">${i18n("label.type")}</th>
+                                <th class="compact-col" >${i18n("label.type")}</th>
                                 <th>${i18n("label.pattern")}</th>                                
-                                <th data-sort="int"  class="width60">Score <i class="fa fa-sort" ></i></th>
-                                <th style="width: 100px;">${i18n("label.history")}</th>
+                                <th data-sort="int" class="compact-col">Score <i class="fa fa-sort" ></i></th>
+                                <th class="compact-col">${i18n("label.history")}</th>
                                 <th data-sort="int" >top 3 <i class="fa fa-sort" ></i></th>
                                 <th data-sort="int" >top 10 <i class="fa fa-sort" ></i></th>
                                 <th data-sort="int" >top 100 <i class="fa fa-sort" ></i></th>
@@ -83,12 +83,16 @@
                                 <#assign summary = summaries?api.get(target.getId()) >
                             </#if>
                             <tr id="target-${target.getId()}">
-                                <td>
+                                <td  class="compact-col">
                                     <#if user.isAdmin()>
                                     <a  href="${reverseRoute("google.GoogleGroupController","delTarget","groupId",group.getId())}" 
                                         data-toggle="tooltip" title="${i18n("label.delete")}" 
                                         class="btn-delete-target" data-id="${target.getId()}" >
                                         <i class="glyphicon glyphicon-remove text-danger"></i></a>
+                                    <a  href="#" 
+                                        data-toggle="tooltip" title="${i18n("label.rename")}" 
+                                        class="btn-rename-target" data-id="${target.getId()}" >
+                                        <i class="glyphicon glyphicon-edit"></i></a>                                        
                                     </#if>
                                 </td>
                                 <!--<td></td>-->                                
