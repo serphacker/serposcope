@@ -16,6 +16,7 @@ serposcope.googleGroupController = function () {
     
     var configureModalFocus = function() {
         $('#new-target').on('shown.bs.modal', function(){ $('#targetName').focus(); });
+        $('#new-target-bulk').on('shown.bs.modal', function(){ $('#bulk-target').focus(); });
         $('#new-search').on('shown.bs.modal', function(){ $('#searchName').focus(); });
         $('#new-search-bulk').on('shown.bs.modal', function(){ $('#bulk-search').focus(); });
     };
@@ -30,7 +31,7 @@ serposcope.googleGroupController = function () {
         $('.modal').modal('hide');
         $('#new-search-bulk').modal();
         return false;
-    };    
+    };
     
     var showNewTargetModal = function(){
         $('.modal').modal('hide');
@@ -38,6 +39,11 @@ serposcope.googleGroupController = function () {
         return false;
     };
     
+    var showNewBulkTargetModal = function(){
+        $('.modal').modal('hide');
+        $('#new-target-bulk').modal();
+        return false;
+    };    
     
     var showNewEventModal = function(elt){
         $('#modal-add-event').modal();
@@ -116,6 +122,52 @@ serposcope.googleGroupController = function () {
         return false;
     };
     
+    var bulkTargetSubmit = function() {
+        var patterns = [];
+        if($('#bulk-target').val() == ""){
+            alert("no target specified");
+            return false;
+        }
+        
+        var lines = $('#bulk-target').val().split(/\r?\n/);
+        for(var i = 0; i< lines.length; i++){
+            lines[i] = lines[i].replace(/(^\s+)|(\s+$)/g,"");
+            if(lines[i].length == 0){
+                continue;
+            }
+            
+            patterns.push(lines[i]);
+        }
+        
+        if(patterns.length == 0){
+            alert("no target specified");
+            return false;
+        }        
+    
+        var form = $('<form>', {
+            'action': $("#bulk-target-import").attr("data-action"),
+            'method': 'post',
+            'target': '_top'
+        }).append($('<input>', {
+            'name': '_xsrf',
+            'value': $('#_xsrf').attr("data-value"),
+            'type': 'hidden'
+        })).append($('<input>', {
+            'name': 'target-radio',
+            'value': $('#new-target-bulk .target-radio:checked').val(),
+            'type': 'hidden'
+        }));
+        
+        var inputs = [];
+        for(var i = 0; i< patterns.length; i++){
+            inputs.push($('<input>', {'name': 'name[]','value': patterns[i],'type': 'hidden'})[0]);
+            inputs.push($('<input>', {'name': 'pattern[]','value': patterns[i],'type': 'hidden'})[0]);
+        }        
+        form.append(inputs);
+        form.appendTo(document.body).submit();
+        return false;
+    };
+    
     var bulkSearchSubmit = function(){
         var keyword = [], tld = [], datacenter = [], device = [], local = [], custom = [];
         if($('#bulk-search').val() == ""){
@@ -160,7 +212,7 @@ serposcope.googleGroupController = function () {
         }
         
         var form = $('<form>', {
-            'action': $("#bulk-import").attr("data-action"),
+            'action': $("#bulk-search-import").attr("data-action"),
             'method': 'post',
             'target': '_top'
         }).append($('<input>', {
@@ -340,9 +392,11 @@ serposcope.googleGroupController = function () {
         
         $('.btn-delete-group').click(deleteGroup);
         $('.btn-add-target').click(showNewTargetModal);
+        $('.btn-add-target-bulk').click(showNewBulkTargetModal);
         $('.btn-add-search').click(showNewSearchModal);
         $('.btn-add-search-bulk').click(showNewBulkSearchModal);
-        $('#bulk-import').click(bulkSearchSubmit);
+        $('#bulk-search-import').click(bulkSearchSubmit);
+        $('#bulk-target-import').click(bulkTargetSubmit);
         
         $('.btn-delete-target').click(deleteTarget);
         $('.btn-delete-search').click(deleteSearch);

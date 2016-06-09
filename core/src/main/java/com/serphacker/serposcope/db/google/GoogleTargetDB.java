@@ -28,7 +28,7 @@ public class GoogleTargetDB extends AbstractDB {
 
     QGoogleTarget t_target = QGoogleTarget.googleTarget;
 
-    public int insert(List<GoogleTarget> targets){
+    public int insert(Collection<GoogleTarget> targets){
         int inserted = 0;
         
         try(Connection con = ds.getConnection()){

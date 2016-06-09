@@ -11,7 +11,7 @@
 
                     <div class="form-group" >
                         <label for="targetName" >${i18n("label.name")}</label>
-                        <input id="targetName" class="form-control" name="name" >
+                        <input id="targetName" class="form-control" name="name[]" >
                     </div>
                       
                     <div class="form-group" >
@@ -24,7 +24,7 @@
                             <input class="target-radio" type="radio" name="target-radio" value="REGEX" 
                             data-help="${i18n("google.group.targetType.regexHelper")}" > ${i18n("google.group.targetType.regex")}
                         </div>
-                        <input id="pattern" name="pattern" class="form-control top10" >
+                        <input id="pattern" name="pattern[]" class="form-control top10" >
                     </div>
                 </div>
                 <div class="modal-footer">

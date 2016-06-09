@@ -203,46 +203,61 @@ public class GoogleGroupController extends GoogleController {
     })
     public Result addTarget(
         Context context,
-        @Param("name") String name,
         @Param("target-radio") String targetType,
-        @Param("pattern") String pattern
+        @Params("name[]") String[] names,
+        @Params("pattern[]") String[] patterns
     ) {
         FlashScope flash = context.getFlashScope();
         Group group = context.getAttribute("group", Group.class);
-
-        if (name != null) {
-            name = name.replaceAll("(^\\s+)|(\\s+$)", "");
-        }
-
-        if (pattern != null) {
-            pattern = pattern.replaceAll("(^\\s+)|(\\s+$)", "");
-        }
-
-        if (Validator.isEmpty(name)) {
-            flash.error("error.invalidName");
+        
+        if(targetType == null || 
+            names == null || names.length == 0 || 
+            patterns == null || patterns.length == 0 || 
+            names.length != patterns.length)
+        {
+            flash.error("error.invalidParameters");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
         }
+        
+        Set<GoogleTarget> targets = new HashSet<>();
+        for(int i=0;i<names.length;i++){
+            String name = names[i];
+            String pattern = patterns[i];
+            
+            if (name != null) {
+                name = name.replaceAll("(^\\s+)|(\\s+$)", "");
+            }
 
-        PatternType type = null;
-        try {
-            type = PatternType.valueOf(targetType);
-        } catch (Exception ex) {
-            flash.error("error.invalidTargetType");
-            return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+            if (pattern != null) {
+                pattern = pattern.replaceAll("(^\\s+)|(\\s+$)", "");
+            }
+
+            if (Validator.isEmpty(name)) {
+                flash.error("error.invalidName");
+                return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+            }
+
+            PatternType type = null;
+            try {
+                type = PatternType.valueOf(targetType);
+            } catch (Exception ex) {
+                flash.error("error.invalidTargetType");
+                return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+            }
+
+            if (!GoogleTarget.isValidPattern(type, pattern)) {
+                flash.error("error.invalidPattern");
+                return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+            }
+            
+            targets.add(new GoogleTarget(group.getId(), name, type, pattern));
         }
 
-        if (!GoogleTarget.isValidPattern(type, pattern)) {
-            flash.error("error.invalidPattern");
-            return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
-        }
-
-        GoogleTarget target = new GoogleTarget(group.getId(), name, type, pattern);
-        if (googleDB.target.insert(Arrays.asList(target)) < 1) {
+        if (googleDB.target.insert(targets) < 1) {
             flash.error("error.internalError");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
         }
-
-        googleDB.serpRescan.rescan(null, Arrays.asList(target), getSearches(context), true);
+        googleDB.serpRescan.rescan(null, targets, getSearches(context), true);
 
         Run runningGoogleTask = taskManager.getRunningGoogleTask();
         if (runningGoogleTask != null) {

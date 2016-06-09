@@ -9,6 +9,7 @@ package com.serphacker.serposcope.models.google;
 
 import static com.serphacker.serposcope.models.google.GoogleTarget.PatternType.DOMAIN;
 import static com.serphacker.serposcope.models.google.GoogleTarget.PatternType.SUBDOMAIN;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -113,8 +114,46 @@ public class GoogleTarget {
     public String getPattern() {
         return pattern;
     }
-    
-    
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + this.id;
+        hash = 53 * hash + this.groupId;
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.type);
+        hash = 53 * hash + Objects.hashCode(this.pattern);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GoogleTarget other = (GoogleTarget) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (this.groupId != other.groupId) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.pattern, other.pattern)) {
+            return false;
+        }
+        if (this.type != other.type) {
+            return false;
+        }
+        return true;
+    }
     
 }
