@@ -14,6 +14,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
+import com.querydsl.sql.dml.SQLUpdateClause;
 import com.serphacker.serposcope.db.AbstractDB;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.models.google.GoogleTarget.PatternType;
@@ -54,6 +55,23 @@ public class GoogleTargetDB extends AbstractDB {
         
         return inserted;
     }
+    
+    public boolean rename(GoogleTarget target){
+        long inserted = 0;
+        
+        try(Connection con = ds.getConnection()){
+            
+            inserted = new SQLUpdateClause(con, dbTplConf, t_target)
+                .set(t_target.name, target.getName())
+                .where(t_target.id.eq(target.getId()))
+                .execute();
+            
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        
+        return inserted != 0;
+    }    
     
     public boolean delete(int targetId){
         boolean deleted = false;

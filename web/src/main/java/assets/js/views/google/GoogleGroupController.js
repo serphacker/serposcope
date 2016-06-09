@@ -310,6 +310,32 @@ serposcope.googleGroupController = function () {
         return false;
     };
     
+    var renameTarget = function(elt){
+        var href = $(elt.currentTarget).attr("href");
+        var id = $(elt.currentTarget).attr("data-id");
+        var name = prompt("new name");
+        
+        $('<form>', {
+            'action': href,
+            'method': 'post',
+            'target': '_top'
+        }).append($('<input>', {
+            'name': 'name',
+            'value': name,
+            'type': 'hidden'
+        })).append($('<input>', {
+            'name': 'id',
+            'value': id,
+            'type': 'hidden'
+        })).append($('<input>', {
+            'name': '_xsrf',
+            'value': $('#_xsrf').attr("data-value"),
+            'type': 'hidden'
+        })).appendTo(document.body).submit();
+        
+        return false;
+    };    
+    
     var onRadioTargetChange = function(){
         $("#pattern").attr('placeholder', $(this).attr("data-help"));
     };
@@ -386,6 +412,7 @@ serposcope.googleGroupController = function () {
 //        $('#input-helper').bind("keyup paste change",onHelperChange);
         
         $('.btn-rename').click(renameGroup);
+        $('.btn-rename-target').click(renameTarget);
         $('.toggle-event').click(toggleEvent);
         $('.btn-add-event').click(showNewEventModal);
         $('.btn-delete-event').click(deleteEvent);

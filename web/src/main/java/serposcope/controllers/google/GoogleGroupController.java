@@ -268,6 +268,40 @@ public class GoogleGroupController extends GoogleController {
 
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
+    
+    @FilterWith({
+        XSRFFilter.class,
+        AdminFilter.class
+    })
+    public Result renameTarget(
+        Context context,
+        @Param("name") String name,
+        @Param("id") Integer targetId){
+                
+        FlashScope flash = context.getFlashScope();
+        Group group = context.getAttribute("group", Group.class);
+
+        GoogleTarget target = getTarget(context, targetId);
+        if (target == null) {
+            flash.error("error.invalidWebsite");
+            return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+        }
+        
+        if (name != null) {
+            name = name.replaceAll("(^\\s+)|(\\s+$)", "");
+        }
+
+        if (Validator.isEmpty(name)) {
+            flash.error("error.invalidName");
+            return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+        }
+        
+        target.setName(name);
+        googleDB.target.rename(target);
+
+        flash.success("google.group.websiteRenamed");
+        return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+    }
 
     @FilterWith({
         XSRFFilter.class,
