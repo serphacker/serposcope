@@ -244,6 +244,11 @@ serposcope.googleSearchController = function () {
         window.location = url;
     };
     
+        var eventCalendarClick = function(){
+        $('#modal-add-event').modal();
+        return false;
+    };
+    
     var renderSearch = function () {
         switch($('#csp-vars').attr("data-display-mode")){
             case "split":
@@ -266,6 +271,13 @@ serposcope.googleSearchController = function () {
             resize();
         }); 
         $('.btn-change-display-mode').click(changeDisplayMode);        
+        $('input[name="day"]').daterangepicker({
+            singleDatePicker: true,
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
+        });        
+        $('#btn-add-event').click(eventCalendarClick);        
         
         $('.btn-draw-top10').click(drawTop10Click);
         $('.btn-draw-chart').click(drawDomainClick);

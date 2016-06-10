@@ -13,6 +13,15 @@
     </div>
     <div class="col-sm-6" >
         <div class="pull-right" >
+            
+            <div class="inline-block">
+                <div class="input-group" >
+                    <a href="#" id="btn-add-event" class="btn btn-default" data-toggle="tooltip" data-container="body" 
+                       title="${i18n("label.addEventToCalendar")}" >
+                       <span class="fa fa-calendar"></span>
+                    </a>       
+                </div>
+            </div>
 
             <div class="inline-block" >
                 <div class="input-group" style="width: 190px;">
@@ -33,6 +42,7 @@
 
 <#nested/>
 
+<#include "../../helpers/add-event-modal.ftl.html" >
 <div class="csp-script" data-src="googleTargetController.render" ></div>
 <div id="csp-vars"
      data-display="${display}"

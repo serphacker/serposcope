@@ -495,7 +495,9 @@ public class GoogleGroupController extends GoogleController {
     public Result addEvent(Context context,
         @Param("day") String day,
         @Param("title") String title,
-        @Param("description") String description
+        @Param("description") String description,
+        @Param("redir-search") Integer redirSearchId,
+        @Param("redir-target") Integer redirTargetId
     ) {
         FlashScope flash = context.getFlashScope();
         Group group = context.getAttribute("group", Group.class);
@@ -531,6 +533,15 @@ public class GoogleGroupController extends GoogleController {
         }
 
         flash.success("google.group.eventInserted");
+        if(redirSearchId != null){
+            return Results.redirect(router.getReverseRoute(GoogleSearchController.class, "search", "groupId", group.getId(),
+                "searchId", redirSearchId));
+        }
+        if(redirTargetId != null){
+            return Results.redirect(router.getReverseRoute(GoogleTargetController.class, "target", "groupId", group.getId(),
+            "targetId", redirTargetId));
+        }
+        
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
 

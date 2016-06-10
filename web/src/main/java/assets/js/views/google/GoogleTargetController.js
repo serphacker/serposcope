@@ -95,10 +95,6 @@ serposcope.googleTargetController = function () {
             }
             
             chart.setAnnotations(annotations);
-            $('.calendar-annotation').popover({
-                html: true,
-                placement: "bottom"
-            });
         });
     };
 
@@ -138,12 +134,24 @@ serposcope.googleTargetController = function () {
         return a-b;
     };
     
+    var eventCalendarClick = function(){
+        $('#modal-add-event').modal();
+        return false;
+    };
+    
     var render = function () {
         $(window).bind("load resize", function (evt) {
             resize();
         });
         $('#google-target-table').stupidtable({"stripint": stripIntCmp});
         $('.table-position-change').stupidtable({"change": changeCmp});
+        $('input[name="day"]').daterangepicker({
+            singleDatePicker: true,
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
+        });        
+        $('#btn-add-event').click(eventCalendarClick);
         
         if ($('#csp-vars').attr('data-min-date') !== "") {
             $('#daterange').removeAttr("disabled");
