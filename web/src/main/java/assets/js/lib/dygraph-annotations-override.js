@@ -176,6 +176,7 @@ Dygraph.Plugins.Annotations = (function () {
             ctx.stroke();
             ctx.restore();
         }
+        $('.calendar-annotation').popover({html: true,placement: "bottom"});
     };
 
     annotations.prototype.destroy = function () {
