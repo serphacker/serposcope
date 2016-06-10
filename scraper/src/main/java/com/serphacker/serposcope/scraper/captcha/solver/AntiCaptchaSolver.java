@@ -29,9 +29,8 @@ public class AntiCaptchaSolver implements CaptchaSolver {
     
     final static Logger LOG = LoggerFactory.getLogger(AntiCaptchaSolver.class);
 
-    public final static long DEFAULT_POLLING_MS = 45000l;
-    public final static long DEFAULT_POLLING_INCREMENT_MS = 2500l;
-    public final static int DEFAULT_TIMEOUT_MS = 30000;
+    public final static long POLLING_PAUSE_MS = 2500l;
+    public final static long DEFAULT_TIMEOUT_MS = 60000l;
 
     private String apiUrl = "http://anti-captcha.com/";
     private String apiKey;
@@ -173,7 +172,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
             
             captcha.setId(response.substring(3));
             
-            long timeLimit=System.currentTimeMillis() + DEFAULT_POLLING_MS;
+            long timeLimit=System.currentTimeMillis() + timeoutMS;
             while(System.currentTimeMillis() < timeLimit){
 
                 int status = http.get(apiUrl + "res.php?key=" + apiKey + 
@@ -199,7 +198,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
                 }
 
                 try {
-                    Thread.sleep(DEFAULT_POLLING_INCREMENT_MS);
+                    Thread.sleep(POLLING_PAUSE_MS);
                 } catch (InterruptedException ex) {
                     break;
                 }

@@ -210,7 +210,7 @@ public class DecaptcherSolver implements CaptchaSolver {
         long started = System.currentTimeMillis();
         captcha.setStatus(Captcha.Status.SUBMITTED);
         try(ScrapClient http = new ScrapClient()){
-            http.setTimeout(95000);
+            http.setTimeout((int)timeoutMS);
             int httpStatus = 0;
             Answer answer = null;
             int retry = 0;

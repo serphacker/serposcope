@@ -29,9 +29,8 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
     
     final static Logger LOG = LoggerFactory.getLogger(DeathByCaptchaSolver.class);
 
-    public final static long DEFAULT_POLLING_MS = 45000l;
-    public final static long DEFAULT_POLLING_INCREMENT_MS = 2500l;
-    public final static int DEFAULT_TIMEOUT_MS = 30000;
+    public final static long POLLING_PAUSE_MS = 2500l;
+    public final static long DEFAULT_TIMEOUT_MS = 60000;
 
     private String apiUrl = "http://api.dbcapi.me/api/";
     private String login;
@@ -180,7 +179,7 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
             }
             captcha.setId(captchaId);
             
-            long timeLimit=System.currentTimeMillis() + DEFAULT_POLLING_MS;
+            long timeLimit=System.currentTimeMillis() + timeoutMS;
             while(System.currentTimeMillis() < timeLimit){
 
                 int status = http.get(location + "?" + random.nextInt(Integer.MAX_VALUE));
@@ -194,7 +193,7 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
                 }
 
                 try {
-                    Thread.sleep(DEFAULT_POLLING_INCREMENT_MS);
+                    Thread.sleep(POLLING_PAUSE_MS);
                 } catch (InterruptedException ex) {
                     break;
                 }
