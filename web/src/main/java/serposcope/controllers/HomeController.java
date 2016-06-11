@@ -36,7 +36,9 @@ import ninja.Result;
 import ninja.Results;
 import ninja.Router;
 import ninja.params.PathParam;
+import org.apache.commons.io.FileUtils;
 import serposcope.filters.AuthFilter;
+import serposcope.lifecycle.DBSizeUtils;
 
 @Singleton
 @FilterWith(AuthFilter.class)
@@ -50,6 +52,9 @@ public class HomeController extends BaseController {
     
     @Inject
     GoogleDB googleDB;
+    
+    @Inject
+    DBSizeUtils dbSizeUtils;
     
     public static class TargetHomeEntry {
 
@@ -67,6 +72,10 @@ public class HomeController extends BaseController {
 
     
     public Result home(Context context) {
+        
+//        File f = new 
+        String diskUsage = dbSizeUtils.getDbUsageFormatted();
+        String diskFree = dbSizeUtils.getDiskFreeFormatted();
         
         String display = context.getParameter("display" , baseDB.config.getConfig().getDisplayHome());
         if(!Config.VALID_DISPLAY_HOME.contains(display)){
@@ -86,6 +95,8 @@ public class HomeController extends BaseController {
                 .render("lastRun", lastRun)
                 .render("groups", groups)
                 .render("lastlog", LocalDate.now().toString() + ".log")
+                .render("diskUsage", diskUsage)
+                .render("diskFree", diskFree)
                 ;
         }
         
@@ -130,6 +141,8 @@ public class HomeController extends BaseController {
             .render("summaries", summaries)
             .render("searches", googleDB.search.mapBySearchId(searchIds))
             .render("lastlog", LocalDate.now().toString() + ".log")
+            .render("diskUsage", diskUsage)
+            .render("diskFree", diskFree)            
             ;
     }
 

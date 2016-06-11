@@ -16,15 +16,14 @@
 <@layout.rootLayout i18n("home.title") "${sideMenu}" >
 <div class="home" >
     <div class="row" >
-        <div class="col-xs-6 last-check" >
-            <#if lastRun??>
-                ${i18n("home.lastTask")} : ${lastRun.getDay()} 
-                <#if lastRun.status != "DONE_SUCCESS" >
-                    (<a class="text-danger" href="${reverseRoute("admin.TaskController","tasks")}" >${i18n("home.taskFailure")}</a>)
-                </#if>
-            <#else>
-                ${i18n("home.noSummary")}
-            </#if>
+        <div class="col-xs-6" >
+            <div>
+                ${i18n("label.dbSize")} : <#if diskUsage?? >${diskUsage}<#else>${i18n("label.unavailableOnMySQL")}</#if> 
+                <!--[<a href="#" class="text-danger">prune</a>]-->
+            </div>
+            <div>
+                ${i18n("label.diskFree")} : <#if diskFree?? >${diskFree}<#else>${i18n("label.unavailable")}</#if>
+            </div>
         </div>
         <div class="col-xs-6" >
             
@@ -102,6 +101,12 @@
     </div>
 
     <#if lastRun?? >
+        <div class="last-check text-center">
+            ${lastRun.getDay()} 
+            <#if lastRun.status != "DONE_SUCCESS" >
+                (<a class="text-danger" href="${reverseRoute("admin.TaskController","tasks")}" >${i18n("home.taskFailure")}</a>)
+            </#if>
+        </div>
         <#if hasTarget >
             <#nested>
         <#else>
