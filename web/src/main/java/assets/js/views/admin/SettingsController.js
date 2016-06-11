@@ -23,14 +23,30 @@ serposcope.adminSettingsController = function () {
     };
     
     var testCaptcha = function(elt){
+        var service = $(elt.currentTarget).attr('data-service');
+        var data = {
+            service: service
+        };
+        
+        switch(service){
+            case "dbc":
+                data.user = $('#dbcUser').val();
+                data.pass = $('#dbcPass').val();
+                break;
+                
+            case "decaptcher":
+                data.user = $('#decaptcherUser').val();
+                data.pass = $('#decaptcherPass').val();
+                break;
+                
+            case "anticaptcha":
+                data.api = $('#anticaptchaApiKey').val();
+                break;                  
+        }
+        
         $.ajax({
             url: $(this).attr("href"),
-            data: {
-                service: $('#service').val(),
-                user: $('#captchaUser').val(),
-                pass: $('#captchaPass').val(),
-                api: $('#captchaApiKey').val()
-            },
+            data: data,
             success: function(result){
                 alert(result);
             }
@@ -40,7 +56,7 @@ serposcope.adminSettingsController = function () {
     
     var settings = function() {
         $('#btn-reset-settings').click(resetSettings);
-        $('#btn-test-captcha').click(testCaptcha);
+        $('.btn-test-captcha').click(testCaptcha);
     };
     
     var oPublic = {

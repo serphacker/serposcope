@@ -12,7 +12,11 @@ import com.serphacker.serposcope.scraper.captcha.solver.AntiCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DeathByCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DecaptcherSolver;
+import com.serphacker.serposcope.scraper.captcha.solver.FailoverCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.SwingUICaptchaSolver;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,30 +32,56 @@ public class CaptchaSolverFactoryImpl implements CaptchaSolverFactory {
             return null;
         }
         
-        switch (config.getCaptchaService()) {
-            case SWINGUI:
-                SwingUICaptchaSolver solver = new SwingUICaptchaSolver();
-                return solver;
-
-            case DEATHBYCAPTCHA:
-                if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
-                    return new DeathByCaptchaSolver(config.getDbcUser(), config.getDbcPass());
-                }
-                break;
-
-            case DECAPTCHER:
-                if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
-                    return new DecaptcherSolver(config.getDbcUser(), config.getDbcPass());
-                }
-                break;
-                
-            case ANTICAPTCHA:
-                if(!StringUtils.isEmpty(config.getDbcApi())){
-                    return new AntiCaptchaSolver(config.getDbcApi());
-                }
-                break;
+        List<CaptchaSolver> solvers = new ArrayList<>();
+        
+        if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
+            DeathByCaptchaSolver solver = new DeathByCaptchaSolver(config.getDbcUser(), config.getDbcPass());
+            if(init(solver)){
+                solvers.add(solver);
+            }
         }
-        return null;
-
+        
+        if (!StringUtils.isEmpty(config.getDecaptcherUser()) && !StringUtils.isEmpty(config.getDecaptcherPass())) {
+            DecaptcherSolver solver = new DecaptcherSolver(config.getDecaptcherUser(), config.getDecaptcherPass());
+            if(init(solver)){
+                solvers.add(solver);
+            }
+        }
+        
+        if(!StringUtils.isEmpty(config.getAnticaptchaKey())){
+            AntiCaptchaSolver solver = new AntiCaptchaSolver(config.getAnticaptchaKey());
+            if(init(solver)){
+                solvers.add(solver);
+            }                    
+        }
+        
+        if(solvers.isEmpty()){
+            return null;
+        }
+        
+        Collections.shuffle(solvers);
+        return new FailoverCaptchaSolver(solvers);
     }
+    
+    protected boolean init(CaptchaSolver solver){
+        
+        if(!solver.init()){
+            LOG.warn("{} : failed to init()", solver.getFriendlyName());
+            return false;                
+        }            
+
+        if(!solver.testLogin()){
+            LOG.warn("{} : can't login in", solver.getFriendlyName());
+            return false;
+        }
+
+        LOG.debug("{} : remaining credit {}", solver.getFriendlyName(), solver.getCredit());
+        if(!solver.hasCredit()){
+            LOG.warn("{} : not enough credit", solver.getFriendlyName());
+            return false;
+        }        
+        
+        return true;
+    }
+    
 }

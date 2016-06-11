@@ -7,8 +7,6 @@
  */
 package com.serphacker.serposcope.models.base;
 
-import static com.serphacker.serposcope.models.base.Config.CaptchaService.*;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -19,31 +17,16 @@ public class Config {
     
     public final static Pattern PATTERN_CRONTIME = Pattern.compile("^([0-9]+):([0-9]+)$");
     
-    public enum CaptchaService {
-        DISABLE,
-        SWINGUI,
-        DEATHBYCAPTCHA,
-        DECAPTCHER,
-        ANTICAPTCHA;
-        
-        public static CaptchaService fromString(String name){
-            if(name != null){
-                for (CaptchaService service : CaptchaService.values()) {
-                    if(service.toString().equals(name.toUpperCase())){
-                        return service;
-                    }
-                }
-            }
-            return DISABLE;
-        }
-    };
-    
 //    boolean cronEnabled;
     LocalTime cronTime;
-    CaptchaService captchaService = DISABLE;
+    
     String dbcUser;
     String dbcPass;
-    String dbcApi;
+    
+    String decaptcherUser;
+    String decaptcherPass;
+    
+    String anticaptchaKey;
     
     public final static String DEFAULT_DISPLAY_HOME = "summary";
     public final static List<String> VALID_DISPLAY_HOME = Arrays.asList("summary","table");
@@ -56,14 +39,6 @@ public class Config {
     String displayGoogleTarget=DEFAULT_DISPLAY_GOOGLE_TARGET;
     String displayGoogleSearch=DEFAULT_DISPLAY_GOOGLE_SEARCH;
 
-    public CaptchaService getCaptchaService() {
-        return captchaService;
-    }
-
-    public void setCaptchaService(CaptchaService captchaService) {
-        this.captchaService = captchaService;
-    }
-    
     public String getDbcUser() {
         return dbcUser;
     }
@@ -76,18 +51,34 @@ public class Config {
         return dbcPass;
     }
 
-    public String getDbcApi() {
-        return dbcApi;
-    }
-
-    public void setDbcApi(String dbcApi) {
-        this.dbcApi = dbcApi;
-    }
-
     public void setDbcPass(String dbcPass) {
         this.dbcPass = dbcPass;
     }
 
+    public String getDecaptcherUser() {
+        return decaptcherUser;
+    }
+
+    public void setDecaptcherUser(String decaptcherUser) {
+        this.decaptcherUser = decaptcherUser;
+    }
+
+    public String getDecaptcherPass() {
+        return decaptcherPass;
+    }
+
+    public void setDecaptcherPass(String decaptcherPass) {
+        this.decaptcherPass = decaptcherPass;
+    }
+
+    public String getAnticaptchaKey() {
+        return anticaptchaKey;
+    }
+
+    public void setAnticaptchaKey(String anticaptchaKey) {
+        this.anticaptchaKey = anticaptchaKey;
+    }
+    
     public LocalTime getCronTime() {
         return cronTime;
     }

@@ -14,7 +14,6 @@ import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
 import com.serphacker.serposcope.db.AbstractDB;
 import com.serphacker.serposcope.models.base.Config;
-import com.serphacker.serposcope.models.base.Config.CaptchaService;
 import com.serphacker.serposcope.querybuilder.QConfig;
 import java.sql.Connection;
 
@@ -28,10 +27,13 @@ public class ConfigDB extends AbstractDB {
 //    public final static String APP_CRON_ENABLED = "app.cronenabled";
     public final static String APP_CRON_TIME = "app.crontime";
     
-    public final static String APP_CAPTCHASERVICE = "app.captchaservice";
-    public final static String APP_DBCUSER = "app.dbcuser";
-    public final static String APP_DBCPASS = "app.dbcpass";
-    public final static String APP_DBCAPI = "app.dbcapi";
+    public final static String APP_DBC_USER = "app.dbc.user";
+    public final static String APP_DBC_PASS = "app.dbc.pass";
+    
+    public final static String APP_DECAPTCHER_USER = "app.decaptcher.user";
+    public final static String APP_DECAPTCHER_PASS = "app.decaptcher.pass";
+    
+    public final static String APP_ANTICAPTCHA_KEY = "app.anticaptcha.key";
     
     public final static String APP_DISPLAY_HOME = "app.display.home";
     public final static String APP_DISPLAY_GOOGLE_TARGET = "app.display.google.target";
@@ -124,10 +126,15 @@ public class ConfigDB extends AbstractDB {
         Config config = new Config();
 
         config.setCronTime(get(APP_CRON_TIME, null));
-        config.setCaptchaService(CaptchaService.fromString(get(APP_CAPTCHASERVICE,null)));
-        config.setDbcUser(get(APP_DBCUSER,null));
-        config.setDbcPass(get(APP_DBCPASS,null));
-        config.setDbcApi(get(APP_DBCAPI, null));
+        
+        config.setDbcUser(get(APP_DBC_USER,null));
+        config.setDbcPass(get(APP_DBC_PASS,null));
+        
+        config.setDecaptcherUser(get(APP_DECAPTCHER_USER,null));
+        config.setDecaptcherPass(get(APP_DECAPTCHER_PASS,null));
+        
+        config.setAnticaptchaKey(get(APP_ANTICAPTCHA_KEY, null));
+        
         config.setDisplayHome(get(APP_DISPLAY_HOME, Config.DEFAULT_DISPLAY_HOME));
         config.setDisplayGoogleSearch(get(APP_DISPLAY_GOOGLE_SEARCH, Config.DEFAULT_DISPLAY_GOOGLE_SEARCH));
         config.setDisplayGoogleTarget(get(APP_DISPLAY_GOOGLE_TARGET, Config.DEFAULT_DISPLAY_GOOGLE_TARGET));
@@ -137,10 +144,15 @@ public class ConfigDB extends AbstractDB {
     
     public void updateConfig(Config config){
         update(APP_CRON_TIME, config.getCronTime() == null ? null : config.getCronTime().toString());
-        update(APP_CAPTCHASERVICE, config.getCaptchaService().toString());
-        update(APP_DBCUSER, config.getDbcUser());
-        update(APP_DBCPASS, config.getDbcPass());
-        update(APP_DBCAPI, config.getDbcApi());
+        
+        update(APP_DBC_USER, config.getDbcUser());
+        update(APP_DBC_PASS, config.getDbcPass());
+
+        update(APP_DECAPTCHER_USER, config.getDecaptcherUser());
+        update(APP_DECAPTCHER_PASS, config.getDecaptcherPass());
+        
+        update(APP_ANTICAPTCHA_KEY, config.getAnticaptchaKey());
+        
         update(APP_DISPLAY_HOME, config.getDisplayHome());
         update(APP_DISPLAY_GOOGLE_SEARCH, config.getDisplayGoogleSearch());
         update(APP_DISPLAY_GOOGLE_TARGET, config.getDisplayGoogleTarget());

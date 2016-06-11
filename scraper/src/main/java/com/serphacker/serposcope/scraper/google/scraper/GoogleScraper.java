@@ -381,7 +381,9 @@ public class GoogleScraper {
             LOG.error("solver can't resolve captcha (overload ?) error = {}", captcha.getError());
             return Status.ERROR_CAPTCHA_INCORRECT;
         }
-        LOG.debug("Got captcha response {} in {} seconds", captcha.getResponse(), captcha.getSolveDuration()/1000l);
+        LOG.debug("got captcha response {} in {} seconds from {}", captcha.getResponse(), captcha.getSolveDuration()/1000l, 
+            (captcha.getLastSolver() == null ? "?" : captcha.getLastSolver().getFriendlyName())
+        );
         
         try {
             action += "?continue=" + URLEncoder.encode(continueValue, "utf-8");

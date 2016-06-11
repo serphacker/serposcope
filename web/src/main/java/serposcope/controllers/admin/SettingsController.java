@@ -11,21 +11,13 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.serphacker.serposcope.db.base.BaseDB;
-import com.serphacker.serposcope.db.google.GoogleDB;
 import com.serphacker.serposcope.models.base.Config;
-import com.serphacker.serposcope.models.base.Config.CaptchaService;
-import static com.serphacker.serposcope.models.base.Config.PATTERN_CRONTIME;
-import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.scraper.captcha.solver.AntiCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DeathByCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DecaptcherSolver;
-import com.serphacker.serposcope.scraper.google.GoogleDevice;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import ninja.Context;
 import ninja.FilterWith;
 import ninja.Result;
@@ -38,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serposcope.controllers.BaseController;
-import serposcope.controllers.HomeController;
 import serposcope.filters.AdminFilter;
 import serposcope.filters.XSRFFilter;
 import serposcope.helpers.Validator;
@@ -74,21 +65,16 @@ public class SettingsController extends BaseController {
         @Param("displayGoogleTarget") String displayGoogleTarget,
         @Param("displayGoogleSearch") String displayGoogleSearch,
         @Param("cronTime") String cronTime,
-        @Param("service") String captchaService,
-        @Param("captchaUser") String captchaUser,
-        @Param("captchaPass") String captchaPass,
-        @Param("captchaApiKey") String captchaApiKey
+        @Param("dbcUser") String dbcUser,
+        @Param("dbcPass") String dbcPass,
+        @Param("decaptcherUser") String decaptcherUser,
+        @Param("decaptcherPass") String decaptcherPass,        
+        @Param("anticaptchaApiKey") String anticaptchaApiKey
     ){
         FlashScope flash = context.getFlashScope();
         
         Config config = new Config();
 
-        Config.CaptchaService service = Config.CaptchaService.fromString(captchaService);
-        if(Config.CaptchaService.DISABLE.equals(service)){
-            captchaUser = null;
-            captchaPass = null;
-        }
-        
         if(cronTime == null || cronTime.isEmpty()){
             config.setCronTime("");
         } else {
@@ -105,17 +91,19 @@ public class SettingsController extends BaseController {
 //            }
 //            config.setCronTime(LocalTime.of(Integer.parseInt(matcher.group(0)), Integer.parseInt(matcher.group(1))));
         }
-            
-        config.setCaptchaService(service);
-        switch(service){
-            case DEATHBYCAPTCHA:
-            case DECAPTCHER:
-                config.setDbcUser(captchaUser);
-                config.setDbcPass(captchaPass);
-                break;
-            case ANTICAPTCHA:
-                config.setDbcApi(captchaApiKey);
-                break;
+        
+        if(!Validator.isEmpty(dbcUser) && !Validator.isEmpty(dbcPass)){
+            config.setDbcUser(dbcUser);
+            config.setDbcPass(dbcPass);
+        }
+        
+        if(!Validator.isEmpty(decaptcherUser) && !Validator.isEmpty(decaptcherPass)){
+            config.setDecaptcherUser(decaptcherUser);
+            config.setDecaptcherPass(decaptcherPass);
+        }
+        
+        if(!Validator.isEmpty(anticaptchaApiKey)){
+            config.setAnticaptchaKey(anticaptchaApiKey);
         }
         
         if(displayHome != null && !Config.DEFAULT_DISPLAY_HOME.equals(displayHome) && Config.VALID_DISPLAY_HOME.contains(displayHome)){
@@ -155,25 +143,25 @@ public class SettingsController extends BaseController {
         @Param("api") String captchaApiKey
     ){
         
-        CaptchaService service = CaptchaService.fromString(captchaService);
-        
         CaptchaSolver solver = null;
-        switch(service){
-            case DEATHBYCAPTCHA:
-                if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
-                    solver = new DeathByCaptchaSolver(captchaUser, captchaPass);
-                }
-                break;
-            case DECAPTCHER:
-                if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
-                    solver = new DecaptcherSolver(captchaUser, captchaPass);
-                }
-                break;
-            case ANTICAPTCHA:
-                if(!StringUtils.isEmpty(captchaApiKey)){
-                    solver = new AntiCaptchaSolver(captchaApiKey);
-                }
-                break;
+        if(captchaService != null){
+            switch(captchaService){
+                case "dbc":
+                    if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
+                        solver = new DeathByCaptchaSolver(captchaUser, captchaPass);
+                    }
+                    break;
+                case "decaptcher":
+                    if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
+                        solver = new DecaptcherSolver(captchaUser, captchaPass);
+                    }
+                    break;
+                case "anticaptcha":
+                    if(!StringUtils.isEmpty(captchaApiKey)){
+                        solver = new AntiCaptchaSolver(captchaApiKey);
+                    }
+                    break;
+            }
         }
         
         if(solver == null){

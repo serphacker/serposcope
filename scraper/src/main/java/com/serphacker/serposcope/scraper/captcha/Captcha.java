@@ -33,6 +33,7 @@ public abstract class Captcha {
         OUT_OF_CREDITS,
         NETWORK_ERROR,
         TIMEOUT,
+        INTERRUPTED,
         EXCEPTION
     };
     

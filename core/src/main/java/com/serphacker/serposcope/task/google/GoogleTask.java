@@ -307,23 +307,10 @@ public class GoogleTask extends AbstractTask {
     protected final CaptchaSolver initializeCaptchaSolver(){
         solver = captchaSolverFactory.get(baseDB.config.getConfig());
         if(solver != null){
-            LOG.info("captcha service : {}", solver.getFriendlyName());
             if(!solver.init()){
-                LOG.warn("captcha service {} : failed to init()", solver.getFriendlyName());
-                return null;                
-            }            
-            
-            if(!solver.testLogin()){
-                LOG.warn("captcha service {} : can't login in", solver.getFriendlyName());
+                LOG.info("failed to init captcha solver {}", solver.getFriendlyName());
                 return null;
             }
-            
-            LOG.debug("capcha service {} : remaining credit {}", solver.getFriendlyName(), solver.getCredit());
-            if(!solver.hasCredit()){
-                LOG.warn("captcha service {} : not enough credit", solver.getFriendlyName());
-                return null;
-            }
-            
             return solver;
         } else {
             LOG.info("no captcha service configured");
