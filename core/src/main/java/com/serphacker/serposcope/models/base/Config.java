@@ -38,6 +38,9 @@ public class Config {
     String displayHome=DEFAULT_DISPLAY_HOME;
     String displayGoogleTarget=DEFAULT_DISPLAY_GOOGLE_TARGET;
     String displayGoogleSearch=DEFAULT_DISPLAY_GOOGLE_SEARCH;
+    
+    public final static int DEFAULT_PRUNE_RUNS = 365;
+    int pruneRuns = DEFAULT_PRUNE_RUNS;
 
     public String getDbcUser() {
         return dbcUser;
@@ -120,6 +123,14 @@ public class Config {
 
     public void setDisplayGoogleSearch(String displayGoogleSearch) {
         this.displayGoogleSearch = displayGoogleSearch;
+    }
+
+    public int getPruneRuns() {
+        return pruneRuns;
+    }
+
+    public void setPruneRuns(int pruneRuns) {
+        this.pruneRuns = pruneRuns;
     }
     
 }

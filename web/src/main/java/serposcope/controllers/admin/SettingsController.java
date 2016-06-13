@@ -11,6 +11,8 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.serphacker.serposcope.db.base.BaseDB;
+import static com.serphacker.serposcope.db.base.ConfigDB.APP_PRUNE_RUNS;
+import com.serphacker.serposcope.db.base.PruneDB;
 import com.serphacker.serposcope.models.base.Config;
 import com.serphacker.serposcope.scraper.captcha.solver.AntiCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
@@ -33,6 +35,7 @@ import serposcope.controllers.BaseController;
 import serposcope.filters.AdminFilter;
 import serposcope.filters.XSRFFilter;
 import serposcope.helpers.Validator;
+import serposcope.lifecycle.DBSizeUtils;
 
 @FilterWith(AdminFilter.class)
 @Singleton
@@ -49,13 +52,27 @@ public class SettingsController extends BaseController {
     Router router;
     
     @Inject
-    Messages msg;
+    Messages msg;    
+    
+    @Inject
+    PruneDB pruneDB;
+    
+    @Inject
+    DBSizeUtils dbSizeUtils;
     
     public Result settings(){
+        
+        String diskUsage = dbSizeUtils.getDbUsageFormatted();
+        String diskFree = dbSizeUtils.getDiskFreeFormatted();        
+        
         return Results
             .ok()
             .render("serverTime", LocalTime.now().format(HOUR_MINUTES))
-            .render("config", baseDB.config.getConfig());
+            .render("config", baseDB.config.getConfig())
+            .render("diskUsage", diskUsage)
+            .render("diskFree", diskFree)
+            .render("runs", baseDB.run.count())
+            ;
     }
     
     @FilterWith(XSRFFilter.class)
@@ -69,7 +86,8 @@ public class SettingsController extends BaseController {
         @Param("dbcPass") String dbcPass,
         @Param("decaptcherUser") String decaptcherUser,
         @Param("decaptcherPass") String decaptcherPass,        
-        @Param("anticaptchaApiKey") String anticaptchaApiKey
+        @Param("anticaptchaApiKey") String anticaptchaApiKey,
+        @Param("pruneRuns") Integer pruneRuns
     ){
         FlashScope flash = context.getFlashScope();
         
@@ -106,6 +124,12 @@ public class SettingsController extends BaseController {
             config.setAnticaptchaKey(anticaptchaApiKey);
         }
         
+        if(pruneRuns == null || pruneRuns == 0){
+            config.setPruneRuns(0);
+        } else {
+            config.setPruneRuns(pruneRuns);
+        }
+        
         if(displayHome != null && !Config.DEFAULT_DISPLAY_HOME.equals(displayHome) && Config.VALID_DISPLAY_HOME.contains(displayHome)){
             config.setDisplayHome(displayHome);
         }
@@ -132,6 +156,24 @@ public class SettingsController extends BaseController {
     ){
         baseDB.config.updateConfig(new Config());
         context.getFlashScope().success("label.settingsUpdated");
+        return Results.redirect(router.getReverseRoute(SettingsController.class, "settings"));
+    }
+    
+    @FilterWith(XSRFFilter.class)
+    public Result prune(
+        Context context,
+        @Param("pruneRuns") Integer pruneRuns
+    ){
+        if(pruneRuns == null){
+            pruneRuns = 0;
+        }
+        baseDB.config.updateInt(APP_PRUNE_RUNS, pruneRuns);
+        
+        if(pruneRuns > 0){
+            long prunedDays = pruneDB.prune(pruneRuns);
+            context.getFlashScope().success(msg.get("admin.settings.pruneResult", context, Optional.absent(), prunedDays).get());
+        }
+        
         return Results.redirect(router.getReverseRoute(SettingsController.class, "settings"));
     }
     

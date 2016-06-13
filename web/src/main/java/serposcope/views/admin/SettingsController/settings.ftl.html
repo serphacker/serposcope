@@ -9,20 +9,40 @@
                 <@authenticityForm/>
                   
                 <hr/>
-                <h2 class="styled-h2">${i18n("label.cron")}</h2>
+                <h2 class="styled-h2">${i18n("label.general")}</h2>
+                
                 <hr/>
-
                 <div class="form-group" >
                     <label for="cronTime" >${i18n("admin.settings.cronTime")} (${i18n("label.serverTime")} = ${serverTime})</label>
                     <input id="cronTime" class="form-control" name="cronTime" placeholder="${i18n("admin.settings.cronTimeExample")}"
                         value="<#if config.getCronTime()??><#if config.getCronTime().getHour() < 10>0</#if>${config.getCronTime().getHour()}:<#if config.getCronTime().getMinute() < 10>0</#if>${config.getCronTime().getMinute()}</#if>"
                     >
                     <span class="help-block">${i18n("admin.settings.cronTimeHelp")}</span>
-                </div>             
+                </div>
                 
-                <h2 class="styled-h2">${i18n("label.display")}</h2>
                 <hr/>
+                <div class="form-group" >
+                    <label for="pruneRuns" >${i18n("admin.settings.historyLimit")}</label>
+                    <span class="help-block">
+                        ${i18n("label.dbSize")} : <strong><#if diskUsage?? >${diskUsage}<#else>${i18n("label.unavailableOnMySQL")}</#if></strong> |
+                        ${i18n("label.diskFree")} : <strong><#if diskFree?? >${diskFree}<#else>${i18n("label.unavailable")}</#if></strong> |
+                        ${i18n("label.tasks")} : <strong>${runs}</strong>
+                    </span>
+                    <div class="input-group" >
+                        <input id="pruneRuns" class="form-control" name="pruneRuns" placeholder="0 to disable" value="${config.getPruneRuns()}" >
+                        <span class="input-group-btn">
+                            <button class="btn btn-danger btn-prune-now" type="button"
+                                data-warning="${i18n("admin.settings.pruneWarning")}"
+                                data-action="${reverseRoute("admin.SettingsController","prune")}" >${i18n("admin.settings.pruneNow")}</button>
+                        </span>
+                    </div>
+                    <div class="help-block">${i18n("admin.settings.historyLimitHelp")}</div>
+                </div>                
                 
+                <hr/>
+                <h2 class="styled-h2">${i18n("label.display")}</h2>
+                
+                <hr/>
                 <div class="form-group" >
                     <label for="displayHome" >${i18n("admin.settings.searchDisplayMode")}</label>
                     <div>

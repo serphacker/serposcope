@@ -181,6 +181,20 @@ public class RunDB extends AbstractDB {
         return runs;
     }    
     
+    
+    public long count(){
+        Long count = -1l;
+        try(Connection conn = ds.getConnection()){
+            count = new SQLQuery<>(conn, dbTplConf).select(t_run.count()).from(t_run).fetchFirst();
+        }catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        if(count == null){
+            count = -1l;
+        }
+        return count;
+    }        
+    
     /*
     public List<Run> listRunning(){
         List<Run> runs = new ArrayList<>();

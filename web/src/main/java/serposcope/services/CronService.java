@@ -9,6 +9,7 @@
 package serposcope.services;
 
 import com.serphacker.serposcope.db.base.ConfigDB;
+import com.serphacker.serposcope.db.base.PruneDB;
 import com.serphacker.serposcope.models.base.Config;
 import com.serphacker.serposcope.models.base.Run;
 import com.serphacker.serposcope.task.TaskManager;
@@ -38,7 +39,10 @@ public class CronService implements Runnable {
     TaskManager manager;
     
     @Inject
-    ConfigDB db;
+    ConfigDB configDB;
+    
+    @Inject
+    PruneDB pruneDB;
     
     @Start(order = 90)
     public void startService() {
@@ -62,7 +66,7 @@ public class CronService implements Runnable {
         
         previousCheck = now;
         
-        Config config = db.getConfig();
+        Config config = configDB.getConfig();
         if(config.getCronTime() == null){
             return;
         }
@@ -76,7 +80,23 @@ public class CronService implements Runnable {
             LOG.debug("starting google task via cron");
         } else {
             LOG.debug("failed to start google task via cron, this task is already running");
+            return;
         }
+        
+        try {
+            manager.joinGoogleTask();
+        }catch(InterruptedException ex){
+            LOG.debug("interrupted while waiting for google task");
+            return;
+        }
+        
+        if(config.getPruneRuns() > 0){
+            long pruned = pruneDB.prune(config.getPruneRuns());
+            LOG.info("history pruning : {} runs deleted", pruned);
+        } else {
+            LOG.info("history pruning is disabled");
+        }
+        
     }
 
 

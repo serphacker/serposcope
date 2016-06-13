@@ -19,7 +19,7 @@
         <div class="col-xs-6" >
             <div>
                 ${i18n("label.dbSize")} : <#if diskUsage?? >${diskUsage}<#else>${i18n("label.unavailableOnMySQL")}</#if> 
-                <!--[<a href="#" class="text-danger">prune</a>]-->
+                [<a href="${reverseRoute("admin.SettingsController", "settings")}" class="text-warning">${i18n("label.settings")?lower_case}</a>]
             </div>
             <div>
                 ${i18n("label.diskFree")} : <#if diskFree?? >${diskFree}<#else>${i18n("label.unavailable")}</#if>

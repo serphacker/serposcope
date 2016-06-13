@@ -73,7 +73,6 @@ public class HomeController extends BaseController {
     
     public Result home(Context context) {
         
-//        File f = new 
         String diskUsage = dbSizeUtils.getDbUsageFormatted();
         String diskFree = dbSizeUtils.getDiskFreeFormatted();
         

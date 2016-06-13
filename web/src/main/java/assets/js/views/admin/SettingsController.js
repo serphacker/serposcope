@@ -54,9 +54,28 @@ serposcope.adminSettingsController = function () {
         return false;
     };
     
+    var clickPruneNow = function(){
+        if(confirm($(this).attr("data-warning"))){
+            $('<form>', {
+                'action': $(this).attr("data-action"),
+                'method': 'post',
+                'target': '_top'
+            }).append($('<input>', {
+                'name': '_xsrf',
+                'value': $('#_xsrf').attr("data-value"),
+                'type': 'hidden'
+            })).append($('<input>', {
+                'name': 'pruneRuns',
+                'value': $('#pruneRuns').val(),
+                'type': 'hidden'
+            })).appendTo(document.body).submit();
+        }
+    };
+    
     var settings = function() {
         $('#btn-reset-settings').click(resetSettings);
         $('.btn-test-captcha').click(testCaptcha);
+        $('.btn-prune-now').click(clickPruneNow);
     };
     
     var oPublic = {
