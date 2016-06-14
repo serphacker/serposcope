@@ -17,8 +17,10 @@ import com.querydsl.sql.Configuration;
 import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.di.db.ConfigurationProvider;
 import com.serphacker.serposcope.di.db.DataSourceProvider;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import javax.sql.DataSource;
 import org.junit.Assume;
 import org.junit.Before;
@@ -30,10 +32,13 @@ public class AbstractDBIT {
     @Inject
     BaseDB db;
     
-    protected String getDbUrl(){
-        return "jdbc:h2:mem:test;MODE=MySQL";
+    protected String getDbUrl() {
         // TODO improve integration test, should be done on a mysql backend too 
-        // "jdbc:mysql://" + props.getProperty("mysql.host") + ":3306/" + props.getProperty("mysql.database") + "?user=" + props.getProperty("mysql.user") + "&password=" + props.getProperty("mysql.password") + "&allowMultiQueries=true"));
+        Properties propsSQL = new Properties();
+        try{ propsSQL.load(ClassLoader.class.getResourceAsStream("/testconfig.properties")); } catch(Exception ex){}
+        return 
+            //"jdbc:h2:mem:test;MODE=MySQL";
+            "jdbc:mysql://" + propsSQL.getProperty("mysql.host") + ":3306/" + propsSQL.getProperty("mysql.database") + "?user=" + propsSQL.getProperty("mysql.user") + "&password=" + propsSQL.getProperty("mysql.password") + "&allowMultiQueries=true";
     }
     
     protected List<Module> getModule() {

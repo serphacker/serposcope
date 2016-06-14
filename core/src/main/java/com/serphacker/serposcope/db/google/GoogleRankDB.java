@@ -11,9 +11,11 @@ import com.google.inject.Singleton;
 import com.mysema.commons.lang.CloseableIterator;
 import com.querydsl.core.QueryFlag;
 import com.querydsl.core.Tuple;
+import com.querydsl.sql.SQLBindings;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
+import com.querydsl.sql.dml.SQLMergeBatch;
 import com.querydsl.sql.dml.SQLMergeClause;
 import com.serphacker.serposcope.db.AbstractDB;
 import com.serphacker.serposcope.models.google.GoogleBest;
@@ -22,6 +24,7 @@ import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.querybuilder.QGoogleRank;
 import com.serphacker.serposcope.querybuilder.QGoogleRankBest;
 import java.sql.Connection;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,7 +94,97 @@ public class GoogleRankDB extends AbstractDB {
         } else {
             return insertOnDuplicateKey(rank);
         }
-    }       
+    }
+    
+    public boolean insert(Collection<GoogleRank> rank) {
+        if(dbTplConf.getTemplates().isNativeMerge()){
+            return insertMerge(rank);
+        } else {
+            return insertOnDuplicateKey(rank);
+        }
+    }    
+    
+    public boolean insertMerge(Collection<GoogleRank> ranks){
+        try(Connection con = ds.getConnection()){
+            SQLMergeClause clause = new SQLMergeClause(con, dbTplConf, t_rank);
+            for (GoogleRank rank : ranks) {
+                clause
+                    .set(t_rank.runId, rank.runId)
+                    .set(t_rank.groupId, rank.groupId)
+                    .set(t_rank.googleTargetId, rank.googleTargetId)
+                    .set(t_rank.googleSearchId, rank.googleSearchId)
+                    .set(t_rank.rank, rank.rank)
+                    .set(t_rank.previousRank, rank.previousRank)
+                    .set(t_rank.diff, rank.diff)
+                    .set(t_rank.url, rank.url)
+                    .addBatch();
+            }
+            return clause.execute() > 0;
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        return false;
+    }
+    
+    public boolean insertOnDuplicateKey(Collection<GoogleRank> ranks){
+        try(Connection con = ds.getConnection()){
+            
+            // waiting for patch https://github.com/querydsl/querydsl/issues/1921
+            /*
+            SQLInsertClause clause = new SQLInsertClause(con, dbTplConf, t_rank);
+            clause.setBatchToBulk(true);
+            for (GoogleRank rank : ranks) {
+                clause
+                    .set(t_rank.runId, rank.runId)
+                    .set(t_rank.groupId, rank.groupId)
+                    .set(t_rank.googleTargetId, rank.googleTargetId)
+                    .set(t_rank.googleSearchId, rank.googleSearchId)
+                    .set(t_rank.rank, rank.rank)
+                    .set(t_rank.previousRank, rank.previousRank)
+                    .set(t_rank.diff, rank.diff)
+                    .set(t_rank.url, rank.url)
+                    .addBatch();
+            }
+            clause.addFlag(QueryFlag.Position.END, 
+                " on duplicate key update rank = values(rank) " +
+                ", previous_rank = values(previous_rank)" + 
+                ", diff = values(diff)" + 
+                ", url = values(url)"
+            );
+            return clause.execute() > 0;
+            */
+            
+            // 
+            StringBuilder builder = new StringBuilder("INSERT INTO `GOOGLE_RANK` " + 
+                "(`RUN_ID`, `GROUP_ID`, `GOOGLE_TARGET_ID`, `GOOGLE_SEARCH_ID`, `RANK`, `PREVIOUS_RANK`, `DIFF`, `URL`) " + 
+                "VALUES ");
+            for (GoogleRank rank : ranks) {
+                builder.append("(");
+                builder.append(rank.runId).append(',');
+                builder.append(rank.groupId).append(',');
+                builder.append(rank.googleTargetId).append(',');
+                builder.append(rank.googleSearchId).append(',');
+                builder.append(rank.rank).append(',');
+                builder.append(rank.previousRank).append(',');
+                builder.append(rank.diff).append(',');
+                builder.append(dbTplConf.asLiteral(rank.url));
+                builder.append("),");
+            }
+            builder.setCharAt(builder.length()-1, ' ');
+            builder.append(" on duplicate key update rank = values(rank) " +
+                ", previous_rank = values(previous_rank)" + 
+                ", diff = values(diff)" + 
+                ", url = values(url)"
+            );
+            try(Statement stmt = con.createStatement()){
+                return stmt.executeUpdate(builder.toString()) > 0;
+            }
+            
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        return false;
+    }    
     
     public boolean insertMerge(GoogleRank rank) {
         boolean inserted = false;

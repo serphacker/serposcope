@@ -12,6 +12,8 @@ import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
+import com.querydsl.sql.dml.SQLMergeBatch;
+import com.querydsl.sql.dml.SQLMergeClause;
 import com.serphacker.serposcope.db.AbstractDB;
 import com.serphacker.serposcope.models.google.GoogleRank;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
@@ -39,7 +41,7 @@ public class GoogleTargetSummaryDB extends AbstractDB {
         try(Connection con = ds.getConnection()){
             
             for (GoogleTargetSummary target : summaries) {
-                inserted += new SQLInsertClause(con, dbTplConf, t_summary)
+                inserted += new SQLMergeClause(con, dbTplConf, t_summary)
                     .set(t_summary.groupId, target.getGroupId())
                     .set(t_summary.googleTargetId, target.getTargetId())
                     .set(t_summary.runId, target.getRunId())

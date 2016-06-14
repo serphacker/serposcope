@@ -11,7 +11,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <querydsl.version>4.0.6</querydsl.version>
+        <querydsl.version>4.1.2</querydsl.version>
     </properties>
     
     <dependencies>
