@@ -10,16 +10,24 @@ package serposcope.controllers.admin;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.serphacker.serposcope.db.base.BaseDB;
+import com.serphacker.serposcope.db.base.ExportDB;
 import com.serphacker.serposcope.models.base.User;
 import conf.SerposcopeConf;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import ninja.AuthenticityFilter;
 import ninja.Context;
 import ninja.FilterWith;
@@ -28,7 +36,13 @@ import ninja.Results;
 import ninja.Router;
 import ninja.params.Param;
 import ninja.session.FlashScope;
+import ninja.uploads.DiskFileItemProvider;
+import ninja.uploads.FileItem;
+import ninja.uploads.FileProvider;
+import ninja.uploads.MemoryFileItemProvider;
 import ninja.utils.ResponseStreams;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serposcope.controllers.BaseController;
@@ -44,6 +58,12 @@ public class AdminController extends BaseController {
 
     @Inject
     SerposcopeConf conf;
+    
+    @Inject
+    Router router;
+
+    @Inject
+    ExportDB exportDB;
 
     public Result admin() {
         return Results
@@ -94,5 +114,50 @@ public class AdminController extends BaseController {
                 }
             });
     }
+
+    @FilterWith(XSRFFilter.class)
+    public Result exportSQL(Context context) {
+        return Results
+            .contentType("application/octet-stream")
+            .addHeader("Content-Disposition", "attachment; filename=\"export.sql.gz\"")
+            .render((ctx, res) -> {
+                ResponseStreams responseStreams = context.finalizeHeaders(res);
+                try (
+                    Writer writer = new PrintWriter(new GZIPOutputStream(responseStreams.getOutputStream()));
+                ) {
+                    exportDB.export(writer);
+                } catch (IOException ex) {
+                    LOG.error("export dl ex", ex);
+                }
+            });
+    }
+    
+    @FileProvider(DiskFileItemProvider.class)
+    @FilterWith(XSRFFilter.class)
+    public Result importSQL(Context context, @Param("dump") FileItem fileItem) throws FileUploadException, IOException {
+        FlashScope flash = context.getFlashScope();
+        
+        if(fileItem == null){
+            flash.error("error.noFileUploaded");
+            return Results.redirect(router.getReverseRoute(AdminController.class, "admin"));
+        }
+        
+        try {
+            InputStream is = fileItem.getInputStream();
+            if(fileItem.getFileName().endsWith(".gz")){
+                is = new GZIPInputStream(is);
+            }
+
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(is))){
+                exportDB.importStream(reader);
+            }
+        }catch(Exception ex){
+            LOG.error("SQL import error", ex);
+            flash.error("error.notImplemented");
+        }
+        
+        flash.success("admin.menu.importSuccessful");
+        return Results.redirect(router.getReverseRoute(AdminController.class, "admin"));
+    }    
 
 }

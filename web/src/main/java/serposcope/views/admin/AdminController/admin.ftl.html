@@ -2,11 +2,10 @@
 <#import "../admin.ftl.html" as layout>
 <@layout.adminLayout i18n("admin.title") >
 
-<h2 class="styled-h2">${i18n("admin.title")}</h2>
-
+<h2 class="styled-h2">${i18n("admin.menu.settings")}</h2>
 <div class="row top15">
     <a href="${reverseRoute("admin.SettingsController","settings")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
-        <div class="info-box">
+       <div class="info-box">
             <span class="info-box-icon bg-aqua"><i class="fa fa-wrench"></i></span>
 
             <div class="info-box-content">
@@ -15,7 +14,7 @@
         </div>
     </a>
     <a href="${reverseRoute("admin.ProxyController","proxies")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
-        <div class="info-box">
+       <div class="info-box">
             <span class="info-box-icon bg-red"><i class="fa fa-shield"></i></span>
 
             <div class="info-box-content">
@@ -32,6 +31,10 @@
             </div>
         </div>
     </a>
+</div>
+
+<h2 class="styled-h2">${i18n("admin.menu.users")}</h2>
+<div class="row top15">
     <a href="${reverseRoute("admin.UsersController","users")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
        <div class="info-box">
             <span class="info-box-icon bg-navy"><i class="fa fa-group"></i></span>
@@ -41,6 +44,10 @@
             </div>
         </div>
     </a>    
+</div>
+
+<h2 class="styled-h2">${i18n("admin.menu.tasks")}</h2>
+<div class="row top15">
     <a href="${reverseRoute("admin.TaskController","tasks")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
        <div class="info-box">
             <span class="info-box-icon bg-purple"><i class="fa fa-cogs"></i></span>
@@ -59,6 +66,31 @@
             </div>
         </div>
     </a>
+</div>
+
+<h2 class="styled-h2">${i18n("admin.menu.system")}</h2>
+<div class="row top15">
+    <a href="${reverseRoute("admin.AdminController","exportSQL","_xsrf", session.___AT)}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
+       <div class="info-box">
+            <span class="info-box-icon bg-teal"><i class="fa fa-download"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("admin.menu.save")}</span>
+            </div>
+        </div>
+    </a>
+    <a href="#" id="import-sql-btn" class="col-md-3 col-sm-6 col-xs-12 info-box-container"
+       data-warning="${i18n("admin.menu.importWarning")}"
+       data-href="${reverseRoute("admin.AdminController","importSQL")}" 
+       >
+        <div class="info-box">
+            <span class="info-box-icon bg-orange"><i class="fa fa-upload"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">${i18n("admin.menu.restore")}</span>
+            </div>
+        </div>
+    </a>    
     <a href="${reverseRoute("admin.AdminController","sysconfig")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
        <div class="info-box">
             <span class="info-box-icon bg-gray"><i class="fa fa-desktop"></i></span>
@@ -76,7 +108,7 @@
                 <span class="info-box-text">${i18n("label.stackdump")}</span>
             </div>
         </div>
-    </a>    
+    </a>
     <#if !global.prod >
     <a href="${reverseRoute("admin.DebugController","debug")}" class="col-md-3 col-sm-6 col-xs-12 info-box-container">
        <div class="info-box">
@@ -89,4 +121,30 @@
     </a>    
     </#if>
 </div>
+<div class="csp-script" data-src="adminMenuController.menu" ></div>
 </@>
+<div id="sql-import-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">${i18n("admin.menu.restore")}</h4>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" action="${reverseRoute("admin.AdminController", "importSQL")}">
+                <@authenticityForm/>
+                <div class="modal-body">
+                    <p class="text-danger">${i18n("admin.menu.importWarning")}</p>
+                    <div class="form-group" >
+                        <input type="submit" class="btn btn-primary pull-right" value="${i18n("label.upload")}" />
+                        <input type="file" name="dump" accept=".sql,.sql.gz" />
+                   </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.cancel")}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

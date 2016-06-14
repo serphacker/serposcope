@@ -245,6 +245,7 @@
                                         <jsSourceFile>/assets/js/sidebar.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/HomeController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/GroupController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/admin/MenuController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/admin/SettingsController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/admin/UsersController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/admin/DebugController.js</jsSourceFile>

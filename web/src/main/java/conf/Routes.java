@@ -43,6 +43,8 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/admin").with(AdminController.class, "admin");
         router.GET().route("/admin/sysconfig").with(AdminController.class, "sysconfig");
         router.GET().route("/admin/stackdump").with(AdminController.class, "stackdump");
+        router.GET().route("/admin/sql/export").with(AdminController.class, "exportSQL");
+        router.POST().route("/admin/sql/import").with(AdminController.class, "importSQL");
         
         router.GET().route("/admin/debug").with(DebugController.class, "debug");
         router.POST().route("/admin/debug/wipe-rankings").with(DebugController.class, "wipeRankings");
@@ -52,7 +54,6 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/admin/debug/test").with(DebugController.class, "test"); 
         router.GET().route("/admin/debug/shutdown").with(DebugController.class, "shutdown"); 
         router.POST().route("/admin/debug/dummy-post").with(DebugController.class, "dummyPost"); 
-
         
         router.GET().route("/admin/settings").with(SettingsController.class, "settings");
         router.POST().route("/admin/settings/update").with(SettingsController.class, "update");

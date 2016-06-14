@@ -22,6 +22,16 @@ public class MigrationDB extends AbstractDB {
     
     public final static int LAST_DB_VERSION = 4;
     
+    public final static String[] DB_SCHEMA_FILES = new String[]{
+        "/db/00-base.h2.sql",
+        "/db/01-google.h2.sql"
+    };
+    
+    public final static String[] TABLES = new String[]{
+        "CONFIG", "USER", "GROUP", "EVENT", "USER_GROUP", "RUN", "PROXY",
+        "GOOGLE_SEARCH", "GOOGLE_SERP", "GOOGLE_SEARCH_GROUP", "GOOGLE_TARGET", "GOOGLE_RANK", "GOOGLE_RANK_BEST", "GOOGLE_TARGET_SUMMARY"
+    };    
+    
     @Inject
     ConfigDB config;
     
@@ -41,10 +51,7 @@ public class MigrationDB extends AbstractDB {
     
     
     public void recreateDb() throws Exception {
-        recreateDb(new String[]{
-            "/db/00-base.h2.sql",
-            "/db/01-google.h2.sql"
-        });
+        recreateDb(DB_SCHEMA_FILES);
         try(
             Connection con = ds.getConnection();
             Statement stmt = con.createStatement()
