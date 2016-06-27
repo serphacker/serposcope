@@ -198,7 +198,22 @@ public class GoogleSearchDB extends AbstractDB {
         } catch(Exception ex){
             LOG.error("SQL error", ex);
         }
-    }           
+    }
+    
+    public long count(){
+        Long count = null;
+        try(Connection con = ds.getConnection()){
+            count =new SQLQuery<Void>(con, dbTplConf)
+                .select(t_gsearch.count())
+                .from(t_gsearch)
+                .fetchFirst();
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        
+        return count == null ? -1l : count;
+        
+    }
     
     /**
      * list all google search

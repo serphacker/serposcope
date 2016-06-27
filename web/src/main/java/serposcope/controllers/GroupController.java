@@ -14,18 +14,7 @@ import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.db.google.GoogleDB;
 import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Group.Module;
-import com.serphacker.serposcope.models.base.Run;
-import com.serphacker.serposcope.models.google.GoogleRank;
-import com.serphacker.serposcope.models.google.GoogleSearch;
-import com.serphacker.serposcope.models.google.GoogleTarget;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import conf.SerposcopeConf;
 import ninja.Context;
 import ninja.FilterWith;
 import ninja.Result;
@@ -43,6 +32,9 @@ import serposcope.filters.XSRFFilter;
 public class GroupController extends BaseController {
     
     @Inject
+    SerposcopeConf conf;
+    
+    @Inject
     Router router;
     
     @Inject
@@ -52,10 +44,12 @@ public class GroupController extends BaseController {
     GoogleDB googleDB;
 
     public Result groups(Context context) throws JsonProcessingException{
-        
+        long count = googleDB.search.count();
         return Results
             .ok()
             .render("groups", context.getAttribute("groups"))
+            .render("search_count", googleDB.search.count())
+            .render("h2warning", count > 2000 && conf.dbUrl != null && conf.dbUrl.contains(":h2:"))
             ;
     }
     
