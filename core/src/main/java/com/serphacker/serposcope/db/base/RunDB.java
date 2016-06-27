@@ -90,7 +90,20 @@ public class RunDB extends AbstractDB {
             LOG.error("SQL error", ex);
         }
         return updated;
-    }    
+    }
+
+    public boolean updateStarted(Run run){
+        boolean updated = false;
+        try(Connection conn = ds.getConnection()){
+            updated = new SQLUpdateClause(conn, dbTplConf, t_run)
+                .set(t_run.started, run.getStarted()== null ? null : Timestamp.valueOf(run.getStarted()))
+                .where(t_run.id.eq(run.getId()))
+                .execute() == 1;
+        }catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        return updated;        
+    }
     
     public boolean updateFinished(Run run){
         boolean updated = false;

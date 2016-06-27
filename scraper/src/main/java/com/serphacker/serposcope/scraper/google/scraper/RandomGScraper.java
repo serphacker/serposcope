@@ -14,6 +14,7 @@ import com.serphacker.serposcope.scraper.http.ScrapClient;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,17 @@ import org.slf4j.LoggerFactory;
 public class RandomGScraper extends GoogleScraper {
 
     private static final Logger LOG = LoggerFactory.getLogger(RandomGScraper.class);
+    
+    Random r;
 
     public RandomGScraper(ScrapClient client, CaptchaSolver solver) {
-        super(client, solver);
+        this(client, solver, new Random());
     }
+    
+    public RandomGScraper(ScrapClient client, CaptchaSolver solver, Random r) {
+        super(client, solver);
+        this.r = r;
+    }    
     
     @Override
     public GoogleScrapResult scrap(GoogleScrapSearch options) throws InterruptedException {

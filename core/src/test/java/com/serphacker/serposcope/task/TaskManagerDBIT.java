@@ -121,7 +121,9 @@ public class TaskManagerDBIT extends AbstractDBIT {
         initialize();
         LocalDateTime now = LocalDateTime.now().withNano(0);
         
-        taskManager.startGoogleTask(Mode.CRON, now);
+        Run run = new Run(Mode.CRON, Group.Module.GOOGLE, now);
+        
+        taskManager.startGoogleTask(run);
         Thread.sleep(2000l);
         taskManager.abortGoogleTask(true);
         taskManager.joinGoogleTask();

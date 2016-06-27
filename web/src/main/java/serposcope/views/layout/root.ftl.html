@@ -52,8 +52,9 @@
                         <a href="${reverseRoute("admin.AdminController","admin")}" >${i18n("label.admin")}</a>
                     </li>
                     <li>
-                        <a href="${reverseRoute("admin.TaskController","startTask","_xsrf", session.___AT)}" 
-                           id="btn-run-modules" title="${i18n("label.checkRanksDesc")}" data-toggle="tooltip" data-placement="bottom" >${i18n("label.checkRanks")}</a>
+                        <a href="#" id="btn-run-modules" title="${i18n("label.checkRanksDesc")}" data-toggle="tooltip" data-placement="bottom" >
+                           ${i18n("label.checkRanks")}
+                        </a>
                     </li>
                     <#if global.update.hasNewVersion() >
                     <li>
@@ -149,7 +150,40 @@
                     </form>
                 </div>
             </div>
-        </div>                
+        </div>
+        
+        <div id="run-modal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">${i18n("label.checkRanks")}</h4>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div>
+                            <p class="text-center">
+                                <a  class="btn btn-primary"
+                                    href="${reverseRoute("admin.TaskController","startTask","_xsrf", session.___AT)}" >
+                                    ${i18n("root.checkAllKeywords")}
+                                </a>
+                            </p>
+                            <p class="help-block">${i18n("root.checkAllKeywordsDesc")}</p>
+                        </div>
+                        <hr/>
+                        <div>
+                            <p class="text-center">
+                                <a  class="btn btn-warning"
+                                    href="${reverseRoute("admin.TaskController","startTask","_xsrf", session.___AT, "update", "true")}" >
+                                    ${i18n("root.recheckKeywords")}
+                                </a>
+                            </p>
+                            <p class="help-block">${i18n("root.recheckKeywordsDesc")}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <#if global.prod >
         <script type="text/javascript" src="/assets/combined.min.js"></script>

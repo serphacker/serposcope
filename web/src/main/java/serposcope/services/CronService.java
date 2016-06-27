@@ -11,6 +11,8 @@ package serposcope.services;
 import com.serphacker.serposcope.db.base.ConfigDB;
 import com.serphacker.serposcope.db.base.PruneDB;
 import com.serphacker.serposcope.models.base.Config;
+import com.serphacker.serposcope.models.base.Group;
+import com.serphacker.serposcope.models.base.Group.Module;
 import com.serphacker.serposcope.models.base.Run;
 import com.serphacker.serposcope.task.TaskManager;
 import java.time.LocalDateTime;
@@ -76,7 +78,7 @@ public class CronService implements Runnable {
         }
         
         
-        if(manager.startGoogleTask(Run.Mode.CRON, LocalDateTime.now())){
+        if(manager.startGoogleTask(new Run(Run.Mode.CRON, Module.GOOGLE, LocalDateTime.now()))){
             LOG.debug("starting google task via cron");
         } else {
             LOG.debug("failed to start google task via cron, this task is already running");

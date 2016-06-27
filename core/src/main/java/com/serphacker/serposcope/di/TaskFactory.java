@@ -15,5 +15,5 @@ import javax.annotation.Nullable;
 
 
 public interface TaskFactory {
-    GoogleTask create(Run.Mode mode, LocalDateTime startDate);
+    GoogleTask create(Run run);
 }

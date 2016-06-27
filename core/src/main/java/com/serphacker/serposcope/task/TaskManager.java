@@ -11,6 +11,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.di.TaskFactory;
+import com.serphacker.serposcope.models.base.Group;
+import com.serphacker.serposcope.models.base.Group.Module;
 import com.serphacker.serposcope.models.base.Run;
 import com.serphacker.serposcope.models.base.Run.Mode;
 import com.serphacker.serposcope.task.google.GoogleTask;
@@ -43,14 +45,14 @@ public class TaskManager {
         }        
     }
     
-    public boolean startGoogleTask(Mode mode, LocalDateTime date){
+    public boolean startGoogleTask(Run run){
         synchronized(googleTaskLock){
             
             if(googleTask != null && googleTask.isAlive()){
                 return false;
             }
             
-            googleTask = googleTaskFactory.create(mode, date);
+            googleTask = googleTaskFactory.create(run);
             googleTask.start();
             return true;
         }

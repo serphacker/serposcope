@@ -18,6 +18,7 @@ import com.serphacker.serposcope.db.AbstractDB;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.querybuilder.QGoogleSearch;
 import com.serphacker.serposcope.querybuilder.QGoogleSearchGroup;
+import com.serphacker.serposcope.querybuilder.QGoogleSerp;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -29,8 +30,9 @@ import java.util.Map;
 @Singleton
 public class GoogleSearchDB extends AbstractDB {
     
-    QGoogleSearch t_gs = QGoogleSearch.googleSearch;
-    QGoogleSearchGroup t_gsg = QGoogleSearchGroup.googleSearchGroup;
+    QGoogleSearch t_gsearch = QGoogleSearch.googleSearch;
+    QGoogleSearchGroup t_ggroup = QGoogleSearchGroup.googleSearchGroup;
+    QGoogleSerp t_gserp = QGoogleSerp.googleSerp;
 
     public int insert(Collection<GoogleSearch> searches, int groupId){
         int inserted = 0;
@@ -40,23 +42,23 @@ public class GoogleSearchDB extends AbstractDB {
             for (GoogleSearch search : searches) {
                 
                 if(search.getId() == 0){
-                    Integer key = new SQLInsertClause(con, dbTplConf, t_gs)
-                        .set(t_gs.keyword, search.getKeyword())
-                        .set(t_gs.tld, search.getTld())
-                        .set(t_gs.datacenter, search.getDatacenter())
-                        .set(t_gs.device, (byte)search.getDevice().ordinal())
-                        .set(t_gs.local, search.getLocal())
-                        .set(t_gs.customParameters, search.getCustomParameters())
-                        .executeWithKey(t_gs.id);
+                    Integer key = new SQLInsertClause(con, dbTplConf, t_gsearch)
+                        .set(t_gsearch.keyword, search.getKeyword())
+                        .set(t_gsearch.tld, search.getTld())
+                        .set(t_gsearch.datacenter, search.getDatacenter())
+                        .set(t_gsearch.device, (byte)search.getDevice().ordinal())
+                        .set(t_gsearch.local, search.getLocal())
+                        .set(t_gsearch.customParameters, search.getCustomParameters())
+                        .executeWithKey(t_gsearch.id);
 
                     if(key != null){
                         search.setId(key);
                     }
                 }
                 
-                inserted += new SQLMergeClause(con, dbTplConf, t_gsg)
-                    .set(t_gsg.groupId, groupId)
-                    .set(t_gsg.googleSearchId, search.getId())
+                inserted += new SQLMergeClause(con, dbTplConf, t_ggroup)
+                    .set(t_ggroup.groupId, groupId)
+                    .set(t_ggroup.googleSearchId, search.getId())
                     .execute() == 1 ? 1 : 0;
             }
             
@@ -74,33 +76,33 @@ public class GoogleSearchDB extends AbstractDB {
             
             
             SQLQuery<Integer> query = new SQLQuery<Void>(con, dbTplConf)
-                .select(t_gs.id)
-                .from(t_gs)
-                .where(t_gs.keyword.eq(search.getKeyword()))
-                .where(t_gs.device.eq((byte)search.getDevice().ordinal()));
+                .select(t_gsearch.id)
+                .from(t_gsearch)
+                .where(t_gsearch.keyword.eq(search.getKeyword()))
+                .where(t_gsearch.device.eq((byte)search.getDevice().ordinal()));
             
             if(search.getTld() != null){
-                query.where(t_gs.tld.eq(search.getTld()));
+                query.where(t_gsearch.tld.eq(search.getTld()));
             } else {
-                query.where(t_gs.tld.isNull());
+                query.where(t_gsearch.tld.isNull());
             }
             
             if(search.getDatacenter() != null){
-                query.where(t_gs.datacenter.eq(search.getDatacenter()));
+                query.where(t_gsearch.datacenter.eq(search.getDatacenter()));
             } else {
-                query.where(t_gs.datacenter.isNull());
+                query.where(t_gsearch.datacenter.isNull());
             }
             
             if(search.getLocal() != null){
-                query.where(t_gs.local.eq(search.getLocal()));
+                query.where(t_gsearch.local.eq(search.getLocal()));
             } else {
-                query.where(t_gs.local.isNull());
+                query.where(t_gsearch.local.isNull());
             }
             
             if(search.getCustomParameters()!= null){
-                query.where(t_gs.customParameters.eq(search.getCustomParameters()));
+                query.where(t_gsearch.customParameters.eq(search.getCustomParameters()));
             } else {
-                query.where(t_gs.customParameters.isNull());
+                query.where(t_gsearch.customParameters.isNull());
             }
             
             Integer fetchedId = query.fetchFirst();
@@ -122,9 +124,9 @@ public class GoogleSearchDB extends AbstractDB {
         try(Connection con = ds.getConnection()){
             
             Tuple tuple = new SQLQuery<Void>(con, dbTplConf)
-                .select(t_gs.all())
-                .from(t_gs)
-                .where(t_gs.id.eq(id))
+                .select(t_gsearch.all())
+                .from(t_gsearch)
+                .where(t_gsearch.id.eq(id))
                 .fetchFirst();
                 
             search = fromTuple(tuple);
@@ -141,9 +143,9 @@ public class GoogleSearchDB extends AbstractDB {
         
         try(Connection con = ds.getConnection()){
             
-            deleted = new SQLDeleteClause(con, dbTplConf, t_gsg)
-                .where(t_gsg.googleSearchId.eq(search.getId()))
-                .where(t_gsg.groupId.eq(groupId))
+            deleted = new SQLDeleteClause(con, dbTplConf, t_ggroup)
+                .where(t_ggroup.googleSearchId.eq(search.getId()))
+                .where(t_ggroup.groupId.eq(groupId))
                 .execute() == 1;
             
         } catch(Exception ex){
@@ -160,8 +162,8 @@ public class GoogleSearchDB extends AbstractDB {
             
             hasGroup = new SQLQuery<Void>(con, dbTplConf)
                 .select(Expressions.ONE)
-                .from(t_gsg)
-                .where(t_gsg.googleSearchId.eq(search.getId()))
+                .from(t_ggroup)
+                .where(t_ggroup.googleSearchId.eq(search.getId()))
                 .fetchOne() != null;
             
         } catch(Exception ex){
@@ -177,8 +179,8 @@ public class GoogleSearchDB extends AbstractDB {
         
         try(Connection con = ds.getConnection()){
             
-            deleted = new SQLDeleteClause(con, dbTplConf, t_gs)
-                .where(t_gs.id.eq(search.getId()))
+            deleted = new SQLDeleteClause(con, dbTplConf, t_gsearch)
+                .where(t_gsearch.id.eq(search.getId()))
                 .execute() == 1;
             
         } catch(Exception ex){
@@ -191,8 +193,8 @@ public class GoogleSearchDB extends AbstractDB {
     
     public void wipe(){
         try(Connection con = ds.getConnection()){
-            new SQLDeleteClause(con, dbTplConf, t_gsg).execute();
-            new SQLDeleteClause(con, dbTplConf, t_gs).execute();
+            new SQLDeleteClause(con, dbTplConf, t_ggroup).execute();
+            new SQLDeleteClause(con, dbTplConf, t_gsearch).execute();
         } catch(Exception ex){
             LOG.error("SQL error", ex);
         }
@@ -217,12 +219,12 @@ public class GoogleSearchDB extends AbstractDB {
         try(Connection con = ds.getConnection()){
             
             SQLQuery<Tuple> query = new SQLQuery<Void>(con, dbTplConf)
-                .select(t_gs.all())
-                .from(t_gs);
+                .select(t_gsearch.all())
+                .from(t_gsearch);
             
             if(groups != null){
-                query.join(t_gsg).on(t_gs.id.eq(t_gsg.googleSearchId));
-                query.where(t_gsg.groupId.in(groups));
+                query.join(t_ggroup).on(t_gsearch.id.eq(t_ggroup.googleSearchId));
+                query.where(t_ggroup.groupId.in(groups));
             }
             
             List<Tuple> tuples = query.fetch();
@@ -240,21 +242,51 @@ public class GoogleSearchDB extends AbstractDB {
         return searches;
     }
     
+    public List<GoogleSearch> listUnchecked(int runId){
+        List<GoogleSearch> searches = new ArrayList<>();
+        
+        try(Connection con = ds.getConnection()){
+            
+            SQLQuery<Tuple> query = new SQLQuery<Void>(con, dbTplConf)
+                .select(t_gsearch.all())
+                .from(t_gsearch)
+                .where(t_gsearch.id.notIn(
+                    new SQLQuery<Void>(con, dbTplConf)
+                        .select(t_gserp.googleSearchId)
+                        .from(t_gserp)
+                        .where(t_gserp.runId.eq(runId))
+                ));
+            
+            List<Tuple> tuples = query.fetch();
+            
+            if(tuples != null){
+                for (Tuple tuple : tuples) {
+                    searches.add(fromTuple(tuple));
+                }
+            }
+            
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        
+        return searches;
+    }    
+    
     public Map<Integer, GoogleSearch> mapBySearchId(Collection<Integer> searchId){
         Map<Integer, GoogleSearch> searches = new HashMap<>();
         
         try(Connection con = ds.getConnection()){
             
             SQLQuery<Tuple> query = new SQLQuery<Void>(con, dbTplConf)
-                .select(t_gs.all())
-                .from(t_gs)
-                .where(t_gs.id.in(searchId));
+                .select(t_gsearch.all())
+                .from(t_gsearch)
+                .where(t_gsearch.id.in(searchId));
             
             List<Tuple> tuples = query.fetch();
             
             if(tuples != null){
                 for (Tuple tuple : tuples) {
-                    searches.put(tuple.get(t_gs.id), fromTuple(tuple));
+                    searches.put(tuple.get(t_gsearch.id), fromTuple(tuple));
                 }
             }
             
@@ -271,9 +303,9 @@ public class GoogleSearchDB extends AbstractDB {
         try(Connection con = ds.getConnection()){
             
             List<Integer> ids = new SQLQuery<Void>(con, dbTplConf)
-                .select(t_gsg.groupId)
-                .from(t_gsg)
-                .where(t_gsg.googleSearchId.eq(search.getId()))
+                .select(t_ggroup.groupId)
+                .from(t_ggroup)
+                .where(t_ggroup.googleSearchId.eq(search.getId()))
                 .fetch();
             
             if(ids != null){
@@ -294,13 +326,13 @@ public class GoogleSearchDB extends AbstractDB {
         
         GoogleSearch search = new GoogleSearch();
         
-        search.setId(tuple.get(t_gs.id));
-        search.setKeyword(tuple.get(t_gs.keyword));
-        search.setDatacenter(tuple.get(t_gs.datacenter));
-        search.setDevice(GoogleDevice.values()[tuple.get(t_gs.device)]);
-        search.setLocal(tuple.get(t_gs.local));
-        search.setTld(tuple.get(t_gs.tld));
-        search.setCustomParameters(tuple.get(t_gs.customParameters));
+        search.setId(tuple.get(t_gsearch.id));
+        search.setKeyword(tuple.get(t_gsearch.keyword));
+        search.setDatacenter(tuple.get(t_gsearch.datacenter));
+        search.setDevice(GoogleDevice.values()[tuple.get(t_gsearch.device)]);
+        search.setLocal(tuple.get(t_gsearch.local));
+        search.setTld(tuple.get(t_gsearch.tld));
+        search.setCustomParameters(tuple.get(t_gsearch.customParameters));
         
         return search;
     }

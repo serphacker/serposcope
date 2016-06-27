@@ -154,7 +154,7 @@ public class PruneDBIT extends AbstractDBIT {
         GoogleTask task = null;
         LocalDateTime runDate = LocalDateTime.of(2010,10,10,10,10);
         for (int i = 0; i < totalRuns; i++) {
-            task = taskFactory.create(Run.Mode.CRON, runDate.plusDays(i));
+            task = taskFactory.create(new Run(Run.Mode.CRON, Group.Module.GOOGLE, runDate.plusDays(i)));
             task.run();
         }
         

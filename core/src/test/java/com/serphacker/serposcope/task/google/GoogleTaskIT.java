@@ -51,6 +51,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 import org.unitils.reflectionassert.ReflectionAssert;
@@ -94,7 +95,9 @@ public class GoogleTaskIT extends AbstractDBIT {
         return (GoogleScraperFactory) (ScrapClient http, CaptchaSolver solver) -> new FakeGScraper(http, solver);
     }
     
-    
+    List<GoogleSearch> searchesFruit = new ArrayList<>();
+    List<GoogleSearch> searchesLegume = new ArrayList<>();
+    List<GoogleSearch> searchesBoth = new ArrayList<>();
     GoogleSettings options;
     public void initialize() {
         
@@ -119,7 +122,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         Group grpFruit = new Group(Group.Module.GOOGLE, "fruits");
         baseDB.group.insert(grpFruit);
         
-        List<GoogleSearch> searchesFruit = new ArrayList<>();
+        searchesFruit.clear();
         searchesFruit.add(new GoogleSearch("banane"));
         searchesFruit.add(new GoogleSearch("pomme"));
         searchesFruit.add(new GoogleSearch("peche"));
@@ -130,7 +133,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         Group grpLegume = new Group(Group.Module.GOOGLE, "legumes");
         baseDB.group.insert(grpLegume);        
         
-        List<GoogleSearch> searchesLegume = new ArrayList<>();
+        searchesLegume.clear();
         searchesLegume.add(new GoogleSearch("haricot"));
         searchesLegume.add(new GoogleSearch("épinard"));
         searchesLegume.add(new GoogleSearch("endive"));
@@ -141,8 +144,8 @@ public class GoogleTaskIT extends AbstractDBIT {
         Group grpBoth = new Group(Group.Module.GOOGLE, "both");
         baseDB.group.insert(grpBoth);    
         
-        List<GoogleSearch> searchesBoth = new ArrayList<>();
         
+        searchesBoth.clear();
         searchesBoth.add(new GoogleSearch(googleDB.search.getId(new GoogleSearch("haricot"))));
         searchesBoth.add(new GoogleSearch(googleDB.search.getId(new GoogleSearch("peche"))));
         
@@ -160,7 +163,7 @@ public class GoogleTaskIT extends AbstractDBIT {
     @Test
     public void testSingleRun() throws Exception {
         initialize();
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.now().withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0)));
         task.run();
      
         List<GoogleSearch> grpFruit = googleDB.search.listByGroup(Arrays.asList(1));
@@ -185,8 +188,10 @@ public class GoogleTaskIT extends AbstractDBIT {
         };
         taskFactory = Guice.createInjector(getModule()).getInstance(TaskFactory.class);
         initialize();
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.now().withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0)));
         task.run();
+        Run lastRun = baseDB.run.findLast(Group.Module.GOOGLE, null, null);
+        assertEquals(6, googleDB.search.listUnchecked(lastRun.getId()).size());
     }
     
     
@@ -212,7 +217,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         };
         taskFactory = Guice.createInjector(getModule()).getInstance(TaskFactory.class);
         initialize();
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.now().withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0)));
         task.run();
     }    
     
@@ -238,7 +243,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         };
         taskFactory = Guice.createInjector(getModule()).getInstance(TaskFactory.class);
         initialize();
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.now().withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0)));
         task.run();
     }    
     
@@ -274,7 +279,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         };
         taskFactory = Guice.createInjector(getModule()).getInstance(TaskFactory.class);
         
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.now().withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0)));
         task.run();
     }
     
@@ -309,7 +314,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         };
         taskFactory = Guice.createInjector(getModule()).getInstance(TaskFactory.class);
         
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.now().withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0)));
         task.run();
     }    
     
@@ -335,7 +340,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         };
         taskFactory = Guice.createInjector(getModule()).getInstance(TaskFactory.class);
         initialize();
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.now().withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0)));
         task.run();
     }    
     
@@ -355,7 +360,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         GoogleTask task = null;
         LocalDateTime runDate = LocalDateTime.of(2010,10,10,10,10);
         for (int i = 0; i < days; i++) {
-            task = taskFactory.create(Mode.CRON, runDate.plusDays(i));
+            task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, runDate.plusDays(i)));
             task.run();
         }
      
@@ -398,7 +403,7 @@ public class GoogleTaskIT extends AbstractDBIT {
         
         
         initialize();
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.of(2010, 10, 10, 0, 0).withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.of(2010, 10, 10, 0, 0).withNano(0)));
         task.run();
         
         // check the ranking
@@ -417,7 +422,7 @@ public class GoogleTaskIT extends AbstractDBIT {
             }
         }
         
-        task = taskFactory.create(Mode.CRON, LocalDateTime.of(2010, 10, 11, 0, 0).withNano(0));
+        task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.of(2010, 10, 11, 0, 0).withNano(0)));
         task.run();        
         
         // check the ranking
@@ -436,7 +441,7 @@ public class GoogleTaskIT extends AbstractDBIT {
             }
         }
         
-        task = taskFactory.create(Mode.CRON, LocalDateTime.of(2010, 10, 12, 0, 0).withNano(0));
+        task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.of(2010, 10, 12, 0, 0).withNano(0)));
         task.run();
         
         // check the ranking
@@ -476,11 +481,11 @@ public class GoogleTaskIT extends AbstractDBIT {
         List<Group> allGroups = baseDB.group.list(Group.Module.GOOGLE);
         List<GoogleTarget> allTargets = googleDB.target.list();
         
-        GoogleTask task = taskFactory.create(Mode.CRON, LocalDateTime.of(2010, 10, 10, 0, 0).withNano(0));
+        GoogleTask task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.of(2010, 10, 10, 0, 0).withNano(0)));
         task.run();
-        task = taskFactory.create(Mode.CRON, LocalDateTime.of(2010, 10, 11, 0, 0).withNano(0));
+        task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.of(2010, 10, 11, 0, 0).withNano(0)));
         task.run();        
-        task = taskFactory.create(Mode.CRON, LocalDateTime.of(2010, 10, 12, 0, 0).withNano(0));
+        task = taskFactory.create(new Run(Mode.CRON, Group.Module.GOOGLE, LocalDateTime.of(2010, 10, 12, 0, 0).withNano(0)));
         task.run();
         
         List<GoogleTargetSummary> originalSummaries = googleDB.targetSummary.list(task.getRun().getId());

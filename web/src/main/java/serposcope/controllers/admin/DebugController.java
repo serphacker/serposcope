@@ -217,7 +217,7 @@ public class DebugController extends BaseController {
         try {
             while(date.isBefore(endDate)){
                 LOG.debug("dry run {}", date);
-                if(!taskManager.startGoogleTask(Run.Mode.MANUAL, date.atTime(13, 37, 00))){
+                if(!taskManager.startGoogleTask(new Run(Run.Mode.MANUAL, Module.GOOGLE, date.atTime(13, 37, 00)))){
                     LOG.error("can't startGoogleTask");
                     flash.error("can't startGoogleTask");
                     return Results.redirect(router.getReverseRoute(DebugController.class, "debug"));

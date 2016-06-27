@@ -47,6 +47,7 @@ import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nullable;
 
 public class GoogleTask extends AbstractTask {
 
@@ -76,6 +77,8 @@ public class GoogleTask extends AbstractTask {
     CaptchaSolver solver;
     String httpUserAgent;
     int httpTimeoutMS;
+    boolean updateRun;
+    boolean shuffle = true;
     
     @Inject
     public GoogleTask(
@@ -83,29 +86,29 @@ public class GoogleTask extends AbstractTask {
         CaptchaSolverFactory captchaSolverFactory,
         ScrapClientFactory scrapClientFactory,
         GoogleDB googleDB,
-        @Assisted Mode mode, @Assisted LocalDateTime startDate
+        @Assisted Run run
     ){
-        super(new Run(mode, Group.Module.GOOGLE, startDate));
+        super(run);
         this.googleScraperFactory = googleScraperFactory;
         this.captchaSolverFactory = captchaSolverFactory;
         this.scrapClientFactory = scrapClientFactory;
         this.googleDB = googleDB;
+        this.updateRun = run.getId() == 0 ? false : true;
         
         httpUserAgent = ScrapClient.DEFAULT_USER_AGENT;
         httpTimeoutMS = ScrapClient.DEFAULT_TIMEOUT_MS;
-    }
-
+    }    
+    
 
     @Override
     public Run.Status doRun() {
+        solver = initializeCaptchaSolver();
+        googleOptions = googleDB.options.get();
+
+        initializeSearches();
         initializePreviousRuns();
         initializeTargets();
-        solver = initializeCaptchaSolver();
         
-        googleOptions = googleDB.options.get();
-        List<GoogleSearch> searchList = googleDB.search.list();
-        Collections.shuffle(searchList);
-        searches = new LinkedBlockingQueue<>(searchList);
         
         int nThread = googleOptions.getMaxThreads();
         List<ScrapProxy> proxies = baseDB.proxy.list().stream().map(Proxy::toScrapProxy).collect(Collectors.toList());
@@ -247,6 +250,20 @@ public class GoogleTask extends AbstractTask {
         }
     }    
     
+    protected void initializeSearches() {
+        List<GoogleSearch> searchList;
+        if(updateRun){
+            searchList = googleDB.search.listUnchecked(run.getId());
+        } else {
+            searchList = googleDB.search.list();
+        }
+        if(shuffle){
+            Collections.shuffle(searchList);
+        }
+        searches = new LinkedBlockingQueue<>(searchList);
+        LOG.info("{} searches to do", searches.size());
+    }
+    
     protected void initializeTargets() {
         Map<Integer, Integer> previousSummary = new HashMap<>();
         
@@ -258,10 +275,18 @@ public class GoogleTask extends AbstractTask {
         for (GoogleTarget target : targets) {
             targetsByGroup.putIfAbsent(target.getGroupId(), new ArrayList<>());
             targetsByGroup.get(target.getGroupId()).add(target);
-            summariesByTarget.put(target.getId(), new GoogleTargetSummary(target.getGroupId(), target.getId(), run.getId(), 
-                previousSummary.getOrDefault(target.getId(), 0)));
+            summariesByTarget.put(
+                target.getId(), 
+                new GoogleTargetSummary(target.getGroupId(), target.getId(), run.getId(), previousSummary.getOrDefault(target.getId(), 0))
+            );
         }
         
+        if(updateRun){
+            List<GoogleTargetSummary> summaries = googleDB.targetSummary.list(run.getId());
+            for (GoogleTargetSummary summary : summaries) {
+                summariesByTarget.put(summary.getTargetId(), summary);
+            }
+        }
     }
     
     protected void initializePreviousRuns(){

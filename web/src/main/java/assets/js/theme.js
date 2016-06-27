@@ -53,8 +53,9 @@ serposcope.theme = function () {
         $('[data-toggle="popover"]').popover();
     };
     
-    var runModules = function () {
-        return confirm("Launch a task to check the rankings of all your keywords ?");
+    var showRunModal = function () {
+        $('#run-modal').modal();
+        return false;
     };
     
     var bannerError = function(elt) {
@@ -65,7 +66,7 @@ serposcope.theme = function () {
         setResizeHooks();
         bootstrap();
         $('.btn-add-group').click(newGroupModal);
-        $('#btn-run-modules').click(runModules);
+        $('#btn-run-modules').click(showRunModal);
         $('#side-banner img').error(bannerError);
     };
     

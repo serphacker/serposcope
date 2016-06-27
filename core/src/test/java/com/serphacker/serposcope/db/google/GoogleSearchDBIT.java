@@ -9,10 +9,15 @@ package com.serphacker.serposcope.db.google;
 
 import com.google.inject.Inject;
 import com.serphacker.serposcope.db.AbstractDBIT;
+import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.db.base.GroupDB;
 import com.serphacker.serposcope.models.base.Group;
+import com.serphacker.serposcope.models.base.Run;
+import com.serphacker.serposcope.models.base.Run.Mode;
 import com.serphacker.serposcope.models.google.GoogleSearch;
+import com.serphacker.serposcope.models.google.GoogleSerp;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +33,12 @@ public class GoogleSearchDBIT extends AbstractDBIT {
 
     public GoogleSearchDBIT() {
     }
+    
+    @Inject
+    GoogleDB googleDB;
+    
+    @Inject
+    BaseDB baseDB;
 
     @Inject
     GoogleSearchDB gsDB;
@@ -152,5 +163,28 @@ public class GoogleSearchDBIT extends AbstractDBIT {
         
     }
     
+    @Test
+    public void testListUnchecked() {
+        
+        int groupId = groupDb.insert(new Group(Group.Module.GOOGLE, "google"));
+        assertEquals(1, groupId);
+        
+        GoogleSearch s1 = new GoogleSearch();
+        s1.setKeyword("search #1");
+        GoogleSearch s2 = new GoogleSearch();
+        s2.setKeyword("search #2");
+        gsDB.insert(Arrays.asList(s1, s2), groupId);
+        
+        Run run = new Run(Mode.MANUAL, Group.Module.GOOGLE, LocalDateTime.now());
+        baseDB.run.insert(run);
+        
+        googleDB.serp.insert(new GoogleSerp(run.getId(), s1.getId(), LocalDateTime.now()));
+        
+        List<GoogleSearch> uncheckeds = googleDB.search.listUnchecked(run.getId());
+        assertEquals(1, uncheckeds.size());
+        assertEquals(s2.getId(), uncheckeds.get(0).getId());
+        
+        
+    }
     
 }

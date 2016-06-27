@@ -13,15 +13,10 @@ import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.db.base.RunDB;
 import com.serphacker.serposcope.db.google.GoogleDB;
 import com.serphacker.serposcope.models.base.Group;
-import com.serphacker.serposcope.models.base.Group.Module;
 import static com.serphacker.serposcope.models.base.Group.Module.GOOGLE;
 import com.serphacker.serposcope.models.base.Run;
-import com.serphacker.serposcope.models.google.GoogleBest;
-import com.serphacker.serposcope.models.google.GoogleRank;
 import com.serphacker.serposcope.models.google.GoogleSearch;
-import com.serphacker.serposcope.models.google.GoogleSerp;
 import com.serphacker.serposcope.models.google.GoogleTarget;
-import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import java.time.LocalDateTime;
 import java.util.List;
 import ninja.Context;
@@ -37,12 +32,7 @@ import serposcope.controllers.BaseController;
 import serposcope.filters.AdminFilter;
 import serposcope.filters.XSRFFilter;
 import com.serphacker.serposcope.task.TaskManager;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 import ninja.params.PathParam;
 import serposcope.controllers.HomeController;
 
@@ -98,7 +88,8 @@ public class TaskController extends BaseController {
     @FilterWith(XSRFFilter.class)
     public Result startTask(
         Context context,
-        @Param("module") Integer moduleId
+        @Param("module") Integer moduleId,
+        @Param("update") Boolean update
     ) {
         FlashScope flash = context.getFlashScope();
 //        Module module = Module.getByOrdinal(moduleId);
@@ -106,8 +97,20 @@ public class TaskController extends BaseController {
 //            flash.error("error.invalidModule");
 //            return Results.redirect(router.getReverseRoute(TaskController.class, "tasks"));
 //        }        
+
+        Run run = null;
+        if(Boolean.TRUE.equals(update)){
+            run = baseDB.run.findLast(GOOGLE, null, null);
+        }
         
-        if (!taskManager.startGoogleTask(Run.Mode.MANUAL, LocalDateTime.now())) {
+        if(run == null){
+            run = new Run(Run.Mode.MANUAL, Group.Module.GOOGLE, LocalDateTime.now());
+        } else {
+            run.setStatus(Run.Status.RUNNING);
+            run.setStarted(LocalDateTime.now());            
+        }
+        
+        if (!taskManager.startGoogleTask(run)) {
             flash.error("admin.task.errGoogleAlreadyRunning");
             return Results.redirect(router.getReverseRoute(HomeController.class, "home"));
         }
