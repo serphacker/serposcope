@@ -29,9 +29,11 @@
                             <tr>
                                 <td class="filterable"><a href="${reverseRoute("google.GoogleGroupController", "view", "groupId", target.getGroupId())}" >${record.groupName}</a></td>
                                 <td class="filterable"><a href="${targetLink}" >${target.getName()}</a></td>
-                                <td><span class="<#if (summary.getDiff() > 0) >text-success<#elseif (summary.getDiff() < 0) >text-danger</#if>" data-toggle="tooltip" 
-                                    title="${i18n("label.previous")} : ${summary.getPreviousScore()}" >${summary.getScore()}</span></td>
-                                <td><span class="hb-score-history-inline" data-values="<#list record.scoreHistory as score>${score}<#sep>,</#list>" ></span>
+                                <td><span class="<#if (summary.getDiffBP() > 0) >text-success<#elseif (summary.getDiffBP() < 0) >text-danger</#if>" 
+                                    data-toggle="tooltip" title="${i18n("label.previous")} : ${fu.formatScore(summary.getPreviousScoreBP())}%" >
+                                    ${fu.formatScore(summary.getScoreBP())}%
+                                </span></td>
+                                <td><span class="hb-score-history-inline" data-values="<#list record.scoreHistory as score>${fu.formatScore(score)}<#sep>,</#list>" ></span>
                                 <td class="td-top-kw">
                                     <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop3()/summary.getTotalKeywords()*100)?string["0.##"]}%">
                                         <div class="progress-bar" style="width: ${(summary.getTotalTop3()/summary.getTotalKeywords()*100)?c}%;">

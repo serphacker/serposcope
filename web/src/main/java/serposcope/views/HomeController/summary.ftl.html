@@ -57,17 +57,22 @@
                         <div class="hb-left-container" >
                             <div class="hb-score">
                                 <div class="hb-body" >
-                                    <p class="score-title">${summary.getScore()}</p>
-                                    <#if (summary.getDiff() > 0) >
+                                    <p class="score-title">${fu.formatScore(summary.getScoreBP())}%</p>
+                                    <#if (summary.getDiffBP() > 0) >
                                     <p class="text-success" data-toggle="tooltip" 
-                                       title="${i18n("label.previous")} : ${summary.getPreviousScore()}">+${summary.getDiff()}</p>
-                                    <#elseif (summary.getDiff() < 0)>
+                                       title="${i18n("label.previous")} : ${fu.formatScore(summary.getPreviousScoreBP())}%">
+                                       +${fu.formatScore(summary.getDiffBP())}
+                                    </p>
+                                    <#elseif (summary.getDiffBP() < 0)>
                                     <p class="text-danger" data-toggle="tooltip" 
-                                       title="${i18n("label.previous")} : ${summary.getPreviousScore()}">${summary.getDiff()}</p>
+                                       title="${i18n("label.previous")} : ${fu.formatScore(summary.getPreviousScoreBP())}%">
+                                       ${fu.formatScore(summary.getDiffBP())}
+                                    </p>
                                     <#else>
                                     <p data-toggle="tooltip" 
-                                       title="${i18n("label.previous")} : ${summary.getPreviousScore()}">${summary.getDiff()}</p>                                                          </#if>
-                                    <div class="hb-score-history" data-values="<#list record.scoreHistory as score>${score}<#sep>,</#list>" ></div>
+                                       title="${i18n("label.previous")} : ${fu.formatScore(summary.getPreviousScoreBP())}%">0</p>
+                                    </#if>
+                                    <div class="hb-score-history" data-values="<#list record.scoreHistory as score>${fu.formatScore(score)}<#sep>,</#list>" ></div>
                                 </div>
                                 <div class="hb-legend" ><i class="fa fa-trophy"></i> score</div>
                             </div>

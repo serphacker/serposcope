@@ -82,8 +82,6 @@ create table `GOOGLE_TARGET_SUMMARY` (
     google_target_id int,
     run_id int,
 
-    previous_score int,
-    score int,
     total_top_3 int,
     total_top_10 int,
     total_top_100 int,
@@ -92,6 +90,10 @@ create table `GOOGLE_TARGET_SUMMARY` (
     top_ranks varchar(128),
     top_improvements varchar(128),
     top_losts varchar(128),
+
+    score_raw int,
+    score_basis_point int,
+    previous_score_basis_point int,
 
     primary key(group_id, google_target_id, run_id),
     foreign key (group_id) references `GROUP`(id),

@@ -13,10 +13,8 @@ import com.serphacker.serposcope.db.google.GoogleDB;
 import com.serphacker.serposcope.di.CaptchaSolverFactory;
 import com.serphacker.serposcope.di.ScrapClientFactory;
 //import com.serphacker.serposcope.di.ScraperFactory;
-import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Proxy;
 import com.serphacker.serposcope.models.base.Run;
-import com.serphacker.serposcope.models.base.Run.Mode;
 import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleRank;
 import com.serphacker.serposcope.models.google.GoogleSearch;
@@ -30,7 +28,6 @@ import com.serphacker.serposcope.scraper.http.ScrapClient;
 import com.serphacker.serposcope.scraper.http.proxy.DirectNoProxy;
 import com.serphacker.serposcope.scraper.http.proxy.ProxyRotator;
 import com.serphacker.serposcope.task.AbstractTask;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +44,6 @@ import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nullable;
 
 public class GoogleTask extends AbstractTask {
 
@@ -130,7 +126,7 @@ public class GoogleTask extends AbstractTask {
         startThreads(nThread);
         waitForThreads();
         
-        googleDB.targetSummary.insert(summariesByTarget.values());
+        finalizeSummaries();
         
         if(solver != null){
             try {solver.close();} catch (IOException ex) {}
@@ -265,10 +261,10 @@ public class GoogleTask extends AbstractTask {
     }
     
     protected void initializeTargets() {
-        Map<Integer, Integer> previousSummary = new HashMap<>();
+        Map<Integer, Integer> previousScorePercent = new HashMap<>();
         
         if(previousRun != null){
-            previousSummary = googleDB.targetSummary.getPreviousScore(previousRun.getId());
+            previousScorePercent = googleDB.targetSummary.getPreviousScore(previousRun.getId());
         } 
         
         List<GoogleTarget> targets = googleDB.target.list();
@@ -277,7 +273,7 @@ public class GoogleTask extends AbstractTask {
             targetsByGroup.get(target.getGroupId()).add(target);
             summariesByTarget.put(
                 target.getId(), 
-                new GoogleTargetSummary(target.getGroupId(), target.getId(), run.getId(), previousSummary.getOrDefault(target.getId(), 0))
+                new GoogleTargetSummary(target.getGroupId(), target.getId(), run.getId(), previousScorePercent.getOrDefault(target.getId(), 0))
             );
         }
         
@@ -316,6 +312,14 @@ public class GoogleTask extends AbstractTask {
         }
         return history;
     }    
+    
+    protected void finalizeSummaries(){
+        Map<Integer, Integer> searchCountByGroup = googleDB.search.countByGroup();
+        for (GoogleTargetSummary summary : summariesByTarget.values()) {
+            summary.computeScoreBP(searchCountByGroup.getOrDefault(summary.getGroupId(), 0));
+        }
+        googleDB.targetSummary.insert(summariesByTarget.values());
+    }
     
     protected GoogleScraper genScraper(){
         return googleScraperFactory.get(

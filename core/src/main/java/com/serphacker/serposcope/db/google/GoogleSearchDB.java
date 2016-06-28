@@ -212,8 +212,24 @@ public class GoogleSearchDB extends AbstractDB {
         }
         
         return count == null ? -1l : count;
-        
     }
+    
+    public Map<Integer,Integer> countByGroup(){
+        Map<Integer,Integer> map = new HashMap<>();
+        try(Connection con = ds.getConnection()){
+            List<Tuple> tuples = new SQLQuery<Void>(con, dbTplConf)
+                .select(t_ggroup.groupId, t_ggroup.count())
+                .from(t_ggroup)
+                .groupBy(t_ggroup.groupId)
+                .fetch();
+            for (Tuple tuple : tuples) {
+                map.put(tuple.get(t_ggroup.groupId), tuple.get(1, Long.class).intValue());
+            }
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        return map;
+    }    
     
     /**
      * list all google search

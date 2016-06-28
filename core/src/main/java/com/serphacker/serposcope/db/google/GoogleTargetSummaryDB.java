@@ -11,11 +11,8 @@ import com.google.inject.Singleton;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
-import com.querydsl.sql.dml.SQLInsertClause;
-import com.querydsl.sql.dml.SQLMergeBatch;
 import com.querydsl.sql.dml.SQLMergeClause;
 import com.serphacker.serposcope.db.AbstractDB;
-import com.serphacker.serposcope.models.google.GoogleRank;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import com.serphacker.serposcope.querybuilder.QGoogleRank;
 import com.serphacker.serposcope.querybuilder.QGoogleTargetSummary;
@@ -46,8 +43,6 @@ public class GoogleTargetSummaryDB extends AbstractDB {
                     .set(t_summary.googleTargetId, target.getTargetId())
                     .set(t_summary.runId, target.getRunId())
                     
-                    .set(t_summary.previousScore, target.getPreviousScore())
-                    .set(t_summary.score, target.getScore())
                     .set(t_summary.totalTop3, target.getTotalTop3())
                     .set(t_summary.totalTop10, target.getTotalTop10())
                     .set(t_summary.totalTop100, target.getTotalTop100())
@@ -55,7 +50,11 @@ public class GoogleTargetSummaryDB extends AbstractDB {
                     
                     .set(t_summary.topRanks, target.getTopRanksSerialized())
                     .set(t_summary.topImprovements, target.getTopImprovementsSerialized())
-                    .set(t_summary.topLosts, target.getTopLostsSerialized())                    
+                    .set(t_summary.topLosts, target.getTopLostsSerialized())
+                    
+                    .set(t_summary.scoreRaw, target.getScoreRaw())
+                    .set(t_summary.scoreBasisPoint, target.getScoreBP())
+                    .set(t_summary.previousScoreBasisPoint, target.getPreviousScoreBP())
                     
                     .execute();
             }
@@ -104,13 +103,13 @@ public class GoogleTargetSummaryDB extends AbstractDB {
         
         try(Connection con = ds.getConnection()){
             List<Tuple> records = new SQLQuery<Void>(con, dbTplConf)
-                .select(t_summary.googleTargetId, t_summary.score)
+                .select(t_summary.googleTargetId, t_summary.scoreBasisPoint)
                 .from(t_summary)
                 .where(t_summary.runId.eq(runId))
                 .fetch();
             
             for (Tuple record : records) {
-                scores.put(record.get(t_summary.googleTargetId), record.get(t_summary.score));
+                scores.put(record.get(t_summary.googleTargetId), record.get(t_summary.scoreBasisPoint));
             }
                 
         }catch(Exception ex){
@@ -125,7 +124,7 @@ public class GoogleTargetSummaryDB extends AbstractDB {
         
         try(Connection con = ds.getConnection()){
             scores = new SQLQuery<Void>(con, dbTplConf)
-                .select(t_summary.score)
+                .select(t_summary.scoreBasisPoint)
                 .from(t_summary)
                 .where(t_summary.groupId.eq(groupId))
                 .where(t_summary.googleTargetId.eq(targetId))
@@ -166,14 +165,16 @@ public class GoogleTargetSummaryDB extends AbstractDB {
                     tuple.get(t_summary.groupId),
                     tuple.get(t_summary.googleTargetId),
                     runId, 
-                    tuple.get(t_summary.previousScore)
+                    tuple.get(t_summary.previousScoreBasisPoint)
                 );
                 
-                summary.setScore(tuple.get(t_summary.score));
                 summary.setTotalTop3(tuple.get(t_summary.totalTop3));
                 summary.setTotalTop10(tuple.get(t_summary.totalTop10));
                 summary.setTotalTop100(tuple.get(t_summary.totalTop100));
                 summary.setTotalOut(tuple.get(t_summary.totalOut));
+                
+                summary.setScoreRaw(tuple.get(t_summary.scoreRaw));
+                summary.setScoreBP(tuple.get(t_summary.scoreBasisPoint));
                 
                 if(!skipTop){
                     List<Integer> topRanksIds = unserializeIds(tuple.get(t_summary.topRanks));

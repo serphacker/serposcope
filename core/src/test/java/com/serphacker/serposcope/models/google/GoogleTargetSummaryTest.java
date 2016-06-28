@@ -125,4 +125,56 @@ public class GoogleTargetSummaryTest {
         }        
     }    
     
+    @Test
+    public void testScore() {
+        GoogleTargetSummary summary;
+        
+        summary = new GoogleTargetSummary();
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 2, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 3, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 5, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 10, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 30, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 50, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 100, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 500, 0, ""));
+        assertEquals(10+9+8+7+6+5+4+3+2+1, summary.getScoreRaw());
+        
+        summary = new GoogleTargetSummary();
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 2, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 3, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 4, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 6, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 11, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 21, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 31, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 51, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 101, 0, ""));
+        assertEquals(10+9+8+7+6+5+4+3+2+1, summary.getScoreRaw());
+        
+        summary = new GoogleTargetSummary();
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        assertEquals(30, summary.getScoreRaw());
+        assertEquals(10000, summary.computeScoreBP(3));    
+        
+        summary = new GoogleTargetSummary();
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        assertEquals(10, summary.getScoreRaw());
+        assertEquals(5000, summary.computeScoreBP(2));
+        
+        summary = new GoogleTargetSummary();
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
+        assertEquals(20, summary.getScoreRaw());
+        assertEquals(5000, summary.computeScoreBP(4));
+        
+    }
+    
 }

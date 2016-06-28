@@ -17,17 +17,22 @@ import com.querydsl.sql.Configuration;
 import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.di.db.ConfigurationProvider;
 import com.serphacker.serposcope.di.db.DataSourceProvider;
+import com.zaxxer.hikari.HikariDataSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import javax.sql.DataSource;
+import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
 
 public class AbstractDBIT {
     
-    protected Injector injector = null;
+    static volatile Injector injector = null;
+    
+    @Inject
+    DataSource ds;
 
     @Inject
     BaseDB db;
@@ -55,7 +60,11 @@ public class AbstractDBIT {
     
     @Before
     public void before() throws Exception {
-        injector = Guice.createInjector(getModule());
+        if(injector == null){
+            synchronized(Object.class){
+                injector = Guice.createInjector(getModule());
+            }
+        }
         injector.injectMembers(this);
         db.migration.recreateDb();
     }

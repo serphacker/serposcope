@@ -7,7 +7,6 @@
  */
 package com.serphacker.serposcope.task.google;
 
-import com.serphacker.serposcope.scraper.google.scraper.FakeGScraper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.serphacker.serposcope.db.google.*;
@@ -19,72 +18,22 @@ import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.di.TaskFactory;
 import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Run.Mode;
-import com.serphacker.serposcope.models.base.User;
-import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleSearch;
-import com.serphacker.serposcope.models.google.GoogleSerp;
-import com.serphacker.serposcope.models.google.GoogleSerpEntry;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
 import com.serphacker.serposcope.scraper.google.scraper.GoogleScraper;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Test;
 import com.serphacker.serposcope.di.GoogleScraperFactory;
-import com.serphacker.serposcope.models.base.Proxy;
 import com.serphacker.serposcope.models.base.Run;
 import com.serphacker.serposcope.models.base.Run.Status;
-import com.serphacker.serposcope.models.google.GoogleRank;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult;
-import com.serphacker.serposcope.scraper.google.scraper.RandomGScraper;
-import com.serphacker.serposcope.scraper.http.proxy.BindProxy;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import org.unitils.reflectionassert.ReflectionAssert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -269,14 +218,16 @@ public class GoogleTaskUpdateIT extends AbstractDBIT {
         GoogleTargetSummary t2sum = summaries.get(1);
 
         assertEquals(tagert1.getId(), t1sum.getTargetId());
-        assertEquals(58, t1sum.getScore());
+        assertEquals(50, t1sum.getScoreRaw());
+        assertEquals(5555, t1sum.getScoreBP());
         assertEquals(3, t1sum.getTotalTop3());
         assertEquals(2, t1sum.getTotalTop10());
         assertEquals(2, t1sum.getTotalTop100());
         assertEquals(2, t1sum.getTotalOut());
 
         assertEquals(tagert2.getId(), t2sum.getTargetId());
-        assertEquals(16, t2sum.getScore());
+        assertEquals(17, t2sum.getScoreRaw());
+        assertEquals(1888, t2sum.getScoreBP());
         
 
         // run2 with failure
@@ -293,14 +244,16 @@ public class GoogleTaskUpdateIT extends AbstractDBIT {
         GoogleTargetSummary t2sumR2 = summaries.get(1);
 
         assertEquals(tagert1.getId(), t1sumR2.getTargetId());
-        assertEquals(21, t1sumR2.getScore());
+        assertEquals(20, t1sumR2.getScoreRaw());
+        assertEquals(2222, t1sumR2.getScoreBP());
         assertEquals(1, t1sumR2.getTotalTop3());
         assertEquals(1, t1sumR2.getTotalTop10());
         assertEquals(1, t1sumR2.getTotalTop100());
         assertEquals(2, t1sumR2.getTotalOut());
 
         assertEquals(t2sum.getTargetId(), t2sumR2.getTargetId());
-        assertEquals(t2sum.getScore(), t2sumR2.getScore());
+        assertEquals(t2sum.getScoreRaw(), t2sumR2.getScoreRaw());
+        assertEquals(t2sum.getScoreBP(), t2sumR2.getScoreBP());
         assertEquals(t2sum.getTotalTop10(), t2sumR2.getTotalTop10());
         assertEquals(t2sum.getTotalTop100(), t2sumR2.getTotalTop100());
         assertEquals(2, t2sumR2.getTotalOut());
@@ -322,14 +275,16 @@ public class GoogleTaskUpdateIT extends AbstractDBIT {
         GoogleTargetSummary t2sumR3 = summaries.get(1);
 
         assertEquals(t1sum.getTargetId(), t1sumR3.getTargetId());
-        assertEquals(t1sum.getScore(), t1sumR3.getScore());
+        assertEquals(t1sum.getScoreRaw(), t1sumR3.getScoreRaw());
+        assertEquals(t1sum.getScoreBP(), t1sumR3.getScoreBP());
         assertEquals(t1sum.getTotalTop3(), t1sumR3.getTotalTop3());
         assertEquals(t1sum.getTotalTop10(), t1sumR3.getTotalTop10());
         assertEquals(t1sum.getTotalTop100(), t1sumR3.getTotalTop100());
         assertEquals(t1sum.getTotalOut(), t1sumR3.getTotalOut());
 
         assertEquals(t2sum.getTargetId(), t2sumR3.getTargetId());
-        assertEquals(t2sum.getScore(), t2sumR3.getScore());
+        assertEquals(t2sum.getScoreRaw(), t2sumR3.getScoreRaw());
+        assertEquals(t2sum.getScoreBP(), t2sumR3.getScoreBP());
         assertEquals(t2sum.getTotalTop3(), t2sumR3.getTotalTop3());
         assertEquals(t2sum.getTotalTop10(), t2sumR3.getTotalTop10());
         assertEquals(t2sum.getTotalTop100(), t2sumR3.getTotalTop100());

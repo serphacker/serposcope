@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.unitils.reflectionassert.ReflectionAssert;
@@ -183,8 +184,26 @@ public class GoogleSearchDBIT extends AbstractDBIT {
         List<GoogleSearch> uncheckeds = googleDB.search.listUnchecked(run.getId());
         assertEquals(1, uncheckeds.size());
         assertEquals(s2.getId(), uncheckeds.get(0).getId());
+    }
+    
+    @Test
+    public void testCountByGroup(){
+        Group g1 = new Group(Group.Module.GOOGLE, "g1");
+        baseDB.group.insert(g1);
+        googleDB.search.insert(Arrays.asList(new GoogleSearch("s1"),new GoogleSearch("s2"),new GoogleSearch("s3")), g1.getId());
         
+        Group g2 = new Group(Group.Module.GOOGLE, "g2");
+        baseDB.group.insert(g2);
+        googleDB.search.insert(Arrays.asList(new GoogleSearch("s3"),new GoogleSearch("s4")), g2.getId());
         
+        Group g3 = new Group(Group.Module.GOOGLE, "g3");
+        baseDB.group.insert(g3);
+        googleDB.search.insert(Arrays.asList(new GoogleSearch("s5")), g3.getId());        
+        
+        Map<Integer, Integer> countByGroup = googleDB.search.countByGroup();
+        assertEquals(3, countByGroup.get(g1.getId()).intValue());
+        assertEquals(2, countByGroup.get(g2.getId()).intValue());
+        assertEquals(1, countByGroup.get(g3.getId()).intValue());
     }
     
 }

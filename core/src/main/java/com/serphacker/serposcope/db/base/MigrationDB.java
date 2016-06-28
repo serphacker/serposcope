@@ -10,6 +10,7 @@ package com.serphacker.serposcope.db.base;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Singleton;
 import com.serphacker.serposcope.db.AbstractDB;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.inject.Inject;
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class MigrationDB extends AbstractDB {
     
-    public final static int LAST_DB_VERSION = 4;
+    public final static int LAST_DB_VERSION = 5;
     
     public final static String[] DB_SCHEMA_FILES = new String[]{
         "/db/00-base.h2.sql",
@@ -85,10 +86,21 @@ public class MigrationDB extends AbstractDB {
             try(Connection con = ds.getConnection();){
                 try(Statement stmt = con.createStatement()){
                     con.setAutoCommit(false);
+                    
+                    // LEGACY MIGRATION, TO BE REMOVED
                     if(fromDBVersion == 3 && !dbTplConf.getTemplates().isNativeMerge()){
                         stmt.executeUpdate("alter table `RUN` drop foreign key RUN_ibfk_1;");
                     }
-                    stmt.executeUpdate(new String(ByteStreams.toByteArray(MigrationDB.class.getResourceAsStream(file))));
+                    InputStream stream = MigrationDB.class.getResourceAsStream(file);
+                    if(stream != null){
+                        stmt.executeUpdate(new String(ByteStreams.toByteArray(stream)));
+                    }
+                    
+                    switch(fromDBVersion){
+                        case 4:
+                            upgradeFromV4(stmt);
+                            break;
+                    }
                 }catch(Exception ex){
                     con.rollback();
                     throw ex;
@@ -97,6 +109,18 @@ public class MigrationDB extends AbstractDB {
                 }
             }
         }
+    }
+    
+    protected void upgradeFromV4(Statement stmt) throws Exception {
+        // GOOGLE_TARGET_SUMMARY 
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` drop column `previous_score`;");
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` drop column `score`;");
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_raw` int;");
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_basis_point` int;");
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `previous_score_basis_point` int;");
+        
+        stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','5') on duplicate key update `value` = '5';");
+        
     }
     
 }

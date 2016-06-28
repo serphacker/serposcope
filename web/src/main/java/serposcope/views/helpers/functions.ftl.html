@@ -64,3 +64,8 @@
     >
     -->
 </#function> 
+
+
+<#function formatScore score>
+    <#return (score/100)?string(",##0.00")?replace(",",".") >
+</#function>

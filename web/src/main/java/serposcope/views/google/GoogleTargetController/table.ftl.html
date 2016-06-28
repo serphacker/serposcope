@@ -56,7 +56,7 @@
                 <td>
                     <#if search_ranks?api.get(search.getId())?? >
                     <#assign rank = search_ranks?api.get(search.getId()) >
-                    <span class="poptarget diff-${rank.getDiffClass()}" data-t-title="${rank.getDiff()}" data-p-title="${dayx?substring(0,10)}" data-content="${rank.getUrl()!"not provided"}"
+                    <span class="poptarget diff-${rank.getDiffClass()}" data-t-title="${rank.getDiffBP()}" data-p-title="${dayx?substring(0,10)}" data-content="${rank.getUrl()!"not provided"}"
                     >${rank.getRank()}</span>
                     </#if>
                 </td>

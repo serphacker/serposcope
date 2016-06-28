@@ -9,8 +9,6 @@
 package com.serphacker.serposcope.db.google;
 
 import com.serphacker.serposcope.db.base.RunDB;
-import com.serphacker.serposcope.db.google.GoogleDB;
-import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Run;
 import com.serphacker.serposcope.models.google.GoogleBest;
 import com.serphacker.serposcope.models.google.GoogleRank;
@@ -19,14 +17,12 @@ import com.serphacker.serposcope.models.google.GoogleSerp;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -139,7 +135,7 @@ public class GoogleSerpRescanDB {
                 GoogleTargetSummary previousSummary = null;
                 for (Map.Entry<Integer, GoogleTargetSummary> entry : summaries.entrySet()) {
                     if (previousSummary != null) {
-                        entry.getValue().setPreviousScore(previousSummary.getScore());
+                        entry.getValue().setPreviousScoreBP(previousSummary.getScoreBP());
                     }
                     previousSummary = entry.getValue();
                 }
@@ -159,6 +155,7 @@ public class GoogleSerpRescanDB {
     public void rescan(Integer specificRunId, Collection<GoogleTarget> targets, Collection<GoogleSearch> searches,  boolean updateSummary) {
         LOG.debug("SERP rescan (bulk) : starting");
         long _start = System.currentTimeMillis();
+        Map<Integer, Integer> searchCountByGroup = searchDB.countByGroup();
         Run specPrevRun = null;
         Map<Integer, GoogleTargetSummary> specPrevRunSummaryByTarget = new HashMap<>();
         
@@ -245,10 +242,12 @@ public class GoogleSerpRescanDB {
                 
                 GoogleTargetSummary previousSummary = null;
                 for (Map.Entry<Integer, GoogleTargetSummary> entry : summaries.entrySet()) {
+                    GoogleTargetSummary summary = entry.getValue();
+                    summary.computeScoreBP(searchCountByGroup.getOrDefault(summary.getGroupId(), 0));
                     if (previousSummary != null) {
-                        entry.getValue().setPreviousScore(previousSummary.getScore());
+                        summary.setPreviousScoreBP(previousSummary.getScoreBP());
                     }
-                    previousSummary = entry.getValue();
+                    previousSummary = summary;
                 }
                 
                 if(specPrevRun != null){

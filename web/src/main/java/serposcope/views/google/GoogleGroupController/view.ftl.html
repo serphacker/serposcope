@@ -108,14 +108,14 @@
                                 <td>${target.getPattern()}</td>                                
                                 <td>
                                     <#if summaries?api.get(target.getId())?? >
-                                        <span class="<#if (summary.getDiff() > 0) >text-success<#elseif (summary.getDiff() < 0)>text-danger</#if>" data-toggle="tooltip" 
-                                    title="${i18n("label.previous")} : ${summary.getPreviousScore()}" >${summary.getScore()}</span>
+                                        <span class="<#if (summary.getDiffBP() > 0) >text-success<#elseif (summary.getDiffBP() < 0)>text-danger</#if>" data-toggle="tooltip" 
+                                    title="${i18n("label.previous")} : ${fu.formatScore(summary.getPreviousScoreBP())}%" >${fu.formatScore(summary.getScoreBP())}%</span>
                                     </#if>
                                 </td>
                                 <td>
                                     <#if histories?api.get(target.getId())?? >
                                         <#assign history = histories?api.get(target.getId()) >
-                                        <span class="score-history-inline" data-values="<#list history as score>${score}<#sep>,</#list>" ></span>
+                                        <span class="score-history-inline" data-values="<#list history as score>${fu.formatScore(score)}<#sep>,</#list>" ></span>
                                     </#if>
                                 </td>
                                 <td class="td-top-kw">

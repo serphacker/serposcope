@@ -59,12 +59,14 @@ public class GoogleTargetSummary {
     int targetId;
     int runId;
     
-    int previousScore;
-    int score;
     int totalTop3;
     int totalTop10;
     int totalTop100;
     int totalOut;
+    
+    int scoreRaw;
+    int scoreBP;
+    int previousScoreBP;
     
     Queue<GoogleRank> topRanks = MinMaxPriorityQueue.orderedBy(RANK_COMPARATOR).maximumSize(TOP_SIZE).create();
     Queue<GoogleRank> topImprovements = MinMaxPriorityQueue.orderedBy(IMPROVEMENT_COMPARATOR).maximumSize(TOP_SIZE).create();
@@ -73,15 +75,15 @@ public class GoogleTargetSummary {
     public GoogleTargetSummary() {
     }
 
-    public GoogleTargetSummary(int groupId, int targetId, int runId, int previousScore) {
+    public GoogleTargetSummary(int groupId, int targetId, int runId, int previousScoreBP) {
         this.groupId = groupId;
         this.targetId = targetId;
         this.runId = runId;
-        this.previousScore = previousScore;
+        this.previousScoreBP = previousScoreBP;
     }
     
     public synchronized void addRankCandidat(GoogleRank rank){
-        score += getRankScore(rank.rank);
+        scoreRaw += getRankScore(rank.rank);
         
         if(rank.rank <=3 ){
             ++totalTop3;
@@ -129,58 +131,36 @@ public class GoogleTargetSummary {
     protected int getRankScore(int rank){
         switch(rank){
             case 1:
-                return 16;
+                return 10;
             case 2:
-                return 12;
+                return 9;
             case 3:
                 return 8;
-            case 4:
-                return 6;
-            case 5:
-                return 4;
             default:
+                if(rank <= 5){
+                    return 7;
+                }
                 if(rank <= 10){
+                    return 6;
+                }
+                if(rank <= 20){
+                    return 5;
+                }
+                if(rank <= 30){
+                    return 4;
+                }
+                if(rank <= 50){
                     return 3;
                 }
-                
-                if(rank <= 30){
+                if(rank <= 100){
                     return 2;
                 }
-                
-                if(rank <= 100){
+                if(rank <= 1000){
                     return 1;
                 }
         }
         return 0;
     }    
-
-//    protected int getRankScore(int rank){
-//        switch(rank){
-//            case 1:
-//                return 32;
-//            case 2:
-//                return 16;
-//            case 3:
-//                return 12;
-//            case 4:
-//                return 8;
-//            case 5:
-//                return 6;
-//            default:
-//                if(rank <= 10){
-//                    return 4;
-//                }
-//                
-//                if(rank <= 30){
-//                    return 2;
-//                }
-//                
-//                if(rank <= 100){
-//                    return 1;
-//                }
-//        }
-//        return 0;
-//    }
 
     public int getGroupId() {
         return groupId;
@@ -192,22 +172,6 @@ public class GoogleTargetSummary {
 
     public int getRunId() {
         return runId;
-    }
-
-    public void setPreviousScore(int previousScore) {
-        this.previousScore = previousScore;
-    }
-    
-    public int getPreviousScore() {
-        return previousScore;
-    }
-
-    public int getScore() {
-        return score;
-    }
-    
-    public int getDiff() {
-        return score-previousScore;
     }
 
     public int getTotalTop3() {
@@ -270,10 +234,40 @@ public class GoogleTargetSummary {
         this.totalOut = totalOut;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public int getScoreRaw() {
+        return scoreRaw;
+    }
+
+    public void setScoreRaw(int scoreRaw) {
+        this.scoreRaw = scoreRaw;
     }
     
+    public int computeScoreBP(int nSearches){
+        if(nSearches == 0){
+            return scoreBP = 0;
+        }
+        return scoreBP = scoreRaw*1000/nSearches;
+    }
+
+    public int getScoreBP() {
+        return scoreBP;
+    }
+
+    public void setScoreBP(int scoreBP) {
+        this.scoreBP = scoreBP;
+    }
+
+    public int getPreviousScoreBP() {
+        return previousScoreBP;
+    }
+
+    public void setPreviousScoreBP(int previousScoreBP) {
+        this.previousScoreBP = previousScoreBP;
+    }
+
+    public int getDiffBP() {
+        return scoreBP-previousScoreBP;
+    }    
     
     public void visitReferencedSearchId(Set<Integer> searchIds){
         for (GoogleRank rank : topRanks) {

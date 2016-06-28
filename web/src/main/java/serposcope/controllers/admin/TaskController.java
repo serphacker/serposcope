@@ -219,7 +219,7 @@ public class TaskController extends BaseController {
                 
                 Run previousRun = baseDB.run.findPrevious(run.getId());
                 if(previousRun != null){
-                    previousSummary = googleDB.targetSummary.getPreviousScore(previousRun.getId());
+                    previousSummary = googleDB.targetSummary.getPreviousScoreBP(previousRun.getId());
                 } 
 
                 Map<Integer,GoogleTargetSummary> summariesByTarget = new HashMap<>();
