@@ -244,7 +244,7 @@ serposcope.googleSearchController = function () {
         window.location = url;
     };
     
-        var eventCalendarClick = function(){
+    var eventCalendarClick = function(){
         $('#modal-add-event').modal();
         return false;
     };

@@ -61,7 +61,7 @@
                     <button type="button" class="btn btn-default btn-change-display-mode" id="display-mode-table"
                             data-mode="table" data-toggle="tooltip" title="serp" >
                         <span class="glyphicon glyphicon-list-alt"></span>
-                    </button>            
+                    </button>
                 </div>
             </div>
         </div>
@@ -89,9 +89,14 @@
                     <th>
                         URL [<#if serp??>${serp.getRunDay().toLocalDate()}</#if>] 
                         | 
-                        [ <a href="#" class="btn-draw-top10" data-toggle="tooltip" title="${i18n("google.search.drawTop10")}" >
+                        <a href="#" class="btn-draw-top10" data-toggle="tooltip" title="${i18n("google.search.drawTop10")}" >
                              <i class="fa fa-fw fa-line-chart" ></i> TOP 10
-                        </a> ]
+                        </a>
+                        |
+                        <a href="#" data-toggle="modal" data-target="#modal-export-serp" data-toggle="tooltip" title="${i18n("google.search.exportSERP")}" >
+                            <span class="glyphicon glyphicon-download-alt"></span>
+                        </a>
+                    </button>
                     </th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(1).toString()}</#if>" data-toggle="tooltip">D-1</span></th>
                     <th class="rank"><span title="<#if endDate?? >${endDate.minusDays(7).toString()}</#if>" data-toggle="tooltip">D-7</span></th>
@@ -158,6 +163,35 @@
 
 <#include "../../helpers/new-target.ftl.html" />
 <#include "../../helpers/add-event-modal.ftl.html" >
+<div id="modal-export-serp" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="GET" 
+                  action="${reverseRoute("google.GoogleSearchController","exportSerp","groupId", group.getId(), "searchId", search.getId())}" >
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">${i18n("google.search.exportSERP")}</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p class="help-block" >${i18n("label.fieldsToExport")}</p>
+                    <div class="checkbox"><label><input type="checkbox" name="rank"> Rank</label></div>
+                    <div class="checkbox"><label><input type="checkbox" name="url" checked="checked" disabled="disabled"> URL</label></div>
+                    <div class="checkbox"><label><input type="checkbox" name="d1"> D-1</label></div>
+                    <div class="checkbox"><label><input type="checkbox" name="d7"> D-7</label></div>
+                    <div class="checkbox"><label><input type="checkbox" name="d30"> D-30</label></div>
+                    <div class="checkbox"><label><input type="checkbox" name="d90"> D-90</label></div>
+                    <input type="hidden" name="date" value="${endDate!""}" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                    <input type="submit" class="btn btn-primary" value="${i18n("label.export")}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="csp-script" data-src="googleSearchController.renderSearch" ></div>
 <div id="csp-vars"
      data-display-mode="${displayMode!"split"}"

@@ -23,10 +23,12 @@ import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Group.Module;
 import com.serphacker.serposcope.models.base.Run;
 import com.serphacker.serposcope.models.google.GoogleBest;
+import com.serphacker.serposcope.models.google.GoogleRank;
 import static com.serphacker.serposcope.models.google.GoogleRank.UNRANKED;
 import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.models.google.GoogleSerp;
+import com.serphacker.serposcope.models.google.GoogleSerpEntry;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -268,6 +270,67 @@ public class GoogleSearchController extends GoogleController {
             .text()
             .render(builder.toString());
     }
+    
+    public Result exportSerp(Context context, 
+        @PathParam("searchId") Integer searchId,
+        @Param("date") String pdate
+    ){
+        GoogleSerp serp=null;
+        LocalDate date=null;
+        try {date = LocalDate.parse(pdate);}catch(Exception ex){}
+        if(date != null){
+            List<Run> runs = baseDB.run.findByDay(Module.GOOGLE, date);
+            if(!runs.isEmpty()){
+                GoogleSearch search = getSearch(context, searchId);
+                if(search != null){
+                    serp = googleDB.serp.get(runs.get(0).getId(), search.getId());
+                }
+            }
+        }
+        
+        if(serp == null){
+            return Results.ok().text().renderRaw("SERP not found");
+        }
+        
+        boolean exportRank = context.getParameter("rank") != null;
+        boolean exportD1 = context.getParameter("d1") != null;
+        boolean exportD7 = context.getParameter("d7") != null;
+        boolean exportD30 = context.getParameter("d30") != null;
+        boolean exportD90 = context.getParameter("d90") != null;
+        
+        int position = 0;
+        StringBuilder builder = new StringBuilder();
+        for (GoogleSerpEntry entry : serp.getEntries()) {
+            ++position;
+            if(exportRank){
+                builder.append(position).append(",");
+            }
+            builder.append(entry.getUrl()).append(",");
+            if(exportD1){
+                Short rank = entry.getMap().getOrDefault((short)1, (short)GoogleRank.UNRANKED);
+                builder.append(rank != GoogleRank.UNRANKED ? rank.intValue() : "").append(",");
+            }
+            if(exportD7){
+                Short rank = entry.getMap().getOrDefault((short)7, (short)GoogleRank.UNRANKED);
+                builder.append(rank != GoogleRank.UNRANKED ? rank.intValue() : "").append(",");
+            }
+            if(exportD30){
+                Short rank = entry.getMap().getOrDefault((short)30, (short)GoogleRank.UNRANKED);
+                builder.append(rank != GoogleRank.UNRANKED ? rank.intValue() : "").append(",");
+            }
+            if(exportD90){
+                Short rank = entry.getMap().getOrDefault((short)90, (short)GoogleRank.UNRANKED);
+                builder.append(rank != GoogleRank.UNRANKED ? rank.intValue() : "").append(",");
+            }
+            if(builder.length() > 0){
+                builder.setCharAt(builder.length()-1, '\n');
+            }
+        }
+        
+        return Results.text()
+            .addHeader("Content-Disposition", "attachment; filename=\"" + serp.getRunDay().toLocalDate() + ".csv\"")
+            .renderRaw(builder.toString());
+    }    
     
     
 }
