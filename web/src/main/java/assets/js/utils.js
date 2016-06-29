@@ -62,7 +62,14 @@ serposcope.utils = function () {
             .innerHTML;
     };
     
+    var escapeHTMLQuotes = function(html){
+        return html
+            .replace(/'/g, '&#039;')
+            .replace(/"/g, '&quot;');
+    };
+    
     var oPublic = {
+        escapeHTMLQuotes: escapeHTMLQuotes,
         escapeHTML: escapeHTML,
         rainbow: rainbow,
         eventDate: eventDate

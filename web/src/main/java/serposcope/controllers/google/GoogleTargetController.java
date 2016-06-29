@@ -27,6 +27,7 @@ import static com.serphacker.serposcope.models.google.GoogleRank.UNRANKED;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
+import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
@@ -267,8 +268,123 @@ public class GoogleTargetController extends GoogleController {
             .render("ranksDown", ranksDown)
             .render("ranksSame", ranksSame);
     }
-
+    
     protected Result renderTable(
+        Group group,
+        GoogleTarget target,
+        List<GoogleSearch> searches,
+        List<Run> runs,
+        LocalDate minDay,
+        LocalDate maxDay,
+        LocalDate startDate,
+        LocalDate endDate
+    ) {
+        String display = "table";
+        
+        StringBuilder jsonData = new StringBuilder("[{\"id\": -1, \"best\": null, \"days\": [");
+        StringBuilder jsonDays = new StringBuilder("[");
+        
+        if(!runs.isEmpty()){
+
+            // events
+            List<Event> events = baseDB.event.list(group, startDate, endDate);
+            for (Run run : runs) {
+                Event event = null;
+
+                for (Event candidat : events) {
+                    if(run.getDay().equals(candidat.getDay())){
+                        event = candidat;
+                        break;
+                    }
+                }
+
+                if(event != null){
+                    jsonData
+                        .append("{\"title\":\"").append(StringEscapeUtils.escapeJson(event.getTitle()))
+                        .append("\",\"description\":\"").append(StringEscapeUtils.escapeJson(event.getDescription()))
+                        .append("\"},");
+                } else {
+                    jsonData.append("null,");
+                }
+            }
+            jsonData.deleteCharAt(jsonData.length()-1);
+            jsonData.append("]},");  
+
+
+            for (GoogleSearch search : searches) {
+                GoogleBest best = googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId());
+                
+                jsonData.append("{\"id\":").append(search.getId())
+                    .append(",\"search\":{")
+                    .append("\"id\":").append(search.getId())
+                    .append(",\"k\":\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
+                    .append("\",\"t\":\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                    .append("\",\"d\":\"").append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                    .append("\",\"l\":\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
+                    .append("\",\"dc\":\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
+                    .append("\",\"c\":\"").append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
+                    .append("\"}, \"best\":");
+                if(best == null){
+                    jsonData.append("null,");
+                } else {
+                    jsonData
+                        .append("{\"rank\":").append(best.getRank())
+                        .append(",\"date\":\"").append(best.getRunDay().toLocalDate().toString())
+                        .append("\",\"url\":\"").append(StringEscapeUtils.escapeJson(best.getUrl()))
+                        .append("\"},");
+                }
+                jsonData.append("\"days\": [");
+
+                for (Run run : runs) {
+                    GoogleRank fullRank = googleDB.rank.getFull(run.getId(), group.getId(), target.getId(), search.getId());
+                    if(fullRank != null && fullRank.rank != GoogleRank.UNRANKED) {
+                        jsonData.append("{\"r\":").append(fullRank.rank)
+                            .append(",\"p\":").append(fullRank.previousRank)
+                            .append(",\"u\":\"").append(StringEscapeUtils.escapeJson(fullRank.url))
+                            .append("\"},");
+                    } else {
+                        jsonData.append("{\"r\":32767,\"p\":null,\"u\":null},");
+                    }
+                }
+                jsonData.deleteCharAt(jsonData.length()-1);
+                jsonData.append("]},");
+            }
+            jsonData.deleteCharAt(jsonData.length()-1);
+            jsonData.append("]");
+
+            
+            // days
+            for (Run run : runs) {
+                jsonDays.append("\"").append(run.getDay().toString()).append("\",");
+            }
+            jsonDays.deleteCharAt(jsonDays.length()-1);
+            jsonDays.append("]");
+        } else {
+            jsonData.append("]}]");
+            jsonDays.append("]");
+        }
+
+        
+//        Map<Integer, GoogleBest> bestRanks = new HashMap<>();
+//        for (GoogleSearch search : searches) {
+//            bestRanks.put(search.getId(), googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId()));
+//        }
+
+        return Results.ok()
+            .template("/serposcope/views/google/GoogleTargetController/" + display + ".ftl.html")
+            .render("target", target)
+            .render("searches", searches)
+            .render("startDate", startDate.toString())
+            .render("endDate", endDate.toString())
+            .render("minDate", minDay)
+            .render("maxDate", maxDay)
+            .render("display", display)
+            .render("days", jsonDays)
+            .render("data", jsonData)
+            ;
+    }    
+
+    protected Result renderTable1(
         Group group,
         GoogleTarget target,
         List<GoogleSearch> searches,

@@ -1,76 +1,22 @@
 <#import "targetLayout.ftl.html" as layout> 
 <@layout.googleTargetLayout  >
-<div id="google-target-table-container" class="top15">
-    <table id="google-target-table" class="table table-bordered table-condensed table-striped-column text-center" >
-        <#if ranks?? >
-        <thead>
-            <tr>
-                <th rowspan="2"></th>
-                <#list years?keys as year>
-                <td colspan="${years[year]}">${year}</td>
-                </#list>
-                <th rowspan="2"></th>
-            </tr>
-            <tr>
-                <#list months?keys as month>
-                <td colspan="${months[month]}" >${month?substring(5)}</td>
-                </#list>
-            </tr>
-            <tr class="sortable" >
-                <th data-sort="string" ><i class="glyphicon glyphicon-sort"></i></th>
-                <#list ranks?keys as day>
-                <th data-sort="stripint" ><span data-toggle="tooltip" title="${day}" >${day?substring(8,10)}</span></th>
-                </#list>
-                <th data-sort="stripint" ><i class="fa fa-trophy" data-toggle="tooltip" title="${i18n("label.best")}" style="color: gold;" ></i></th>
-            </tr>
-            <tr>
-                <th><em>#${i18n("label.calendar")}#</em></th>
-                <#list ranks?keys as day>
-                <td>
-                    <#list events as event>
-                    <#if event.getDay() == day.toLocalDate() >
-                    <div class="fa fa-calendar calendar-annotation" 
-                         title="${event.getTitle()}" data-content="${event.getDescription()}" ></div>
-                    <#break/>
-                    </#if>
-                    </#list>
-                </td>
-                </#list>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <#list searches as search>
-            <#assign best = bestRanks?api.get(search.getId()) >
-            <#if best.getRunDay()?? >
-                <#assign bestRunDay = best.getRunDay()?substring(0,10) >
-            <#else>
-                <#assign bestRunDay =i18n("label.neverRanked") >
-            </#if>
-            <tr>
-                <th>
-                    <#noescape>${fu.gsIcoInfos(search)}</#noescape>
-                    <a href="${reverseRoute("google.GoogleSearchController","search","groupId",group.getId(),"searchId", search.getId())}" >${search.getKeyword()}</a></th>
-                <#list ranks?keys as dayx>
-                <#assign search_ranks = ranks?api.get(dayx) >
-                <td>
-                    <#if search_ranks?api.get(search.getId())?? >
-                    <#assign rank = search_ranks?api.get(search.getId()) >
-                    <span class="poptarget diff-${rank.getDiffClass()}" data-t-title="${rank.getDiff()}" data-p-title="${dayx?substring(0,10)}" data-content="${rank.getUrl()!"not provided"}"
-                    >${rank.getRank()}</span>
-                    </#if>
-                </td>
-                </#list>                    
-                <td class="bestrank">
-                    <span class="poptarget" data-t-title="${bestRunDay}"
-                          data-p-title="${bestRunDay}" data-content="${best.getUrl()!"not provided"}">
-                          <#if best.getRank() != 32767>${best.getRank()}<#else>-</#if>
-                    </span>
-                </td>                
-            </tr>
-            </#list>
-            </#if>
-        </tbody>
-    </table>
+<div id="google-target-table-filter">
+    <input id="filter-keyword" class="form-control inline width250 input-sm" placeholder="${i18n("label.keyword")}" />
+    <select id="filter-device" class="form-control inline width120 input-sm">
+        <option value="">${i18n("label.allDevices")}</option>
+        <option value="D">${i18n("label.desktop")}</option>
+        <option value="M">${i18n("label.mobile")}</option>
+    </select>
+    <input id="filter-tld" class="form-control inline width50 input-sm" placeholder="TLD" />
+    <input id="filter-local" class="form-control inline width120 input-sm" placeholder="${i18n("label.local")}" />
+    <input id="filter-datacenter" class="form-control inline width120 input-sm" placeholder="${i18n("label.datacenter")}" />
+    <input id="filter-custom" class="form-control inline width120 input-sm" placeholder="${i18n("label.custom")}" />
+    <button id="filter-apply" class="btn btn-primary btn-sm" >${i18n("label.filter")}</button>
+    <button id="filter-reset" class="btn btn-default btn-sm" >${i18n("label.reset")}</button>
 </div>
+<div id="google-target-table-container" class="top5"></div>
+<div id="grid-vars" 
+     data-days="${days!"[]"}"
+     data-data="${data!"[]"}"
+></div>
 </@>

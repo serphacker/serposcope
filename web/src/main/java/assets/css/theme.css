@@ -31,13 +31,19 @@ body {
 .width60 { width:70px; }
 .width80 { width:80px; }
 .width100 { width:100px; }
+.width120 { width:120px; }
 .width150 { width:150px; }
 .width200 { width:200px; }
 .width220 { width:220px; }
 .width240 { width:240px; }
+.width250 { width:250px; }
 .width260 { width:260px; }
 .width280 { width:280px; }
 .width300 { width:300px; }
+
+.pointer {
+    cursor: pointer;
+}
 
 .compact-col {
     width: 1px;
@@ -985,4 +991,8 @@ ul.typeahead.dropdown-menu {
     display: block;
     width: 100%;
     color: white;
+}
+
+.slick-header-column.ui-state-default {
+    height: 22px;
 }

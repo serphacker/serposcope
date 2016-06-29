@@ -97,6 +97,48 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     white-space: nowrap;
 }
 
+#google-target-table-container .slick-cell {
+    text-align: center;
+    padding: 0px;
+    height: 25px;
+}
+
+#google-target-table-container .slick-header-column{
+    height: 25px;
+    text-align: center;
+}
+
+#google-target-table-container .slick-row{
+    height: 25px;
+    text-align: center;
+}
+
+#google-target-table-container .slick-cell div {
+    height: 25px;
+}
+
+#google-target-table-container .best-cell {
+    background-color: #FFFFA0;
+    font-weight: bold;
+    /* height: 25px; */
+}
+
+#google-target-table-container .slick-header-column {
+    background-color: #3c8dbc;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#google-target-table-container .slick-header-column .header-search {
+    text-align: left;
+    font-weight: normal;
+}
+
+#google-target-table-filter input,
+#google-target-table-filter select {
+    padding: 5px 5px;
+}
+
 #google-target-chart {
     border-width: 1px 1px 0px 1px;
     border-color: lightgray;

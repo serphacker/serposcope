@@ -6,11 +6,12 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-/* global serposcope */
+/* global serposcope, Slick */
 
 serposcope.googleTargetController = function () {
 
     var HEADER_SIZE = 100;
+    var grid = serposcope.googleTargetControllerGrid;
 
     var resize = function () {
         var height = serposcope.theme.availableHeight() - HEADER_SIZE;
@@ -18,6 +19,7 @@ serposcope.googleTargetController = function () {
         $('#google-target-table-container').css("min-height", (height) + "px");
         $('#google-target-chart').css("height", (height) + "px");
         renderChart();
+        grid.resize();
     };
 
     var maxRank = 50;
@@ -34,9 +36,8 @@ serposcope.googleTargetController = function () {
         drawPoints: true,
         pointSize: 2,
         highlightSeriesBackgroundAlpha: 0.8,
-        highlightSeriesOpts: { strokeWidth: 2 },
-        drawHighlightPointCallback : function(g, seriesName, canvasContext, cx, cy, color, pointSize){},
-        
+        highlightSeriesOpts: {strokeWidth: 2},
+        drawHighlightPointCallback: function (g, seriesName, canvasContext, cx, cy, color, pointSize) {},
         axes: {
             x: {
                 drawGrid: false,
@@ -60,16 +61,16 @@ serposcope.googleTargetController = function () {
         },
         valueRange: [maxRank + maxRankOffset, minRank + minRankOffset]
     };
-    
+
     var renderChart = function () {
-        if(document.getElementById("google-target-chart") == null){
+        if (document.getElementById("google-target-chart") == null) {
             $('.calendar-annotation').popover({
                 html: true,
                 placement: "bottom"
-            });            
+            });
             return;
         }
-        
+
         if (chartData.length == 0) {
             chart = new Dygraph(document.getElementById("google-target-chart"), "X\n", chartOptions);
             return;
@@ -93,7 +94,7 @@ serposcope.googleTargetController = function () {
                     }
                 }
             }
-            
+
             chart.setAnnotations(annotations);
         });
     };
@@ -105,40 +106,41 @@ serposcope.googleTargetController = function () {
         url += "&endDate=" + end.format('YYYY-MM-DD');
         url += "&display=" + $('#csp-vars').attr('data-display');
         window.location = url;
-    };
+    }
+    ;
 
     var stripIntCmp = function (a, b) {
         a = a.replace(/[^0-9]/g, "");
         b = b.replace(/[^0-9]/g, "");
         return a - b;
     };
-    
-    var changeCmp = function(a,b){
-        a = a.replace(/\s+/g,"");
-        b = b.replace(/\s+/g,"");
-        if(a[0] === '-' || a[0] === '+'){
-            a = parseInt(a.substring(1),10);
-        }
-        if(b[0] === '-' || b[0] === '+'){
-            b = parseInt(b.substring(1),10);
-        }  
 
-        if(a === "IN" || a === "OUT" || a === "N/A"){
+    var changeCmp = function (a, b) {
+        a = a.replace(/\s+/g, "");
+        b = b.replace(/\s+/g, "");
+        if (a[0] === '-' || a[0] === '+') {
+            a = parseInt(a.substring(1), 10);
+        }
+        if (b[0] === '-' || b[0] === '+') {
+            b = parseInt(b.substring(1), 10);
+        }
+
+        if (a === "IN" || a === "OUT" || a === "N/A") {
             a = 1000;
         }
 
-        if(b === "IN" || b === "OUT" || b === "N/A"){
+        if (b === "IN" || b === "OUT" || b === "N/A") {
             b = 1000;
         }
 
-        return a-b;
+        return a - b;
     };
-    
-    var eventCalendarClick = function(){
+
+    var eventCalendarClick = function () {
         $('#modal-add-event').modal();
         return false;
     };
-    
+
     var render = function () {
         $(window).bind("load resize", function (evt) {
             resize();
@@ -150,9 +152,9 @@ serposcope.googleTargetController = function () {
             locale: {
                 format: 'YYYY-MM-DD'
             }
-        });        
+        });
         $('#btn-add-event').click(eventCalendarClick);
-        
+
         if ($('#csp-vars').attr('data-min-date') !== "") {
             $('#daterange').removeAttr("disabled");
             var maxDate = $('#csp-vars').attr('data-max-date');
@@ -175,6 +177,8 @@ serposcope.googleTargetController = function () {
             }, refresh);
         }
 
+        grid.render();
+
         var jsonData = JSON.parse($('#csp-vars').attr('data-chart'));
         chartData = [];
         if (jsonData != null && typeof (jsonData.ranks) != "undefined" && typeof (jsonData.searches) != "undefined") {
@@ -185,16 +189,20 @@ serposcope.googleTargetController = function () {
             }
             chartOptions.valueRange = [maxRank + maxRankOffset, minRank + minRankOffset];
         }
-        
+
         $('.poptarget').tooltip({
-            title: function(elt){return $(this).attr("data-t-title");},
+            title: function (elt) {
+                return $(this).attr("data-t-title");
+            },
             placement: "top"
         });
-        
+
         $('.poptarget').popover({
             html: true,
             placement: "bottom",
-            title: function(elt){return $(this).attr("data-p-title");}
+            title: function (elt) {
+                return $(this).attr("data-p-title");
+            }
         });
     };
 
