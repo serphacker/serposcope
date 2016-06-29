@@ -35,6 +35,7 @@
                                 </span></td>
                                 <td><span class="hb-score-history-inline" data-values="<#list record.scoreHistory as score>${fu.formatScore(score)}<#sep>,</#list>" ></span>
                                 <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
                                     <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop3()/summary.getTotalKeywords()*100)?string["0.##"]}%">
                                         <div class="progress-bar" style="width: ${(summary.getTotalTop3()/summary.getTotalKeywords()*100)?c}%;">
                                             <span >
@@ -42,33 +43,40 @@
                                             </span>
                                         </div>
                                     </div>
+                                    </#if>
                                 </td>
                                 <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
                                     <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop10()/summary.getTotalKeywords()*100)?string["0.##"]}%">
                                         <div class="progress-bar" style="width: ${(summary.getTotalTop10()/summary.getTotalKeywords()*100)?c}%;">
                                             <span >
                                                 ${summary.getTotalTop10()}/${summary.getTotalKeywords()}
                                             </span>
                                         </div>
-                                    </div>                                    
+                                    </div>
+                                    </#if>
                                 </td>
                                 <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
                                     <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop100()/summary.getTotalKeywords()*100)?string["0.##"]}%">
                                         <div class="progress-bar" style="width: ${(summary.getTotalTop100()/summary.getTotalKeywords()*100)?c}%;">
                                             <span>
                                                 ${summary.getTotalTop100()}/${summary.getTotalKeywords()}
                                             </span>
                                         </div>
-                                    </div>                                    
+                                    </div>                               
+                                    </#if>
                                 </td>
                                 <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
                                     <div class="progress" data-toggle="tooltip" title="${(summary.getTotalOut()/summary.getTotalKeywords()*100)?string["0.##"]}%" >
                                         <div class="progress-bar" style="width: ${(summary.getTotalOut()/summary.getTotalKeywords()*100)?c}%;">
                                             <span>
                                                 ${summary.getTotalOut()}/${summary.getTotalKeywords()}
                                             </span>
                                         </div>
-                                    </div>                                    
+                                    </div>                               
+                                    </#if>
                                 </td>
                             </tr>
                             </#list>
