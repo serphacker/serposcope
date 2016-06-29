@@ -30,6 +30,7 @@ serposcope.googleTargetController = function () {
     var chartData = [];
     var chartOptions = {
         labels: ["Date", "###CALENDAR###"],
+        visibility: [true],
         legend: "always",
         labelsDivWidth: "100%",
         labelsDiv: "google-target-legend",
@@ -184,8 +185,10 @@ serposcope.googleTargetController = function () {
         if (jsonData != null && typeof (jsonData.ranks) != "undefined" && typeof (jsonData.searches) != "undefined") {
             chartData = jsonData.ranks;
             maxRank = jsonData.maxRank > maxRank ? jsonData.maxRank : maxRank;
+            var isDraw = jsonData.searches.length < 15 ? true : false;
             for (var i = 0; i < jsonData.searches.length; i++) {
                 chartOptions.labels.push(jsonData.searches[i]);
+                chartOptions.visibility.push(isDraw);
             }
             chartOptions.valueRange = [maxRank + maxRankOffset, minRank + minRankOffset];
         }
