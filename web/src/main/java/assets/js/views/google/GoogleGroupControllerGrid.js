@@ -118,7 +118,6 @@ serposcope.googleGroupControllerGrid = function () {
         filter.local = $('#filter-local').val().toLowerCase();
         filter.datacenter = $('#filter-datacenter').val().toLowerCase();
         filter.custom = $('#filter-custom').val().toLowerCase();
-//        grid.setSelectedRows([]);
         dataView.refresh();
     };
 

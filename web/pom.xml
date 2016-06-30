@@ -238,7 +238,9 @@
                                         <jsSourceFile>/assets/lib/SlickGrid/lib/jquery.event.drag-2.2.js</jsSourceFile>
                                         <jsSourceFile>/assets/lib/SlickGrid/slick.core.js</jsSourceFile>
                                         <jsSourceFile>/assets/lib/SlickGrid/slick.dataview.js</jsSourceFile>
-                                        <jsSourceFile>/assets/lib/SlickGrid/slick.grid.js</jsSourceFile>                                        
+                                        <jsSourceFile>/assets/lib/SlickGrid/slick.grid.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/SlickGrid/plugins/slick.checkboxselectcolumn.js</jsSourceFile>
+                                        <jsSourceFile>/assets/lib/SlickGrid/plugins/slick.rowselectionmodel.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/lib/dygraph-annotations-override.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/lib/dygraph-serposcope-plugins.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/lib/dygraph-plugins-loader.js</jsSourceFile>
@@ -259,8 +261,9 @@
                                         <jsSourceFile>/assets/js/views/google/GoogleSidebar.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleGroupController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleSearchController.js</jsSourceFile>
-                                        <jsSourceFile>/assets/js/views/google/GoogleTargetController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleTargetControllerGrid.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/google/GoogleTargetControllerVariation.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/google/GoogleTargetController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/loader.js</jsSourceFile>
                                     </jsSourceFiles>
                                     <jsFinalFile>combined.js</jsFinalFile>

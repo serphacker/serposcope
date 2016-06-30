@@ -215,8 +215,137 @@ public class GoogleTargetController extends GoogleController {
         }
 
     }
-
+    
     protected Result renderVariation(
+        Group group,
+        GoogleTarget target,
+        List<GoogleSearch> searches,
+        Run lastRun,
+        LocalDate minDay,
+        LocalDate maxDay,
+        LocalDate startDate,
+        LocalDate endDate
+    ) {
+        String display = "variation";
+        List<TargetVariation> ranksUp = new ArrayList<>();
+        List<TargetVariation> ranksDown = new ArrayList<>();
+        List<TargetVariation> ranksSame = new ArrayList<>();
+        StringBuilder jsonUp = new StringBuilder("[");
+        StringBuilder jsonDown = new StringBuilder("[");
+        StringBuilder jsonSame = new StringBuilder("[");        
+
+        Map<Integer, GoogleSearch> searchesById = searches.stream()
+            .collect(Collectors.toMap(GoogleSearch::getId, Function.identity()));
+        
+        List<GoogleRank> ranks = googleDB.rank.list(lastRun.getId(), group.getId(), target.getId());
+        for (GoogleRank rank : ranks) {
+
+            GoogleSearch search = searchesById.get(rank.googleSearchId);
+            if (search == null) {
+                continue;
+            }
+
+            if (rank.diff > 0) {
+                ranksDown.add(new TargetVariation(search, rank));
+            } else if (rank.diff < 0) {
+                ranksUp.add(new TargetVariation(search, rank));
+            } else {
+                ranksSame.add(new TargetVariation(search, rank));
+            }
+        }
+
+        Collections.sort(ranksUp, (TargetVariation o1, TargetVariation o2) -> Integer.compare(o1.rank.diff, o2.rank.diff));
+        Collections.sort(ranksDown, (TargetVariation o1, TargetVariation o2) -> -Integer.compare(o1.rank.diff, o2.rank.diff));
+        Collections.sort(ranksSame, (TargetVariation o1, TargetVariation o2) -> Integer.compare(o1.rank.rank, o2.rank.rank));
+        
+        int id = 0;
+        for (TargetVariation var : ranksUp) {
+            jsonUp
+                .append("{")
+                .append("\"id\":").append(id++)
+                .append(",\"search\":").append(searchToJson(var.search))
+                .append(",\"now\":").append(var.rank.rank)
+                .append(",\"prv\":").append(var.rank.previousRank)
+                .append(",\"diff\":").append(var.rank.diff)
+                .append("},");
+        }
+        if(!ranksUp.isEmpty()){
+            jsonUp.deleteCharAt(jsonUp.length()-1);
+        }
+        jsonUp.append("]");
+        
+        for (TargetVariation var : ranksDown) {
+            jsonDown
+                .append("{")
+                .append("\"id\":").append(id++)
+                .append(",\"search\":").append(searchToJson(var.search))
+                .append(",\"now\":").append(var.rank.rank)
+                .append(",\"prv\":").append(var.rank.previousRank)
+                .append(",\"diff\":").append(var.rank.diff)
+                .append("},");
+        }
+        if(!ranksDown.isEmpty()){
+            jsonDown.deleteCharAt(jsonDown.length()-1);
+        }
+        jsonDown.append("]");
+        
+        for (TargetVariation var : ranksSame) {
+            jsonSame
+                .append("{")
+                .append("\"id\":").append(id++)
+                .append(",\"search\":").append(searchToJson(var.search))
+                .append(",\"now\":").append(var.rank.rank)
+                .append("},");
+        }
+        if(!ranksSame.isEmpty()){
+            jsonSame.deleteCharAt(jsonSame.length()-1);
+        }
+        jsonSame.append("]");
+        
+        
+        return Results.ok()
+            .template("/serposcope/views/google/GoogleTargetController/" + display + ".ftl.html")
+            .render("target", target)
+            .render("searches", searches)
+            .render("startDate", lastRun.getDay().toString())
+            .render("endDate", lastRun.getDay().toString())
+            .render("minDate", minDay)
+            .render("maxDate", maxDay)
+            .render("display", display)
+            .render("jsonUp", jsonUp)
+            .render("jsonDown", jsonDown)
+            .render("jsonSame", jsonSame);
+    }
+    
+    protected StringBuilder searchToJson(GoogleSearch search){
+        StringBuilder searchesJson = new StringBuilder("{");
+        searchesJson.append("\"id\":")
+            .append(search.getId())
+            .append(",");
+        searchesJson.append("\"keyword\":\"")
+            .append(StringEscapeUtils.escapeJson(search.getKeyword()))
+            .append("\",");
+        searchesJson.append("\"tld\":\"")
+            .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+            .append("\",");
+        searchesJson.append("\"device\":\"")
+            .append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+            .append("\",");
+        searchesJson.append("\"local\":\"")
+            .append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
+            .append("\",");
+        searchesJson.append("\"datacenter\":\"")
+            .append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
+            .append("\",");
+        searchesJson.append("\"custom\":\"")
+            .append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
+            .append("\"");
+        searchesJson.append("}");        
+        return searchesJson;
+    }
+    
+
+    protected Result renderVariation1(
         Group group,
         GoogleTarget target,
         List<GoogleSearch> searches,
@@ -382,66 +511,6 @@ public class GoogleTargetController extends GoogleController {
             .render("days", jsonDays)
             .render("data", jsonData)
             ;
-    }    
-
-    protected Result renderTable1(
-        Group group,
-        GoogleTarget target,
-        List<GoogleSearch> searches,
-        List<Run> runs,
-        LocalDate minDay,
-        LocalDate maxDay,
-        LocalDate startDate,
-        LocalDate endDate
-    ) {
-        String display = "table";
-        Map<LocalDateTime, Map<Integer, TargetRank>> ranks = new LinkedHashMap<>();
-        Map<String, Integer> years = new LinkedHashMap<>();
-        Map<String, Integer> months = new LinkedHashMap<>();
-
-        int maxRank = 0;
-
-        for (Run run : runs) {
-            ranks.put(run.getStarted(), new HashMap<>());
-            years.compute(Integer.toString(run.getDay().getYear()), (String t, Integer u) -> u == null ? 1 : u + 1);
-            months.compute(run.getDay().format(YEAR_MONTH), (String t, Integer u) -> u == null ? 1 : u + 1);
-
-            for (GoogleSearch search : searches) {
-                Map<Integer, TargetRank> dayRanks = ranks.get(run.getStarted());
-
-                GoogleRank fullRank = googleDB.rank.getFull(run.getId(), group.getId(), target.getId(), search.getId());
-
-                if (fullRank != null && fullRank.rank != GoogleRank.UNRANKED) {
-                    if (fullRank.rank > maxRank) {
-                        maxRank = fullRank.rank;
-                    }
-                    dayRanks.put(search.getId(), new TargetRank(fullRank.rank, fullRank.previousRank, fullRank.url));
-                } else {
-                    dayRanks.put(search.getId(), new TargetRank(UNRANKED, 0, null));
-                }
-            }
-        }
-
-        List<Event> events = baseDB.event.list(group, startDate, endDate);
-        Map<Integer, GoogleBest> bestRanks = new HashMap<>();
-        for (GoogleSearch search : searches) {
-            bestRanks.put(search.getId(), googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId()));
-        }
-
-        return Results.ok()
-            .template("/serposcope/views/google/GoogleTargetController/" + display + ".ftl.html")
-            .render("target", target)
-            .render("searches", searches)
-            .render("startDate", startDate.toString())
-            .render("endDate", endDate.toString())
-            .render("minDate", minDay)
-            .render("maxDate", maxDay)
-            .render("display", display)
-            .render("years", years)
-            .render("months", months)
-            .render("ranks", ranks)
-            .render("bestRanks", bestRanks)
-            .render("events", events);
     }
 
     protected Result renderChart(

@@ -11,7 +11,6 @@
 serposcope.googleTargetController = function () {
 
     var HEADER_SIZE = 100;
-    var grid = serposcope.googleTargetControllerGrid;
 
     var resize = function () {
         var height = serposcope.theme.availableHeight() - HEADER_SIZE;
@@ -19,7 +18,8 @@ serposcope.googleTargetController = function () {
         $('#google-target-table-container').css("min-height", (height) + "px");
         $('#google-target-chart').css("height", (height) + "px");
         renderChart();
-        grid.resize();
+        serposcope.googleTargetControllerGrid.resize();
+        serposcope.googleTargetControllerVariation.resize();
     };
 
     var maxRank = 50;
@@ -178,7 +178,8 @@ serposcope.googleTargetController = function () {
             }, refresh);
         }
 
-        grid.render();
+        serposcope.googleTargetControllerGrid.render();
+        serposcope.googleTargetControllerVariation.render();
 
         var jsonData = JSON.parse($('#csp-vars').attr('data-chart'));
         chartData = [];

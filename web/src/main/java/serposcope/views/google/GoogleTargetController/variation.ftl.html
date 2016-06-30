@@ -6,95 +6,29 @@
             <#if endDate??>${endDate}<#else>${i18n("label.noDataAvailable")}</#if>
         </h2>
     </div>
+    <div class="row">
+        <div class="col-xs-12" >
+            <#include "../../helpers/search-filter.ftl.html" />
+        </div>
+    </div>
     <div class="row" >
         <div class="col-md-4" >
             <h4 class="text-center text-uppercase text-success">${i18n("home.improvedPositions")}</h4>
-            <table class="table table-condensed table-position-change">
-                <thead>
-                    <tr>
-                        <th data-sort="string">${i18n("label.keyword")} <i class="fa fa-sort" ></i></th>
-                        <th data-sort="int" style="width: 50px; white-space: nowrap;"><span data-toggle="tooltip" title="${i18n("label.previous")}">PRV</span> <i class="fa fa-sort" ></i></th>
-                        <th data-sort="int" style="width: 50px; white-space: nowrap;"><span>NOW</span> <i class="fa fa-sort" ></i></th>
-                        <th data-sort="change" style="width: 50px; white-space: nowrap;">+/- <i class="fa fa-sort" ></i></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <#if ranksUp??>
-                    <#list ranksUp as rank>
-                    <tr>
-                        <td>
-                            <#noescape>${fu.gsIcoInfos(rank.search)}</#noescape>
-                            <a href="${reverseRoute("google.GoogleSearchController", "search", "groupId", 
-                               group.getId(), "searchId", rank.search.getId())}" >
-                               ${rank.search.getKeyword()}</a></td>
-                        <td><span class="text-muted"><#if rank.rank.previousRank == 32767>OUT<#else>${rank.rank.previousRank}</#if></span></td>
-                        <td><span>${rank.rank.rank}</span></td>
-                        <td class="text-success">
-                            <#if rank.rank.previousRank == 32767>
-                            IN
-                            <#else>
-                            +${rank.rank.diff?abs}
-                            </#if>
-                        </td>                                
-                    </tr>                            
-                    </#list>
-                    </#if>
-                </tbody>
-            </table>
+            <div id="variation-improved-grid" class="variation-grid" ></div>
         </div>
         <div class="col-md-4" >
             <h4 class="text-center text-uppercase text-danger">${i18n("home.lostPositions")}</h4>
-            <table class="table table-condensed table-position-change">
-                <thead>
-                    <tr>
-                        <th data-sort="string">${i18n("label.keyword")} <i class="fa fa-sort" ></i></th>
-                        <th data-sort="int" style="width: 50px; white-space: nowrap;"><span data-toggle="tooltip" title="${i18n("label.previous")}">PRV</span> <i class="fa fa-sort" ></i></th>
-                        <th data-sort="int" style="width: 50px; white-space: nowrap;"><span>NOW</span> <i class="fa fa-sort" ></i></th>
-                        <th data-sort="change" style="width: 50px; white-space: nowrap;">+/- <i class="fa fa-sort" ></i></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <#if ranksDown??>
-                    <#list ranksDown as rank>
-                    <tr>
-                        <td>
-                            <#noescape>${fu.gsIcoInfos(rank.search)}</#noescape>
-                            <a href="${reverseRoute("google.GoogleSearchController", "search", "groupId", 
-                               target.getGroupId(), "searchId", rank.search.getId())}" >
-                               ${rank.search.getKeyword()}</a></td>
-                        <td><span class="text-muted"><#if rank.rank.previousRank == 32767>OUT<#else>${rank.rank.previousRank}</#if></span></td>
-                        <td><span><#if rank.rank.rank == 32767>OUT<#else>${rank.rank.rank}</#if></span></td>
-                        <td class="text-danger"><#if rank.rank.rank == 32767>OUT<#else>-${rank.rank.diff?abs}</#if></td>
-                    </tr>
-                    </#list>
-                    </#if>
-                </tbody>
-            </table>
+            <div id="variation-lost-grid" class="variation-grid" ></div>
         </div>                    
         <div class="col-md-4" >
             <h4 class="text-center text-uppercase">${i18n("home.unchangedPositions")}</h4>
-            <table class="table table-condensed table-position-change">
-                <thead>
-                <th data-sort="string" >${i18n("label.keyword")} <i class="fa fa-sort" ></i></th>
-                <th data-sort="int" style="width: 50px; white-space: nowrap;">${i18n("label.now")} <i class="fa fa-sort" ></i></th>
-                </tr>
-                </thead>
-                <tbody>
-                    <#if ranksSame??>
-                    <#list ranksSame as rank>
-                    <tr>
-                        <td>
-                            <#noescape>${fu.gsIcoInfos(rank.search)}</#noescape>
-                            <a href="${reverseRoute("google.GoogleSearchController", "search", "groupId", 
-                               target.getGroupId(), "searchId", rank.search.getId())}" >
-                               ${rank.search.getKeyword()}</a></td>
-                        <td><#if rank.rank.rank == 32767>OUT<#else>${rank.rank.rank}</#if></td>
-                    </tr>                            
-                    </#list>
-                    </#if>
-                </tbody>
-            </table>
+            <div id="variation-unchanged-grid" class="variation-grid" ></div>
         </div>
     </div>
 </div>
+<div id="variation-vars" 
+     data-up="${jsonUp!"[]"}" 
+     data-down="${jsonDown!"[]"}" 
+     data-same="${jsonSame!"[]"}" 
+></div>
 </@>

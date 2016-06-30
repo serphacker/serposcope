@@ -273,11 +273,12 @@ serposcope.googleTargetControllerGrid = function () {
         if (row == 0) {
             return "";
         }
+        var rankText = (rowData.best.rank == UNRANKED ? "-" : rowData.best.rank);
         return '<div class="pointer best-cell" ' +
             'rel="popover" data-toggle="tooltip" ' +
             'title="' + rowData.best.date + '" ' +
             'data-content="' + serposcope.utils.escapeHTMLQuotes(rowData.best.url) + '" ' +
-            '>' + rowData.best.rank + '</div>';
+            '>' + rankText + '</div>';
     };
 
     var genFakeSearch = function (i) {
