@@ -9,19 +9,14 @@
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">        
 
-        <link rel="stylesheet" href="/assets/lib/bootstrap/dist/css/bootstrap.css">
-        <link rel="stylesheet" href="/assets/lib/font-awesome/css/font-awesome.css">
-        <link rel="stylesheet" href="/assets/lib/bootstrap-select/dist/css/bootstrap-select.css" >
-        <link rel="stylesheet" href="/assets/lib/bootstrap-daterangepicker/daterangepicker.css" />
-        <!--<link rel="stylesheet" href="/assets/lib/typeahead.js-bootstrap3.less/typeaheadjs.css" >-->
-
-        <link rel="stylesheet" href="/assets/lib/SlickGrid/slick.grid.css" type="text/css"/>
-        <!--<link rel="stylesheet" href="/assets/lib/SlickGrid/css/smoothness/jquery-ui-1.11.3.custom.css" type="text/css"/>-->
-        <!--<link rel="stylesheet" href="/assets/lib/SlickGrid/css/bootstrap.css" type="text/css"/>-->
-        
-        <link rel="stylesheet" href="/assets/css/theme.css">
-        <link rel="stylesheet" href="/assets/css/unlogged.css">
-        <link rel="stylesheet" href="/assets/css/google.css">
+        <link rel="stylesheet" href="/assets/lib/bootstrap/dist/css/bootstrap.css?v=${global.version}">
+        <link rel="stylesheet" href="/assets/lib/font-awesome/css/font-awesome.css?v=${global.version}">
+        <link rel="stylesheet" href="/assets/lib/bootstrap-select/dist/css/bootstrap-select.css?v=${global.version}" >
+        <link rel="stylesheet" href="/assets/lib/bootstrap-daterangepicker/daterangepicker.css?v=${global.version}" >
+        <link rel="stylesheet" href="/assets/lib/SlickGrid/slick.grid.css?v=${global.version}" >
+        <link rel="stylesheet" href="/assets/css/theme.css?v=${global.version}">
+        <link rel="stylesheet" href="/assets/css/unlogged.css?v=${global.version}">
+        <link rel="stylesheet" href="/assets/css/google.css?v=${global.version}">
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -190,7 +185,7 @@
         </div>
         
         <#if global.prod >
-        <script type="text/javascript" src="/assets/combined.min.js"></script>
+        <script type="text/javascript" src="/assets/combined.min.js?v=${global.version}"></script>
         <#else>
         <!-- start-js -->
         <script type="text/javascript" src="/assets/js/init.js"></script>

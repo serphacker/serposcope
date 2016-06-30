@@ -260,6 +260,7 @@
                                         <jsSourceFile>/assets/js/views/admin/ProxyController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleSidebar.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleGroupController.js</jsSourceFile>
+                                        <jsSourceFile>/assets/js/views/google/GoogleGroupControllerGrid.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleSearchController.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleTargetControllerGrid.js</jsSourceFile>
                                         <jsSourceFile>/assets/js/views/google/GoogleTargetControllerVariation.js</jsSourceFile>

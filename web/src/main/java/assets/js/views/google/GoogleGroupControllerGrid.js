@@ -172,7 +172,7 @@ serposcope.googleGroupControllerGrid = function () {
     };    
     
     var getSelection = function() {
-        return grid.getSelectedRows().map(dataView.getItem).map((x) => x.id);
+        return grid.getSelectedRows().map(dataView.getItem).map(function(x){ return x.id; });
     };
     
     var genFakeSearch = function (i) {
