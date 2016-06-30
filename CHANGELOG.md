@@ -2,7 +2,46 @@
 
 ## 2.5.0 - UNRELEASED
 
+* Can check only failed keywords or recently added keywords [#96]((https://github.com/serphacker/serposcope/issues/96))
+* Reworked most of the views to support huge amount of keywords (hundred of thousands...)
+* Export: can export SERP or rankings in CSV
+* Captcha Failover: Ability to configure multiple captcha service, if one service fail, serposcope fallback to others providers
+* Optimized SERP rescan speed : adding a website should be 20x faster (usefull when having thousands of keywords)
+* Can backup and restore the database from admin panel
+* Can migrate easily between H2 <-> MySQL using the new backup/restore feature
+* Database prunning : trim database & history, permit to limit database disk usage. Defaulted to 365 days.
+* New scoring system
+* Use a new smartphone user-agent for mobile SERP result
+* improved SERP parsing, news <div> is no more parsed
+* Websites bulk import and bulk delete
+* Can rename website
+* New default search settings is 1 page of 100 results and 5 sec. pause (was 5x10 and 10 sec. pause, now 20x faster)
+* Can add event/calendar on search and target view
+* Warn if tracking too many keywords using H2 database
+* Group view: Can sort websites
+* Group view: Display total number of keywords
+* Group view: Grid display for keywords, support thousands of keywords
+* Group view: Allow sorting & filtering of keywords, fix [#59](https://github.com/serphacker/serposcope/issues/59)
+* Target chart view: Fix bugged legend
+* Target chart view: Do not draw automatically charts when too many keywords
+* Target variation view: Improved date-range picker (related to [#114](https://github.com/serphacker/serposcope/issues/114))
+* Target variation and table view: Grid display, support thousands of keywords
+* Target variation and table view: Allow sorting & filtering
+* Search SERP view: FIX huge legend, can draw top10 on chart in one click [#66](https://github.com/serphacker/serposcope/issues/66)
+* Search SERP view: Display best ranking for tracked website
+* Homepage: Display DB disk usage (H2 only) and remaining free disk space
+* Homepage: Enhanced TOP keywords count using % and better UI
+* Homepage: Progress bar is now dynamic via ajax (no need to refresh) [#90](https://github.com/serphacker/serposcope/issues/90)
+* Homepage: Display last runs state [#83](https://github.com/serphacker/serposcope/issues/83)
+* Homepage: Can cancel current runs or view logs from homepage
 * FIX incorrect random pause between request to Google[#100](https://github.com/serphacker/serposcope/issues/100)
+* FIX local suggest case
+* FIX httpclient support defalte compression and minor improvements
+* FIX duplicate keywords on bulk import (related to [#59](https://github.com/serphacker/serposcope/issues/59))
+* FIX charset issue when using MySQL and not UTF-8 [#112](https://github.com/serphacker/serposcope/issues/112) [#115](https://github.com/serphacker/serposcope/issues/115)
+* FIX admin users table layout [#102](https://github.com/serphacker/serposcope/issues/102)
+* FIX calendar bug on chart redraw
+* FIX invalid timeout on captcha service
 
 ## 2.4.0 - 2016-03-17
 
