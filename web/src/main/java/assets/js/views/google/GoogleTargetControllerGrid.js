@@ -257,8 +257,12 @@ serposcope.googleTargetControllerGrid = function () {
             diffText = rankDiff;
             diffClass = "minus";
         }
-        var bestClass = rowData.best.rank == rank.r ? "best-cell" : "";
-        var bestText = rowData.best.rank == rank.r ? " (best)" : "";
+        var bestClass = "", bestText = "";
+        if(rowData.best.rank == rank.r && rank.r != UNRANKED){
+            bestClass = "best-cell";
+            bestText = " (best)";
+        }
+        
         var rankText = (rank.r == UNRANKED ? "-" : rank.r);
         var rankUrl = rank.u == null ? "not provided" : serposcope.utils.escapeHTMLQuotes(rank.u);
         return '<div class="pointer diff-' + diffClass + ' ' + bestClass + '" ' +

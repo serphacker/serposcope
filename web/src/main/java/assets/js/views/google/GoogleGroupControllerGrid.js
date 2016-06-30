@@ -160,7 +160,7 @@ serposcope.googleGroupControllerGrid = function () {
     };
     
     formatKeyword = function (row, col, unk, colDef, rowData) {
-        return "<a href=\"/google/" + groupId + "/search/" + rowData.id + "\" >" + rowData.keyword + "</a>";
+        return "&nbsp;<a href=\"/google/" + groupId + "/search/" + rowData.id + "\" >" + rowData.keyword + "</a>";
     };
     
     formatDevice = function (row, col, unk, colDef, rowData) {

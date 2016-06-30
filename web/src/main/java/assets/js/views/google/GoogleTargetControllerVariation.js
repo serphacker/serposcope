@@ -32,10 +32,10 @@ serposcope.googleTargetControllerVariation = function () {
     };
 
     var render = function () {
-        setData();
-        if(!hasData){
+        if($('#variation-vars').size() == 0){
             return;
         }
+        setData();
         renderGrid();
         $('#filter-apply').click(applyFilter);
         $('#filter-reset').click(resetFilter);
