@@ -15,13 +15,11 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.querydsl.sql.Configuration;
-import com.serphacker.serposcope.db.AbstractDBIT;
 import com.serphacker.serposcope.di.db.ConfigurationProvider;
 import com.serphacker.serposcope.di.db.DataSourceProvider;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +29,6 @@ import java.util.Properties;
 import javax.sql.DataSource;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Assume;
 import org.junit.Before;
 
 /**

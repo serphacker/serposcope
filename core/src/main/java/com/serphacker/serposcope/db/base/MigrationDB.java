@@ -115,9 +115,25 @@ public class MigrationDB extends AbstractDB {
         // GOOGLE_TARGET_SUMMARY 
         stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` drop column `previous_score`;");
         stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` drop column `score`;");
-        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_raw` int;");
-        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_basis_point` int;");
-        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `previous_score_basis_point` int;");
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_raw` int default 0;");
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_basis_point` int default 0;");
+        stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `previous_score_basis_point` int default 0;");
+        
+        // update previous captcha parameters
+        String captchaService = config.get("app.captchaservice", "").toLowerCase();
+        switch(captchaService){
+            case "deathbycaptcha":
+                config.update(ConfigDB.APP_DBC_USER, config.get("app.dbcuser", ""));
+                config.update(ConfigDB.APP_DBC_PASS, config.get("app.dbcpass", ""));
+                break;
+            case "decaptcher":
+                config.update(ConfigDB.APP_DECAPTCHER_USER, config.get("app.dbcuser", ""));
+                config.update(ConfigDB.APP_DECAPTCHER_PASS, config.get("app.dbcpass", ""));
+                break;
+            case "anticaptcha":
+                config.update(ConfigDB.APP_ANTICAPTCHA_KEY, config.get("app.dbcapi", ""));
+                break;
+        }
         
         stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','5') on duplicate key update `value` = '5';");
         
