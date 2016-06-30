@@ -329,7 +329,7 @@ public class GoogleTargetController extends GoogleController {
                 } else {
                     jsonData
                         .append("{\"rank\":").append(best.getRank())
-                        .append(",\"date\":\"").append(best.getRunDay().toLocalDate().toString())
+                        .append(",\"date\":\"").append(best.getRunDay() != null ? best.getRunDay().toLocalDate().toString() : "?")
                         .append("\",\"url\":\"").append(StringEscapeUtils.escapeJson(best.getUrl()))
                         .append("\"},");
                 }

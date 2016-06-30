@@ -185,7 +185,7 @@ serposcope.googleTargetController = function () {
         if (jsonData != null && typeof (jsonData.ranks) != "undefined" && typeof (jsonData.searches) != "undefined") {
             chartData = jsonData.ranks;
             maxRank = jsonData.maxRank > maxRank ? jsonData.maxRank : maxRank;
-            var isDraw = jsonData.searches.length < 15 ? true : false;
+            var isDraw = jsonData.searches.length < 40 ? true : false;
             for (var i = 0; i < jsonData.searches.length; i++) {
                 chartOptions.labels.push(jsonData.searches[i]);
                 chartOptions.visibility.push(isDraw);

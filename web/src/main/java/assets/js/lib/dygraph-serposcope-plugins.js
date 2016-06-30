@@ -119,7 +119,6 @@ Dygraph.Plugins.Serposcope = (function () {
             
             var serie = e.dygraph.getPropertiesForSeries(labels[i]);
             
-//            console.log(serie);
             var a = document.createElement("a");
             a.href="#";
             a.style.color = serie.color;

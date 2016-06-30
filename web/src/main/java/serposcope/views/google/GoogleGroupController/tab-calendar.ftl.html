@@ -1,0 +1,31 @@
+<table class="table table-bordered table-striped">
+    <tr>
+        <th style="width:40px;">#</th>
+        <th style="width:100px;">${i18n("label.date")}</th>
+        <th>${i18n("label.event")}</th>
+        <th style="width:40px;">${i18n("label.actions")}</th>
+    </tr>
+
+    <#list events as event>
+    <tr>
+        <td></td>
+        <td>${event.getDay()}</td>
+        <td class="toggle-event" data-id="${event.getDay()}" ><strong>${event.getTitle()}</strong></td>
+        <td>
+            <#if user.isAdmin()>
+            <a href="${reverseRoute("google.GoogleGroupController","delEvent","groupId",group.getId())}" 
+               class="text-danger btn-delete-event" data-day="${event.getDay()}" >
+               <i class="fa fa-fw fa-remove"></i></a>
+            </#if>
+        </td>
+    </tr>
+    <tr class="event-description hidden" id="event-description-${event.getDay()}" >
+        <td colspan="4"><#noescape>${event.getDescription()}</#noescape></td>
+    </tr>                    
+    </#list>
+</table>
+<div>
+    <a href="#" class="btn btn-primary btn-add-event" title="${i18n("label.addEvent")}" data-toggle="tooltip"  >
+       <i class="fa fa-fw fa-calendar hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("label.addEvent")}</span>
+    </a>
+</div>

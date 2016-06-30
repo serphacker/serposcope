@@ -10,8 +10,9 @@
 
 serposcope.googleGroupController = function () {
     
-    var resizeTabContent = function(){
+    var onResize = function(){
         $('.tab-content').css("min-height", serposcope.theme.availableHeight() - 150);
+        serposcope.googleGroupControllerGrid.resize();
     };
     
     var configureModalFocus = function() {
@@ -77,32 +78,6 @@ serposcope.googleGroupController = function () {
     };
     
     
-    var deleteSearch = function(elt){
-        var id = $(elt.currentTarget).attr("data-id");
-        var name = $("#search-" + id +" .search-keyword").html();
-        var href= $(elt.currentTarget).attr("href");
-        
-        if(!confirm("Delete search \"" + name + "\" ?\nAll history will be erased.")){
-            return false;
-        }
-        
-        $('<form>', {
-            'action': href,
-            'method': 'post',
-            'target': '_top'
-        }).append($('<input>', {
-            'name': '_xsrf',
-            'value': $('#_xsrf').attr("data-value"),
-            'type': 'hidden'
-        })).append($('<input>', {
-            'name': 'id[]',
-            'value': id,
-            'type': 'hidden'
-        })).appendTo(document.body).submit();
-        
-        return false;
-    };
-    
     var deleteTargets = function(elt){
         if(!confirm("Delete targets ?\nAll history will be erased.")){
             return false;
@@ -125,9 +100,9 @@ serposcope.googleGroupController = function () {
     var deleteSearches = function(elt){
         if(!confirm("Delete searches ?\nAll history will be erased.")){
             return false;
-        }        
+        }
         
-        $('<form>', {
+        var $form = $('<form>', {
             'action': $(elt.currentTarget).attr("data-action"),
             'method': 'post',
             'target': '_top'
@@ -135,9 +110,17 @@ serposcope.googleGroupController = function () {
             'name': '_xsrf',
             'value': $('#_xsrf').attr("data-value"),
             'type': 'hidden'
-        })).append($('.chk-search'))
-        .appendTo(document.body).submit();        
+        }));
         
+        var ids = serposcope.googleGroupControllerGrid.getSelection();
+        for(var i=0; i <ids.length; i++){
+           $form.append($('<input>', {
+                'name': 'id[]',
+                'value': ids[i],
+                'type': 'hidden'
+            }));
+        }
+        $form.appendTo(document.body).submit();
         return false;
     };
     
@@ -372,7 +355,7 @@ serposcope.googleGroupController = function () {
     };    
     
     var exportSearches = function(elt){
-        $('<form>', {
+        var $form = $('<form>', {
             'action': $(elt.currentTarget).attr("data-action"),
             'method': 'post',
             'target': '_top'
@@ -380,8 +363,18 @@ serposcope.googleGroupController = function () {
             'name': '_xsrf',
             'value': $('#_xsrf').attr("data-value"),
             'type': 'hidden'
-        })).append($('.chk-search'))
-        .appendTo(document.body).submit();
+        }));
+        
+        var ids = serposcope.googleGroupControllerGrid.getSelection();
+        for(var i=0; i <ids.length; i++){
+           $form.append($('<input>', {
+                'name': 'id[]',
+                'value': ids[i],
+                'type': 'hidden'
+            }));
+        }
+        $form.appendTo(document.body).submit();
+        return false;
     };
     
     var loadAsyncCanonical = function() {
@@ -418,10 +411,23 @@ serposcope.googleGroupController = function () {
         $('.score-history-inline').sparkline("html", {tagValuesAttribute: "data-values"});        
     };
     
-    var view = function() {
-        $(window).bind("load resize", function () {
-            resizeTabContent();
+    var configureTabs = function() {
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            window.location.hash = e.target.hash;
+            window.scrollTo(0, 0);
+            if(e.target.hash == "#tab-searches"){
+                serposcope.googleGroupControllerGrid.resize();
+            }
         });
+        
+        var url = document.location.toString();
+        if (url.match('#')) {
+            $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+        } 
+    };
+    
+    var view = function() {
+        $(window).bind("load resize", onResize);
         $('input[name="day"]').daterangepicker({
             singleDatePicker: true,
             locale: {
@@ -431,11 +437,6 @@ serposcope.googleGroupController = function () {
         configureModalFocus();
         $('.target-radio').change(onRadioTargetChange);
         $("#pattern").attr('placeholder', $('#target-domain').attr("data-help"));
-//        $('#radio-domain').change(onHelperDomain);
-//        $('#radio-subdomain').change(onHelperSubdomains);
-//        $('#radio-url').change(onHelperURL);
-//        $('#input-helper').bind("keyup paste change",onHelperChange);
-        
         $('.btn-rename').click(renameGroup);
         $('.btn-rename-target').click(renameTarget);
         $('.toggle-event').click(toggleEvent);
@@ -451,7 +452,6 @@ serposcope.googleGroupController = function () {
         $('#bulk-target-import').click(bulkTargetSubmit);
         
         $('.btn-delete-target').click(deleteTarget);
-        $('.btn-delete-search').click(deleteSearch);
         
         $('#btn-chk-search').click(checksearch);
         $('#btn-chk-target').click(checkTarget);
@@ -460,6 +460,8 @@ serposcope.googleGroupController = function () {
         $('#btn-delete-targets').click(deleteTargets);
         $('#table-target').stupidtable();
         renderScoreHistory();
+        configureTabs();
+        serposcope.googleGroupControllerGrid.render();
         loadAsyncCanonical();
     };
     

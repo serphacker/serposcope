@@ -66,7 +66,7 @@ serposcope.googleTargetControllerGrid = function () {
     };
 
     var setData = function () {
-        setFakeData();
+//        setFakeData();
         groupId = $('#csp-vars').attr('data-group-id');
         days = JSON.parse($('#grid-vars').attr('data-days'));
         data = JSON.parse($('#grid-vars').attr('data-data'));
@@ -146,7 +146,7 @@ serposcope.googleTargetControllerGrid = function () {
     var applyFilter = function () {
         filter.keyword = $('#filter-keyword').val().toLowerCase();
         filter.tld = $('#filter-tld').val().toLowerCase();
-        filter.device = $('#filter-device').val().toLowerCase();
+        filter.device = $('#filter-device').val();
         filter.local = $('#filter-local').val().toLowerCase();
         filter.datacenter = $('#filter-datacenter').val().toLowerCase();
         filter.custom = $('#filter-custom').val().toLowerCase();

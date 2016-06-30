@@ -12,6 +12,49 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     margin-bottom: 30px;
 }
 
+/** group **/
+
+#group-searches-grid {
+    background-color: white;
+    white-space: nowrap;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid lightgray;
+}
+
+#group-searches-grid .slick-sort-indicator {
+    display: none;
+    visibility: hidden;
+}
+
+#group-searches-grid .slick-cell {
+    padding: 0px;
+    height: 25px;
+}
+
+#group-searches-grid .slick-header-column{
+    height: 25px;
+    text-align: center;
+}
+
+#group-searches-grid .slick-row{
+    height: 25px;
+}
+
+#group-searches-grid .slick-cell div {
+    height: 25px;
+}
+
+#group-searches-grid .slick-header-column {
+    background-color: #3c8dbc;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#group-searches-grid .slick-cell-checkboxsel {
+    text-align: center;
+}
+
 /** search **/
 #google-search-chart-container {
     background-color: white;
@@ -134,8 +177,8 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     font-weight: normal;
 }
 
-#google-target-table-filter input,
-#google-target-table-filter select {
+.search-filter input,
+.search-filter select {
     padding: 5px 5px;
 }
 

@@ -19,17 +19,14 @@ import com.serphacker.serposcope.db.google.GoogleDB;
 import com.serphacker.serposcope.models.base.Event;
 import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Run;
-import com.serphacker.serposcope.models.google.GoogleBest;
-import com.serphacker.serposcope.models.google.GoogleRank;
 import com.serphacker.serposcope.models.google.GoogleSearch;
-import com.serphacker.serposcope.models.google.GoogleSerp;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.models.google.GoogleTarget.PatternType;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
+import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
 import com.serphacker.serposcope.task.TaskManager;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,11 +34,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import ninja.Context;
 import ninja.FilterWith;
 import ninja.Router;
@@ -49,14 +41,12 @@ import ninja.i18n.Messages;
 import ninja.params.Param;
 import ninja.params.Params;
 import ninja.session.FlashScope;
-import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serposcope.controllers.GroupController;
-import serposcope.controllers.HomeController;
 import serposcope.filters.AdminFilter;
 import serposcope.filters.XSRFFilter;
 import serposcope.helpers.Validator;
@@ -105,12 +95,45 @@ public class GoogleGroupController extends GoogleController {
                 }
             }
         }
-
+        
+        List<GoogleSearch> searches = context.getAttribute("searches", List.class);
+        StringBuilder searchesJson = new StringBuilder("[");
+        for (GoogleSearch search : searches) {
+            searchesJson.append("{");
+            searchesJson.append("\"id\":")
+                .append(search.getId())
+                .append(",");
+            searchesJson.append("\"keyword\":\"")
+                .append(StringEscapeUtils.escapeJson(search.getKeyword()))
+                .append("\",");
+            searchesJson.append("\"tld\":\"")
+                .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                .append("\",");
+            searchesJson.append("\"device\":\"")
+                .append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                .append("\",");
+            searchesJson.append("\"local\":\"")
+                .append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
+                .append("\",");
+            searchesJson.append("\"datacenter\":\"")
+                .append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
+                .append("\",");
+            searchesJson.append("\"custom\":\"")
+                .append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
+                .append("\"");
+            searchesJson.append("},");
+        }
+        if(!searches.isEmpty()){
+            searchesJson.deleteCharAt(searchesJson.length()-1);
+        }
+        searchesJson.append("]");
+        
         return Results
             .ok()
             .render("events", baseDB.event.list(group, null, null))
             .render("default", googleDB.options.get())
-            .render("searches", context.getAttribute("searches"))
+            .render("searchesSize", context.getAttribute("searches", List.class).size())
+            .render("searchesJson", searchesJson.toString())
             .render("targets", context.getAttribute("targets"))
             .render("summaries", summaryByTagetId)
             .render("histories", scoreHistoryByTagetId);
@@ -194,7 +217,7 @@ public class GoogleGroupController extends GoogleController {
         googleDB.serpRescan.rescan(null, getTargets(context), knownSearches, false);
 
         flash.success("google.group.searchInserted");
-        return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+        return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()) + "#tab-searches");
     }
 
     @FilterWith({
@@ -347,7 +370,7 @@ public class GoogleGroupController extends GoogleController {
             deleteSearch(group, search);
         }
 
-        return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+        return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()) + "#tab-searches");
     }
 
     @FilterWith({
