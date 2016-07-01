@@ -184,7 +184,7 @@ serposcope.googleSearchController = function () {
                 for (var i = 0; i < chartData.length; i++) {
                     var ts = chartData[i][0];
                     var rank = newdata[ts];
-                    if(typeof(rank) == "undefined"){
+                    if(rank == 0 || typeof(rank) == "undefined"){
                         chartData[i].push(null);
                     }else{
                         if(rank > maxRank){

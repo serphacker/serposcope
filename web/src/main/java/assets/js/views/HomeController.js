@@ -47,7 +47,7 @@ serposcope.HomeController = function () {
         renderTopCharts();
         $('.hb-score-history').sparkline("html", {
             tagValuesAttribute: "data-values",
-            height: "30px"
+            height: "50px", chartRangeMin: 25, chartRangeMax: 75
         });
         $('.hb-score-history-inline').sparkline("html", {
             tagValuesAttribute: "data-values"

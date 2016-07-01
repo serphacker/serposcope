@@ -43,6 +43,7 @@
 * FIX admin users table layout [#102](https://github.com/serphacker/serposcope/issues/102)
 * FIX calendar bug on chart redraw
 * FIX invalid timeout on captcha service
+* FIX SERP chart display rank 0 for unranked position
 
 ## 2.4.0 - 2016-03-17
 
