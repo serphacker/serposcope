@@ -88,7 +88,7 @@ public class MigrationDB extends AbstractDB {
                     con.setAutoCommit(false);
                     
                     // LEGACY MIGRATION, TO BE REMOVED
-                    if(fromDBVersion == 3 && !dbTplConf.getTemplates().isNativeMerge()){
+                    if(fromDBVersion == 3 && isMySQL()){
                         stmt.executeUpdate("alter table `RUN` drop foreign key RUN_ibfk_1;");
                     }
                     InputStream stream = MigrationDB.class.getResourceAsStream(file);
@@ -119,6 +119,38 @@ public class MigrationDB extends AbstractDB {
         stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_basis_point` int default 0;");
         stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `previous_score_basis_point` int default 0;");
         
+        if(isMySQL()){
+            stmt.executeUpdate("ALTER TABLE `CONFIG` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `CONFIG` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `USER` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `USER` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GROUP` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GROUP` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `EVENT` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `EVENT` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `USER_GROUP` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `USER_GROUP` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `RUN` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `RUN` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `PROXY` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `PROXY` CHARACTER SET utf8 COLLATE utf8_bin;");
+            
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_SEARCH` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_SEARCH` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_SERP` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_SERP` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_SEARCH_GROUP` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_SEARCH_GROUP` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_TARGET` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_TARGET` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_RANK` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_RANK` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_RANK_BEST` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_RANK_BEST` CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_TARGET_SUMMARY` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
+            stmt.executeUpdate("ALTER TABLE `GOOGLE_TARGET_SUMMARY` CHARACTER SET utf8 COLLATE utf8_bin;");
+        }
+        
         // update previous captcha parameters
         String captchaService = config.get("app.captchaservice", "").toLowerCase();
         switch(captchaService){
@@ -137,6 +169,14 @@ public class MigrationDB extends AbstractDB {
         
         stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','5') on duplicate key update `value` = '5';");
         
+    }
+    
+    protected boolean isMySQL(){
+        return !isH2();
+    }
+    
+    protected boolean isH2(){
+        return dbTplConf.getTemplates().isNativeMerge();
     }
     
 }

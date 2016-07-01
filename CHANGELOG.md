@@ -38,7 +38,8 @@
 * FIX local suggest case
 * FIX httpclient support defalte compression and minor improvements
 * FIX duplicate keywords on bulk import (related to [#59](https://github.com/serphacker/serposcope/issues/59))
-* FIX charset issue when using MySQL and not UTF-8 [#112](https://github.com/serphacker/serposcope/issues/112) [#115](https://github.com/serphacker/serposcope/issues/115)
+* FIX MySQL: charset issue when using and not UTF-8 [#112](https://github.com/serphacker/serposcope/issues/112) [#115](https://github.com/serphacker/serposcope/issues/115)
+* FIX MySQL: no more case sensitive and fix accent issue
 * FIX admin users table layout [#102](https://github.com/serphacker/serposcope/issues/102)
 * FIX calendar bug on chart redraw
 * FIX invalid timeout on captcha service
