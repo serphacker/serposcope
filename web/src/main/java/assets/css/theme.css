@@ -993,6 +993,6 @@ ul.typeahead.dropdown-menu {
     color: white;
 }
 
-.slick-header-column.ui-state-default {
-    height: 22px;
+.slick-header-column {
+    box-sizing: content-box;
 }

@@ -2,7 +2,7 @@
 
 ## 2.5.0 - UNRELEASED
 
-* Can check only failed keywords or recently added keywords [#96]((https://github.com/serphacker/serposcope/issues/96))
+* Can check only failed keywords or recently added keywords [#96](https://github.com/serphacker/serposcope/issues/96)
 * Reworked most of the views to support huge amount of keywords (hundred of thousands...)
 * Export: can export SERP or rankings in CSV
 * Captcha Failover: Ability to configure multiple captcha service, if one service fail, serposcope fallback to others providers
@@ -10,9 +10,9 @@
 * Can backup and restore the database from admin panel
 * Can migrate easily between H2 <-> MySQL using the new backup/restore feature
 * Database prunning : trim database & history, permit to limit database disk usage. Defaulted to 365 days.
-* New scoring system
+* New scoring system (all scores have been reset)
 * Use a new smartphone user-agent for mobile SERP result
-* improved SERP parsing, news <div> is no more parsed
+* improved SERP parsing, Google news div is no more parsed
 * Websites bulk import and bulk delete
 * Can rename website
 * New default search settings is 1 page of 100 results and 5 sec. pause (was 5x10 and 10 sec. pause, now 20x faster)

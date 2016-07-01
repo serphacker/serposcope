@@ -33,8 +33,11 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
 }
 
 #group-searches-grid .slick-header-column{
-    height: 25px;
+    /*height: 25px;*/
     text-align: center;
+    background-color: #3c8dbc;
+    font-weight: bold;
+    cursor: pointer;    
 }
 
 #group-searches-grid .slick-row{
@@ -43,12 +46,6 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
 
 #group-searches-grid .slick-cell div {
     height: 25px;
-}
-
-#group-searches-grid .slick-header-column {
-    background-color: #3c8dbc;
-    font-weight: bold;
-    cursor: pointer;
 }
 
 #group-searches-grid .slick-cell-checkboxsel {
@@ -151,10 +148,7 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     height: 25px;
 }
 
-#google-target-table-container .slick-header-column{
-    height: 25px;
-    text-align: center;
-}
+
 
 #google-target-table-container .slick-row{
     height: 25px;
@@ -172,9 +166,11 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
 }
 
 #google-target-table-container .slick-header-column {
+    /*height: 25px;*/
     background-color: #3c8dbc;
     font-weight: bold;
     cursor: pointer;
+    text-align: center;
 }
 
 #google-target-table-container .slick-header-column .header-search {
@@ -202,8 +198,11 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
 }
 
 .variation-grid .slick-header-column{
-    height: 25px;
+    /*height: 25px;*/
     text-align: center;
+    font-size: 12px;
+    background-color: #3c8dbc;
+    cursor: pointer;    
 }
 
 .variation-grid .slick-row {
@@ -212,12 +211,6 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
 
 .variation-grid .slick-cell div {
     height: 25px;
-}
-
-.variation-grid .slick-header-column {
-    font-size: 12px;
-    background-color: #3c8dbc;
-    cursor: pointer;
 }
 
 .search-filter input,
