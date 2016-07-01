@@ -24,4 +24,11 @@ public abstract class AbstractDB {
     @Inject
     protected Configuration dbTplConf;
 
+    protected boolean isMySQL(){
+        return !isH2();
+    }
+    
+    protected boolean isH2(){
+        return dbTplConf.getTemplates().isNativeMerge();
+    }
 }

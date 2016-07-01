@@ -141,9 +141,9 @@ public class ExportDB extends AbstractDB {
         }
         switch (className) {
             case "java.lang.String":
-                return "'" + StringEscapeUtils.escapeEcmaScript(colVal.toString()) + "'";
+                return "'" + escapeString((String)colVal) + "'";
             case "java.sql.Clob":
-                return "'" + StringEscapeUtils.escapeEcmaScript(clobToString((Clob) colVal)) + "'";
+                return "'" + clobToStringEscaped((Clob) colVal) + "'";
                 
             case "java.sql.Blob":
                 return blobToString((Blob) colVal);
@@ -167,8 +167,19 @@ public class ExportDB extends AbstractDB {
                 throw new UnsupportedOperationException("escaping not implemented for class " + className + " of column " + colName);
         }
     }
+    
+    protected String escapeString(String str){
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if(str.charAt(i) == '\''){
+                builder.append('\'');
+            }
+            builder.append(str.charAt(i));
+        }
+        return builder.toString();
+    }
 
-    protected String clobToString(java.sql.Clob data) throws Exception {
+    protected String clobToStringEscaped(java.sql.Clob data) throws Exception {
         final StringBuilder sb = new StringBuilder();
 
         try (
@@ -177,6 +188,9 @@ public class ExportDB extends AbstractDB {
         ){
             int b;
             while (-1 != (b = br.read())) {
+                if(b == '\''){
+                    sb.append('\'');
+                }
                 sb.append((char) b);
             }
         }

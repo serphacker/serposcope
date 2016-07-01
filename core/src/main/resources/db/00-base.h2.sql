@@ -3,7 +3,7 @@ drop table if exists `CONFIG`;
 create table `CONFIG` (
     name varchar(255) primary key,
     value text
-) engine = innodb default charset=utf8 collate utf8_bin;
+) engine = innodb default charset=utf8 /*! collate utf8_bin */;
 
 drop table if exists `USER`;
 create table `USER` (
@@ -13,14 +13,14 @@ create table `USER` (
     password_salt tinyblob,
     admin boolean,
     logout datetime
-) engine = innodb default charset=utf8 collate utf8_bin;
+) engine = innodb default charset=utf8 /*! collate utf8_bin */;
 
 drop table if exists `GROUP`;
 create table `GROUP` (
     id int primary key auto_increment,
     module_id int,
     name varchar(255)
-) engine = innodb default charset=utf8 collate utf8_bin;
+) engine = innodb default charset=utf8 /*! collate utf8_bin */;
 
 drop table if exists `EVENT`;
 create table `EVENT` (
@@ -30,7 +30,7 @@ create table `EVENT` (
     description text,
     primary key(group_id,day),
     foreign key (group_id) references `GROUP`(id)
-) engine = innodb default charset=utf8 collate utf8_bin;
+) engine = innodb default charset=utf8 /*! collate utf8_bin */;
 
 
 drop table if exists `USER_GROUP`;
@@ -40,7 +40,7 @@ create table `USER_GROUP` (
     primary key(user_id, group_id),
     foreign key (user_id) references `USER`(id),
     foreign key (group_id) references `GROUP`(id)
-) engine = innodb default charset=utf8 collate utf8_bin;
+) engine = innodb default charset=utf8 /*! collate utf8_bin */;
 
 
 drop table if exists `RUN`;
@@ -55,7 +55,7 @@ create table `RUN` (
     errors int,
     status int, -- running, aborted, finished, error
     mode int
-) engine = innodb default charset=utf8 collate utf8_bin;
+) engine = innodb default charset=utf8 /*! collate utf8_bin */;
 create index RUN_MODULE_ID_DAY on RUN(module_id,day);
 
 drop table if exists `PROXY`;
@@ -69,7 +69,7 @@ create table `PROXY` (
     `last_check` datetime,
     `status` tinyint,
     `remote_ip` varchar(256)
-) engine = innodb default charset=utf8 collate utf8_bin;
+) engine = innodb default charset=utf8 /*! collate utf8_bin */;
 
 
 SET FOREIGN_KEY_CHECKS=1;

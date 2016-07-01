@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class MigrationDB extends AbstractDB {
     
-    public final static int LAST_DB_VERSION = 5;
+    public final static int LAST_DB_VERSION = 6;
     
     public final static String[] DB_SCHEMA_FILES = new String[]{
         "/db/00-base.h2.sql",
@@ -100,6 +100,9 @@ public class MigrationDB extends AbstractDB {
                         case 4:
                             upgradeFromV4(stmt);
                             break;
+                        case 5:
+                            upgradeFromV5(stmt);
+                            break;
                     }
                 }catch(Exception ex){
                     con.rollback();
@@ -119,6 +122,26 @@ public class MigrationDB extends AbstractDB {
         stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `score_basis_point` int default 0;");
         stmt.executeUpdate("alter table `GOOGLE_TARGET_SUMMARY` add column `previous_score_basis_point` int default 0;");
         
+        // update previous captcha parameters
+        String captchaService = config.get("app.captchaservice", "").toLowerCase();
+        switch(captchaService){
+            case "deathbycaptcha":
+                config.update(ConfigDB.APP_DBC_USER, config.get("app.dbcuser", ""));
+                config.update(ConfigDB.APP_DBC_PASS, config.get("app.dbcpass", ""));
+                break;
+            case "decaptcher":
+                config.update(ConfigDB.APP_DECAPTCHER_USER, config.get("app.dbcuser", ""));
+                config.update(ConfigDB.APP_DECAPTCHER_PASS, config.get("app.dbcpass", ""));
+                break;
+            case "anticaptcha":
+                config.update(ConfigDB.APP_ANTICAPTCHA_KEY, config.get("app.dbcapi", ""));
+                break;
+        }
+        
+        stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','5') on duplicate key update `value` = '5';");
+    }
+    
+    protected void upgradeFromV5(Statement stmt) throws Exception {
         if(isMySQL()){
             stmt.executeUpdate("ALTER TABLE `CONFIG` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
             stmt.executeUpdate("ALTER TABLE `CONFIG` CHARACTER SET utf8 COLLATE utf8_bin;");
@@ -150,33 +173,7 @@ public class MigrationDB extends AbstractDB {
             stmt.executeUpdate("ALTER TABLE `GOOGLE_TARGET_SUMMARY` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;");
             stmt.executeUpdate("ALTER TABLE `GOOGLE_TARGET_SUMMARY` CHARACTER SET utf8 COLLATE utf8_bin;");
         }
-        
-        // update previous captcha parameters
-        String captchaService = config.get("app.captchaservice", "").toLowerCase();
-        switch(captchaService){
-            case "deathbycaptcha":
-                config.update(ConfigDB.APP_DBC_USER, config.get("app.dbcuser", ""));
-                config.update(ConfigDB.APP_DBC_PASS, config.get("app.dbcpass", ""));
-                break;
-            case "decaptcher":
-                config.update(ConfigDB.APP_DECAPTCHER_USER, config.get("app.dbcuser", ""));
-                config.update(ConfigDB.APP_DECAPTCHER_PASS, config.get("app.dbcpass", ""));
-                break;
-            case "anticaptcha":
-                config.update(ConfigDB.APP_ANTICAPTCHA_KEY, config.get("app.dbcapi", ""));
-                break;
-        }
-        
-        stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','5') on duplicate key update `value` = '5';");
-        
-    }
-    
-    protected boolean isMySQL(){
-        return !isH2();
-    }
-    
-    protected boolean isH2(){
-        return dbTplConf.getTemplates().isNativeMerge();
+        stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','6') on duplicate key update `value` = '6';");
     }
     
 }
