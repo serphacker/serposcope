@@ -46,21 +46,6 @@ serposcope.googleTargetControllerGrid = function () {
             return;
         }
         renderGrid();
-        $('body').popover({
-            selector: '[rel="popover"]',
-            placement: 'bottom',
-            container: 'body',
-            title: function (elt) {
-                return $(this).attr("data-pt");
-            }
-        });
-        $('body').tooltip({
-            selector: '[data-toggle="tooltip"]',
-            container: 'body',
-            title: function (elt) {
-                return $(this).attr("data-tt");
-            }
-        });
         $('#filter-apply').click(applyFilter);
         $('#filter-reset').click(resetFilter);
     };

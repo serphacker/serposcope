@@ -42,13 +42,6 @@ serposcope.googleGroupControllerGrid = function () {
         renderGrid();
         $('#filter-apply').click(applyFilter);
         $('#filter-reset').click(resetFilter);
-        $('body').tooltip({
-            selector: '[data-toggle="tooltip"]',
-            container: 'body',
-            title: function (elt) {
-                return $(this).attr("data-tt");
-            }
-        });
     };
 
     var setData = function () {

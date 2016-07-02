@@ -193,21 +193,6 @@ serposcope.googleTargetController = function () {
             }
             chartOptions.valueRange = [maxRank + maxRankOffset, minRank + minRankOffset];
         }
-
-        $('.poptarget').tooltip({
-            title: function (elt) {
-                return $(this).attr("data-t-title");
-            },
-            placement: "top"
-        });
-
-        $('.poptarget').popover({
-            html: true,
-            placement: "bottom",
-            title: function (elt) {
-                return $(this).attr("data-p-title");
-            }
-        });
     };
 
     var oPublic = {

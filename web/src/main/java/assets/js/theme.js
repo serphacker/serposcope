@@ -49,8 +49,27 @@ serposcope.theme = function () {
     };    
     
     var bootstrap = function () {
-        $('[data-toggle="tooltip"]').tooltip();
-        $('[data-toggle="popover"]').popover();
+        $('body').tooltip({
+            selector: '[data-toggle="tooltip"]',
+            trigger: 'hover',
+            container: 'body',
+            title: function (elt) {return $(this).attr("data-tt");}
+        });
+        $('body').popover({
+            selector: '[rel="popover"]',
+            placement: 'auto',
+            container: 'body',
+            title: function (elt) {return $(this).attr("data-pt");},
+            html: true
+        });  
+        // dismiss popover on click outside
+        $('body').on('click', function (e) {
+            if ($(e.target).attr('rel') !== 'popover' && $(e.target).parents('.popover.in').length === 0) { 
+                $('[rel="popover"]').popover('hide');
+            }
+        });
+//        $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
+//        $('[data-toggle="popover"]').popover();
     };
     
     var showRunModal = function () {

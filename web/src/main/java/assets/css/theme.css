@@ -58,6 +58,16 @@ body {
     display: inline-block;
 }
 
+.popover {
+    max-width: 600px;
+    width: auto;
+}
+
+.popover-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .box {
   position: relative;
   border-radius: 3px;
