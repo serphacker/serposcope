@@ -35,19 +35,23 @@ serposcope.googleGroupControllerGrid = function () {
     };
 
     var render = function () {
-        setData();
-        if(data == null || data.length == 0){
-            return;
-        }
-        renderGrid();
+        groupId = $('#csp-vars').attr('data-group-id');
         $('#filter-apply').click(applyFilter);
         $('#filter-reset').click(resetFilter);
+        fetchData();
     };
-
-    var setData = function () {
-//        setFakeData();
-        groupId = $('#csp-vars').attr('data-group-id');
-        data = JSON.parse($('#grid-vars').attr('data-data'));
+    
+    var fetchData = function() {
+        $.getJSON('/google/' + $('#csp-vars').data('group-id') + '/search/list')
+        .done(function (json) {
+            $(".ajax-loader").remove();
+            data = json;
+            renderGrid();
+        }).fail(function (err) {
+            $(".ajax-loader").remove();
+            console.log("error", err);
+            $("#group-searches-grid").html("error");
+        });        
     };
 
     var renderGrid = function () {

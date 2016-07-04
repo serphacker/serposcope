@@ -105,6 +105,7 @@ public class Routes implements ApplicationRoutes {
         router.POST().route("/google/{groupId: [0-9]+}/search/delete").with(GoogleGroupController.class, "delSearch");        
         router.POST().route("/google/{groupId: [0-9]+}/search/export-searches").with(GoogleGroupController.class, "exportSearches");
         router.GET().route("/google/{groupId: [0-9]+}/search/suggest").with(GoogleGroupController.class, "jsonSearchSuggest");
+        router.GET().route("/google/{groupId: [0-9]+}/search/list").with(GoogleGroupController.class, "jsonSearches");
         
         router.POST().route("/google/{groupId: [0-9]+}/target/add").with(GoogleGroupController.class, "addTarget");
         router.POST().route("/google/{groupId: [0-9]+}/target/delete").with(GoogleGroupController.class, "delTarget");

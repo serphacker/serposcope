@@ -1,19 +1,9 @@
 <div class="row top5" >
     <div class="col-xs-12" >
         <#include "../../helpers/search-filter.ftl.html" />
-        <div id="group-searches-grid" style="height: 100%;" ></div>
-        <#--
-            <tr>
-                <th class="compact-col text-center" ><a href="#" id="btn-chk-search">#</a></th>
-                <th class="compact-col" ></th>
-                <th>${i18n("label.keyword")}</th>
-                <th class="compact-col" >${i18n("label.device")}</th>
-                <th class="compact-col" ><abbr title="${i18n("label.topLevelDomain")}" data-toggle="tooltip" >TLD</abbr></th>
-                <th class="width150" >${i18n("label.datacenter")}</th>
-                <th>${i18n("label.local")}</th>
-                <th>${i18n("label.customParameters")}</th>
-            </tr>
-        -->
+        <div id="group-searches-grid" style="height: 100%;" >
+            <img class="ajax-loader" src="/assets/img/loader.gif" />
+        </div>
         <div>
             <a href="#" class="btn btn-primary btn-add-search" title="${i18n("label.addSearch")}" data-toggle="tooltip" >
                <i class="glyphicon glyphicon-search hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("label.addSearch")}</span>

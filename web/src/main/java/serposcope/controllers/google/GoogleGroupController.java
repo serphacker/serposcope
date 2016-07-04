@@ -26,6 +26,8 @@ import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
 import com.serphacker.serposcope.task.TaskManager;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPOutputStream;
 import ninja.Context;
 import ninja.FilterWith;
 import ninja.Router;
@@ -41,6 +44,7 @@ import ninja.i18n.Messages;
 import ninja.params.Param;
 import ninja.params.Params;
 import ninja.session.FlashScope;
+import ninja.utils.ResponseStreams;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -95,48 +99,87 @@ public class GoogleGroupController extends GoogleController {
                 }
             }
         }
-        
-        List<GoogleSearch> searches = context.getAttribute("searches", List.class);
-        StringBuilder searchesJson = new StringBuilder("[");
-        for (GoogleSearch search : searches) {
-            searchesJson.append("{");
-            searchesJson.append("\"id\":")
-                .append(search.getId())
-                .append(",");
-            searchesJson.append("\"keyword\":\"")
-                .append(StringEscapeUtils.escapeJson(search.getKeyword()))
-                .append("\",");
-            searchesJson.append("\"tld\":\"")
-                .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
-                .append("\",");
-            searchesJson.append("\"device\":\"")
-                .append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
-                .append("\",");
-            searchesJson.append("\"local\":\"")
-                .append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
-                .append("\",");
-            searchesJson.append("\"datacenter\":\"")
-                .append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
-                .append("\",");
-            searchesJson.append("\"custom\":\"")
-                .append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
-                .append("\"");
-            searchesJson.append("},");
-        }
-        if(!searches.isEmpty()){
-            searchesJson.deleteCharAt(searchesJson.length()-1);
-        }
-        searchesJson.append("]");
-        
+
         return Results
             .ok()
             .render("events", baseDB.event.list(group, null, null))
             .render("default", googleDB.options.get())
             .render("searchesSize", context.getAttribute("searches", List.class).size())
-            .render("searchesJson", searchesJson.toString())
             .render("targets", context.getAttribute("targets"))
             .render("summaries", summaryByTagetId)
             .render("histories", scoreHistoryByTagetId);
+    }
+
+    public Result jsonSearches(Context context) {
+        List<GoogleSearch> searches = context.getAttribute("searches", List.class);
+        if (searches.isEmpty()) {
+            return Results.json().renderRaw("[]");
+        }
+
+        return Results.ok()
+            .json()
+            .render((Context context0, Result result) -> {
+                PrintWriter writer = null;
+                OutputStream os = null;
+                try {
+
+                    String acceptEncoding = context0.getHeader("Accept-Encoding");
+                    if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+                        result.addHeader("Content-Encoding", "gzip");
+                    }
+
+                    ResponseStreams response = context0.finalizeHeaders(result);
+                    os = response.getOutputStream();
+                    if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+                        os = new GZIPOutputStream(os);
+                    }
+
+                    writer = new PrintWriter(os);
+                    writer.append("[");
+                    for (int i = 0; i < searches.size(); i++) {
+                        GoogleSearch search = searches.get(i);
+                        writer.append("{");
+                        writer.append("\"id\":")
+                            .append(Integer.toString(search.getId()))
+                            .append(",");
+                        writer.append("\"keyword\":\"")
+                            .append(StringEscapeUtils.escapeJson(search.getKeyword()))
+                            .append("\",");
+                        writer.append("\"tld\":\"")
+                            .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                            .append("\",");
+                        writer.append("\"device\":\"")
+                            .append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                            .append("\",");
+                        writer.append("\"local\":\"")
+                            .append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
+                            .append("\",");
+                        writer.append("\"datacenter\":\"")
+                            .append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
+                            .append("\",");
+                        writer.append("\"custom\":\"")
+                            .append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
+                            .append("\"");
+                        writer.append("}");
+                        if(i != searches.size()-1){
+                            writer.append(",");
+                        }
+                    }
+                    writer.append("]");
+
+                } catch (Exception ex) {
+                    LOG.warn("HTTP error", ex);
+                } finally {
+                    if (os != null) {
+                        try {
+                            writer.close();
+                            os.close();
+                        } catch (Exception ex) {
+                        }
+                    }
+                }
+            });
+
     }
 
     @FilterWith({
@@ -213,7 +256,7 @@ public class GoogleGroupController extends GoogleController {
             }
             googleDB.search.insert(searches, group.getId());
         }
-        
+
         googleDB.serpRescan.rescan(null, getTargets(context), knownSearches, false);
 
         flash.success("google.group.searchInserted");
@@ -232,21 +275,20 @@ public class GoogleGroupController extends GoogleController {
     ) {
         FlashScope flash = context.getFlashScope();
         Group group = context.getAttribute("group", Group.class);
-        
-        if(targetType == null || 
-            names == null || names.length == 0 || 
-            patterns == null || patterns.length == 0 || 
-            names.length != patterns.length)
-        {
+
+        if (targetType == null
+            || names == null || names.length == 0
+            || patterns == null || patterns.length == 0
+            || names.length != patterns.length) {
             flash.error("error.invalidParameters");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
         }
-        
+
         Set<GoogleTarget> targets = new HashSet<>();
-        for(int i=0;i<names.length;i++){
+        for (int i = 0; i < names.length; i++) {
             String name = names[i];
             String pattern = patterns[i];
-            
+
             if (name != null) {
                 name = name.replaceAll("(^\\s+)|(\\s+$)", "");
             }
@@ -272,7 +314,7 @@ public class GoogleGroupController extends GoogleController {
                 flash.error("error.invalidPattern");
                 return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
             }
-            
+
             targets.add(new GoogleTarget(group.getId(), name, type, pattern));
         }
 
@@ -291,7 +333,7 @@ public class GoogleGroupController extends GoogleController {
 
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
-    
+
     @FilterWith({
         XSRFFilter.class,
         AdminFilter.class
@@ -299,8 +341,8 @@ public class GoogleGroupController extends GoogleController {
     public Result renameTarget(
         Context context,
         @Param("name") String name,
-        @Param("id") Integer targetId){
-                
+        @Param("id") Integer targetId) {
+
         FlashScope flash = context.getFlashScope();
         Group group = context.getAttribute("group", Group.class);
 
@@ -309,7 +351,7 @@ public class GoogleGroupController extends GoogleController {
             flash.error("error.invalidWebsite");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
         }
-        
+
         if (name != null) {
             name = name.replaceAll("(^\\s+)|(\\s+$)", "");
         }
@@ -318,7 +360,7 @@ public class GoogleGroupController extends GoogleController {
             flash.error("error.invalidName");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
         }
-        
+
         target.setName(name);
         googleDB.target.rename(target);
 
@@ -383,13 +425,13 @@ public class GoogleGroupController extends GoogleController {
     ) {
         FlashScope flash = context.getFlashScope();
         Group group = context.getAttribute("group", Group.class);
-        
+
         // TODO FIX ME locking until database modification done
         if (taskManager.isGoogleRunning()) {
             flash.error("admin.google.errorTaskRunning");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
-        }        
-        
+        }
+
         if (ids == null || ids.length == 0) {
             flash.error("error.noWebsiteSelected");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
@@ -407,12 +449,12 @@ public class GoogleGroupController extends GoogleController {
                 flash.error("error.invalidWebsite");
                 return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
             }
-            
+
             googleDB.targetSummary.deleteByTarget(target.getId());
             googleDB.rank.deleteByTarget(group.getId(), target.getId());
             googleDB.target.delete(target.getId());
         }
-        
+
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
 
@@ -556,15 +598,15 @@ public class GoogleGroupController extends GoogleController {
         }
 
         flash.success("google.group.eventInserted");
-        if(redirSearchId != null){
+        if (redirSearchId != null) {
             return Results.redirect(router.getReverseRoute(GoogleSearchController.class, "search", "groupId", group.getId(),
                 "searchId", redirSearchId));
         }
-        if(redirTargetId != null){
+        if (redirTargetId != null) {
             return Results.redirect(router.getReverseRoute(GoogleTargetController.class, "target", "groupId", group.getId(),
-            "targetId", redirTargetId));
+                "targetId", redirTargetId));
         }
-        
+
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
 
@@ -611,12 +653,12 @@ public class GoogleGroupController extends GoogleController {
         flash.success("google.group.groupRenamed");
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
-    
+
     public Result jsonTargetSuggest(
         Context context,
         @Param("query") String query
-    ){
-        
+    ) {
+
         StringBuilder builder = new StringBuilder("[");
         getTargets(context).stream()
             .filter((g) -> query == null ? true : g.getName().contains(query))
@@ -629,19 +671,19 @@ public class GoogleGroupController extends GoogleController {
                     .append("\"group\":").append(g.getGroupId())
                     .append("},");
             });
-        if(builder.length() > 1){
-            builder.deleteCharAt(builder.length()-1);
+        if (builder.length() > 1) {
+            builder.deleteCharAt(builder.length() - 1);
         }
         builder.append("]");
-        
+
         return Results.json().renderRaw(builder.toString());
-    }    
-    
+    }
+
     public Result jsonSearchSuggest(
         Context context,
         @Param("query") String query
-    ){
-        
+    ) {
+
         StringBuilder builder = new StringBuilder("[");
         getSearches(context).stream()
             .filter((g) -> query == null ? true : g.getKeyword().contains(query))
@@ -653,12 +695,12 @@ public class GoogleGroupController extends GoogleController {
                     .append("\"name\":\"").append(StringEscapeUtils.escapeJson(g.getKeyword())).append("\"")
                     .append("},");
             });
-        if(builder.length() > 1){
-            builder.deleteCharAt(builder.length()-1);
+        if (builder.length() > 1) {
+            builder.deleteCharAt(builder.length() - 1);
         }
         builder.append("]");
-        
+
         return Results.json().renderRaw(builder.toString());
-    }    
+    }
 
 }

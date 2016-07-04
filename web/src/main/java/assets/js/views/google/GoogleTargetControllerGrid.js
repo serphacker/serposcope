@@ -55,7 +55,6 @@ serposcope.googleTargetControllerGrid = function () {
 
     var resize = function (height) {
         $('#google-target-table-container').css("min-height", (height) + "px");
-        $('.ajax-loader').css("height", (height-100) + "px");
         if (grid != null) {
             grid.resizeCanvas();
         }
