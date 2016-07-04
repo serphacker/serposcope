@@ -144,20 +144,21 @@ serposcope.googleTargetControllerGrid = function () {
 
     var gridSort = function (e, args) {
         var comparer = function (a, b) {
-            if (a.id == -1) {
+            if (a[COL_ID] == -1) {
                 return args.sortAsc ? -1 : 1;
             }
-            if (b.id == -1) {
+            if (b[COL_ID] == -1) {
                 return args.sortAsc ? 1 : -1;
             }
-
             switch (args.sortCol.field) {
                 case "id":
-                    return a[1][0] > b[1][0] ? 1 : -1;
+                    return a[COL_SEARCH][COL_SEARCH_KEYWORD] > b[COL_SEARCH][COL_SEARCH_KEYWORD] ? 1 : -1;
                 case "best":
-                    return a.best.rank - b.best.rank;
+                    return a[COL_BEST][COL_BEST_RANK] - b[COL_BEST][COL_BEST_RANK];
                 default:
-                    return a.days[args.sortCol.field].r - b.days[args.sortCol.field].r;
+                    var aRank = a[COL_RANK][args.sortCol.field] === 0 ? UNRANKED : a[COL_RANK][args.sortCol.field][COL_RANK_CURRENT];
+                    var bRank = b[COL_RANK][args.sortCol.field] === 0 ? UNRANKED : b[COL_RANK][args.sortCol.field][COL_RANK_CURRENT];
+                    return aRank - bRank;
             }
         };
         dataView.sort(comparer, args.sortAsc);
