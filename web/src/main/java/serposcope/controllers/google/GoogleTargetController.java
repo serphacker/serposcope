@@ -9,6 +9,7 @@ package serposcope.controllers.google;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Functions;
 import com.google.inject.Inject;
 import ninja.Result;
 import ninja.Results;
@@ -408,8 +409,12 @@ public class GoogleTargetController extends GoogleController {
             // calendar
             builder.append("null,");
 
+            Map<Integer, GoogleRank> ranks = googleDB.rank.list(run.getId(), group.getId(), target.getId())
+                .stream().collect(Collectors.toMap((g) -> g.googleSearchId, Function.identity()));
+            
             for (GoogleSearch search : searches) {
-                GoogleRank fullRank = googleDB.rank.getFull(run.getId(), group.getId(), target.getId(), search.getId());
+                GoogleRank fullRank = ranks.get(search.getId());
+//                GoogleRank fullRank = googleDB.rank.getFull(run.getId(), group.getId(), target.getId(), search.getId());
                 if (fullRank != null && fullRank.rank != GoogleRank.UNRANKED && fullRank.rank > maxRank) {
                     maxRank = fullRank.rank;
                 }
