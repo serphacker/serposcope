@@ -218,16 +218,16 @@ public class GoogleTaskUpdateIT extends AbstractDBIT {
         GoogleTargetSummary t2sum = summaries.get(1);
 
         assertEquals(tagert1.getId(), t1sum.getTargetId());
-        assertEquals(50, t1sum.getScoreRaw());
-        assertEquals(5555, t1sum.getScoreBP());
+        assertEquals(480, t1sum.getScoreRaw());
+        assertEquals(5333, t1sum.getScoreBP());
         assertEquals(3, t1sum.getTotalTop3());
         assertEquals(2, t1sum.getTotalTop10());
         assertEquals(2, t1sum.getTotalTop100());
         assertEquals(2, t1sum.getTotalOut());
 
         assertEquals(tagert2.getId(), t2sum.getTargetId());
-        assertEquals(17, t2sum.getScoreRaw());
-        assertEquals(1888, t2sum.getScoreBP());
+        assertEquals(160, t2sum.getScoreRaw());
+        assertEquals(1777, t2sum.getScoreBP());
         
 
         // run2 with failure
@@ -244,8 +244,8 @@ public class GoogleTaskUpdateIT extends AbstractDBIT {
         GoogleTargetSummary t2sumR2 = summaries.get(1);
 
         assertEquals(tagert1.getId(), t1sumR2.getTargetId());
-        assertEquals(20, t1sumR2.getScoreRaw());
-        assertEquals(2222, t1sumR2.getScoreBP());
+        assertEquals(190, t1sumR2.getScoreRaw());
+        assertEquals(2111, t1sumR2.getScoreBP());
         assertEquals(1, t1sumR2.getTotalTop3());
         assertEquals(1, t1sumR2.getTotalTop10());
         assertEquals(1, t1sumR2.getTotalTop100());

@@ -131,32 +131,34 @@ public class GoogleTargetSummary {
     protected int getRankScore(int rank){
         switch(rank){
             case 1:
-                return 10;
+                return 100;
             case 2:
-                return 9;
+                return 90;
             case 3:
-                return 8;
+                return 80;
             default:
                 if(rank <= 5){
-                    return 7;
+                    return 70;
                 }
                 if(rank <= 10){
-                    return 6;
+                    return 60;
                 }
+                // end of top10
+                
                 if(rank <= 20){
-                    return 5;
+                    return 40;
                 }
                 if(rank <= 30){
-                    return 4;
+                    return 30;
                 }
                 if(rank <= 50){
-                    return 3;
+                    return 20;
                 }
                 if(rank <= 100){
-                    return 2;
+                    return 10;
                 }
                 if(rank <= 1000){
-                    return 1;
+                    return 5;
                 }
         }
         return 0;
@@ -246,7 +248,7 @@ public class GoogleTargetSummary {
         if(nSearches == 0){
             return scoreBP = 0;
         }
-        return scoreBP = scoreRaw*1000/nSearches;
+        return scoreBP = scoreRaw*100/nSearches;
     }
 
     public int getScoreBP() {

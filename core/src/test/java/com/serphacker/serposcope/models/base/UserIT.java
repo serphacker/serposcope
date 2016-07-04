@@ -29,7 +29,7 @@ public class UserIT {
         assertTrue(user1.verifyPassword("blabla"));
         assertFalse(user1.verifyPassword("blabla2"));
         
-        user1.getPasswordHash()[0] = 1;
+        user1.getPasswordHash()[0] = (byte)(user1.getPasswordHash()[0]+1);
         assertFalse(user1.verifyPassword("blabla"));
     }
     

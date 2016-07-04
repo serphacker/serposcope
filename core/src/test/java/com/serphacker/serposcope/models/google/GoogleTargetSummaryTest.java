@@ -140,7 +140,7 @@ public class GoogleTargetSummaryTest {
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 50, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 100, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 500, 0, ""));
-        assertEquals(10+9+8+7+6+5+4+3+2+1, summary.getScoreRaw());
+        assertEquals(100+90+80+70+60+40+30+20+10+5, summary.getScoreRaw());
         
         summary = new GoogleTargetSummary();
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
@@ -153,18 +153,18 @@ public class GoogleTargetSummaryTest {
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 31, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 51, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 101, 0, ""));
-        assertEquals(10+9+8+7+6+5+4+3+2+1, summary.getScoreRaw());
+        assertEquals(100+90+80+70+60+40+30+20+10+5, summary.getScoreRaw());
         
         summary = new GoogleTargetSummary();
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
-        assertEquals(30, summary.getScoreRaw());
+        assertEquals(300, summary.getScoreRaw());
         assertEquals(10000, summary.computeScoreBP(3));    
         
         summary = new GoogleTargetSummary();
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
-        assertEquals(10, summary.getScoreRaw());
+        assertEquals(100, summary.getScoreRaw());
         assertEquals(5000, summary.computeScoreBP(2));
         
         summary = new GoogleTargetSummary();
@@ -172,8 +172,8 @@ public class GoogleTargetSummaryTest {
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
         summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
-        assertEquals(20, summary.getScoreRaw());
-        assertEquals(5000, summary.computeScoreBP(4));
+        assertEquals(160, summary.getScoreRaw());
+        assertEquals(4000, summary.computeScoreBP(4));
         
     }
     
