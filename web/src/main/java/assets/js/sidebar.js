@@ -8,7 +8,12 @@
 
 /* global serposcope */
 
-serposcope.sidebar = function () {    
+serposcope.sidebar = function () {
+    
+    var groupSuggest = function(query, cb){
+        $.getJSON('/groups/suggest?query=' + encodeURIComponent(query)).success(cb);
+    };
+    
     var groupSelected = function(group){
         switch(group.module){
             case 0:
@@ -47,7 +52,8 @@ serposcope.sidebar = function () {
     
     var oPublic = {
         groupSelected: groupSelected,
-        groupHighlighted: groupHighlighted
+        groupHighlighted: groupHighlighted,
+        groupSuggest: groupSuggest
     };
 
     return oPublic;

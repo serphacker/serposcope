@@ -99,7 +99,7 @@ serposcope.HomeController = function () {
             resizeTabContent();
         });
         $('#sidebar-group-search').typeahead({
-            source: JSON.parse($('#sidebar-data').attr('data-groups')),
+            source: serposcope.sidebar.groupSuggest,
             minLength: 0,
             showHintOnFocus: true,
             highlighter: serposcope.sidebar.groupHighlighted,

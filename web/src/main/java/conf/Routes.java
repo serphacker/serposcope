@@ -92,6 +92,7 @@ public class Routes implements ApplicationRoutes {
         
         router.GET().route("/groups").with(GroupController.class, "groups");
         router.POST().route("/groups/create").with(GroupController.class, "create");
+        router.GET().route("/groups/suggest").with(GroupController.class, "jsonSuggest");
         
         router.GET().route("/preferences").with(UserPreferences.class, "preferences");
         router.POST().route("/preferences/update").with(UserPreferences.class, "update");
@@ -103,9 +104,13 @@ public class Routes implements ApplicationRoutes {
         router.POST().route("/google/{groupId: [0-9]+}/search/add").with(GoogleGroupController.class, "addSearch");
         router.POST().route("/google/{groupId: [0-9]+}/search/delete").with(GoogleGroupController.class, "delSearch");        
         router.POST().route("/google/{groupId: [0-9]+}/search/export-searches").with(GoogleGroupController.class, "exportSearches");
+        router.GET().route("/google/{groupId: [0-9]+}/search/suggest").with(GoogleGroupController.class, "jsonSearchSuggest");
+        
         router.POST().route("/google/{groupId: [0-9]+}/target/add").with(GoogleGroupController.class, "addTarget");
         router.POST().route("/google/{groupId: [0-9]+}/target/delete").with(GoogleGroupController.class, "delTarget");
         router.POST().route("/google/{groupId: [0-9]+}/target/rename").with(GoogleGroupController.class, "renameTarget");
+        router.GET().route("/google/{groupId: [0-9]+}/target/suggest").with(GoogleGroupController.class, "jsonTargetSuggest");
+        
         router.POST().route("/google/{groupId: [0-9]+}/event/add").with(GoogleGroupController.class, "addEvent");
         router.POST().route("/google/{groupId: [0-9]+}/event/delete").with(GoogleGroupController.class, "delEvent");   
         

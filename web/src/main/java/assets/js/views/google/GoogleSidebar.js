@@ -18,6 +18,10 @@ serposcope.googleSidebar = function () {
         window.location = "/google/" + search.group + "/search/" + search.id;
     };
     
+    var searchSuggest = function(query, cb){
+        $.getJSON('/google/' + $('#csp-vars').data('group-id') + '/search/suggest?query=' + encodeURIComponent(query)).success(cb);
+    };    
+    
     var targetHighlighter = function(target){
         return target.name;
     };
@@ -26,23 +30,27 @@ serposcope.googleSidebar = function () {
         window.location = "/google/" + target.group + "/target/" + target.id;
     };
     
+    var targetSuggest = function(query, cb){
+        $.getJSON('/google/' + $('#csp-vars').data('group-id') + '/target/suggest?query=' + encodeURIComponent(query)).success(cb);
+    };    
+    
     var render = function(){
         $('#sidebar-group-search').typeahead({
-            source: JSON.parse($('#sidebar-data').attr('data-groups')),
+            source: serposcope.sidebar.groupSuggest,
             minLength: 0,
             showHintOnFocus: true,
             highlighter: serposcope.sidebar.groupHighlighted,
             afterSelect: serposcope.sidebar.groupSelected
         });
         $('#sidebar-google-search-search').typeahead({
-            source: JSON.parse($('#sidebar-data').attr('data-google-searches')),
+            source: searchSuggest,
             minLength: 0,
             showHintOnFocus: true,
             highlighter: searchHighlighter,
             afterSelect: searchSelected
         });
         $('#sidebar-target-search').typeahead({
-            source: JSON.parse($('#sidebar-data').attr('data-google-targets')),
+            source: targetSuggest,
             minLength: 0,
             showHintOnFocus: true,
             highlighter: targetHighlighter,

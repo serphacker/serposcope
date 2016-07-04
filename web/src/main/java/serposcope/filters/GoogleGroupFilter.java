@@ -70,12 +70,6 @@ public class GoogleGroupFilter extends AbstractFilter {
         
         Result result = filterChain.next(context);
         
-        if(canRender(result)){
-            result.render("sidebarGoogleSearches", serializeSearches(group, searches));
-            result.render("sidebarGoogleTargets", serializeTargets(group, targets));
-        }
-        
-        
         return result;
     }
     

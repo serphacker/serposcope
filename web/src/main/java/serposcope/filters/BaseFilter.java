@@ -114,13 +114,6 @@ public class BaseFilter extends AbstractFilter {
             if (user != null) {
                 result.render("user", user);
             }
-            List<Group> groups = context.getAttribute("groups", List.class);
-            if(groups != null){
-                try {
-                    result.render("sidebarGroups", objectMapper.writeValueAsString(groups));
-                }catch(JsonProcessingException ex){
-                }
-            }
         }
     }
 

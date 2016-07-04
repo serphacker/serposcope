@@ -611,5 +611,54 @@ public class GoogleGroupController extends GoogleController {
         flash.success("google.group.groupRenamed");
         return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
     }
+    
+    public Result jsonTargetSuggest(
+        Context context,
+        @Param("query") String query
+    ){
+        
+        StringBuilder builder = new StringBuilder("[");
+        getTargets(context).stream()
+            .filter((g) -> query == null ? true : g.getName().contains(query))
+            .sorted((o1, o2) -> o1.getId() - o2.getId())
+            .limit(10)
+            .forEach((g) -> {
+                builder.append("{")
+                    .append("\"id\":").append(g.getId()).append(",")
+                    .append("\"name\":\"").append(StringEscapeUtils.escapeJson(g.getName())).append("\",")
+                    .append("\"group\":").append(g.getGroupId())
+                    .append("},");
+            });
+        if(builder.length() > 1){
+            builder.deleteCharAt(builder.length()-1);
+        }
+        builder.append("]");
+        
+        return Results.json().renderRaw(builder.toString());
+    }    
+    
+    public Result jsonSearchSuggest(
+        Context context,
+        @Param("query") String query
+    ){
+        
+        StringBuilder builder = new StringBuilder("[");
+        getSearches(context).stream()
+            .filter((g) -> query == null ? true : g.getKeyword().contains(query))
+            .sorted((o1, o2) -> o1.getId() - o2.getId())
+            .limit(10)
+            .forEach((g) -> {
+                builder.append("{")
+                    .append("\"id\":").append(g.getId()).append(",")
+                    .append("\"name\":\"").append(StringEscapeUtils.escapeJson(g.getKeyword())).append("\"")
+                    .append("},");
+            });
+        if(builder.length() > 1){
+            builder.deleteCharAt(builder.length()-1);
+        }
+        builder.append("]");
+        
+        return Results.json().renderRaw(builder.toString());
+    }    
 
 }
