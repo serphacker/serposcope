@@ -29,12 +29,15 @@ import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,12 +45,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPOutputStream;
 import ninja.Context;
 import ninja.Router;
 import ninja.params.Param;
 import ninja.params.PathParam;
 import ninja.utils.ResponseStreams;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.LoggerFactory;
 
 @Singleton
@@ -344,176 +349,7 @@ public class GoogleTargetController extends GoogleController {
         return searchesJson;
     }
     
-
-    protected Result renderVariation1(
-        Group group,
-        GoogleTarget target,
-        List<GoogleSearch> searches,
-        Run lastRun,
-        LocalDate minDay,
-        LocalDate maxDay,
-        LocalDate startDate,
-        LocalDate endDate
-    ) {
-        String display = "variation";
-        List<TargetVariation> ranksUp = new ArrayList<>();
-        List<TargetVariation> ranksDown = new ArrayList<>();
-        List<TargetVariation> ranksSame = new ArrayList<>();
-
-        Map<Integer, GoogleSearch> searchesById = searches.stream()
-            .collect(Collectors.toMap(GoogleSearch::getId, Function.identity()));
-
-        List<GoogleRank> ranks = googleDB.rank.list(lastRun.getId(), group.getId(), target.getId());
-        for (GoogleRank rank : ranks) {
-
-            GoogleSearch search = searchesById.get(rank.googleSearchId);
-            if (search == null) {
-                continue;
-            }
-
-            if (rank.diff > 0) {
-                ranksDown.add(new TargetVariation(search, rank));
-            } else if (rank.diff < 0) {
-                ranksUp.add(new TargetVariation(search, rank));
-            } else {
-                ranksSame.add(new TargetVariation(search, rank));
-            }
-        }
-
-        Collections.sort(ranksUp, (TargetVariation o1, TargetVariation o2) -> Integer.compare(o1.rank.diff, o2.rank.diff));
-        Collections.sort(ranksDown, (TargetVariation o1, TargetVariation o2) -> -Integer.compare(o1.rank.diff, o2.rank.diff));
-        Collections.sort(ranksSame, (TargetVariation o1, TargetVariation o2) -> Integer.compare(o1.rank.rank, o2.rank.rank));
-
-        return Results.ok()
-            .template("/serposcope/views/google/GoogleTargetController/" + display + ".ftl.html")
-            .render("target", target)
-            .render("searches", searches)
-            .render("startDate", lastRun.getDay().toString())
-            .render("endDate", lastRun.getDay().toString())
-            .render("minDate", minDay)
-            .render("maxDate", maxDay)
-            .render("display", display)
-            .render("ranksUp", ranksUp)
-            .render("ranksDown", ranksDown)
-            .render("ranksSame", ranksSame);
-    }
-    
-    protected Result renderTable(
-        Group group,
-        GoogleTarget target,
-        List<GoogleSearch> searches,
-        List<Run> runs,
-        LocalDate minDay,
-        LocalDate maxDay,
-        LocalDate startDate,
-        LocalDate endDate
-    ) {
-        String display = "table";
-        
-        StringBuilder jsonData = new StringBuilder("[{\"id\": -1, \"best\": null, \"days\": [");
-        StringBuilder jsonDays = new StringBuilder("[");
-        
-        if(!runs.isEmpty()){
-
-            // events
-            List<Event> events = baseDB.event.list(group, startDate, endDate);
-            for (Run run : runs) {
-                Event event = null;
-
-                for (Event candidat : events) {
-                    if(run.getDay().equals(candidat.getDay())){
-                        event = candidat;
-                        break;
-                    }
-                }
-
-                if(event != null){
-                    jsonData
-                        .append("{\"title\":\"").append(StringEscapeUtils.escapeJson(event.getTitle()))
-                        .append("\",\"description\":\"").append(StringEscapeUtils.escapeJson(event.getDescription()))
-                        .append("\"},");
-                } else {
-                    jsonData.append("null,");
-                }
-            }
-            jsonData.deleteCharAt(jsonData.length()-1);
-            jsonData.append("]},");  
-
-
-            for (GoogleSearch search : searches) {
-                GoogleBest best = googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId());
-                
-                jsonData.append("{\"id\":").append(search.getId())
-                    .append(",\"search\":{")
-                    .append("\"id\":").append(search.getId())
-                    .append(",\"k\":\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
-                    .append("\",\"t\":\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
-                    .append("\",\"d\":\"").append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
-                    .append("\",\"l\":\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
-                    .append("\",\"dc\":\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
-                    .append("\",\"c\":\"").append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
-                    .append("\"}, \"best\":");
-                if(best == null){
-                    jsonData.append("null,");
-                } else {
-                    jsonData
-                        .append("{\"rank\":").append(best.getRank())
-                        .append(",\"date\":\"").append(best.getRunDay() != null ? best.getRunDay().toLocalDate().toString() : "?")
-                        .append("\",\"url\":\"").append(StringEscapeUtils.escapeJson(best.getUrl()))
-                        .append("\"},");
-                }
-                jsonData.append("\"days\": [");
-
-                for (Run run : runs) {
-                    GoogleRank fullRank = googleDB.rank.getFull(run.getId(), group.getId(), target.getId(), search.getId());
-                    if(fullRank != null && fullRank.rank != GoogleRank.UNRANKED) {
-                        jsonData.append("{\"r\":").append(fullRank.rank)
-                            .append(",\"p\":").append(fullRank.previousRank)
-                            .append(",\"u\":\"").append(StringEscapeUtils.escapeJson(fullRank.url))
-                            .append("\"},");
-                    } else {
-                        jsonData.append("{\"r\":32767,\"p\":null,\"u\":null},");
-                    }
-                }
-                jsonData.deleteCharAt(jsonData.length()-1);
-                jsonData.append("]},");
-            }
-            jsonData.deleteCharAt(jsonData.length()-1);
-            jsonData.append("]");
-
-            
-            // days
-            for (Run run : runs) {
-                jsonDays.append("\"").append(run.getDay().toString()).append("\",");
-            }
-            jsonDays.deleteCharAt(jsonDays.length()-1);
-            jsonDays.append("]");
-        } else {
-            jsonData.append("]}]");
-            jsonDays.append("]");
-        }
-
-        
-//        Map<Integer, GoogleBest> bestRanks = new HashMap<>();
-//        for (GoogleSearch search : searches) {
-//            bestRanks.put(search.getId(), googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId()));
-//        }
-
-        return Results.ok()
-            .template("/serposcope/views/google/GoogleTargetController/" + display + ".ftl.html")
-            .render("target", target)
-            .render("searches", searches)
-            .render("startDate", startDate.toString())
-            .render("endDate", endDate.toString())
-            .render("minDate", minDay)
-            .render("maxDate", maxDay)
-            .render("display", display)
-            .render("days", jsonDays)
-            .render("data", jsonData)
-            ;
-    }
-
-    protected Result renderChart(
+        protected Result renderChart(
         Group group,
         GoogleTarget target,
         List<GoogleSearch> searches,
@@ -640,5 +476,296 @@ public class GoogleTargetController extends GoogleController {
         });
 
     }
+
+    protected Result renderTable(
+        Group group,
+        GoogleTarget target,
+        List<GoogleSearch> searches,
+        List<Run> runs,
+        LocalDate minDay,
+        LocalDate maxDay,
+        LocalDate startDate,
+        LocalDate endDate
+    ) {
+        String display = "table";
+        return Results.ok()
+            .template("/serposcope/views/google/GoogleTargetController/" + display + ".ftl.html")
+            .render("target", target)
+            .render("searches", searches)
+            .render("startDate", startDate.toString())
+            .render("endDate", endDate.toString())
+            .render("minDate", minDay)
+            .render("maxDate", maxDay)
+            .render("display", display)
+            ;
+    }
+    
+    public Result jsonRanks(
+        Context context,
+        @PathParam("targetId") Integer targetId,
+        @Param("startDate") String startDateStr,
+        @Param("endDate") String endDateStr
+    ){
+        final GoogleTarget target = getTarget(context, targetId);
+        final List<GoogleSearch> searches = context.getAttribute("searches", List.class);
+        final Group group = context.getAttribute("group", Group.class);
+        final LocalDate startDate, endDate;
+        try {
+            startDate = LocalDate.parse(startDateStr);
+            endDate = LocalDate.parse(endDateStr);
+        } catch (Exception ex) {
+            return Results.json().renderRaw("[]");
+        }
+        
+        final Run firstRun = baseDB.run.findFirst(group.getModule(), RunDB.STATUSES_DONE, startDate);
+        final Run lastRun = baseDB.run.findLast(group.getModule(), RunDB.STATUSES_DONE, endDate);
+        final List<Run> runs = baseDB.run.listDone(firstRun.getId(), lastRun.getId());
+        
+        return Results.ok()
+            .json()
+            .render((Context context0, Result result) -> {
+                PrintWriter writer = null; OutputStream os = null;
+                try {
+                    
+                    String acceptEncoding = context0.getHeader("Accept-Encoding");
+                    if(acceptEncoding != null && acceptEncoding.contains("gzip")){
+                        result.addHeader("Content-Encoding", "gzip");
+                    }
+                    
+                    ResponseStreams response = context0.finalizeHeaders(result);
+                    os = response.getOutputStream();
+                    if(acceptEncoding != null && acceptEncoding.contains("gzip")){
+                        os = new GZIPOutputStream(os);
+                    }
+                    
+                    writer = new PrintWriter(os);
+                    getTableJson(group, target, searches, runs, startDate, endDate, writer);
+                    
+                    
+                }catch(Exception ex){
+                    LOG.warn("HTTP error", ex);
+                }finally{
+                    if(os != null){try{writer.close();os.close();}catch(Exception ex){}}
+                }
+            });
+    }
+
+    protected void getTableJson(
+        Group group,
+        GoogleTarget target,
+        List<GoogleSearch> searches,
+        List<Run> runs,
+        LocalDate startDate,
+        LocalDate endDate,
+        PrintWriter writer
+    ){
+        writer.append("[[[-1, 0, 0, [");
+        if(runs.isEmpty() || searches.isEmpty()){
+            writer.append("]]],[]]");
+        }
+        
+        // events
+        List<Event> events = baseDB.event.list(group, startDate, endDate);
+        for (int i = 0; i < runs.size(); i++) {
+            Run run = runs.get(i);
+            Event event = null;
+
+            for (Event candidat : events) {
+                if(run.getDay().equals(candidat.getDay())){
+                    event = candidat;
+                    break;
+                }
+            }
+
+            if(event != null){
+                writer
+                    .append("[\"").append(StringEscapeUtils.escapeJson(event.getTitle())).append("\",")
+                    .append('"').append(StringEscapeUtils.escapeJson(event.getDescription())).append("\"]");
+            } else {
+                writer.append("0");
+            }
+            
+            if(i != runs.size()-1){
+                writer.append(",");
+            }
+            
+        }
+        writer.append("]],");
+        
+        Map<Integer, StringBuilder> builders = new HashMap<>();
+        for (GoogleSearch search : searches) {
+            StringBuilder builder;
+            builders.put(search.getId(), builder = new StringBuilder("["));
+            GoogleBest best = googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId());
+            
+            builder
+                .append(search.getId())
+                .append(",[\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
+                .append("\",\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                .append("\",\"").append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                .append("\",\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
+                .append("\",\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
+                .append("\",\"").append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
+                .append("\"],");
+            
+            if(best == null){
+                builder.append("0,");
+            } else {
+                builder
+                    .append("[").append(best.getRank())
+                    .append(",\"").append(best.getRunDay() != null ? best.getRunDay().toLocalDate().toString() : "?")
+                    .append("\",\"").append(StringEscapeUtils.escapeJson(best.getUrl()))
+                    .append("\"],");
+            }
+            builder.append("[");
+        }
+            
+        for (int i = 0; i < runs.size(); i++) {
+            Run run = runs.get(i);
+
+            Map<Integer, GoogleRank> ranks = googleDB.rank.list0(run.getId(), group.getId(), target.getId())
+                    .stream().collect(Collectors.toMap((r) -> r.googleSearchId, Function.identity()));
+
+            for (GoogleSearch search : searches) {
+                StringBuilder builder = builders.get(search.getId());
+                GoogleRank fullRank = ranks.get(search.getId());
+                if(fullRank != null && fullRank.rank != GoogleRank.UNRANKED) {
+                    builder.append("[").append(fullRank.rank)
+                        .append(",").append(fullRank.previousRank)
+                        .append(",\"").append(StringEscapeUtils.escapeJson(fullRank.url))
+                        .append("\"],");
+                } else {
+                    builder.append("0,");
+                }
+
+                if(i == runs.size()-1){
+                    builder.deleteCharAt(builder.length()-1);
+                    builder.append("]]");
+                }                
+            }
+        }
+        
+        List<StringBuilder> buildersArray = new ArrayList<>(builders.values());
+        for (int i = 0; i < buildersArray.size(); i++) {
+            writer.append(buildersArray.get(i));
+            if(i != buildersArray.size()-1){
+                writer.append(",");
+            }
+        }
+        writer.append("],[");
+        for (int i = 0; i < runs.size(); i++) {
+            Run run = runs.get(i);
+            writer.append("\"").append(run.getDay().toString()).append("\"");
+            if(i != runs.size()-1){
+                writer.append(",");
+            }
+        }
+        writer.append("]]");
+    }
+    
+    protected String getTableJsonData0(
+        Group group,
+        GoogleTarget target,
+        List<GoogleSearch> searches,
+        List<Run> runs,
+        LocalDate startDate,
+        LocalDate endDate        
+    ){
+        StringBuilder jsonData = new StringBuilder("[{\"id\": -1, \"best\": null, \"days\": [");
+        if(runs.isEmpty() || searches.isEmpty()){
+            jsonData.append("]}]");
+            return jsonData.toString();
+        }
+        
+        // events
+        List<Event> events = baseDB.event.list(group, startDate, endDate);
+        for (Run run : runs) {
+            Event event = null;
+
+            for (Event candidat : events) {
+                if(run.getDay().equals(candidat.getDay())){
+                    event = candidat;
+                    break;
+                }
+            }
+
+            if(event != null){
+                jsonData
+                    .append("{\"title\":\"").append(StringEscapeUtils.escapeJson(event.getTitle()))
+                    .append("\",\"description\":\"").append(StringEscapeUtils.escapeJson(event.getDescription()))
+                    .append("\"},");
+            } else {
+                jsonData.append("null,");
+            }
+        }
+        jsonData.deleteCharAt(jsonData.length()-1);
+        jsonData.append("]},");
+        
+        Map<Integer, StringBuilder> builders = new HashMap<>();
+        
+        for (GoogleSearch search : searches) {
+            StringBuilder builder;
+            builders.put(search.getId(), builder = new StringBuilder());
+            builder.append("");
+            GoogleBest best = googleDB.rank.getBest(target.getGroupId(), target.getId(), search.getId());
+            
+            builder.append("{\"id\":").append(search.getId())
+                .append(",\"search\":{")
+                .append("\"id\":").append(search.getId())
+                .append(",\"k\":\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
+                .append("\",\"t\":\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                .append("\",\"d\":\"").append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                .append("\",\"l\":\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
+                .append("\",\"dc\":\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
+                .append("\",\"c\":\"").append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
+                .append("\"}, \"best\":");
+            
+            if(best == null){
+                builder.append("null,");
+            } else {
+                builder
+                    .append("{\"rank\":").append(best.getRank())
+                    .append(",\"date\":\"").append(best.getRunDay() != null ? best.getRunDay().toLocalDate().toString() : "?")
+                    .append("\",\"url\":\"").append(StringEscapeUtils.escapeJson(best.getUrl()))
+                    .append("\"},");
+            }
+            builder.append("\"days\": [");            
+        }
+        
+        for (int i = 0; i < runs.size(); i++) {
+            Run run = runs.get(i);
+            
+            Map<Integer, GoogleRank> ranks = googleDB.rank.list0(run.getId(), group.getId(), target.getId())
+                    .stream().collect(Collectors.toMap((r) -> r.googleSearchId, Function.identity()));
+            
+            for (GoogleSearch search : searches) {
+                StringBuilder builder = builders.get(search.getId());
+                GoogleRank fullRank = ranks.get(search.getId());
+                if(fullRank != null && fullRank.rank != GoogleRank.UNRANKED) {
+                    builder.append("{\"r\":").append(fullRank.rank)
+                        .append(",\"p\":").append(fullRank.previousRank)
+                        .append(",\"u\":\"").append(StringEscapeUtils.escapeJson(fullRank.url))
+                        .append("\"},");
+                } else {
+                    builder.append("{\"r\":32767,\"p\":null,\"u\":null},");
+                }
+                
+                if(i == runs.size()-1){
+                    builder.deleteCharAt(builder.length()-1);
+                    builder.append("]},");
+                }                
+            }
+        }
+        
+        
+        for (StringBuilder value : builders.values()) {
+            jsonData.append(value);
+        }
+        jsonData.deleteCharAt(jsonData.length()-1);
+        jsonData.append("]");        
+        
+        return jsonData.toString();
+    }    
+
 
 }

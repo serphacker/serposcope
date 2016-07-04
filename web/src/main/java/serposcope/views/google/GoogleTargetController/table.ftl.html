@@ -1,7 +1,13 @@
 <#import "targetLayout.ftl.html" as layout> 
 <@layout.googleTargetLayout  >
 <#include "../../helpers/search-filter.ftl.html" />
-<div id="google-target-table-container" class="top5"></div>
+<div id="google-target-table-container" class="top5">
+    <div class="ajax-loader">
+        <span></span>
+        <img src="/assets/img/loader.gif" />
+    </div>    
+    <img   />
+</div>
 <div id="grid-vars" 
      data-days="${days!"[]"}"
      data-data="${data!"[]"}"

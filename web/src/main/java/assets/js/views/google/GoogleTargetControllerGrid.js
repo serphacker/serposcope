@@ -12,6 +12,26 @@ serposcope.googleTargetControllerGrid = function () {
 
     var UNRANKED = 32767;
     var COL_WIDTH = 21;
+    
+    var COL_ID = 0;
+    var COL_SEARCH = 1;
+    var COL_SEARCH_KEYWORD = 0;
+    var COL_SEARCH_TLD = 1;
+    var COL_SEARCH_DEVICE = 2;
+    var COL_SEARCH_LOCAL = 3;
+    var COL_SEARCH_DATACENTER = 4;
+    var COL_SEARCH_CUSTOM = 5;
+    var COL_BEST = 2;
+    var COL_BEST_RANK = 0;
+    var COL_BEST_DAY = 1;
+    var COL_BEST_URL = 2;
+    var COL_EVENTS = 3;
+    var COL_EVENTS_TITLE=0;
+    var COL_EVENTS_DESCRIPTION=1;
+    var COL_RANK = 3;
+    var COL_RANK_CURRENT = 0;
+    var COL_RANK_PREVIOUS = 1;
+    var COL_RANK_URL = 2;
 
     var grid = null;
     var dataView = null;
@@ -29,9 +49,13 @@ serposcope.googleTargetControllerGrid = function () {
     var days = [];
     var data = [];
     var groupId = 1;
+    var startDate;
+    var endDate;
     // end    
 
-    var resize = function () {
+    var resize = function (height) {
+        $('#google-target-table-container').css("min-height", (height) + "px");
+        $('.ajax-loader').css("height", (height-100) + "px");
         if (grid != null) {
             grid.resizeCanvas();
         }
@@ -41,20 +65,32 @@ serposcope.googleTargetControllerGrid = function () {
         if (document.getElementById("google-target-table-container") == null) {
             return;
         }
-        setData();
-        if(days == null || days.length == 0 || data == null || data.length == 0){
-            return;
-        }
-        renderGrid();
         $('#filter-apply').click(applyFilter);
         $('#filter-reset').click(resetFilter);
+        fetchData();
     };
-
-    var setData = function () {
-//        setFakeData();
+    
+    var fetchData = function(){
         groupId = $('#csp-vars').attr('data-group-id');
-        days = JSON.parse($('#grid-vars').attr('data-days'));
-        data = JSON.parse($('#grid-vars').attr('data-data'));
+        startDate = $('#csp-vars').data('start-date');
+        endDate = $('#csp-vars').data('end-date');   
+        if(startDate == "" || endDate == ""){
+            $("#google-target-table-container").html("no data");
+            return;
+        }        
+        var targetId = $('#csp-vars').data('target-id');
+        var url = "/google/" + groupId + "/target/" + targetId + "/ranks?startDate=" + startDate + "&endDate=" + endDate;
+        $.getJSON(url)
+        .done(function (json) {
+            $(".ajax-loader").remove();
+            data = json[0];
+            days = json[1];
+            renderGrid();
+        }).fail(function (err) {
+            $(".ajax-loader").remove();
+            console.log("error", err);
+            $("#google-target-table-container").html("error");
+        });
     };
 
     var renderGrid = function () {
@@ -102,7 +138,7 @@ serposcope.googleTargetControllerGrid = function () {
 
         grid.init();
         dataView.beginUpdate();
-        dataView.setItems(data);
+        dataView.setItems(data, 0);
         dataView.setFilter(filterGrid);
         dataView.endUpdate();
     };
@@ -118,7 +154,7 @@ serposcope.googleTargetControllerGrid = function () {
 
             switch (args.sortCol.field) {
                 case "id":
-                    return a.search.k > b.search.k ? 1 : -1;
+                    return a[1][0] > b[1][0] ? 1 : -1;
                 case "best":
                     return a.best.rank - b.best.rank;
                 default:
@@ -149,31 +185,32 @@ serposcope.googleTargetControllerGrid = function () {
     };
 
     var filterGrid = function (item) {
-        if (item.search == null) {
+        var search = item[COL_SEARCH];
+        if (search === 0) {
             return true;
         }
 
-        if (filter.keyword !== '' && item.search.k.toLowerCase().indexOf(filter.keyword) === -1) {
+        if (filter.keyword !== '' && search[COL_SEARCH_KEYWORD].toLowerCase().indexOf(filter.keyword) === -1) {
             return false;
         }
 
-        if (filter.device !== '' && item.search.d != filter.device) {
+        if (filter.device !== '' && search[COL_SEARCH_DEVICE] != filter.device) {
             return false;
         }
 
-        if (filter.tld !== '' && item.search.t != filter.tld) {
+        if (filter.tld !== '' && search[COL_SEARCH_TLD] != filter.tld) {
             return false;
         }
 
-        if (filter.local !== '' && item.search.l.toLowerCase().indexOf(filter.local) === -1) {
+        if (filter.local !== '' && search[COL_SEARCH_LOCAL].toLowerCase().indexOf(filter.local) === -1) {
             return false;
         }
 
-        if (filter.datacenter !== '' && item.search.dc != filter.datacenter) {
+        if (filter.datacenter !== '' && search[COL_SEARCH_DATACENTER] != filter.datacenter) {
             return false;
         }
 
-        if (filter.custom !== '' && item.search.c.toLowerCase().indexOf(filter.custom) === -1) {
+        if (filter.custom !== '' && search[COL_SEARCH_CUSTOM].toLowerCase().indexOf(filter.custom) === -1) {
             return false;
         }
 
@@ -181,25 +218,26 @@ serposcope.googleTargetControllerGrid = function () {
     };
 
     var formatSearchCell = function (row, col, unk, colDef, rowData) {
-        if (rowData.search == null) {
+        var search = rowData[COL_SEARCH];
+        if (search === 0) {
             return "<div class=\"text-left\">&nbsp;&nbsp;Calendar</div>";
         }
 
         var ret = "<div class=\"text-left\">";
-        ret += "<i data-toggle=\"tooltip\" title=\"TLD : " + rowData.search.t + "\" class=\"fa fa-globe\" ></i>";
-        if (rowData.search.d === "M") {
+        ret += "<i data-toggle=\"tooltip\" title=\"TLD : " + search[COL_SEARCH_TLD] + "\" class=\"fa fa-globe\" ></i>";
+        if (search[COL_SEARCH_DEVICE] === "M") {
             ret += "<i data-toggle=\"tooltip\" title=\"mobile\" class=\"fa fa-mobile fa-fw\" ></i>";
         }
-        if (rowData.search.l != "") {
-            ret += "<i data-toggle=\"tooltip\" title=\"" + rowData.search.l + "\" class=\"fa fa-map-marker fa-fw\" ></i>";
+        if (search[COL_SEARCH_LOCAL] != "") {
+            ret += "<i data-toggle=\"tooltip\" title=\"" + search[COL_SEARCH_LOCAL] + "\" class=\"fa fa-map-marker fa-fw\" ></i>";
         }
-        if (rowData.search.dc != "") {
-            ret += "<i data-toggle=\"tooltip\" title=\"Datacenter: " + rowData.search.dc + "\" class=\"fa fa-building fa-fw\" ></i>";
+        if (search[COL_SEARCH_DATACENTER] != "") {
+            ret += "<i data-toggle=\"tooltip\" title=\"Datacenter: " + search[COL_SEARCH_DATACENTER] + "\" class=\"fa fa-building fa-fw\" ></i>";
         }
-        if (rowData.search.c != "") {
-            ret += "<i data-toggle=\"tooltip\" title=\"" + rowData.search.c + "\" class=\"fa fa-question-circle fa-fw\" ></i>";
+        if (search[COL_SEARCH_CUSTOM] != "") {
+            ret += "<i data-toggle=\"tooltip\" title=\"" + search[COL_SEARCH_CUSTOM] + "\" class=\"fa fa-question-circle fa-fw\" ></i>";
         }
-        ret += " <a href=\"/google/" + groupId + "/search/" + rowData.search.id + "\" >" + rowData.search.k + "</a>";
+        ret += " <a href=\"/google/" + groupId + "/search/" + rowData[COL_ID] + "\" >" + search[COL_SEARCH_KEYWORD] + "</a>";
         ret += "</div>";
         return ret;
     };
@@ -213,43 +251,49 @@ serposcope.googleTargetControllerGrid = function () {
     };
 
     var formatCalendarCell = function (row, col, unk, colDef, rowData) {
-        var event = rowData.days[col - 1];
-        if (event == null) {
+        var event = rowData[COL_EVENTS][col-1];
+        if (event === 0) {
             return null;
         }
         return  '<div class="text-center pointer" rel="popover" data-toggle="tooltip" ' +
-            'title="' + serposcope.utils.escapeHTMLQuotes(event.title) + '" ' +
-            'data-content="' + serposcope.utils.escapeHTMLQuotes(event.description) + '" >' +
+            'title="' + serposcope.utils.escapeHTMLQuotes(event[COL_EVENTS_TITLE]) + '" ' +
+            'data-content="' + serposcope.utils.escapeHTMLQuotes(event[COL_EVENTS_DESCRIPTION]) + '" >' +
             '<i class="fa fa-calendar" ></i>' +
             '</div>';
     };
 
     var formatRankCell = function (row, col, unk, colDef, rowData) {
-        var rank = rowData.days[col - 1];
-        var rankDiff = rank.p - rank.r, diffText = "", diffClass = "";
-        if (rank.p == UNRANKED && rank.r != UNRANKED) {
-            diffText = "in";
-            diffClass = "plus";
-        } else if (rank.r == UNRANKED) {
+        var rank = rowData[COL_RANK][col - 1];
+        var diffText = "", diffClass = "";
+        var bestClass = "", bestText = "";
+        var rankText = "";
+        if(rank === 0){
+            rankText = "-";
             diffText = "out";
             diffClass = "minus";
-        } else if (rankDiff == 0) {
-            diffText = "=";
-        } else if (rankDiff > 0) {
-            diffText = "+" + rankDiff;
-            diffClass = "plus";
         } else {
-            diffText = rankDiff;
-            diffClass = "minus";
-        }
-        var bestClass = "", bestText = "";
-        if(rowData.best.rank == rank.r && rank.r != UNRANKED){
-            bestClass = "best-cell";
-            bestText = " (best)";
+            rankText = rank[COL_RANK_CURRENT];
+            var rankDiff = rank[COL_RANK_PREVIOUS] - rank[COL_RANK_CURRENT];
+            if (rank[COL_RANK_PREVIOUS] == UNRANKED && rank[COL_RANK_CURRENT] != UNRANKED) {
+                diffText = "in";
+                diffClass = "plus";
+            } else if (rankDiff == 0) {
+                diffText = "=";
+            } else if (rankDiff > 0) {
+                diffText = "+" + rankDiff;
+                diffClass = "plus";
+            } else {
+                diffText = rankDiff;
+                diffClass = "minus";
+            }
+            
+            if(rowData[COL_BEST] !== 0 && rowData[COL_BEST][COL_BEST_RANK] == rank[COL_RANK_CURRENT]){
+                bestClass = "best-cell";
+                bestText = " (best)";
+            }
         }
         
-        var rankText = (rank.r == UNRANKED ? "-" : rank.r);
-        var rankUrl = rank.u == null ? "not provided" : serposcope.utils.escapeHTMLQuotes(rank.u);
+        var rankUrl = rank[COL_RANK_URL] == null ? "not provided" : serposcope.utils.escapeHTMLQuotes(rank[COL_RANK_URL]);
         return '<div class="pointer diff-' + diffClass + ' ' + bestClass + '" ' +
             'rel="popover" data-toggle="tooltip" ' +
             'data-tt="' + diffText + bestText + '" ' +
@@ -259,70 +303,16 @@ serposcope.googleTargetControllerGrid = function () {
     };
 
     var formatBestCell = function (row, col, unk, colDef, rowData) {
-        if (row == 0) {
+        if (row === 0) {
             return "";
         }
-        var rankText = (rowData.best.rank == UNRANKED ? "-" : rowData.best.rank);
+        var best = rowData[COL_BEST];
+        var rankText = (best[COL_BEST_RANK] == UNRANKED ? "-" : best[COL_BEST_RANK]);
         return '<div class="pointer best-cell" ' +
             'rel="popover" data-toggle="tooltip" ' +
-            'title="' + rowData.best.date + '" ' +
-            'data-content="' + serposcope.utils.escapeHTMLQuotes(rowData.best.url) + '" ' +
+            'title="' + best[COL_BEST_DAY] + '" ' +
+            'data-content="' + serposcope.utils.escapeHTMLQuotes(best[COL_BEST_URL]) + '" ' +
             '>' + rankText + '</div>';
-    };
-
-    var genFakeSearch = function (i) {
-        return {
-            id: i,
-            k: "search#" + parseInt(Math.random() * 100000),
-            t: parseInt(Math.random() * 5) == 0 ? 'com' : 'fr',
-            d: parseInt(Math.random() * 5) == 0 ? 'M' : 'D',
-            l: parseInt(Math.random() * 5) == 0 ? 'Paris' : '',
-            dc: parseInt(Math.random() * 5) == 0 ? '1.2.3.4' : '',
-            c: parseInt(Math.random() * 5) == 0 ? 'hl=fr' : ''
-        };
-    };
-
-    var setFakeData = function () {
-        var startDay = moment("2015-06-15");
-        var dayCount = 30;
-        var searches = 10000;
-
-        data.push({id: -1, days: [], best: null});
-        // init days && calendar
-        for (var j = 0; j < dayCount; j++) {
-            days.push(startDay.add(1, 'days').format('YYYY-MM-DD'));
-            if (parseInt(Math.random() * 10) == 0) {
-                data[0].days.push({
-                    title: "event title'\"<h1>lol</h1>",
-                    description: "event description'\"<h1>lol</h1>"
-                });
-            } else {
-                data[0].days.push(null);
-            }
-        }
-
-        // init searches
-        for (var i = 0; i < searches; i++) {
-            var search = genFakeSearch(i);
-            var searchData = {
-                search: search,
-                id: search.id,
-                days: [],
-                best: {
-                    rank: parseInt(Math.random() * 100) + 1,
-                    date: startDay.format('YYYY-MM-DD'),
-                    url: "besturl'\""
-                }
-            };
-            for (var j = 0; j < dayCount; j++) {
-                searchData.days.push({
-                    r: parseInt(Math.random() * 100) + 1,
-                    p: parseInt(Math.random() * 100) + 1,
-                    u: "urlxxx'\""
-                });
-            }
-            data.push(searchData);
-        }
     };
 
     var oPublic = {

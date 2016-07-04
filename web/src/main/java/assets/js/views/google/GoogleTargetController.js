@@ -15,10 +15,9 @@ serposcope.googleTargetController = function () {
     var resize = function () {
         var height = serposcope.theme.availableHeight() - HEADER_SIZE;
         $('#google-target-variation-container').css("min-height", (height) + "px");
-        $('#google-target-table-container').css("min-height", (height) + "px");
         $('#google-target-chart').css("height", (height) + "px");
         renderChart();
-        serposcope.googleTargetControllerGrid.resize();
+        serposcope.googleTargetControllerGrid.resize(height);
         serposcope.googleTargetControllerVariation.resize();
     };
 

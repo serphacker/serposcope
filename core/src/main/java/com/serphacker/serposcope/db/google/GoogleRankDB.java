@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -272,9 +273,9 @@ public class GoogleRankDB extends AbstractDB {
         }
         
         return rank;
-    }    
+    }   
     
-    public List<GoogleRank> list(int runId, int groupId, int targetId){
+    public List<GoogleRank> list0(int runId, int groupId, int targetId){
         List<GoogleRank> ranks = new ArrayList<>();
         
         try(Connection con = ds.getConnection()){
@@ -286,6 +287,53 @@ public class GoogleRankDB extends AbstractDB {
                 .where(t_rank.groupId.eq(groupId))
                 .where(t_rank.googleTargetId.eq(targetId))
                 .fetch();
+            
+            for (Tuple tuple : tuples) {
+                ranks.add(fromTuple(tuple));
+            }
+            
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        
+        return ranks;
+    }    
+    
+    public List<GoogleRank> list(int runId, int groupId, int targetId){
+        return list(Arrays.asList(runId), Arrays.asList(groupId), Arrays.asList(targetId), null);
+    }
+    
+    public List<GoogleRank> list(
+        Collection<Integer> runs, 
+        Collection<Integer> groups, 
+        Collection<Integer> targets,
+        Collection<Integer> searches
+    ){
+        List<GoogleRank> ranks = new ArrayList<>();
+        
+        try(Connection con = ds.getConnection()){
+            
+            SQLQuery<Tuple> query = new SQLQuery<Void>(con, dbTplConf)
+                .select(t_rank.all())
+                .from(t_rank);
+            
+            if(runs != null){
+                query.where(t_rank.runId.in(runs));
+            }
+            
+            if(groups != null){
+                query.where(t_rank.groupId.in(groups));
+            }
+            
+            if(targets != null){
+                query.where(t_rank.googleTargetId.in(targets));
+            }
+            
+            if(searches != null){
+                query.where(t_rank.googleSearchId.in(searches));
+            }            
+            
+            List<Tuple> tuples = query.fetch();
             
             for (Tuple tuple : tuples) {
                 ranks.add(fromTuple(tuple));

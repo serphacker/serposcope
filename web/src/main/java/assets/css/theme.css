@@ -58,6 +58,22 @@ body {
     display: inline-block;
 }
 
+.ajax-loader
+{
+    text-align: center; /*handles the horizontal centering*/
+}
+.ajax-loader span
+{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.ajax-loader img
+{
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .popover {
     max-width: 600px;
     width: auto;
