@@ -64,7 +64,8 @@ serposcope.theme = function () {
         });  
         // dismiss popover on click outside
         $('body').on('click', function (e) {
-            if ($(e.target).attr('rel') !== 'popover' && $(e.target).parents('.popover.in').length === 0) { 
+            var $target = $(e.target);
+            if ($target.attr('rel') !== 'popover' && !$target.hasClass('fa-calendar') && $target.parents('.popover.in').length === 0) { 
                 $('[rel="popover"]').popover('hide');
             }
         });
