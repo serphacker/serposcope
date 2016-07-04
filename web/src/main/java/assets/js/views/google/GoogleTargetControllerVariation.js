@@ -19,7 +19,6 @@ serposcope.googleTargetControllerVariation = function () {
         custom: ''
     };
 
-    var hasData = false;
     var groupId = 1;
 
     var resize = function () {
@@ -32,27 +31,33 @@ serposcope.googleTargetControllerVariation = function () {
     };
 
     var render = function () {
-        if($('#variation-vars').size() == 0){
+        if($('.variation-grid').size() == 0){
             return;
         }
-        setData();
-        renderGrid();
         $('#filter-apply').click(applyFilter);
-        $('#filter-reset').click(resetFilter);
+        $('#filter-reset').click(resetFilter);        
+        groupId = $('#csp-vars').attr('data-group-id');
+        fetchData();
     };
 
-    var setData = function () {
+    var fetchData = function () {
 //        setFakeData();
-        groupId = $('#csp-vars').attr('data-group-id');
-        grids[0].data = JSON.parse($('#variation-vars').attr('data-up'));
-        grids[1].data = JSON.parse($('#variation-vars').attr('data-down'));
-        grids[2].data = JSON.parse($('#variation-vars').attr('data-same'));
         
-        for(var i = 0; i < grids.length; i++){
-            if(grids[i].data.length > 0){
-                hasData = true;
-            }
-        }
+        var endDate = $('#csp-vars').data('end-date');
+        var targetId = $('#csp-vars').data('target-id');
+        var url = "/google/" + groupId + "/target/" + targetId + "/variation?endDate=" + endDate;
+        $.getJSON(url)
+        .done(function (json) {
+            $(".ajax-loader").remove();
+            grids[0].data = json[0];
+            grids[1].data = json[1];
+            grids[2].data = json[2];
+            renderGrid();
+        }).fail(function (err) {
+            $(".ajax-loader").remove();
+            console.log("error", err);
+            $("#google-target-table-container").html("error");
+        });
     };
     
     var renderGrid = function () {
@@ -217,56 +222,6 @@ serposcope.googleTargetControllerVariation = function () {
         {selector: "#variation-unchanged-grid", columns: getUnchangedColumns(), grid: null, dataView: null, data: []}
     ];    
     
-    var genFakeSearch = function (i) {
-        return {
-            id: i,
-            keyword: "search#" + parseInt(Math.random() * 100000),
-            tld: parseInt(Math.random() * 5) == 0 ? 'com' : 'fr',
-            device: parseInt(Math.random() * 5) == 0 ? 'M' : 'D',
-            local: parseInt(Math.random() * 5) == 0 ? 'Paris' : '',
-            datacenter: parseInt(Math.random() * 5) == 0 ? '1.2.3.4' : '',
-            custom: parseInt(Math.random() * 5) == 0 ? 'hl=fr' : ''
-        };
-    };
-    
-    var genFakeFixed = function(i) {
-        return {
-            id: i,
-            search : genFakeSearch(i),
-            now: parseInt(Math.random() * 100)
-        };
-    };
-    
-    var genFakeImproved = function(i) {
-        return {
-            id: i,
-            search : genFakeSearch(i),
-            now: parseInt(Math.random() * 100),
-            prv: parseInt(Math.random() * 100),
-            diff: parseInt(Math.random() * 100)
-        };
-    };
-    
-    var genFakeLost = function(i) {
-        return {
-            id: i,
-            search : genFakeSearch(i),
-            now: parseInt(Math.random() * 100),
-            prv: parseInt(Math.random() * 100),
-            diff: -parseInt(Math.random() * 100)
-        };
-    };    
-
-    var setFakeData = function () {
-        var searches = 10000;
-        for (var i = 0; i < searches; i++) {
-            grids[0].data.push(genFakeImproved(i));
-            grids[1].data.push(genFakeLost(i));
-            grids[2].data.push(genFakeFixed(i));
-        }
-        hasData = true;
-    };
-
     var oPublic = {
         resize: resize,
         render: render

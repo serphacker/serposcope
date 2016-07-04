@@ -169,7 +169,8 @@ serposcope.googleTargetController = function () {
                     format: 'YYYY-MM-DD'
                 },
                 showDropdowns: true,
-                startDate: $('#csp-vars').attr('data-start-date'),
+                startDate: $('#csp-vars').data('display') == "variation" ? 
+                    $('#csp-vars').data('end-date') : $('#csp-vars').data('start-date'),
                 endDate: $('#csp-vars').attr('data-end-date'),
                 minDate: $('#csp-vars').attr('data-min-date'),
                 maxDate: $('#csp-vars').attr('data-max-date'),
