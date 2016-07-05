@@ -15,9 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -43,7 +45,10 @@ public class ExportDB extends AbstractDB {
         if(path.endsWith(".gz")){
             os = new GZIPOutputStream(os);
         }
-        try (PrintWriter writer = new PrintWriter(os)){
+        try (
+            OutputStreamWriter osw = new OutputStreamWriter(os, Charset.forName("UTF-8"));
+            PrintWriter writer = new PrintWriter(osw);
+        ){
             return export(writer);
         }
     }

@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -119,7 +120,7 @@ public class AdminController extends BaseController {
     public Result exportSQL(Context context) {
         return Results
             .contentType("application/octet-stream")
-            .addHeader("Content-Disposition", "attachment; filename=\"export.sql.gz\"")
+            .addHeader("Content-Disposition", "attachment; filename=\"export-utf8.sql.gz\"")
             .render((ctx, res) -> {
                 ResponseStreams responseStreams = context.finalizeHeaders(res);
                 try (
@@ -148,7 +149,7 @@ public class AdminController extends BaseController {
                 is = new GZIPInputStream(is);
             }
 
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(is))){
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")))){
                 exportDB.importStream(reader);
             }
         }catch(Exception ex){
