@@ -213,6 +213,11 @@ MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
     height: 25px;
 }
 
+.variation-count {
+    color: black;
+    font-size: 16px;
+}
+
 .search-filter input,
 .search-filter select {
     padding: 5px 5px;

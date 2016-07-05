@@ -91,6 +91,7 @@ serposcope.googleTargetControllerVariation = function () {
             grids[i].dataView.onRowCountChanged.subscribe(function (e, args) {
                 this.grid.updateRowCount();
                 this.grid.render();
+                $(this.selector.replace("-grid","-total")).html("(" + args.current + ")");
             }.bind(grids[i]));
             grids[i].dataView.onRowsChanged.subscribe(function (e, args) {
                 this.grid.invalidateRows(args.rows);

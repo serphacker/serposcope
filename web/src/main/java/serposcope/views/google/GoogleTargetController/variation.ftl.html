@@ -13,19 +13,28 @@
     </div>
     <div class="row" >
         <div class="col-md-4" >
-            <h4 class="text-center text-uppercase text-success">${i18n("home.improvedPositions")}</h4>
+            <h4 class="text-center text-uppercase text-success">
+                ${i18n("home.improvedPositions")} 
+                <span id="variation-improved-total" class="variation-count"></span>
+            </h4>
             <div id="variation-improved-grid" class="variation-grid" >
                 <img class="ajax-loader" src="/assets/img/loader.gif" />
             </div>
         </div>
         <div class="col-md-4" >
-            <h4 class="text-center text-uppercase text-danger">${i18n("home.lostPositions")}</h4>
+            <h4 class="text-center text-uppercase text-danger">
+                ${i18n("home.lostPositions")}
+                <span id="variation-lost-total" class="variation-count"></span>
+            </h4>
             <div id="variation-lost-grid" class="variation-grid" >
                 <img class="ajax-loader" src="/assets/img/loader.gif" />
             </div>
         </div>                    
         <div class="col-md-4" >
-            <h4 class="text-center text-uppercase">${i18n("home.unchangedPositions")}</h4>
+            <h4 class="text-center text-uppercase">
+                ${i18n("home.unchangedPositions")}
+                <span id="variation-unchanged-total" class="variation-count"></span>
+            </h4>
             <div id="variation-unchanged-grid" class="variation-grid" >
                 <img class="ajax-loader" src="/assets/img/loader.gif" />
             </div>
