@@ -31,7 +31,10 @@ import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -469,8 +472,8 @@ public class GoogleTargetController extends GoogleController {
             .addHeader("Content-Disposition", "attachment; filename=\"export.csv\"")
             .render((Context context, Result result) -> {
                 ResponseStreams stream = context.finalizeHeaders(result);
-                try (PrintWriter writer = new PrintWriter(stream.getOutputStream())) {
-                    writer.println("date,rank,url,target,keyword,device,tld,datacenter,local,custom");
+                try (Writer writer = stream.getWriter()) {
+                    writer.append("date,rank,url,target,keyword,device,tld,datacenter,local,custom\n");
                     for (Run run : runs) {
                         String day = run.getDay().toString();
                         for (GoogleSearch search : searches) {
@@ -579,8 +582,8 @@ public class GoogleTargetController extends GoogleController {
         List<Run> runs,
         LocalDate startDate,
         LocalDate endDate,
-        PrintWriter writer
-    ) {
+        Writer writer
+    ) throws IOException {
         writer.append("[[[-1, 0, 0, [");
         if (runs.isEmpty() || searches.isEmpty()) {
             writer.append("]]],[]]");

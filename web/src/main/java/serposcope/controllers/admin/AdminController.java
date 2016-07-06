@@ -18,12 +18,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -124,7 +126,9 @@ public class AdminController extends BaseController {
             .render((ctx, res) -> {
                 ResponseStreams responseStreams = context.finalizeHeaders(res);
                 try (
-                    Writer writer = new PrintWriter(new GZIPOutputStream(responseStreams.getOutputStream()));
+                    GZIPOutputStream gzos = new GZIPOutputStream(responseStreams.getOutputStream());
+                    OutputStreamWriter osw = new OutputStreamWriter(gzos, StandardCharsets.UTF_8);
+                    Writer writer = new PrintWriter(osw);
                 ) {
                     exportDB.export(writer);
                 } catch (IOException ex) {
@@ -149,7 +153,7 @@ public class AdminController extends BaseController {
                 is = new GZIPInputStream(is);
             }
 
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")))){
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))){
                 exportDB.importStream(reader);
             }
         }catch(Exception ex){

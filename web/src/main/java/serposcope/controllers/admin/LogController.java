@@ -22,9 +22,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +48,7 @@ import ninja.Router;
 import ninja.params.Param;
 import ninja.session.FlashScope;
 import ninja.utils.ResponseStreams;
+import org.eclipse.jetty.server.HttpOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serposcope.controllers.BaseController;
@@ -89,26 +93,22 @@ public class LogController extends BaseController {
             Map<String,String> map = getObfuscateMap();
             
             return Results
-                .contentType("text/plain")
+                .text()
                 .render((ctx, res) -> {
                     ResponseStreams responseStreams = context.finalizeHeaders(res);
                     try (
-                        PrintWriter writer = new PrintWriter(responseStreams.getOutputStream());
+                        Writer writer = responseStreams.getWriter();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
-                        
                     ) {
-                        writer.println("############################################################################");
-                        writer.println("# WARNING : log anonymization will not obfuscate deleted keywords and data #");
-                        writer.println("############################################################################");
-                        writer.println();
-                        reader.lines().forEach(new Consumer<String>() {
-                            @Override
-                            public void accept(String line) {
-                                for (Map.Entry<String, String> entry : map.entrySet()) {
-                                    line = line.replace(entry.getKey(), entry.getValue());
-                                }
-                                writer.println(line);
+                        writer.append("############################################################################\n");
+                        writer.append("# WARNING : log anonymization will not obfuscate deleted keywords and data #\n");
+                        writer.append("############################################################################\n");
+                        writer.append("\n");
+                        reader.lines().forEach((String line) -> {
+                            for (Map.Entry<String, String> entry : map.entrySet()) {
+                                line = line.replace(entry.getKey(), entry.getValue());
                             }
+                            try {writer.append(line).append("\n");} catch (IOException ex) {}
                         });
                     } catch (IOException ex) {
                         LOG.error("view log", ex);
@@ -116,7 +116,7 @@ public class LogController extends BaseController {
                 });
         } else {
             return Results
-                .contentType("text/plain")
+                .text()
                 .render((ctx, res) -> {
                     ResponseStreams responseStreams = context.finalizeHeaders(res);
                     try (OutputStream os = responseStreams.getOutputStream()) {

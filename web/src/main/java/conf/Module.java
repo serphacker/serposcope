@@ -31,6 +31,8 @@ import com.serphacker.serposcope.scraper.http.ScrapClient;
 import com.serphacker.serposcope.task.TaskManager;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -102,6 +104,7 @@ public class Module extends AbstractModule {
 
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();
         encoder.setContext(context);
+        encoder.setCharset(StandardCharsets.UTF_8);
         encoder.setPattern("[%d] [%t] %-5p %c{5} - %m%n");
         encoder.start();
         appender.setEncoder(encoder);
