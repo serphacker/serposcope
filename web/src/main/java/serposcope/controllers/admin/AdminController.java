@@ -158,7 +158,8 @@ public class AdminController extends BaseController {
             }
         }catch(Exception ex){
             LOG.error("SQL import error", ex);
-            flash.error("error.notImplemented");
+            flash.error("error.internalError");
+            return Results.redirect(router.getReverseRoute(AdminController.class, "admin"));
         }
         
         flash.success("admin.menu.importSuccessful");

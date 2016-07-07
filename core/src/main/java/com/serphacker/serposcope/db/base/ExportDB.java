@@ -176,10 +176,22 @@ public class ExportDB extends AbstractDB {
     protected String escapeString(String str){
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
-            if(str.charAt(i) == '\''){
-                builder.append('\'');
+            char b = str.charAt(i);
+            switch(b){
+                case '\'':
+                    builder.append('\'');
+                    builder.append(b);
+                    break;
+                case '\0':
+                case '\r':
+                case '\n':
+                case '\t':
+                case '\b':
+                    builder.append(' ');
+                    break;
+                default:
+                    builder.append(b);
             }
-            builder.append(str.charAt(i));
         }
         return builder.toString();
     }
@@ -193,10 +205,21 @@ public class ExportDB extends AbstractDB {
         ){
             int b;
             while (-1 != (b = br.read())) {
-                if(b == '\''){
-                    sb.append('\'');
+                switch(b){
+                    case '\'':
+                        sb.append('\'');
+                        sb.append(b);
+                        break;
+                    case '\0':
+                    case '\r':
+                    case '\n':
+                    case '\t':
+                    case '\b':
+                        sb.append(' ');
+                        break;
+                    default:
+                        sb.append((char) b);
                 }
-                sb.append((char) b);
             }
         }
         return sb.toString();

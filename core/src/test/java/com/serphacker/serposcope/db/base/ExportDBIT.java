@@ -168,7 +168,7 @@ public class ExportDBIT {
         search1.setCustomParameters("custom'");
         search1.setDatacenter("datacenter'");
         search1.setDevice(GoogleDevice.MOBILE);
-        search1.setKeyword("keyword'");
+        search1.setKeyword("keyw\nord' et ce n'est pas * % tout Z \\' ");
         search1.setLocal("local'");
         search1.setTld("tld'");
         
