@@ -1,6 +1,6 @@
 # serposcope changelog
 
-## 2.5.0 - UNRELEASED
+## 2.5.0 - 2016-07-07
 
 * Can check only failed keywords or recently added keywords [#96](https://github.com/serphacker/serposcope/issues/96)
 * Reworked most of the views to support huge amount of keywords (hundred of thousands...)
