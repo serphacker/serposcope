@@ -28,7 +28,9 @@ import com.serphacker.serposcope.models.google.GoogleSerpEntry;
 import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
+import java.sql.Clob;
 import java.sql.Connection;
+import java.sql.JDBCType;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import javax.sql.DataSource;
+import org.h2.jdbc.JdbcClob;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -191,6 +194,15 @@ public class ExportDBIT {
     public void testSigned(){
         exportDB = new ExportDB();
         assertEquals("X'ff000a100f'", exportDB.blobToString(new byte[]{-1, 0, 10, 0x10, 0xf}));
+    }
+    
+    @Test
+    public void testEscaping(){
+        exportDB = new ExportDB();
+        assertEquals("''", exportDB.sbEscape(new StringBuilder(), new Character('\'')).toString());
+        assertEquals("''", exportDB.sbEscape(new StringBuilder(), '\'').toString());
+        assertEquals("''", exportDB.sbEscape(new StringBuilder(), (char)((int)'\'')).toString());
+        assertEquals("''", exportDB.sbEscape(new StringBuilder(), (char)39).toString());
     }
     
 }

@@ -176,28 +176,13 @@ public class ExportDB extends AbstractDB {
     protected String escapeString(String str){
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
-            char b = str.charAt(i);
-            switch(b){
-                case '\'':
-                    builder.append('\'');
-                    builder.append(b);
-                    break;
-                case '\0':
-                case '\r':
-                case '\n':
-                case '\t':
-                case '\b':
-                    builder.append(' ');
-                    break;
-                default:
-                    builder.append(b);
-            }
+            sbEscape(builder, str.charAt(i));
         }
         return builder.toString();
     }
 
     protected String clobToStringEscaped(java.sql.Clob data) throws Exception {
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
         try (
             final Reader reader = data.getCharacterStream();
@@ -205,24 +190,29 @@ public class ExportDB extends AbstractDB {
         ){
             int b;
             while (-1 != (b = br.read())) {
-                switch(b){
-                    case '\'':
-                        sb.append('\'');
-                        sb.append(b);
-                        break;
-                    case '\0':
-                    case '\r':
-                    case '\n':
-                    case '\t':
-                    case '\b':
-                        sb.append(' ');
-                        break;
-                    default:
-                        sb.append((char) b);
-                }
+                sbEscape(builder, (char)b);
             }
         }
-        return sb.toString();
+        return builder.toString();
+    }
+    
+    protected StringBuilder sbEscape(StringBuilder builder, char c){
+        switch(c){
+            case '\'':
+                builder.append('\'');
+                builder.append(c);
+                break;
+            case '\0':
+            case '\r':
+            case '\n':
+            case '\t':
+            case '\b':
+                builder.append(' ');
+                break;
+            default:
+                builder.append(c);
+        }
+        return builder;
     }
 
     protected String blobToString(Blob data) throws Exception {
