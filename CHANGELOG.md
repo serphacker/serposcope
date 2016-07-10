@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.5.1 - 2016-07-10
+
+* Fix escaping issue on H2 database export (backup feature)
+
 ## 2.5.0 - 2016-07-07
 
 * Can check only failed keywords or recently added keywords [#96](https://github.com/serphacker/serposcope/issues/96)
