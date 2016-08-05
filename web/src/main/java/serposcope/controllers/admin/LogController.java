@@ -48,6 +48,7 @@ import ninja.Router;
 import ninja.params.Param;
 import ninja.session.FlashScope;
 import ninja.utils.ResponseStreams;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.HttpOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +107,9 @@ public class LogController extends BaseController {
                         writer.append("\n");
                         reader.lines().forEach((String line) -> {
                             for (Map.Entry<String, String> entry : map.entrySet()) {
-                                line = line.replace(entry.getKey(), entry.getValue());
+                                if(!StringUtils.isEmpty(entry.getKey())){
+                                    line = line.replace(entry.getKey(), entry.getValue());
+                                }
                             }
                             try {writer.append(line).append("\n");} catch (IOException ex) {}
                         });

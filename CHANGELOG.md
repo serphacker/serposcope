@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.6.0 - UNRELEASED
+
+* Fix NPE in log anonymizer [#127](https://github.com/serphacker/serposcope/issues/127)
+
 ## 2.5.1 - 2016-07-10
 
 * Fix escaping issue on H2 database export (backup feature)
