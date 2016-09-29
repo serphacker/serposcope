@@ -28,7 +28,7 @@ import static com.serphacker.serposcope.models.google.GoogleRank.UNRANKED;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
-import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
+import static com.serphacker.serposcope.scraper.google.GoogleDevice.SMARTPHONE;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -373,7 +373,7 @@ public class GoogleTargetController extends GoogleController {
             .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
             .append("\",");
         searchesJson.append("\"device\":\"")
-            .append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+            .append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
             .append("\",");
         searchesJson.append("\"local\":\"")
             .append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
@@ -627,7 +627,7 @@ public class GoogleTargetController extends GoogleController {
                 .append(search.getId())
                 .append(",[\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
                 .append("\",\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
-                .append("\",\"").append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                .append("\",\"").append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
                 .append("\",\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
                 .append("\",\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
                 .append("\",\"").append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))
@@ -739,7 +739,7 @@ public class GoogleTargetController extends GoogleController {
                 .append("\"id\":").append(search.getId())
                 .append(",\"k\":\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
                 .append("\",\"t\":\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
-                .append("\",\"d\":\"").append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                .append("\",\"d\":\"").append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
                 .append("\",\"l\":\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
                 .append("\",\"dc\":\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
                 .append("\",\"c\":\"").append(search.getCustomParameters() == null ? "" : StringEscapeUtils.escapeJson(search.getCustomParameters()))

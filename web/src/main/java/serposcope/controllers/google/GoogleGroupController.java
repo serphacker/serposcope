@@ -24,7 +24,7 @@ import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.models.google.GoogleTarget.PatternType;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
-import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
+import static com.serphacker.serposcope.scraper.google.GoogleDevice.SMARTPHONE;
 import com.serphacker.serposcope.task.TaskManager;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -149,7 +149,7 @@ public class GoogleGroupController extends GoogleController {
                             .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
                             .append("\",");
                         writer.append("\"device\":\"")
-                            .append(MOBILE.equals(search.getDevice()) ? 'M' : 'D')
+                            .append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
                             .append("\",");
                         writer.append("\"local\":\"")
                             .append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
@@ -534,7 +534,7 @@ public class GoogleGroupController extends GoogleController {
             builder.append(StringEscapeUtils.escapeCsv(search.getKeyword())).append(",");
             builder.append(search.getTld() != null ? search.getTld() : "com").append(",");
             builder.append(search.getDatacenter() != null ? search.getDatacenter() : "").append(",");
-            builder.append(search.getDevice() != null ? search.getDevice() : "").append(",");
+            builder.append(search.getDevice() != null ? (search.getDevice() == GoogleDevice.DESKTOP ? "desktop" : "mobile") : "").append(",");
             builder.append(StringEscapeUtils.escapeCsv(search.getLocal() != null ? search.getLocal() : "")).append(",");
             builder.append(StringEscapeUtils.escapeCsv(search.getCustomParameters() != null ? search.getCustomParameters() : "")).append("\n");
         }

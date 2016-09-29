@@ -33,7 +33,7 @@
 <#function gsIcoInfos search>
     <#assign tld = "<i data-toggle=\"tooltip\" title=\"TLD : " + search.getTld() + "\" class=\"fa fa-globe\" ></i>">
     
-    <#if search.getDevice() == "MOBILE" >
+    <#if search.getDevice() == "SMARTPHONE" >
         <#assign device = "<i data-toggle=\"tooltip\" title=\"" + i18n("label.mobile") + "\" class=\"fa fa-mobile fa-fw\" ></i>">
     <#else>
         <#assign device = "">
