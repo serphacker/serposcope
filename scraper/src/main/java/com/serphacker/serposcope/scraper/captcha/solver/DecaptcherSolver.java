@@ -103,7 +103,7 @@ public class DecaptcherSolver implements CaptchaSolver {
     final static Logger LOG = LoggerFactory.getLogger(DecaptcherSolver.class);
 
     public final static int DEFAULT_TIMEOUT_MS = 30000;
-    public final static int DEFAULT_MAX_RETRY_OVERLOAD = 3;
+    public final static int DEFAULT_MAX_RETRY_OVERLOAD = 5;
 
     private String apiUrl;
     private String login;

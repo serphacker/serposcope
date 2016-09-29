@@ -46,7 +46,7 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
     }
     
     public DeathByCaptchaSolver(String login, String password, long timeoutMS) {
-        this(login, password, timeoutMS, 3);
+        this(login, password, timeoutMS, 5);
     }    
 
     public DeathByCaptchaSolver(String login, String password, long timeoutMS, int maxRetryOnOverload) {

@@ -6,6 +6,7 @@
 * Fix NPE in log anonymizer [#127](https://github.com/serphacker/serposcope/issues/127)
 * Fix mobile icon no more displayed [#128](https://github.com/serphacker/serposcope/issues/128)
 * Fix export date range selection
+* Increased captcha retry on failure (service overload) from 3 to 5
 
 ## 2.5.1 - 2016-07-10
 

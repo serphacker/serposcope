@@ -45,7 +45,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
     }
     
     public AntiCaptchaSolver(String apiKey, long timeoutMS) {
-        this(apiKey, timeoutMS, 3);
+        this(apiKey, timeoutMS, 5);
     }    
 
     public AntiCaptchaSolver(String apiKey, long timeoutMS, int maxRetryOnOverload) {
