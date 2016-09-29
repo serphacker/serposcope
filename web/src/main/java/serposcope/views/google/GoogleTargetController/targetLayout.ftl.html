@@ -34,7 +34,7 @@
                     <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "variation")}" class="btn btn-default <#if display == "variation">active</#if>" data-toggle="tooltip" title="${i18n("google.target.variations")}" ><span class="fa fa-random"></span></a>                    
                     <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "chart")}" class="btn btn-default <#if display == "chart">active</#if>" data-toggle="tooltip" title="${i18n("label.chart")}" ><span class="glyphicon glyphicon-signal"></span></a>
                     <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "table")}" class="btn btn-default <#if display == "table">active</#if>" data-toggle="tooltip" title="${i18n("label.table")}" ><span class="fa fa-table"></span></a>
-                    <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "export")}" class="btn btn-default" data-toggle="tooltip" title="${i18n("label.export")}" ><span class="fa fa-download"></span></a>
+                    <a href="${reverseRoute("google.GoogleTargetController","target","groupId",group.getId(), "targetId", target.getId(), "display", "export", "startDate", startDate, "endDate", endDate)}" class="btn btn-default" data-toggle="tooltip" title="${i18n("label.export")}" ><span class="fa fa-download"></span></a>
                 </div>
             </div>
         </div>

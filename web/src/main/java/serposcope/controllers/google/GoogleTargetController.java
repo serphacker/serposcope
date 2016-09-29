@@ -212,8 +212,8 @@ public class GoogleTargetController extends GoogleController {
                     .template("/serposcope/views/google/GoogleTargetController/" + display + ".ftl.html")
                     .render("target", target)
                     .render("searches", searches)
-                    .render("startDate", startDate)
-                    .render("endDate", endDate)
+                    .render("startDate", startDate.toString())
+                    .render("endDate", endDate.toString())
                     .render("minDate", minDay)
                     .render("maxDate", maxDay)
                     .render("display", display); 
