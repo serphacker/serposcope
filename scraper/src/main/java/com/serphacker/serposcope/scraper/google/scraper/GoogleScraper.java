@@ -346,13 +346,13 @@ public class GoogleScraper {
         }
         
         String continueValue = null;
-        String captchaId = null;
-        String action = form.attr("abs:action");
-        String qValue = null;
+        String formIdValue = null;
+        String formUrl = form.attr("abs:action");
+        String formQValue = null;
         
         Element elementCaptchaId = form.getElementsByAttributeValue("name", "id").first();
         if(elementCaptchaId != null){
-            captchaId = elementCaptchaId.attr("value");
+            formIdValue = elementCaptchaId.attr("value");
         }
         Element elementContinue = form.getElementsByAttributeValue("name", "continue").first();
         if(elementContinue != null){
@@ -360,11 +360,11 @@ public class GoogleScraper {
         }
         Element elementQ = form.getElementsByAttributeValue("name", "q").first();
         if(elementQ != null){
-            qValue = elementQ.attr("value");
+            formQValue = elementQ.attr("value");
         }
         
         
-        if(action == null || captchaId == null || continueValue == null){
+        if(formUrl == null || (formIdValue == null && formQValue == null) || continueValue == null){
             LOG.debug("invalid captcha form");
             return Status.ERROR_NETWORK;
         }
@@ -386,15 +386,18 @@ public class GoogleScraper {
         );
         
         try {
-            action += "?continue=" + URLEncoder.encode(continueValue, "utf-8");
+            formUrl += "?continue=" + URLEncoder.encode(continueValue, "utf-8");
         }catch(Exception ex){}
-        action += "&id=" + captchaId;
-        action += "&captcha=" + captcha.getResponse();
-        if(qValue != null){
-            action += "&q=" + qValue;
+        formUrl += "&captcha=" + captcha.getResponse();
+        
+        if(formIdValue != null){
+            formUrl += "&id=" + formIdValue;
+        }
+        if(formQValue != null){
+            formUrl += "&q=" + formQValue;
         }
         
-        int postCaptchaStatus = http.get(action, captchaRedirect);
+        int postCaptchaStatus = http.get(formUrl, captchaRedirect);
         
         if(postCaptchaStatus == 302){
             String redirectOnSuccess = http.getResponseHeader("location");

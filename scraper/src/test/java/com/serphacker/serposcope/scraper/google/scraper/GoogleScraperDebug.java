@@ -86,7 +86,6 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
         http.setInsecureSSL(true);
         http.setProxy(new HttpProxy("127.0.0.1", 8080));
         GoogleScraper scraper = new GoogleScraper(http, solver);
-        System.out.println(props.getProperty("decaptcher.login") + "|" + props.getProperty("decaptcher.password"));
 
         String[] keywords = new String[]{
             "kolozsvr",
