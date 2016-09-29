@@ -35,6 +35,9 @@ public class GoogleRank {
         this.rank = (short)rank;
         this.previousRank = (short)previousRank;
         this.diff = (short)(rank - previousRank);
+        if(url != null && url.length() >= 256){
+            url = url.substring(0, 256);
+        }
         this.url = url;
     }
     

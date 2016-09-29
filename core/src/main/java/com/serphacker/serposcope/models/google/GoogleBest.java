@@ -28,7 +28,7 @@ public class GoogleBest {
         this.googleSearchId = googleSearchId;
         this.rank = (short)rank;
         this.runDay = runDay;
-        this.url = url;
+        this.setUrl(url);
     }
     
     public GoogleBest(){
@@ -78,7 +78,10 @@ public class GoogleBest {
         return url;
     }
 
-    public void setUrl(String url) {
+    public final void setUrl(String url) {
+        if(url != null && url.length() >= 256){
+            url = url.substring(0, 256);
+        }
         this.url = url;
     }
     

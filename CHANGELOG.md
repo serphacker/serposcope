@@ -1,9 +1,10 @@
 # serposcope changelog
 
-## 2.6.0 - UNRELEASED
+## 2.6.0 - 2016-09-29
 
 * IMPORTANT Fix captcha form issue [#132](https://github.com/serphacker/serposcope/issues/132)
 * Fix NPE in log anonymizer [#127](https://github.com/serphacker/serposcope/issues/127)
+* 
 
 ## 2.5.1 - 2016-07-10
 
