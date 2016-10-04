@@ -76,7 +76,7 @@ public class Module extends AbstractModule {
         if(NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet().equals(NinjaMode.dev)){
             bind(CaptchaSolverFactory.class).toInstance((CaptchaSolverFactory) (Config config) -> null);
             bind(GoogleScraperFactory.class).toInstance((GoogleScraperFactory) (ScrapClient http, CaptchaSolver solver) -> new RandomGScraper(http, solver));
-        }        
+        }
     }
     
     protected void beforeModuleConfigure(){
