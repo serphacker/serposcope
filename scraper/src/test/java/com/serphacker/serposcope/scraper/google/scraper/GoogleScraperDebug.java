@@ -160,7 +160,7 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
 
         GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.SMARTPHONE, GoogleDevice.MOBILE};
         String[] keywords = new String[]{
-            "image lion"
+            "serphacker"
         };
         for (String keyword : keywords) {
             for (GoogleDevice device : devices) {
@@ -195,10 +195,12 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
         
         //String[] splits = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/actu"))).split("\n");
         String[] splits  = new String[]{
-            "image lion-fr-desktop.html"
+            "serphacker/serphacker-fr-desktop",
+            "serphacker/serphacker-fr-mobile",
+            "serphacker/serphacker-fr-smartphone"
         };
         for (String split : splits) {
-            String content = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/actu/" + split)));
+            String content = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/" + split)));
             when(http.getContentAsString()).thenReturn(content);
             List<String> urls = new ArrayList<>();
             

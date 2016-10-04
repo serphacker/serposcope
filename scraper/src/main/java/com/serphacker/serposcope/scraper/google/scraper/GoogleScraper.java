@@ -195,6 +195,11 @@ public class GoogleScraper {
         
         Elements h3Elts = lastSerpHtml.getElementsByTag("h3");
         for (Element h3Elt : h3Elts) {
+
+            if(isSiteLinkElement(h3Elt)){
+                continue;
+            }
+            
             String link = extractLink(h3Elt.getElementsByTag("a").first());
             if(link != null){
                 urls.add(link);
@@ -202,6 +207,25 @@ public class GoogleScraper {
         }
         
         return Status.OK;
+    }
+    
+    protected boolean isSiteLinkElement(Element element){
+        if(element == null){
+            return false;
+        }
+        
+        Elements parents = element.parents();
+        if(parents == null || parents.isEmpty()){
+            return false;
+        }
+        
+        for (Element parent : parents) {
+            if(parent.hasClass("mslg")){
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     protected String extractLink(Element element){
