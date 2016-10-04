@@ -2,7 +2,7 @@
 
 ## 2.7.0 - UNRELEASED
 
-
+* SERP parsing : exclude sitelinks from rankings
 
 ## 2.6.0 - 2016-09-29
 
