@@ -109,12 +109,12 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
         for (String keyword : keywords) {
             GoogleScrapSearch search = new GoogleScrapSearch();
             search.setKeyword(keyword);
-            search.setPages(10);
-            search.setResultPerPage(100);
+//            search.setPages(10);
+//            search.setResultPerPage(100);
 //            search.setDatacenter("173.194.32.238");
 //            search.setMinPauseBetweenPage(1000);
 //            search.setMaxPauseBetweenPage(5000);
-            search.setTld("fr");
+            search.setTld("com");
             search.setCustomParameters("filter=0");
 
             GoogleScrapResult res = scraper.scrap(search);
@@ -123,20 +123,22 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
         }
     }
 
-//    @Test
+    @Test
     public void debugParseSerp() throws IOException {
 
         String[] files = new String[]{
             "last-page-com-desktop",
-            "last-page-com-mobile",
+            "last-page-com-smartphone",
+            "last-page-fr-desktop",
+            "last-page-fr-smartphone",            
             "logo-com-desktop",
-            "logo-com-mobile",
+            "logo-com-smartphone",
             "politique-com-desktop",
-            "politique-com-mobile",
+            "politique-com-smartphone",
             "serposcope-com-desktop",
-            "serposcope-com-mobile",
+            "serposcope-com-smartphone",
             "serposcope-fr-desktop",
-            "serposcope-fr-mobile"
+            "serposcope-fr-smartphone"
         };
 
         for (String file : files) {
@@ -157,19 +159,24 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
 
     @Test
     public void debugScrapSomeSerp() throws Exception {
-
-        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.SMARTPHONE, GoogleDevice.MOBILE};
+        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.SMARTPHONE};
         String[] keywords = new String[]{
-            "serphacker"
+            "test",
+//            "logo",
+//            "politique",
+//            "serposcope"
         };
         for (String keyword : keywords) {
             for (GoogleDevice device : devices) {
                 GoogleScrapSearch search = new GoogleScrapSearch();
                 search.setKeyword(keyword);
                 search.setDevice(device);
-                search.setTld("fr");
+                search.setTld("com");
+                search.setResultPerPage(100);
 
                 ScrapClient http = new ScrapClient();
+                http.setInsecureSSL(true);
+                http.setProxy(new HttpProxy("127.0.0.1", 8080));
                 GoogleScraper scraper = new GoogleScraper(http, null);
 
                 scraper.prepareHttpClient(search);
@@ -196,7 +203,6 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
         //String[] splits = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/actu"))).split("\n");
         String[] splits  = new String[]{
             "serphacker/serphacker-fr-desktop",
-            "serphacker/serphacker-fr-mobile",
             "serphacker/serphacker-fr-smartphone"
         };
         for (String split : splits) {
@@ -217,7 +223,7 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
 //    @Test
     public void debugScrapLastPage() throws Exception {
 
-        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.MOBILE};
+        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP};
         for (GoogleDevice device : devices) {
             GoogleScrapSearch search = new GoogleScrapSearch();
             search.setKeyword("\"serposcope\" \"en ligne\" \"fort\"");

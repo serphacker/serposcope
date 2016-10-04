@@ -10,7 +10,6 @@ package com.serphacker.serposcope.scraper.google.scraper;
 import com.serphacker.serposcope.scraper.captcha.Captcha;
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
-import static com.serphacker.serposcope.scraper.google.GoogleDevice.MOBILE;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
@@ -56,7 +55,7 @@ public class GoogleScraper {
     
     public final static String DEFAULT_DESKTOP_UA = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0";
     public final static String DEFAULT_SMARTPHONE_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
-    public final static String DEFAULT_MOBILE_UA = "Mozilla/5.0 (Android; Mobile; rv:37.0) Gecko/37.0 Firefox/37.0";
+//    public final static String DEFAULT_MOBILE_UA = "Mozilla/5.0 (Android; Mobile; rv:37.0) Gecko/37.0 Firefox/37.0";
     
     private static final Logger LOG = LoggerFactory.getLogger(GoogleScraper.class);
 
@@ -136,13 +135,11 @@ public class GoogleScraper {
             case SMARTPHONE:
                 http.setUseragent(DEFAULT_SMARTPHONE_UA);
                 break;
-            case MOBILE:
-                http.setUseragent(DEFAULT_MOBILE_UA);
-                break;
         }
         
         if("com".equals(search.getTld())){
             http.addCookie(NCR_COOKIE);
+//            http.get("https://www.google.com/ncr");
         }
 
         String hostname = "www.google.com";
@@ -220,7 +217,7 @@ public class GoogleScraper {
         }
         
         for (Element parent : parents) {
-            if(parent.hasClass("mslg")){
+            if(parent.hasClass("mslg") || parent.hasClass("nrg") || parent.hasClass("nrgw")){
                 return true;
             }
         }
@@ -266,11 +263,7 @@ public class GoogleScraper {
             return false;
         }
         
-        Elements navEnd = lastSerpHtml.getElementsByClass("navend");
-        if(navEnd.size() < 2){
-            return false;
-        }
-        return !navEnd.last().getElementsByTag("a").isEmpty();
+        return lastSerpHtml.getElementById("pnnext") != null;
     }
     
     protected String buildRequestUrl(GoogleScrapSearch search, int page){

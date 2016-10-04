@@ -1,0 +1,10 @@
+https://en.wikipedia.org/wiki/Politique
+http://www.merriam-webster.com/dictionary/Politique
+http://www.lepoint.fr/politique/
+http://www.lemonde.fr/politique/
+https://en.wiktionary.org/wiki/politique
+http://www.france-politique.fr/
+http://www.ledevoir.com/politique
+https://twitter.com/hashtag/politique
+http://www.bfmtv.com/politique/
+http://www.lejdd.fr/Politique
