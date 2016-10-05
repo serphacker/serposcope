@@ -19,6 +19,11 @@ public class GoogleScrapResult {
         ERROR_CAPTCHA_NO_SOLVER,
         ERROR_IP_BANNED
     };
+    
+    public Status status;
+    public List<String> urls;
+    public int captchas;
+    public long googleResults;    
 
     public GoogleScrapResult(Status status, List<String> urls) {
         this.status = status;
@@ -30,8 +35,12 @@ public class GoogleScrapResult {
         this.urls = urls;
         this.captchas = captchas;
     }
+
+    public GoogleScrapResult(Status status, List<String> urls, int captchas, long googleResults) {
+        this.status = status;
+        this.urls = urls;
+        this.captchas = captchas;
+        this.googleResults = googleResults;
+    }
     
-    public Status status;
-    public List<String> urls;
-    public int captchas;
 }
