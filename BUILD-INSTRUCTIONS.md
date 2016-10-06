@@ -12,7 +12,9 @@ You don't need to know these libraries to contribute to serposcope (you'll learn
 
 If first build, initialize the querybuilder database : 
 
-`./core/scripts/sqlcodegen.sh` (or `.\core\scripts\sqlcodegen.bat`)
+```
+java -jar blaze.jar initdb
+```
 
 This script will create the structure of the database, it is sourced by [querydsl](http://www.querydsl.com/) to generate querybuilder classes.
 
