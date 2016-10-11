@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.7.0 - UNRELEASED
+
+* SERP parsing : exclude sitelinks from rankings
+
 ## 2.6.0 - 2016-09-29
 
 * IMPORTANT Fix captcha form issue [#132](https://github.com/serphacker/serposcope/issues/132)

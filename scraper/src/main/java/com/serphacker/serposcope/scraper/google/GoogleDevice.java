@@ -10,6 +10,5 @@ package com.serphacker.serposcope.scraper.google;
 
 public enum GoogleDevice {
     DESKTOP,
-    SMARTPHONE,
-    MOBILE
+    SMARTPHONE
 }

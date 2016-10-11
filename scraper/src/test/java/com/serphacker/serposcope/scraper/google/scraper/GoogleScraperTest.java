@@ -12,7 +12,11 @@ import static com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status.
 import static com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status.OK;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,36 +77,49 @@ public class GoogleScraperTest {
     public void testLastPage() throws IOException {
         String[] files = new String[]{
             "last-page-com-desktop",
-            "last-page-com-mobile"
+            "last-page-com-smartphone",            
+            "last-page-fr-desktop",
+            "last-page-fr-smartphone"
         };
 
         for (String file : files) {
-            String content = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/" + file)));
+            LOG.debug("checking " + file);
+            String content = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/lastpage/" + file)));
             ScrapClient http = mock(ScrapClient.class);
             when(http.getContentAsString()).thenReturn(content);
             GoogleScraper scraper = new GoogleScraper(http, null);
             assertEquals(OK, scraper.parseSerp(new ArrayList<>()));
             assertFalse(scraper.hasNextPage());
         }
-        files = new String[]{
-            "logo-com-desktop",
-            "logo-com-mobile",
-            "politique-com-desktop",
-            "politique-com-mobile",
-            "serposcope-com-desktop",
-            "serposcope-com-mobile",
-            "serposcope-fr-desktop",
-            "serposcope-fr-mobile"
-        };
-        for (String file : files) {
-            String content = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/" + file)));
+    }
+    
+    @Test
+    public void testParsing() throws Exception {
+        
+        File files = new File(ClassLoader.class.getResource("/serps/").toURI());
+        for (File testFile : files.listFiles()) {
+            
+            if(testFile.isDirectory() || testFile.getName().endsWith(".res")){
+                continue;
+            }
+            
+            LOG.info("checking {}", testFile);
+            
+            String testContent = new String(Files.readAllBytes(testFile.toPath()));
             ScrapClient http = mock(ScrapClient.class);
-            when(http.getContentAsString()).thenReturn(content);
+            when(http.getContentAsString()).thenReturn(testContent);
             GoogleScraper scraper = new GoogleScraper(http, null);
-            assertEquals(OK, scraper.parseSerp(new ArrayList<>()));
+            List<String> urls = new ArrayList<>();
+            assertEquals(OK, scraper.parseSerp(urls));
             assertTrue(scraper.hasNextPage());
+            
+            File resFile = new File(testFile.toString() + ".res");
+            assertTrue(resFile.exists());
+            
+            List<String> expectedUrls = Arrays.asList(new String(Files.readAllBytes(resFile.toPath())).split("\n"));
+            assertEquals(expectedUrls, urls);
         }
-
+        
     }
     
     @Test

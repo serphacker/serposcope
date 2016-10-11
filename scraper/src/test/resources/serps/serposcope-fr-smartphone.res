@@ -1,0 +1,10 @@
+https://serposcope.serphacker.com/fr/
+https://serposcope.serphacker.com/fr/doc/quick-start.html
+http://www.cekome.com/blog/referencement/serposcope/
+http://www.journaldunet.com/solutions/seo-referencement/outils-seo-gratuits-open-source/serposcope.shtml
+https://github.com/serphacker/serposcope
+http://www.linkskin.fr/2016/01/05/suivre-positionnement-gratuitement-avec-la-nouvelle-version-serposcope/
+http://www.sylvainvandewalle.fr/serposcope-suivi-position/
+https://www.growthhacking.fr/t/outil-seo-serposcope-open-source/3856
+http://veronique-bouvier.fr/serposcope-comment-suivre-les-positions-de-votre-site-internet/
+http://www.webaxis.fr/blog/serposcope-suivi-positionnement-moteurs-de-recherche
