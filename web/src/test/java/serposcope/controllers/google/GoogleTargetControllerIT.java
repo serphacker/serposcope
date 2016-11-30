@@ -81,7 +81,7 @@ public class GoogleTargetControllerIT {
         gtc.googleDB = googleDB;
     }
 
-    @Test
+//    @Test
     public void testSomeMethod() throws Exception {
         Group group = baseDB.group.list().get(0);
         GoogleTarget target = googleDB.target.list().get(0);

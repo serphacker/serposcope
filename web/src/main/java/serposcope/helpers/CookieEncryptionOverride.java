@@ -25,14 +25,11 @@ public class CookieEncryptionOverride extends CookieEncryption{
     
     private static final Logger LOG = LoggerFactory.getLogger(CookieEncryptionOverride.class);
     
-    Field fieldEncryptionEnabled;
     Field fieldSecretKeySpec;
 
     @Inject
     public CookieEncryptionOverride(NinjaProperties properties) throws NoSuchFieldException {
         super(properties);
-        fieldEncryptionEnabled = CookieEncryption.class.getDeclaredField("encryptionEnabled");
-        fieldEncryptionEnabled.setAccessible(true);
         fieldSecretKeySpec = CookieEncryption.class.getDeclaredField("secretKeySpec");
         fieldSecretKeySpec.setAccessible(true);
     }
@@ -42,8 +39,6 @@ public class CookieEncryptionOverride extends CookieEncryption{
 
         if (properties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)) {
             
-            setEncryptionEnabled(true);
-
             String secret = properties.getOrDie(NinjaConstant.applicationSecret);
             try {
                 int maxKeyLengthBits = Cipher.getMaxAllowedKeyLength(ALGORITHM);
@@ -62,17 +57,12 @@ public class CookieEncryptionOverride extends CookieEncryption{
             }
 
         } else {
-            setEncryptionEnabled(false);
             secretKeySpec = Optional.absent();
         }        
         
         setSecretKeySpec(secretKeySpec);
     }
     
-    
-    public void setEncryptionEnabled(boolean encryptionEnabled) throws IllegalArgumentException, IllegalAccessException{
-        fieldEncryptionEnabled.set(this, encryptionEnabled);
-    }
     
     public void setSecretKeySpec(Optional<SecretKeySpec> secretKeySpec) throws IllegalArgumentException, IllegalAccessException{
         fieldSecretKeySpec.set(this, secretKeySpec);

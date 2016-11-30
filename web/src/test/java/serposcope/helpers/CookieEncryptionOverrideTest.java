@@ -7,6 +7,8 @@
  */
 package serposcope.helpers;
 
+import javax.crypto.Cipher;
+import static ninja.utils.CookieEncryption.ALGORITHM;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
@@ -43,18 +45,13 @@ public class CookieEncryptionOverrideTest {
         CookieEncryptionOverride cookie2 = new CookieEncryptionOverride(props);
         assertEquals(cookie.encrypt("abcdef"), cookie2.encrypt("abcdef"));
         
-        assertEquals(cookie.fieldEncryptionEnabled.get(cookie), cookie2.fieldEncryptionEnabled.get(cookie2));
         assertEquals(cookie.fieldSecretKeySpec.get(cookie), cookie2.fieldSecretKeySpec.get(cookie2));
         
         props.setProperty(NinjaConstant.applicationSecret, secret2);
         cookie.update(props);
-        assertEquals(cookie.fieldEncryptionEnabled.get(cookie), cookie2.fieldEncryptionEnabled.get(cookie2));
         assertNotEquals(cookie.fieldSecretKeySpec.get(cookie), cookie2.fieldSecretKeySpec.get(cookie2));        
         assertNotEquals(cookie.encrypt("abcdef"), cookie2.encrypt("abcdef"));
         
-        
-        
-                
     }
     
     

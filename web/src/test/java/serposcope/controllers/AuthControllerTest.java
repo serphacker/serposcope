@@ -65,7 +65,7 @@ public class AuthControllerTest {
     @Before
     public void before() throws Exception {
         when(context.getFlashScope()).thenReturn(mock(FlashScope.class));
-        when(router.getReverseRoute(any(), any())).thenReturn("");
+        when(router.getReverseRoute(any(), any(String.class))).thenReturn("");
         when(context.getSession()).thenReturn(mock(Session.class));
 
         baseDB.user = mock(UserDB.class);
