@@ -33,6 +33,7 @@
     <div class="col-sm-6" >
         <div class="pull-right" >
             
+            <#if user.isAdmin()>
             <div class="inline-block">
                 <div class="input-group" >
                     <a href="#" id="btn-add-event" class="btn btn-default" data-toggle="tooltip" data-container="body" 
@@ -40,7 +41,8 @@
                        <span class="fa fa-calendar"></span>
                     </a>       
                 </div>
-            </div>            
+            </div>
+            </#if>
 
             <div class="inline-block" >
                 <div class="input-group" style="width: 190px;">
