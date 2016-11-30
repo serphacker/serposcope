@@ -24,7 +24,7 @@ If you plan to edit SQL, table name must be in uppercase (allow compatibility of
 
 When you code, you want to stay in [superdevmode](http://www.ninjaframework.org/documentation/basic_concepts/super_dev_mode.html). It allows hot reloading of the classes when you edit code in your IDE (so you don't have to restart serposcope to see changes).
 
-This how to start serposcope in superdevmode : 
+To start serposcope in superdevmode go in the **serposcope/web/** folder and run the following command : 
 
 ```
 mvn ninja:run \
@@ -44,9 +44,9 @@ To build the package for production (compiled javascripts and single jar) :
 To run integration tests : 
 
 ```
-cd /work/java/serposcope/core; mvn -Dtest=all failsafe:integration-test
-cd /work/java/serposcope/scraper; mvn -Dtest=all failsafe:integration-test
-cd /work/java/serposcope/web; mvn -Dtest=all failsafe:integration-test
+cd serposcope/core; mvn -Dtest=all failsafe:integration-test
+cd serposcope/scraper; mvn -Dtest=all failsafe:integration-test
+cd serposcope/web; mvn -Dtest=all -Dninja.standalone.class=serposcope.lifecycle.MyNinjaJetty failsafe:integration-test
 ```
 
 Check also for testconfig.DEFAULT.properties in test resources if you want to run extensive integration tests relying on credentials or whatever
