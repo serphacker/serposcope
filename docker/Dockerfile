@@ -1,7 +1,9 @@
 FROM java:8-jre
 
+ENV SERPOSCOPE_VERSION 2.6.0
+
 COPY serposcope /etc/default/serposcope
-RUN wget https://serposcope.serphacker.com/download/2.3.0/serposcope_2.3.0_all.deb -O /tmp/serposcope.deb
+RUN wget https://serposcope.serphacker.com/download/${SERPOSCOPE_VERSION}/serposcope_${SERPOSCOPE_VERSION}_all.deb -O /tmp/serposcope.deb
 RUN dpkg --force-confold -i /tmp/serposcope.deb
 RUN rm /tmp/serposcope.deb
 
