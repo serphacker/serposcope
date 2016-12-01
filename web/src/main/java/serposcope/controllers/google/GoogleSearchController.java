@@ -305,7 +305,7 @@ public class GoogleSearchController extends GoogleController {
             if(exportRank){
                 builder.append(position).append(",");
             }
-            builder.append(entry.getUrl()).append(",");
+            builder.append(StringEscapeUtils.escapeCsv(entry.getUrl())).append(",");
             if(exportD1){
                 Short rank = entry.getMap().getOrDefault((short)1, (short)GoogleRank.UNRANKED);
                 builder.append(rank != GoogleRank.UNRANKED ? rank.intValue() : "").append(",");
