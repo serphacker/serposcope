@@ -20,6 +20,12 @@ public abstract class SerposcopeNinjaTest extends NinjaTest {
     
     protected User createAdmin() throws Exception {
         BaseDB baseDB = getInjector().getInstance(BaseDB.class);
+        
+        User admin = baseDB.user.findByEmail("email@email.com");
+        if(admin != null){
+            return admin;
+        }
+        
         User user = new User();
         user.setAdmin(true);
         user.setEmail("email@email.com");

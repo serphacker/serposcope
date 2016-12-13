@@ -18,8 +18,7 @@
     <url>https://serposcope.serphacker.com/</url>
 
     <properties>
-        <!--<ninja.version>5.1.6</ninja.version>-->
-        <ninja.version>5.2.2</ninja.version>
+        <ninja.version>5.8.0</ninja.version>
         <jetty.version>9.2.10.v20150310</jetty.version>
     </properties>
     

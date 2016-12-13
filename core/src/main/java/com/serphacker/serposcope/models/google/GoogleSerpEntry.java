@@ -8,6 +8,9 @@
 package com.serphacker.serposcope.models.google;
 
 import it.unimi.dsi.fastutil.shorts.Short2ShortArrayMap;
+import java.net.IDN;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +42,23 @@ public class GoogleSerpEntry {
 
     public String getUrl() {
         return url;
+    }
+    
+    public String getUnicodeUrl() {
+        if(url == null){
+            return null;
+        }
+        
+        if(!url.contains("xn--")){
+            return url;
+        }
+        
+        try {
+            URL u = new URL(url);
+            return u.getProtocol() + "://" + IDN.toUnicode(u.getHost()) + u.getFile();
+        }catch(Exception ex){
+            return url;
+        }
     }
     
     public Short2ShortArrayMap getMap() {
