@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -203,8 +202,8 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
         
         //String[] splits = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/actu"))).split("\n");
         String[] splits  = new String[]{
-            "serphacker-fr-desktop",
-            "serphacker-fr-smartphone"
+            "serphacker/serphacker-fr-desktop",
+            "serphacker/serphacker-fr-smartphone"
         };
         for (String split : splits) {
             String content = new String(ByteStreams.toByteArray(ClassLoader.class.getResourceAsStream("/serps/" + split)));
