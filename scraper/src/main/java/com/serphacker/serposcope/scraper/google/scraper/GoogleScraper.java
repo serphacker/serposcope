@@ -23,6 +23,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.http.HttpHost;
@@ -77,6 +78,7 @@ public class GoogleScraper {
         captchas = 0;
         List<String> urls = new ArrayList<>();
         prepareHttpClient(search);
+        long resultsNumber = 0;
         
         String referrer = "https://" + buildHost(search) + "/";
         for (int page = 0; page < search.getPages(); page++) {
@@ -109,6 +111,10 @@ public class GoogleScraper {
                 return new GoogleScrapResult(status, urls, captchas);
             }
             
+            if(page  == 0){
+                resultsNumber = parseResultsNumberOnFirstPage();
+            }
+            
             if(!hasNextPage()){
                 break;
             }
@@ -123,7 +129,7 @@ public class GoogleScraper {
                 }                
             }
         }
-        return new GoogleScrapResult(Status.OK, urls, captchas);
+        return new GoogleScrapResult(Status.OK, urls, captchas, resultsNumber);
     }
     
     protected void prepareHttpClient(GoogleScrapSearch search){
@@ -208,6 +214,32 @@ public class GoogleScraper {
         }
         
         return Status.OK;
+    }
+    
+    protected long parseResultsNumberOnFirstPage(){
+        if(lastSerpHtml == null){
+            return 0;
+        }
+        
+        Element resultstStatsDiv = lastSerpHtml.getElementById("resultStats");
+        if(resultstStatsDiv == null){
+            return 0;
+        }
+        
+        return extractResultsNumber(resultstStatsDiv.html());
+    }
+    
+    
+    protected long extractResultsNumber(String html){
+        if(html == null || html.isEmpty()){
+            return 0;
+        }
+        html = html.replaceAll("\\(.+\\)", "");
+        html = html.replaceAll("[^0-9]+", "");
+        if(!html.isEmpty()){
+            return Long.parseLong(html);
+        }
+        return 0;
     }
     
     protected boolean isSiteLinkElement(Element element){
