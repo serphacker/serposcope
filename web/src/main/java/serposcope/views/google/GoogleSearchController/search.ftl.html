@@ -33,6 +33,7 @@
     <div class="col-sm-6" >
         <div class="pull-right" >
             
+            <#if user.isAdmin()>
             <div class="inline-block">
                 <div class="input-group" >
                     <a href="#" id="btn-add-event" class="btn btn-default" data-toggle="tooltip" data-container="body" 
@@ -40,7 +41,8 @@
                        <span class="fa fa-calendar"></span>
                     </a>       
                 </div>
-            </div>            
+            </div>
+            </#if>
 
             <div class="inline-block" >
                 <div class="input-group" style="width: 190px;">
@@ -139,7 +141,7 @@
                             </a>
                             </#if>
                         </#if>
-                        <a target="_blank" href="${fu.noreferrer(entry.url)}" data-toggle="tooltip" title="${entry.url}" >${entry.url}</a>
+                        <a target="_blank" href="${fu.noreferrer(entry.url)}" data-toggle="tooltip" title="${entry.url}" >${entry.getUnicodeUrl()}</a>
                     </td>
                     <td><#noescape>${position(entry_index + 1, entry.map?api.get(1), 1)}</#noescape></td>
                     <td><#noescape>${position(entry_index + 1, entry.map?api.get(7), 7)}</#noescape></td>

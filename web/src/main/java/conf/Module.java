@@ -13,7 +13,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
-import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.querydsl.sql.Configuration;
@@ -24,17 +23,11 @@ import com.serphacker.serposcope.di.db.DataSourceProvider;
 import com.serphacker.serposcope.di.TaskFactory;
 import com.serphacker.serposcope.models.base.Config;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
-import com.serphacker.serposcope.scraper.captcha.solver.SwingUICaptchaSolver;
-import com.serphacker.serposcope.scraper.google.scraper.GoogleScraper;
 import com.serphacker.serposcope.scraper.google.scraper.RandomGScraper;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
 import com.serphacker.serposcope.task.TaskManager;
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Map;
 import javax.sql.DataSource;
 import ninja.template.TemplateEngineFreemarkerReverseRouteHelper;
 import ninja.utils.Crypto;
@@ -44,24 +37,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serposcope.helpers.CryptoOverride;
 import serposcope.helpers.TemplateEngineFreemarkerReverseRouteHelperSerposcope;
-import java.util.Properties;
-import java.util.Random;
-import serposcope.Version;
+import ninja.conf.FrameworkModule;
+import ninja.conf.NinjaClassicModule;
 import serposcope.services.CronService;
 //import serposcope.services.CronSrv;
-import serposcope.services.Scheduler;
+import ninja.utils.NinjaProperties;
+
 
 
 @Singleton
-public class Module extends AbstractModule {
+public class Module extends FrameworkModule {
     
     private static final Logger LOG = LoggerFactory.getLogger(Module.class);
     
     SerposcopeConf conf;
     
+    private final NinjaProperties ninjaProperties;
+
+    public Module(NinjaProperties ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+    }
+    
     @Override
     protected void configure() {
         beforeModuleConfigure();
+        
+        install(
+            new NinjaClassicModule(ninjaProperties)
+                .freemarker(true)
+                .json(true)
+                .xml(false)
+                .postoffice(false)
+                .cache(false)
+                .migrations(false)
+                .jpa(false)
+        );
+        
         bind(SerposcopeConf.class).toInstance(conf);
 //        bind(Scheduler.class);
         bind(CronService.class);

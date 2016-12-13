@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -161,6 +162,17 @@ public class GoogleScraperTest {
             scraper.buildUule("Centre-Ville,Champagne-Ardenne,France").replaceAll("=+$", ""));
         assertEquals("w+CAIQICIfTGlsbGUsTm9yZC1QYXMtZGUtQ2FsYWlzLEZyYW5jZQ",
             scraper.buildUule("Lille,Nord-Pas-de-Calais,France").replaceAll("=+$", ""));
+    }
+    
+    @Test
+    public void extractResults(){
+        GoogleScraper scraper = new GoogleScraper(null, null);
+        assertEquals(2490l, scraper.extractResultsNumber("Environ 2 490 résultats"));
+//        assertEquals(25270000000l, scraper.extractResultsNumber("Page&nbsp;10 sur environ 25&nbsp;270&nbsp;000&nbsp;000&nbsp;résultats<nobr> (0,46&nbsp;secondes)&nbsp;</nobr>"));
+//        assertEquals(25270000000l, scraper.extractResultsNumber("Page 10 of about 25,270,000,000 results<nobr> (0.42 seconds)&nbsp;</nobr>"));
+        assertEquals(25270000000l, scraper.extractResultsNumber("About 25,270,000,000 results<nobr> (0.28 seconds)&nbsp;</nobr>"));
+        assertEquals(225000l, scraper.extractResultsNumber("About 225,000 results<nobr> (0.87 seconds)&nbsp;</nobr>"));
+//        assertEquals(225000l, scraper.extractResultsNumber("Page 5 of about 225,000 results (0.45 seconds) "));
     }
     
 }

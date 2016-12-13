@@ -7,33 +7,16 @@
  */
 package it;
 
-import com.serphacker.serposcope.db.base.BaseDB;
-import com.serphacker.serposcope.db.base.ConfigDB;
 import com.serphacker.serposcope.models.base.User;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-import ninja.NinjaTest;
-import ninja.utils.CookieEncryption;
-import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaProperties;
-import ninja.utils.NinjaPropertiesImpl;
-import ninja.utils.SecretGenerator;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import serposcope.helpers.CookieEncryptionOverride;
-import serposcope.helpers.CryptoOverride;
 
 
 public class BigPostRequestIT extends SerposcopeNinjaTest {
