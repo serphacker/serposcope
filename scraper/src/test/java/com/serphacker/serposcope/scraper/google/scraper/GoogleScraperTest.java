@@ -14,10 +14,13 @@ import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -113,7 +116,7 @@ public class GoogleScraperTest {
             File resFile = new File(testFile.toString() + ".res");
             assertTrue(resFile.exists());
             
-            List<String> expectedUrls = Arrays.asList(new String(Files.readAllBytes(resFile.toPath())).split(System.lineSeparator()));
+            List<String> expectedUrls = Arrays.asList(new String(Files.readAllBytes(resFile.toPath())).split("\n"));
             assertEquals(expectedUrls, urls);
         }
         
