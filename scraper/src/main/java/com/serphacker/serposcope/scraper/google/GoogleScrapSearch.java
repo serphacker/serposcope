@@ -7,6 +7,7 @@
  */
 package com.serphacker.serposcope.scraper.google;
 
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -107,4 +108,65 @@ public class GoogleScrapSearch {
         return minPauseBetweenPageMS + Math.abs(random.nextLong()%(maxPauseBetweenPageMS-minPauseBetweenPageMS));
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + this.resultPerPage;
+        hash = 79 * hash + this.pages;
+        hash = 79 * hash + (int) (this.minPauseBetweenPageMS ^ (this.minPauseBetweenPageMS >>> 32));
+        hash = 79 * hash + (int) (this.maxPauseBetweenPageMS ^ (this.maxPauseBetweenPageMS >>> 32));
+        hash = 79 * hash + Objects.hashCode(this.keyword);
+        hash = 79 * hash + Objects.hashCode(this.tld);
+        hash = 79 * hash + Objects.hashCode(this.datacenter);
+        hash = 79 * hash + (this.device == null ? 0 : (this.device.ordinal()+1) );
+        hash = 79 * hash + Objects.hashCode(this.local);
+        hash = 79 * hash + Objects.hashCode(this.customParameters);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GoogleScrapSearch other = (GoogleScrapSearch) obj;
+        if (this.resultPerPage != other.resultPerPage) {
+            return false;
+        }
+        if (this.pages != other.pages) {
+            return false;
+        }
+        if (this.minPauseBetweenPageMS != other.minPauseBetweenPageMS) {
+            return false;
+        }
+        if (this.maxPauseBetweenPageMS != other.maxPauseBetweenPageMS) {
+            return false;
+        }
+        if (!Objects.equals(this.keyword, other.keyword)) {
+            return false;
+        }
+        if (!Objects.equals(this.tld, other.tld)) {
+            return false;
+        }
+        if (!Objects.equals(this.datacenter, other.datacenter)) {
+            return false;
+        }
+        if (!Objects.equals(this.local, other.local)) {
+            return false;
+        }
+        if (!Objects.equals(this.customParameters, other.customParameters)) {
+            return false;
+        }
+        if (this.device != other.device) {
+            return false;
+        }
+        return true;
+    }
+    
 }
