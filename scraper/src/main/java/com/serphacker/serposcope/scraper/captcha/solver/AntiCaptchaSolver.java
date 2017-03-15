@@ -16,6 +16,7 @@ import static com.serphacker.serposcope.scraper.captcha.Captcha.Error.EXCEPTION;
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import com.serphacker.serposcope.scraper.captcha.CaptchaRecaptcha;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
+import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
