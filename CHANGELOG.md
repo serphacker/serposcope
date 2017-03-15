@@ -2,8 +2,15 @@
 
 ## 2.7.0 - UNRELEASED
 
-* 
+* IMPORTANT Fix new recaptcha v2 form issue [#155](https://github.com/serphacker/serposcope/issues/155)
+* Dropped DeathByCaptcha and DeCaptcher due to lack of support for recaptcha v2 (js nocaptcha)
 * SERP parsing : exclude sitelinks from rankings, expect ranking variation
+* Better IDN support [#130](https://github.com/serphacker/serposcope/issues/130)
+* Hide add event button if not admin [#133](https://github.com/serphacker/serposcope/issues/133)
+* Fix issue with .com TLD
+* Fix CSV export issue [#135](https://github.com/serphacker/serposcope/issues/135)
+* Fix unrecognized SSL certificat issue
+* German translation thanks to [@stritti](https://github.com/stritti)
 
 ## 2.6.0 - 2016-09-29
 
