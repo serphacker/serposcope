@@ -28,11 +28,11 @@ public class ConfigDB extends AbstractDB {
 //    public final static String APP_CRON_ENABLED = "app.cronenabled";
     public final static String APP_CRON_TIME = "app.crontime";
     
-    public final static String APP_DBC_USER = "app.dbc.user";
-    public final static String APP_DBC_PASS = "app.dbc.pass";
-    
-    public final static String APP_DECAPTCHER_USER = "app.decaptcher.user";
-    public final static String APP_DECAPTCHER_PASS = "app.decaptcher.pass";
+//    public final static String APP_DBC_USER = "app.dbc.user";
+//    public final static String APP_DBC_PASS = "app.dbc.pass";
+//    
+//    public final static String APP_DECAPTCHER_USER = "app.decaptcher.user";
+//    public final static String APP_DECAPTCHER_PASS = "app.decaptcher.pass";
     
     public final static String APP_ANTICAPTCHA_KEY = "app.anticaptcha.key";
     
@@ -130,11 +130,11 @@ public class ConfigDB extends AbstractDB {
 
         config.setCronTime(get(APP_CRON_TIME, null));
         
-        config.setDbcUser(get(APP_DBC_USER,null));
-        config.setDbcPass(get(APP_DBC_PASS,null));
-        
-        config.setDecaptcherUser(get(APP_DECAPTCHER_USER,null));
-        config.setDecaptcherPass(get(APP_DECAPTCHER_PASS,null));
+//        config.setDbcUser(get(APP_DBC_USER,null));
+//        config.setDbcPass(get(APP_DBC_PASS,null));
+//        
+//        config.setDecaptcherUser(get(APP_DECAPTCHER_USER,null));
+//        config.setDecaptcherPass(get(APP_DECAPTCHER_PASS,null));
         
         config.setAnticaptchaKey(get(APP_ANTICAPTCHA_KEY, null));
         
@@ -150,11 +150,11 @@ public class ConfigDB extends AbstractDB {
     public void updateConfig(Config config){
         update(APP_CRON_TIME, config.getCronTime() == null ? null : config.getCronTime().toString());
         
-        update(APP_DBC_USER, config.getDbcUser());
-        update(APP_DBC_PASS, config.getDbcPass());
-
-        update(APP_DECAPTCHER_USER, config.getDecaptcherUser());
-        update(APP_DECAPTCHER_PASS, config.getDecaptcherPass());
+//        update(APP_DBC_USER, config.getDbcUser());
+//        update(APP_DBC_PASS, config.getDbcPass());
+//
+//        update(APP_DECAPTCHER_USER, config.getDecaptcherUser());
+//        update(APP_DECAPTCHER_PASS, config.getDecaptcherPass());
         
         update(APP_ANTICAPTCHA_KEY, config.getAnticaptchaKey());
         

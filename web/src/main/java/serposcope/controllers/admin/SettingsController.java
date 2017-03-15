@@ -82,10 +82,10 @@ public class SettingsController extends BaseController {
         @Param("displayGoogleTarget") String displayGoogleTarget,
         @Param("displayGoogleSearch") String displayGoogleSearch,
         @Param("cronTime") String cronTime,
-        @Param("dbcUser") String dbcUser,
-        @Param("dbcPass") String dbcPass,
-        @Param("decaptcherUser") String decaptcherUser,
-        @Param("decaptcherPass") String decaptcherPass,        
+//        @Param("dbcUser") String dbcUser,
+//        @Param("dbcPass") String dbcPass,
+//        @Param("decaptcherUser") String decaptcherUser,
+//        @Param("decaptcherPass") String decaptcherPass,        
         @Param("anticaptchaApiKey") String anticaptchaApiKey,
         @Param("pruneRuns") Integer pruneRuns
     ){
@@ -110,15 +110,15 @@ public class SettingsController extends BaseController {
 //            config.setCronTime(LocalTime.of(Integer.parseInt(matcher.group(0)), Integer.parseInt(matcher.group(1))));
         }
         
-        if(!Validator.isEmpty(dbcUser) && !Validator.isEmpty(dbcPass)){
-            config.setDbcUser(dbcUser);
-            config.setDbcPass(dbcPass);
-        }
-        
-        if(!Validator.isEmpty(decaptcherUser) && !Validator.isEmpty(decaptcherPass)){
-            config.setDecaptcherUser(decaptcherUser);
-            config.setDecaptcherPass(decaptcherPass);
-        }
+//        if(!Validator.isEmpty(dbcUser) && !Validator.isEmpty(dbcPass)){
+//            config.setDbcUser(dbcUser);
+//            config.setDbcPass(dbcPass);
+//        }
+//        
+//        if(!Validator.isEmpty(decaptcherUser) && !Validator.isEmpty(decaptcherPass)){
+//            config.setDecaptcherUser(decaptcherUser);
+//            config.setDecaptcherPass(decaptcherPass);
+//        }
         
         if(!Validator.isEmpty(anticaptchaApiKey)){
             config.setAnticaptchaKey(anticaptchaApiKey);
@@ -188,16 +188,16 @@ public class SettingsController extends BaseController {
         CaptchaSolver solver = null;
         if(captchaService != null){
             switch(captchaService){
-                case "dbc":
-                    if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
-                        solver = new DeathByCaptchaSolver(captchaUser, captchaPass);
-                    }
-                    break;
-                case "decaptcher":
-                    if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
-                        solver = new DecaptcherSolver(captchaUser, captchaPass);
-                    }
-                    break;
+//                case "dbc":
+//                    if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
+//                        solver = new DeathByCaptchaSolver(captchaUser, captchaPass);
+//                    }
+//                    break;
+//                case "decaptcher":
+//                    if(!StringUtils.isEmpty(captchaUser) && !StringUtils.isEmpty(captchaPass)){
+//                        solver = new DecaptcherSolver(captchaUser, captchaPass);
+//                    }
+//                    break;
                 case "anticaptcha":
                     if(!StringUtils.isEmpty(captchaApiKey)){
                         solver = new AntiCaptchaSolver(captchaApiKey);

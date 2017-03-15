@@ -34,19 +34,19 @@ public class CaptchaSolverFactoryImpl implements CaptchaSolverFactory {
         
         List<CaptchaSolver> solvers = new ArrayList<>();
         
-        if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
-            DeathByCaptchaSolver solver = new DeathByCaptchaSolver(config.getDbcUser(), config.getDbcPass());
-            if(init(solver)){
-                solvers.add(solver);
-            }
-        }
-        
-        if (!StringUtils.isEmpty(config.getDecaptcherUser()) && !StringUtils.isEmpty(config.getDecaptcherPass())) {
-            DecaptcherSolver solver = new DecaptcherSolver(config.getDecaptcherUser(), config.getDecaptcherPass());
-            if(init(solver)){
-                solvers.add(solver);
-            }
-        }
+//        if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
+//            DeathByCaptchaSolver solver = new DeathByCaptchaSolver(config.getDbcUser(), config.getDbcPass());
+//            if(init(solver)){
+//                solvers.add(solver);
+//            }
+//        }
+//        
+//        if (!StringUtils.isEmpty(config.getDecaptcherUser()) && !StringUtils.isEmpty(config.getDecaptcherPass())) {
+//            DecaptcherSolver solver = new DecaptcherSolver(config.getDecaptcherUser(), config.getDecaptcherPass());
+//            if(init(solver)){
+//                solvers.add(solver);
+//            }
+//        }
         
         if(!StringUtils.isEmpty(config.getAnticaptchaKey())){
             AntiCaptchaSolver solver = new AntiCaptchaSolver(config.getAnticaptchaKey());
