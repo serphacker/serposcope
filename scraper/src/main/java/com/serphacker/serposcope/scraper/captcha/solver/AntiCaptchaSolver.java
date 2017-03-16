@@ -17,6 +17,7 @@ import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import com.serphacker.serposcope.scraper.captcha.CaptchaRecaptcha;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
 import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 
 public class AntiCaptchaSolver implements CaptchaSolver {
+    
+    final static int SOFT_ID = 836;
     
     final static Logger LOG = LoggerFactory.getLogger(AntiCaptchaSolver.class);
     
@@ -96,39 +99,43 @@ public class AntiCaptchaSolver implements CaptchaSolver {
 
     @Override
     public boolean solve(Captcha cap) {
-        if(cap instanceof CaptchaImage){
-            return solveCaptchaImage((CaptchaImage)cap);
-        }
-        
-        if(cap instanceof CaptchaRecaptcha){
-            return solveCaptchaRecaptcha((CaptchaRecaptcha)cap);
+        if(cap instanceof CaptchaImage || cap instanceof CaptchaRecaptcha){
+            return solveV2(cap);
         }
         
         return false;
     }
     
-    public boolean solveCaptchaRecaptcha(CaptchaRecaptcha captcha){
+    public boolean solveV2(Captcha captcha){
         
         captchaCount.incrementAndGet();
         
         captcha.setLastSolver(this);
         captcha.setStatus(Captcha.Status.CREATED);
         
-        
-        Map<String,String> jsonMap = new HashMap<>();
-        jsonMap.put("type", "NoCaptchaTaskProxyless");
-        jsonMap.put("websiteURL", captcha.getUrl());
-        jsonMap.put("websiteKey", captcha.getChallenge());
-        
-        
+        Map<String,Object> taskMap = new HashMap<>();
         Map<String,Object> createTaskMap = new HashMap<>();
         createTaskMap.put("clientKey", apiKey);
-        createTaskMap.put("softId", 0);
+        createTaskMap.put("softId", SOFT_ID);
         createTaskMap.put("languagePool", "en");
-        createTaskMap.put("task", new HashMap<>());
-        ((Map)createTaskMap.get("task")).put("type", "NoCaptchaTaskProxyless");
-        ((Map)createTaskMap.get("task")).put("websiteURL", captcha.getUrl());
-        ((Map)createTaskMap.get("task")).put("websiteKey", captcha.getChallenge());
+        createTaskMap.put("task", taskMap);
+        
+        if(captcha instanceof CaptchaRecaptcha){
+            taskMap.put("type", "NoCaptchaTaskProxyless");
+            taskMap.put("websiteURL", ((CaptchaRecaptcha)captcha).getUrl());
+            taskMap.put("websiteKey", ((CaptchaRecaptcha)captcha).getChallenge());
+        }
+        
+        if(captcha instanceof CaptchaImage){
+            taskMap.put("type", "ImageToTextTask");
+            taskMap.put("body",Base64.encode(((CaptchaImage)captcha).getImage()));
+            taskMap.put("phrase",false);
+            taskMap.put("case",false);
+            taskMap.put("numeric",0);
+            taskMap.put("math", false);
+            taskMap.put("minLength", 0);
+            taskMap.put("maxLength", 0);
+        }
         
         long started = System.currentTimeMillis();
         captcha.setStatus(Captcha.Status.SUBMITTED);
@@ -221,16 +228,33 @@ public class AntiCaptchaSolver implements CaptchaSolver {
                 
                 String status = jsonResult.read("$.status");
                 if("ready".equals(status)){
-                    String recaptchaResponse = jsonResult.read("$.solution.gRecaptchaResponse");
-                    if(recaptchaResponse == null || recaptchaResponse.isEmpty()){
-                        captcha.setError(Captcha.Error.NETWORK_ERROR);
-                        captcha.setStatus(Captcha.Status.ERROR);
-                        return false;
+                    
+                    if(captcha instanceof CaptchaRecaptcha){
+                        String recaptchaResponse = jsonResult.read("$.solution.gRecaptchaResponse");
+                        if(recaptchaResponse == null || recaptchaResponse.isEmpty()){
+                            captcha.setError(Captcha.Error.NETWORK_ERROR);
+                            captcha.setStatus(Captcha.Status.ERROR);
+                            return false;
+                        }
+
+                        ((CaptchaRecaptcha)captcha).setResponse(recaptchaResponse);
+                        captcha.setStatus(Captcha.Status.SOLVED);
+                        return true;
                     }
                     
-                    captcha.setResponse(recaptchaResponse);
-                    captcha.setStatus(Captcha.Status.SOLVED);
-                    return true;
+                    if(captcha instanceof CaptchaImage){
+                        String textResponse = jsonResult.read("$.solution.text");
+                        if(textResponse == null || textResponse.isEmpty()){
+                            captcha.setError(Captcha.Error.NETWORK_ERROR);
+                            captcha.setStatus(Captcha.Status.ERROR);
+                            return false;
+                        }
+
+                        ((CaptchaImage)captcha).setResponse(textResponse);
+                        captcha.setStatus(Captcha.Status.SOLVED);
+                        return true;
+                    }                    
+                    
                 }
                 
                 Integer errId = jsonResult.read("$.errorId");
@@ -260,7 +284,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
         return false;
     }    
     
-    public boolean solveCaptchaImage(CaptchaImage captcha){
+    public boolean solveV1(CaptchaImage captcha){
         
         captchaCount.incrementAndGet();
         
