@@ -450,7 +450,10 @@ public class GoogleScraper {
         CaptchaRecaptcha captcha = new CaptchaRecaptcha(siteKey, captchaRedirect);
         boolean solved = solver.solve(captcha);
         if(!solved || !Captcha.Status.SOLVED.equals(captcha.getStatus())){
-            LOG.error("solver can't resolve captcha (overload ?) error = {}", captcha.getError());
+            LOG.error("solver can't resolve captcha error = {}", captcha.getError());
+            if(Captcha.Error.SERVICE_OVERLOADED.equals(captcha.getError())){
+                LOG.warn("server is overloaded, increase maximum BID on {}", captcha.getLastSolver().getFriendlyName());
+            }
             return Status.ERROR_CAPTCHA_INCORRECT;
         }
         LOG.debug("got captcha response {} in {} seconds from {}", captcha.getResponse(), captcha.getSolveDuration()/1000l, 
