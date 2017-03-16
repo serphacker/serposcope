@@ -1,6 +1,10 @@
 # serposcope changelog
 
-## 2.7.0 - UNRELEASED
+## 2.8.0 - UNRELEASED
+
+*
+
+## 2.7.0 - 2017-03-16
 
 * IMPORTANT Fix new recaptcha v2 form issue [#155](https://github.com/serphacker/serposcope/issues/155)
 * Dropped DeathByCaptcha and DeCaptcher due to lack of support for recaptcha v2 (js nocaptcha)

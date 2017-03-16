@@ -16,9 +16,11 @@ import com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
 import com.serphacker.serposcope.scraper.http.proxy.DirectNoProxy;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -397,13 +399,18 @@ public class GoogleScraper {
     protected Status recaptchaForm(Document doc, String captchaRedirect){
         
         Elements siteKeys = doc.getElementsByAttribute("data-sitekey");
-        String siteKey = siteKeys.first().attr("data-sitekey");
-        
-        if(siteKey.isEmpty()){
-            LOG.debug("recaptcha sitekey is empty");
-            return Status.ERROR_NETWORK;
+        if(siteKeys.isEmpty()){
+            debugDump("missing-data-sitekey-1", doc.toString());
+            LOG.debug("recaptcha sitekey not detected (1)");
+            return Status.ERROR_NETWORK;            
         }
         
+        String siteKey = siteKeys.first().attr("data-sitekey");
+        if(siteKey.isEmpty()){
+            debugDump("missing-data-sitekey-2", doc.toString());
+            LOG.debug("recaptcha sitekey not detected (2)");
+            return Status.ERROR_NETWORK;
+        }
         
         Element form = siteKeys.first().parent();
         if(form == null){
@@ -476,6 +483,18 @@ public class GoogleScraper {
         }
         
         return Status.ERROR_CAPTCHA_INCORRECT;
+    }
+    
+    protected void debugDump(String name, String data){
+        if(name == null || data == null){
+            return;
+        }
+        File dumpFile = new File(System.getProperty("java.io.tmpdir") + File.separator + name + ".txt");
+        try {
+            Files.write(dumpFile.toPath(), data.getBytes());
+        }catch(Exception ex){
+        }
+        LOG.debug("debug dump created in {}", dumpFile.getAbsolutePath());
     }
     
     protected Status noscriptCaptchaForm(Document captchaDocument, String captchaRedirect){
