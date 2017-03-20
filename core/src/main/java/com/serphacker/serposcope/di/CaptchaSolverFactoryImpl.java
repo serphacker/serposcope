@@ -13,42 +13,40 @@ import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DeathByCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DecaptcherSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.FailoverCaptchaSolver;
+import com.serphacker.serposcope.scraper.captcha.solver.SwingUICaptchaSolver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CaptchaSolverFactoryImpl implements CaptchaSolverFactory {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CaptchaSolverFactoryImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CaptchaSolverFactoryImpl.class);
 
     @Override
     public CaptchaSolver get(Config config) {
-    	
         if(config == null){
-        	LOG.info("Captcha solver config is null");
             return null;
         }
         
-        LOG.info("Captcha solver config is not null");
-        
         List<CaptchaSolver> solvers = new ArrayList<>();
         
-        if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
-            DeathByCaptchaSolver solver = new DeathByCaptchaSolver(config.getDbcUser(), config.getDbcPass());
-            if(init(solver)){
-                solvers.add(solver);
-            }
-        }
-        
-        if (!StringUtils.isEmpty(config.getDecaptcherUser()) && !StringUtils.isEmpty(config.getDecaptcherPass())) {
-            DecaptcherSolver solver = new DecaptcherSolver(config.getDecaptcherUser(), config.getDecaptcherPass());
-            if(init(solver)){
-                solvers.add(solver);
-            }
-        }
+//        if (!StringUtils.isEmpty(config.getDbcUser()) && !StringUtils.isEmpty(config.getDbcPass())) {
+//            DeathByCaptchaSolver solver = new DeathByCaptchaSolver(config.getDbcUser(), config.getDbcPass());
+//            if(init(solver)){
+//                solvers.add(solver);
+//            }
+//        }
+//        
+//        if (!StringUtils.isEmpty(config.getDecaptcherUser()) && !StringUtils.isEmpty(config.getDecaptcherPass())) {
+//            DecaptcherSolver solver = new DecaptcherSolver(config.getDecaptcherUser(), config.getDecaptcherPass());
+//            if(init(solver)){
+//                solvers.add(solver);
+//            }
+//        }
         
         if(!StringUtils.isEmpty(config.getAnticaptchaKey())){
             AntiCaptchaSolver solver = new AntiCaptchaSolver(config.getAnticaptchaKey());
@@ -56,8 +54,6 @@ public class CaptchaSolverFactoryImpl implements CaptchaSolverFactory {
                 solvers.add(solver);
             }                    
         }
-        
-        LOG.info("Captcha solvers: "+solvers.size());
         
         if(solvers.isEmpty()){
             return null;

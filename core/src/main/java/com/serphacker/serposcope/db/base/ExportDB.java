@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.zip.GZIPOutputStream;
 import javax.inject.Inject;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 public class ExportDB extends AbstractDB {

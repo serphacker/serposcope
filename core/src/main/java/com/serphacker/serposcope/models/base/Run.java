@@ -11,6 +11,10 @@ import com.serphacker.serposcope.models.base.Group.Module;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 

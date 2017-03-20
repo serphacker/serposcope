@@ -11,10 +11,10 @@ import com.google.inject.Inject;
 import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.models.base.Group;
 import com.serphacker.serposcope.models.base.Run;
-
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +39,8 @@ public abstract class AbstractTask extends Thread {
     public void run() {
         startMilliseconds = System.currentTimeMillis();
         LOG.info(
-            "task started for module {} at {} ({})", 
-            new Object[]{run.getModule(), run.getStarted(), (run.getId() == 0 ? "new task": "recheck")}
+            "task started for module {} of day {} ({})", 
+            new Object[]{run.getModule(), run.getDay(), (run.getId() == 0 ? "new task": "recheck")}
         );
         if(run.getId() == 0){
             baseDB.run.insert(run);

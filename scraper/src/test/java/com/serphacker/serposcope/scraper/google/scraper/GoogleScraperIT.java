@@ -42,7 +42,7 @@ public class GoogleScraperIT {
         http.setInsecureSSL(true);
 //        http.setProxy(new HttpProxy("127.0.0.1", 8080));
         GoogleScraper scraper = new GoogleScraper(http, solver);
-        assertEquals(OK, scraper.handleCaptchaRedirect("https://ipv4.google.com/sorry/IndexRedirect?continue=https://www.google.fr/"));
+        assertEquals(OK, scraper.handleCaptchaRedirect("https://ipv4.google.com/sorry/index?continue=https://www.google.fr/"));
     }
     
     @Test
@@ -104,6 +104,12 @@ public class GoogleScraperIT {
             assertEquals(OK, scraper.scrap(search).status);
         }        
         
+    }
+    
+    @Test
+    public void testDebugDump(){
+        GoogleScraper scraper = new GoogleScraper(null, null);
+        scraper.debugDump("filename", "test data 2");
     }
 
     

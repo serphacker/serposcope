@@ -7,39 +7,19 @@
  */
 package com.serphacker.serposcope.task.google;
 
-import com.serphacker.serposcope.db.base.ConfigDB;
 import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult;
-
 import static com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status.OK;
-
 import com.serphacker.serposcope.scraper.google.scraper.GoogleScraper;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
 import com.serphacker.serposcope.task.google.GoogleTask;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-
-import sun.net.www.http.HttpClient;
 
 public class GoogleTaskRunnable implements Runnable {
 

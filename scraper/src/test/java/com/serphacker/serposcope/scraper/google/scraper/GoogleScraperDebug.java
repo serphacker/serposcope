@@ -158,7 +158,7 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
     @Test
     public void debugScrapSomeSerp() throws Exception {
 
-        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.SMARTPHONE, GoogleDevice.MOBILE};
+        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.SMARTPHONE, GoogleDevice.SMARTPHONE};
         String[] keywords = new String[]{
             "image lion"
         };
@@ -215,7 +215,7 @@ public class GoogleScraperDebug extends DeepIntegrationTest {
 //    @Test
     public void debugScrapLastPage() throws Exception {
 
-        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.MOBILE};
+        GoogleDevice[] devices = new GoogleDevice[]{GoogleDevice.DESKTOP, GoogleDevice.SMARTPHONE};
         for (GoogleDevice device : devices) {
             GoogleScrapSearch search = new GoogleScrapSearch();
             search.setKeyword("\"serposcope\" \"en ligne\" \"fort\"");

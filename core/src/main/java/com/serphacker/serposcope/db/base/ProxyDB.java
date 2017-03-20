@@ -9,6 +9,7 @@ package com.serphacker.serposcope.db.base;
 
 import com.google.inject.Singleton;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
@@ -16,11 +17,15 @@ import com.querydsl.sql.dml.SQLUpdateClause;
 import com.serphacker.serposcope.db.AbstractDB;
 import com.serphacker.serposcope.models.base.Proxy;
 import com.serphacker.serposcope.querybuilder.QProxy;
+import com.serphacker.serposcope.scraper.http.proxy.BindProxy;
+import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Singleton
 public class ProxyDB extends AbstractDB {

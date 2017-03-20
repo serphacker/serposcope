@@ -111,7 +111,7 @@ public class GoogleSettingsController extends BaseController {
         
         
         if(device != null && device == 1){
-            options.setDefaultDevice(GoogleDevice.MOBILE);
+            options.setDefaultDevice(GoogleDevice.SMARTPHONE);
         } else {
             options.setDefaultDevice(GoogleDevice.DESKTOP);
         }

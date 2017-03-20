@@ -323,6 +323,32 @@ public class ScrapClientIT {
     }
     
     @Test
+    public void testPostJson() throws Exception  {
+        try(ScrapClient cli = new ScrapClient()){
+            Map<String,Object> data = new HashMap<>();
+            data.put("key1", "value1é");
+            data.put("key2", "value2é");
+            data.put("key3", "value3é");
+            
+            assertEquals(200, cli.post("http://httpbin.org/post", data, ScrapClient.PostType.JSON));
+            
+            System.out.println(cli.getContentAsString());
+            
+            HashMap<String,Object> content = new ObjectMapper()
+                .readValue(cli.getContentAsString(), new TypeReference<HashMap<String,Object>>() {});
+            
+            assertEquals("application/json; charset=UTF-8", ((Map)content.get("headers")).get("Content-Type"));
+            Map<String,String> postContent = (Map)content.get("json");
+            assertEquals(3, postContent.size());
+            
+            String contentRaw = cli.getContentAsString();
+            assertTrue(contentRaw.contains("\"key1\": \"value1\\u00e9\""));
+            assertTrue(contentRaw.contains("\"key2\": \"value2\\u00e9\""));
+            assertTrue(contentRaw.contains("\"key3\": \"value3\\u00e9\""));
+        }
+    }    
+    
+    @Test
     public void testPostFormISO88591() throws Exception  {
         try(ScrapClient cli = new ScrapClient()){
             Map<String,Object> data = new HashMap<>();

@@ -7,6 +7,7 @@
  */
 package com.serphacker.serposcope.scraper.http;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serphacker.serposcope.scraper.http.extensions.CloseableBasicHttpClientConnectionManager;
 import com.serphacker.serposcope.scraper.http.extensions.ScrapClientPlainConnectionFactory;
 import com.serphacker.serposcope.scraper.http.extensions.ScrapClientSSLConnectionFactory;
@@ -66,6 +67,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
@@ -83,10 +85,13 @@ public class ScrapClient implements Closeable, CredentialsProvider {
 
     public enum PostType {
         URL_ENCODED,
-        MULTIPART
+        MULTIPART,
+        JSON
     }
-
+    
     private static final Logger LOG = LoggerFactory.getLogger(ScrapClient.class);
+    
+    private final static ObjectMapper jsonMapper = new ObjectMapper();
 
     public final static String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0";
     public final static int DEFAULT_TIMEOUT_MS = 30000;
@@ -398,6 +403,17 @@ public class ScrapClient implements Closeable, CredentialsProvider {
         data = handleUnsupportedEncoding(data, detectedCharset);
 
         switch (dataType) {
+            case JSON:
+                try {
+                    String json = jsonMapper.writeValueAsString(data);
+                    entity = new StringEntity(json, ContentType.create("application/json", "utf-8"));
+                }catch(Exception ex){
+                    statusCode = -1;
+                    exception = ex;
+                    return statusCode;                    
+                }
+                break;
+            
             case URL_ENCODED:
                 List<NameValuePair> formparams = new ArrayList<>();
                 for (Map.Entry<String, Object> entry : data.entrySet()) {

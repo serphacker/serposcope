@@ -64,7 +64,7 @@ public class RandomGScraper extends GoogleScraper {
         }
         
         Collections.shuffle(urls, random);
-        return new GoogleScrapResult(GoogleScrapResult.Status.OK, urls, random.nextInt(5) + 5, random.nextInt(5) + 5);
+        return new GoogleScrapResult(GoogleScrapResult.Status.OK, urls, random.nextInt(5) + 5);
     }
 
 }

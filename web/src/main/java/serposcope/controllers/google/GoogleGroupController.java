@@ -28,6 +28,7 @@ import static com.serphacker.serposcope.scraper.google.GoogleDevice.SMARTPHONE;
 import com.serphacker.serposcope.task.TaskManager;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.IDN;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -308,6 +309,14 @@ public class GoogleGroupController extends GoogleController {
             } catch (Exception ex) {
                 flash.error("error.invalidTargetType");
                 return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
+            }
+            
+            if(PatternType.DOMAIN.equals(type) || PatternType.SUBDOMAIN.equals(type)){
+                try {
+                    pattern = IDN.toASCII(pattern);
+                } catch(Exception ex) {
+                    pattern = null;
+                }
             }
 
             if (!GoogleTarget.isValidPattern(type, pattern)) {

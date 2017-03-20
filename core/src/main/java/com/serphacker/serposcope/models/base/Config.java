@@ -23,8 +23,8 @@ public class Config {
     String dbcUser;
     String dbcPass;
     
-    String decaptcherUser;
-    String decaptcherPass;
+//    String decaptcherUser;
+//    String decaptcherPass;
     
     String anticaptchaKey;
     
@@ -60,21 +60,21 @@ public class Config {
         this.dbcPass = dbcPass;
     }
 
-    public String getDecaptcherUser() {
-        return decaptcherUser;
-    }
-
-    public void setDecaptcherUser(String decaptcherUser) {
-        this.decaptcherUser = decaptcherUser;
-    }
-
-    public String getDecaptcherPass() {
-        return decaptcherPass;
-    }
-
-    public void setDecaptcherPass(String decaptcherPass) {
-        this.decaptcherPass = decaptcherPass;
-    }
+//    public String getDecaptcherUser() {
+//        return decaptcherUser;
+//    }
+//
+//    public void setDecaptcherUser(String decaptcherUser) {
+//        this.decaptcherUser = decaptcherUser;
+//    }
+//
+//    public String getDecaptcherPass() {
+//        return decaptcherPass;
+//    }
+//
+//    public void setDecaptcherPass(String decaptcherPass) {
+//        this.decaptcherPass = decaptcherPass;
+//    }
 
     public String getAnticaptchaKey() {
         return anticaptchaKey;

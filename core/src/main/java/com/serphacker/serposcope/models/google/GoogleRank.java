@@ -22,7 +22,7 @@ public class GoogleRank {
     public final short diff;
     public final String url;
     
-    public GoogleRank(int runId, int groupId, int googleTargetId, int googleSearchId, int rank, int previousRank, int hits, String url) {
+    public GoogleRank(int runId, int groupId, int googleTargetId, int googleSearchId, int rank, int previousRank, long hits, String url) {
         if(previousRank == 0){
             previousRank = GoogleRank.UNRANKED;
         }

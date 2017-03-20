@@ -11,85 +11,11 @@ import com.google.common.io.ByteStreams;
 import com.serphacker.serposcope.scraper.DeepIntegrationTest;
 import com.serphacker.serposcope.scraper.captcha.Captcha;
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
+import com.serphacker.serposcope.scraper.captcha.CaptchaRecaptcha;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
 import java.io.IOException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 import org.junit.Before;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -100,9 +26,9 @@ import static org.junit.Assert.assertTrue;
  *
  * @author admin
  */
-public class AnticaptchaSolverIT extends DeepIntegrationTest {
+public class AntiCaptchaSolverIT extends DeepIntegrationTest {
     
-    public AnticaptchaSolverIT() {
+    public AntiCaptchaSolverIT() {
     }
     
     String apiKey;
@@ -197,6 +123,20 @@ public class AnticaptchaSolverIT extends DeepIntegrationTest {
             System.out.println("duration : " + captcha.getSolveDuration());
         }
     }
+    
+    @Test
+    public void testSolverRecaptcha() throws Exception {
+        
+        try (AntiCaptchaSolver solver = new AntiCaptchaSolver(apiKey)) {
+            CaptchaRecaptcha captcha = new CaptchaRecaptcha("6LfydQgUAAAAAMuh1gRreQdKjAop7eGmi6TrNIzp", "https://anti-captcha.com/recaptcha");
+            solver.solve(captcha);
+            System.out.println("id : " + captcha.getId());
+            System.out.println("response : " + captcha.getResponse());
+            System.out.println("duration : " + captcha.getSolveDuration());
+            System.out.println("error : " + captcha.getError());
+        }
+        
+    }    
     
 //    @Test
 //    public void testSolveRandomAndReportFalse() throws Exception {

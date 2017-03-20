@@ -9,6 +9,7 @@ package com.serphacker.serposcope.db.base;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.querydsl.core.QueryFlag.Position;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
@@ -23,6 +24,7 @@ import com.serphacker.serposcope.querybuilder.QUser;
 import com.serphacker.serposcope.querybuilder.QUserGroup;
 import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;

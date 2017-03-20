@@ -29,15 +29,15 @@ serposcope.adminSettingsController = function () {
         };
         
         switch(service){
-            case "dbc":
-                data.user = $('#dbcUser').val();
-                data.pass = $('#dbcPass').val();
-                break;
-                
-            case "decaptcher":
-                data.user = $('#decaptcherUser').val();
-                data.pass = $('#decaptcherPass').val();
-                break;
+//            case "dbc":
+//                data.user = $('#dbcUser').val();
+//                data.pass = $('#dbcPass').val();
+//                break;
+//                
+//            case "decaptcher":
+//                data.user = $('#decaptcherUser').val();
+//                data.pass = $('#decaptcherPass').val();
+//                break;
                 
             case "anticaptcha":
                 data.api = $('#anticaptchaApiKey').val();

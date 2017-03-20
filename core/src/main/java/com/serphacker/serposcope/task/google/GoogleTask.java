@@ -9,7 +9,6 @@ package com.serphacker.serposcope.task.google;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.serphacker.serposcope.db.base.ConfigDB;
 import com.serphacker.serposcope.db.google.GoogleDB;
 import com.serphacker.serposcope.di.CaptchaSolverFactory;
 import com.serphacker.serposcope.di.ScrapClientFactory;
@@ -249,7 +248,7 @@ public class GoogleTask extends AbstractTask {
                     previousRank = googleDB.rank.get(previousRun.getId(), group, target.getId(), search.getId());
                 }
                 
-                GoogleRank gRank = new GoogleRank(run.getId(), group, target.getId(), search.getId(), rank, previousRank, res.hits, rankedUrl);
+                GoogleRank gRank = new GoogleRank(run.getId(), group, target.getId(), search.getId(), rank, previousRank, res.googleResults,rankedUrl);
                 googleDB.rank.insert(gRank);
                 
                 GoogleTargetSummary summary = summariesByTarget.get(target.getId());
@@ -277,7 +276,7 @@ public class GoogleTask extends AbstractTask {
 	                	urlParameters.add(new BasicNameValuePair("keyword", search.getKeyword()));
 	                	urlParameters.add(new BasicNameValuePair("rank", rank+""));
 	                	urlParameters.add(new BasicNameValuePair("best", best+""));
-	                	urlParameters.add(new BasicNameValuePair("hits", res.hits+""));
+	                	urlParameters.add(new BasicNameValuePair("hits", res.googleResults+""));
 	                	urlParameters.add(new BasicNameValuePair("url", rankedUrl));
 	                	urlParameters.add(new BasicNameValuePair("previousRank", previousRank+""));
 	                	urlParameters.add(new BasicNameValuePair("target", target.getPattern()+""));
@@ -398,7 +397,6 @@ public class GoogleTask extends AbstractTask {
     }
     
     protected final CaptchaSolver initializeCaptchaSolver(){
-    	LOG.info("baseDB.config.getConfig() - {}", baseDB.config.getConfig().getDbcUser());
         solver = captchaSolverFactory.get(baseDB.config.getConfig());
         if(solver != null){
             if(!solver.init()){

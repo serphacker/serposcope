@@ -7,15 +7,11 @@
  */
 package serposcope.lifecycle;
 
-import java.io.File;
-import java.io.IOException;
-
 
 public class Daemon {
     
     
-    public static void main(String[] args) throws IOException {
-    	System.out.println(new File(".").getCanonicalPath());
+    public static void main(String[] args) {
         start(args);
     }
     public static void start(String[] args) {
