@@ -9,31 +9,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.serphacker.serposcope</groupId>
     <artifactId>serposcope</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>web</module>
         <module>scraper</module>
         <module>core</module>
     </modules>
-    
-    <!-- <build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>serposcope.lifecycle.Daemon</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build> -->
   
     <!--    <dependencies>
         <dependency>
