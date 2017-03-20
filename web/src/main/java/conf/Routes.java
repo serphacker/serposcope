@@ -22,6 +22,7 @@ import serposcope.controllers.admin.GoogleSettingsController;
 import serposcope.controllers.admin.LogController;
 import serposcope.controllers.admin.ProxyController;
 import serposcope.controllers.admin.SettingsController;
+import serposcope.controllers.admin.SyncController;
 import serposcope.controllers.admin.TaskController;
 import serposcope.controllers.google.GoogleGroupController;
 import serposcope.controllers.google.GoogleSearchController;
@@ -75,6 +76,10 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/admin/tasks/stop").with(TaskController.class, "abortTask"); 
         router.POST().route("/admin/tasks/{runId: [0-9]+}/delete").with(TaskController.class, "deleteRun");
         router.POST().route("/admin/tasks/{runId: [0-9]+}/rescan-serp").with(TaskController.class, "rescanSerp");
+        
+        router.GET().route("/tasks/start").with(SyncController.class, "startTask");
+        router.GET().route("/tasks/stop").with(SyncController.class, "abortTask");
+        router.GET().route("/test-captcha").with(SyncController.class, "testCaptcha");
         
         router.GET().route("/admin/logs").with(LogController.class, "logs");
         router.GET().route("/admin/logs/view").with(LogController.class, "viewLog");
