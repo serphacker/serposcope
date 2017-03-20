@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stupid jQuery table sort (complex example)</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="../stupidtable.js?dev"></script>
+  <script>
+    $(function(){
+      // Helper function to convert a string of the form "Mar 15, 1987" into
+      // a Date object.
+      var date_from_string = function(str){
+        var months = ["jan","feb","mar","apr","may","jun","jul",
+                      "aug","sep","oct","nov","dec"];
+        var pattern = "^([a-zA-Z]{3})\\s*(\\d{2}),\\s*(\\d{4})$";
+        var re = new RegExp(pattern);
+        var DateParts = re.exec(str).slice(1);
+
+        var Year = DateParts[2];
+        var Month = $.inArray(DateParts[0].toLowerCase(), months);
+        var Day = DateParts[1];
+        return new Date(Year, Month, Day);
+      }
+
+      var moveBlanks = function(a, b) {
+        if ( a < b ){
+          if (a == "")
+            return 1;
+          else
+            return -1;
+        }
+        if ( a > b ){
+          if (b == "")
+            return -1;
+          else
+            return 1;
+        }
+        return 0;
+      };
+      var moveBlanksDesc = function(a, b) {
+        // Blanks are by definition the smallest value, so we don't have to
+        // worry about them here
+        if ( a < b )
+          return 1;
+        if ( a > b )
+          return -1;
+        return 0;
+      };
+
+      var table = $("table").stupidtable({
+        "date":function(a,b){
+          // Get these into date objects for comparison.
+
+          aDate = date_from_string(a);
+          bDate = date_from_string(b);
+
+          return aDate - bDate;
+        },
+        "moveBlanks": moveBlanks,
+        "moveBlanksDesc": moveBlanksDesc,
+      });
+
+      table.on("beforetablesort", function (event, data) {
+        // data.column - the index of the column sorted after a click
+        // data.direction - the sorting direction (either asc or desc)
+        $("#msg").text("Sorting index " + data.column)
+      });
+
+      table.on("aftertablesort", function (event, data) {
+        var th = $(this).find("th");
+        th.find(".arrow").remove();
+        var dir = $.fn.stupidtable.dir;
+
+        var arrow = data.direction === dir.ASC ? "&uarr;" : "&darr;";
+        th.eq(data.column).append('<span class="arrow">' + arrow +'</span>');
+      });
+
+      $("tr").slice(1).click(function(){
+        $(".awesome").removeClass("awesome");
+        $(this).addClass("awesome");
+      });
+
+    });
+  </script>
+  <style type="text/css">
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 5px 10px;
+      border: 1px solid #999;
+    }
+    th {
+      background-color: #eee;
+    }
+    th[data-sort]{
+      cursor:pointer;
+    }
+    tr.awesome{
+      color: red;
+    }
+    #msg {
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Stupid jQuery table sort! (complex example)</h1>
+
+  <p>This example showcases several of the more advanced features, including specifying sort values, custom data types and callbacks. View the source of this file or see the <a href="http://joequery.github.com/Stupid-Table-Plugin/">documentation</a> for more details on how to implement them.</p>
+
+  <p id="msg">&nbsp;</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th data-sort="int">int</th>
+        <th data-sort="int">int</th>
+        <th data-sort="float" data-sort-default="desc">float</th>
+        <th data-sort="moveBlanks" data-sort-desc="moveBlanksDesc">string</th>
+        <th data-sort="string-ins">case</th>
+        <th>Can't sort me!</th>
+        <th data-sort="date">date</th>
+        <th data-sort="int">Letter frequency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>15</td>
+        <td>15</td>
+        <td>-.18</td>
+        <td>banana</td>
+        <td>Homer</td>
+        <td>arbitrary</td>
+        <td>Sep 15, 2002</td>
+        <td data-sort-value="0">E</td>
+      </tr>
+      <tr class="awesome">
+        <td>95</td>
+        <td>95</td>
+        <td>36</td>
+        <td></td>
+        <td>purple</td>
+        <td>pointless</td>
+        <td>Aug 07, 2004</td>
+        <td data-sort-value="1">T</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>2</td>
+        <td>-152.5</td>
+        <td></td>
+        <td>is</td>
+        <td>silly</td>
+        <td>Mar 15, 1986</td>
+        <td data-sort-value="2">A</td>
+      </tr>
+      <tr>
+        <td>-53</td>
+        <td>-53</td>
+        <td>88.5</td>
+        <td>hello</td>
+        <td>a</td>
+        <td>eccentric</td>
+        <td>Feb 27, 2086</td>
+        <td data-sort-value="3">O</td>
+      </tr>
+      <tr>
+        <td>195</td>
+        <td>195</td>
+        <td>-858</td>
+        <td>orange</td>
+        <td>fruit</td>
+        <td>garbage</td>
+        <td>Mar 15, 1986</td>
+        <td data-sort-value="4">I</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<div class="alerts">
+    <#if flash.error?? || f_error??>
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">${i18n("label.close")}</span></button>
+        <div class="alert-upper">${f_error!flash.error}</div>
+    </div>
+    </#if>
+
+    <#if flash.warning?? || f_warning??>
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">${i18n("label.close")}</span></button>
+        <div class="alert-upper">${f_warning!flash.warning}</div>
+    </div>
+    </#if>                    
+
+    <#if flash.success?? || f_success??>
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">${i18n("label.close")}</span></button>
+        <div class="alert-upper">${f_sucess!flash.success}</div>
+    </div>
+    </#if>   
+</div>

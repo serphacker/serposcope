@@ -1,0 +1,90 @@
+<#import "homeLayout.ftl.html" as layout> 
+<@layout.homeLayout i18n("home.title") >
+    <div class="row top15">
+        <div class="col-sm-12 col-md-offset-1 col-md-10">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    ${i18n("label.summary")} 
+                    <input type="text" id="summary-filter" placeholder="${i18n("home.filterGroupWebsite")}" />
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped table-condensed table-summary">
+                        <thead>
+                            <tr>
+                                <th data-sort="string">${i18n("label.group")} <i class="fa fa-sort" ></i></th>
+                                <th data-sort="string">${i18n("label.website")} <i class="fa fa-sort" ></i></th>
+                                <th data-sort="int" class="compact-col" >Score <i class="fa fa-sort" ></i></th>
+                                <th class="compact-col" >${i18n("label.history")}</th>
+                                <th data-sort="int" >top 3 <i class="fa fa-sort" ></i></th>
+                                <th data-sort="int" >top 10 <i class="fa fa-sort" ></i></th>
+                                <th data-sort="int" >top 100 <i class="fa fa-sort" ></i></th>
+                                <th data-sort="int" >out <i class="fa fa-sort" ></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <#list summaries as record>
+                            <#assign target = record.target >
+                            <#assign summary = record.summary >
+                            <#assign targetLink = reverseRoute("google.GoogleTargetController", "target", "groupId", target.getGroupId(), "targetId", target.getId()) >
+                            <tr>
+                                <td class="filterable"><a href="${reverseRoute("google.GoogleGroupController", "view", "groupId", target.getGroupId())}" >${record.groupName}</a></td>
+                                <td class="filterable"><a href="${targetLink}" >${target.getName()}</a></td>
+                                <td><span class="<#if (summary.getDiffBP() > 0) >text-success<#elseif (summary.getDiffBP() < 0) >text-danger</#if>" 
+                                    data-toggle="tooltip" title="${i18n("label.previous")} : ${fu.formatScore(summary.getPreviousScoreBP())}%" >
+                                    ${fu.formatScore(summary.getScoreBP())}%
+                                </span></td>
+                                <td><span class="hb-score-history-inline" data-values="<#list record.scoreHistory as score>${fu.formatScore(score)}<#sep>,</#list>" ></span>
+                                <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop3()/summary.getTotalKeywords()*100)?string["0.##"]}%">
+                                        <div class="progress-bar" style="width: ${(summary.getTotalTop3()/summary.getTotalKeywords()*100)?c}%;">
+                                            <span >
+                                                ${summary.getTotalTop3()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </#if>
+                                </td>
+                                <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop10()/summary.getTotalKeywords()*100)?string["0.##"]}%">
+                                        <div class="progress-bar" style="width: ${(summary.getTotalTop10()/summary.getTotalKeywords()*100)?c}%;">
+                                            <span >
+                                                ${summary.getTotalTop10()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </#if>
+                                </td>
+                                <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalTop100()/summary.getTotalKeywords()*100)?string["0.##"]}%">
+                                        <div class="progress-bar" style="width: ${(summary.getTotalTop100()/summary.getTotalKeywords()*100)?c}%;">
+                                            <span>
+                                                ${summary.getTotalTop100()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>                               
+                                    </#if>
+                                </td>
+                                <td class="td-top-kw">
+                                    <#if (summary.getTotalKeywords() > 0) >
+                                    <div class="progress" data-toggle="tooltip" title="${(summary.getTotalOut()/summary.getTotalKeywords()*100)?string["0.##"]}%" >
+                                        <div class="progress-bar" style="width: ${(summary.getTotalOut()/summary.getTotalKeywords()*100)?c}%;">
+                                            <span>
+                                                ${summary.getTotalOut()}/${summary.getTotalKeywords()}
+                                            </span>
+                                        </div>
+                                    </div>                               
+                                    </#if>
+                                </td>
+                            </tr>
+                            </#list>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</@>

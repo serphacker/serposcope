@@ -1,0 +1,288 @@
+/*
+MIT License (MIT) - Copyright (c) 2015 SERP Hacker https://serphacker.com/
+
+@link https://serposcope.serphacker.com/ Serposcope rank checker
+@author Pierre Nogues <pierre@serphacker.com>
+@license https://opensource.org/licenses/MIT
+*/
+.setting-form {
+    background-color:white; 
+    border-radius: 5px; 
+    padding-bottom: 15px; 
+    margin-bottom: 30px;
+}
+
+/** group **/
+
+#group-searches-grid {
+    background-color: white;
+    white-space: nowrap;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid lightgray;
+}
+
+#group-searches-grid .slick-sort-indicator {
+    display: none;
+    visibility: hidden;
+}
+
+#group-searches-grid .slick-cell {
+    padding: 0px;
+    height: 25px;
+}
+
+#group-searches-grid .slick-header-column{
+    /*height: 25px;*/
+    text-align: center;
+    background-color: #3c8dbc;
+    font-weight: bold;
+    cursor: pointer;    
+}
+
+#group-searches-grid .slick-row{
+    height: 25px;
+}
+
+#group-searches-grid .slick-cell div {
+    height: 25px;
+}
+
+#group-searches-grid .slick-cell-checkboxsel {
+    text-align: center;
+}
+
+/** search **/
+#google-search-chart-container {
+    background-color: white;
+}
+
+#google-search-chart {
+    border-width: 1px 1px 0px 1px;
+    border-color: lightgray;
+    border-style: solid;
+    background-color: white;
+}
+
+.google-dygraph-legend {
+    border-width: 0px 1px 1px 1px;
+    border-color: lightgray;
+    border-style: solid;    
+    background-color: white;
+    min-height: 20px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+
+.calendar-annotation {
+    cursor: pointer;
+}
+
+/*.dygraph-legend {
+    font-weight: bold;
+}*/
+
+#google-rank-serp .rank {
+    width: 50px;
+    cursor: default;
+}
+
+#google-search-table {
+    overflow: auto;
+    background-color: white;
+    border: 1px solid lightgrey;
+}
+
+#google-search-table table {
+    margin-bottom: 0px;
+}
+
+#google-search-table th {
+    border-top: 0px;
+}
+
+.btn-draw-chart,
+.btn-add-favorite{
+    opacity: 0.3;
+}
+
+.btn-draw-chart.active,
+.btn-add-favorite.active {
+    opacity: 1;
+}
+
+/** target **/
+#btn-delete-target,
+#btn-delete-search {
+    margin-left: 10px;
+}
+
+.table-striped-column > tbody > tr td:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.table-striped-column > tbody > tr td:nth-of-type(even) {
+    background-color: white;
+}
+
+#google-target-variation-container {
+    background-color: white;
+    padding: 10px;
+}
+
+#google-target-variation-container h2 {
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+#google-target-table-container {
+    background-color: white;
+    overflow-x: scroll; 
+    white-space: nowrap;
+}
+
+#google-target-table-container .slick-cell {
+    text-align: center;
+    padding: 0px;
+    height: 25px;
+}
+
+
+
+#google-target-table-container .slick-row{
+    height: 25px;
+    text-align: center;
+}
+
+#google-target-table-container .slick-cell div {
+    height: 25px;
+}
+
+#google-target-table-container .best-cell {
+    background-color: #FFFFA0;
+    font-weight: bold;
+    /* height: 25px; */
+}
+
+#google-target-table-container .slick-header-column {
+    /*height: 25px;*/
+    background-color: #3c8dbc;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+#google-target-table-container .slick-header-column .header-search {
+    text-align: left;
+    font-weight: normal;
+}
+
+.variation-grid {
+    background-color: white;
+    white-space: nowrap;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid lightgray;
+}
+
+.variation-grid .slick-sort-indicator {
+    display: none;
+    visibility: hidden;
+}
+
+.variation-grid .slick-cell {
+    padding: 0px;
+    height: 25px;
+    text-align: center;
+}
+
+.variation-grid .slick-header-column{
+    /*height: 25px;*/
+    text-align: center;
+    font-size: 12px;
+    background-color: #3c8dbc;
+    cursor: pointer;    
+}
+
+.variation-grid .slick-row {
+    height: 25px;
+}
+
+.variation-grid .slick-cell div {
+    height: 25px;
+}
+
+.variation-count {
+    color: black;
+    font-size: 16px;
+}
+
+.search-filter input,
+.search-filter select {
+    padding: 5px 5px;
+}
+
+#google-target-chart {
+    border-width: 1px 1px 0px 1px;
+    border-color: lightgray;
+    border-style: solid;
+    background-color: white;
+}
+
+#google-target-table thead th,
+#google-target-table thead td{
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#google-target-table .sortable th {
+    cursor: pointer;
+    background-color: #3c8dbc; 
+}
+
+#manage .table {
+    margin-bottom: 5px;
+}
+
+#google-target-table th,
+#google-target-table td,
+#table-target th{
+    cursor: pointer;
+}
+
+#google-target-table .popover-content {
+    cursor: default;
+}
+
+#google-target-table .popover{
+    max-width: 100%;
+}
+
+#google-target-table .bestrank {
+    background-color: #FFFFA0; 
+    font-weight: bold;
+}
+
+.target-name {
+    margin-right: 10px;
+}
+
+/*#google-target-table .diff-,
+#google-target-table .diff-plus,
+#google-target-table .diff-minus{
+    cursor: default;
+}*/
+
+.diff-plus {
+    color: green;
+}
+
+.diff-minus {
+    color: red;
+}
+
+/* tab calendar */
+.toggle-event{
+    cursor: pointer;
+}

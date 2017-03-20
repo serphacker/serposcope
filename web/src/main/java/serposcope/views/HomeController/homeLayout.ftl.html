@@ -1,0 +1,129 @@
+<#assign sideMenu>
+<li>
+    <span class="first-level"><i class="fa fa-cubes fw"></i> ${i18n("label.groups")}</span>
+    <ul class="nav nav-second-level">
+        <li>
+            <div class="form-search form-group has-feedback has-feedback">
+                <input id="sidebar-group-search" type="text" class="form-control" placeholder="${i18n("label.searchGroup")} ..." />
+                       <i class="form-control-feedback glyphicon glyphicon-search"></i>
+            </div>
+        </li>
+    </ul>
+</li>
+</#assign>
+<#macro homeLayout title="" >
+<#import "../layout/root.ftl.html" as layout> 
+<@layout.rootLayout i18n("home.title") "${sideMenu}" >
+<div class="home" >
+    <div class="row" >
+        <div class="col-xs-6" >
+            <div>
+                ${i18n("label.dbSize")} : <#if diskUsage?? >${diskUsage}<#else>${i18n("label.unavailableOnMySQL")}</#if> 
+                [<a href="${reverseRoute("admin.SettingsController", "settings")}" class="text-warning">${i18n("label.settings")?lower_case}</a>]
+            </div>
+            <div>
+                ${i18n("label.diskFree")} : <#if diskFree?? >${diskFree}<#else>${i18n("label.unavailable")}</#if>
+            </div>
+        </div>
+        <div class="col-xs-6" >
+            
+            <div class="home-right-links" >
+                <div class="input-group">
+                    <div class="input-group-btn" >
+                        <a href="${reverseRoute("HomeController","home","display","summary")}" data-toggle="tooltip" title="${i18n("label.summary")}"
+                            class="btn btn-default <#if display == "summary" >active</#if>" ><i class="fa fa-th-large"></i></a>
+                        <a href="${reverseRoute("HomeController","home","display","table")}"data-toggle="tooltip" title="${i18n("label.table")}" 
+                            class="btn btn-default <#if display == "table" >active</#if>" ><i class="fa fa-table"></i></a>            
+                    </div>
+                </div>    
+            </div>            
+            
+            <div class="home-task-summary">
+                <div>
+                    <span style="padding-right: 5px;">${i18n("home.lastTasks")} : </span>
+                    <#if lastRuns?? && lastRuns?has_content >
+                        <#list lastRuns as task>
+                            <#switch task.status>
+                                <#case "RUNNING">
+                                    <#assign taskLabel="primary" >
+                                    <#assign taskCaption=i18n("home.taskRunning") >
+                                    <#break>
+
+                                <#case "ABORTING">
+                                    <#assign taskLabel="warning" >
+                                    <#assign taskCaption=i18n("home.taskAborting") >
+                                    <#break>
+                                    
+                                <#case "DONE_SUCCESS">
+                                    <#assign taskLabel="success" >
+                                    <#assign taskCaption=i18n("home.taskOk") >
+                                    <#break>                                    
+                                    
+                                <#default>
+                                    <#assign taskLabel="danger" >
+                                    <#assign taskCaption=i18n("home.taskFailure") >
+                            </#switch>
+                        
+                            <a  href="${reverseRoute("admin.TaskController","tasks")}" 
+                                class="task-badge label-${taskLabel}" 
+                                data-toggle="tooltip" title="${task.day} - ${taskCaption}" ></a>
+                        </#list>
+                    <#else>
+                        -
+                    </#if>
+                    <span class="pull-right" >
+                        <a href="${reverseRoute("admin.TaskController","tasks")}" >${i18n("label.tasks")}</a>
+                        |
+                        <a href="${reverseRoute("admin.LogController","viewLog","log",.now?date?iso_utc + ".log")}" >${i18n("label.logs")}</a>
+                        <#if currentRun?? && currentRun.isRunning() >
+                        |
+                        <a href="${reverseRoute("admin.TaskController","abortTask","id",currentRun.getId(),"_xsrf", session.___AT)}" class="text-danger" >
+                           ${i18n("label.abort")}</a>
+                        </#if>
+                    </span>
+                </div>                
+                
+                <#if currentRun?? && currentRun.isRunning() >
+                <div class="home-task-progress progress" style="width: 100%; display: block;" title="${i18n("admin.task.remainingTime")} : ${currentRun.getRemainingTimeFormated()}" data-toggle="tooltip" data-id="${currentRun.getId()}" >
+                     <div 
+                        class="progress-bar progress-bar-striped active <#if currentRun.getStatus() != "RUNNING" >progress-bar-warning</#if>" 
+                        style="width: ${currentRun.getProgress()}%; min-width: 50px;"
+                        >
+                        <span>
+                            <#if currentRun.getStatus() != "RUNNING" >${i18n("admin.task.aborting")}<#else>${currentRun.getProgress()} %</#if>
+                        </span>
+                    </div>
+                </div>
+                </#if>
+            </div>
+            
+        </div>
+    </div>
+
+    <#if lastRun?? >
+        <div class="last-check text-center">
+            ${lastRun.getDay()} 
+            <#if lastRun.status != "DONE_SUCCESS" >
+                (<a class="text-danger" href="${reverseRoute("admin.TaskController","tasks")}" >${i18n("home.taskFailure")}</a>)
+            </#if>
+        </div>
+        <#if hasTarget >
+            <#nested>
+        <#else>
+            <div class="text-center" style="margin-top: 100px;" >
+                <h1>${i18n("home.noTarget")}</h1>
+            </div>
+        </#if>
+    <#else>
+    <div class="text-center" style="margin-top: 100px;" >
+        <h1>${i18n("home.welcome")}</h1>
+        <br/><br/>
+        <img src="/assets/img/serposcope.png" />
+        <br/><br/>
+        <h3><#noescape>${i18n("home.quickStart")}</#noescape></h3>
+    </div>
+    </#if>
+</div>
+<div class="csp-script" data-src="HomeController.home" ></div>
+</@>
+</#macro>

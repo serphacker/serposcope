@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="assets/css/|assets/css/views/admin/|assets/img/|assets/js/|assets/js/lib/|assets/js/views/|assets/js/views/admin/|assets/js/views/google/|assets/lib/|assets/lib/bootstrap/|assets/lib/bootstrap/dist/css/|assets/lib/bootstrap/dist/fonts/|assets/lib/bootstrap/dist/js/|assets/lib/bootstrap/fonts/|assets/lib/bootstrap/grunt/|assets/lib/bootstrap/js/|assets/lib/bootstrap/less/|assets/lib/bootstrap/less/mixins/|assets/lib/d3/|assets/lib/dygraphs/|assets/lib/dygraphs/datahandler/|assets/lib/dygraphs/extras/|assets/lib/dygraphs/plugins/|assets/lib/dygraphs/polyfills/|assets/lib/jquery/|assets/lib/jquery/dist/|assets/lib/jquery/src/|assets/lib/jquery/src/ajax/|assets/lib/jquery/src/ajax/var/|assets/lib/jquery/src/attributes/|assets/lib/jquery/src/core/|assets/lib/jquery/src/core/var/|assets/lib/jquery/src/css/|assets/lib/jquery/src/css/var/|assets/lib/jquery/src/data/|assets/lib/jquery/src/data/var/|assets/lib/jquery/src/effects/|assets/lib/jquery/src/event/|assets/lib/jquery/src/exports/|assets/lib/jquery/src/manipulation/|assets/lib/jquery/src/manipulation/var/|assets/lib/jquery/src/queue/|assets/lib/jquery/src/sizzle/dist/|assets/lib/jquery/src/traversing/|assets/lib/jquery/src/traversing/var/|assets/lib/jquery/src/var/|assets/lib/moment/|assets/lib/moment/locale/|assets/lib/moment/min/|assets/lib/moment/src/|assets/lib/moment/src/lib/create/|assets/lib/moment/src/lib/duration/|assets/lib/moment/src/lib/format/|assets/lib/moment/src/lib/locale/|assets/lib/moment/src/lib/moment/|assets/lib/moment/src/lib/parse/|assets/lib/moment/src/lib/units/|assets/lib/moment/src/lib/utils/|assets/lib/moment/src/locale/|assets/lib/moment/templates/|assets/lib/nvd3/|assets/lib/nvd3/build/|assets/lib/papaparse/|assets/lib/SlickGrid/|assets/lib/SlickGrid/controls/|assets/lib/SlickGrid/css/|assets/lib/SlickGrid/css/smoothness/|assets/lib/SlickGrid/css/smoothness/images/|assets/lib/SlickGrid/examples/|assets/lib/SlickGrid/images/|assets/lib/SlickGrid/lib/|assets/lib/SlickGrid/plugins/|assets/lib/SlickGrid/tests/|assets/lib/SlickGrid/tests/dataview/|assets/lib/SlickGrid/tests/grid/|assets/lib/SlickGrid/tests/plugins/|assets/lib/tablesorter/|assets/lib/tablesorter/dist/css/|assets/lib/tablesorter/dist/css/images/|assets/lib/tablesorter/dist/css/less/|assets/lib/tablesorter/dist/js/|assets/lib/tablesorter/dist/js/extras/|assets/lib/tablesorter/dist/js/parsers/|assets/lib/tablesorter/dist/js/widgets/|assets/" including="**/*.java" kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_111">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

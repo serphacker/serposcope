@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stupid jQuery table sort (colspan test)</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="../stupidtable.js?dev"></script>
+  <script>
+    $(function(){
+        $("table").stupidtable();
+    });
+  </script>
+  <style type="text/css">
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 5px 10px;
+      border: 1px solid #999;
+    }
+    th {
+      background-color: #eee;
+    }
+    th[data-sort]{
+      cursor:pointer;
+    }
+    tr.awesome{
+      color: red;
+    }
+  </style>
+  </style>
+</head>
+
+<body>
+
+  <h1>Stupid jQuery table sort! (colspan test)</h1>
+
+  <p>Tables using colspans are handled just fine.</p>
+
+  <table id="stupid">
+    <thead>
+      <tr>
+          <th colspan="4">The Big Table Header</th>
+      </tr>
+      <tr>
+        <th data-sort="string">Letter</td>
+        <th colspan="2" data-sort="string">colspan=2</th>
+        <th data-sort="int">Number</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>def</td>
+        <td>X</td>
+        <td>9</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>abc</td>
+        <td>Z</td>
+        <td>8</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>bcd</td>
+        <td>Y</td>
+        <td>7</td>
+        <td>0</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

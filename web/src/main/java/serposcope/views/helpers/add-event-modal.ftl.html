@@ -1,0 +1,46 @@
+<div id="modal-add-event" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="${reverseRoute("google.GoogleGroupController","addEvent","groupId",group.getId())}" >
+                  <@authenticityForm/>
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">${i18n("label.addEvent")}</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group" >
+                        <label for="eventDay">${i18n("label.date")}</label>
+                        <input id="eventDay" name="day" class="form-control" />
+                    </div>                
+
+                    <div class="form-group" >
+                        <label for="eventTitle">${i18n("label.title")}</label>
+                        <input id="eventTitle" name="title" class="form-control">
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="eventDescription">${i18n("label.description")}</label>
+                        <textarea id="eventDescription" name="description" class="form-control" rows="10"></textarea>
+                        <div class="help-block">HTML: a, b, blockquote, br, cite, code, dd, dl, dt, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</div>
+                    </div>
+                    
+                    <#if search?? >
+                        <input type="hidden" name="redir-search" value="${search.getId()}" />
+                    </#if>
+                    
+                    <#if target?? >
+                        <input type="hidden" name="redir-target" value="${target.getId()}" />
+                    </#if>                    
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                    <input type="submit" class="btn btn-primary" value="${i18n("label.save")}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

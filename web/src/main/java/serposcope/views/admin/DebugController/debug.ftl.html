@@ -1,0 +1,65 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../admin.ftl.html" as layout>
+<@layout.adminLayout i18n("label.debug") >
+
+<div class="row">
+    <div class="col-xs-12" >
+        <div class="inline-block" >
+            <form method="POST" action="${reverseRoute("admin.DebugController", "wipeRankings")}" >
+                  <@authenticityForm/>
+                  <input type="submit" id="btn-wipe" class="btn btn-danger" value="${i18n("admin.debug.wipeRankings")}" >
+            </form>
+        </div>
+        <div class="inline-block">
+            <form class="form-horizontal form-inline" method="POST" action="${reverseRoute("admin.DebugController", "wipeGroups")}" >
+                  <@authenticityForm/>
+                  <input type="submit" id="btn-wipe" class="btn btn-danger" value="${i18n("admin.debug.wipeGroups")}" >
+            </form>        
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-xs-12" >
+        <form class="form form-inline" method="POST" action="${reverseRoute("admin.DebugController", "generate")}" >
+            <@authenticityForm/>
+            <input type="text" class="form-control" style="width: 70px;" placeholder="groups" name="groups" />
+            <input type="text" class="form-control" style="width: 150px;" placeholder="search per group" name="searchPerGroup" />
+            <input type="text" class="form-control" style="width: 150px;" placeholder="target per group" name="targetPerGroup" value="1"/>
+            <input type="submit" id="btn-wipe" class="btn btn-default" value="Generate" >
+        </form>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-xs-12" >
+        <form method="POST" action="${reverseRoute("admin.DebugController", "dryRun")}" class="form form-inline" >
+            <input type="hidden" name="startDate" />
+            <input type="hidden" name="endDate" />
+            <input type="text" class="form-control" style="width: 70px;" placeholder="group" name="group" />
+            <div class="input-group" style="width: 190px;">
+                <input id="daterange" type="text" class="form-control" />
+            </div>
+            <input type="submit" class="btn btn-default" value="${i18n("admin.debug.dryRun")}" >
+            <@authenticityForm/>
+        </form>
+    </div>
+</div>
+<br/>
+<script type="text/javascript" src="/assets/js/canonical-location.js"></script>
+<div class="row">
+    <div class="col-xs-12" >
+        <div class="form-search form-group has-feedback has-feedback">
+            <input type="text" class="search-local form-control" autocomplete="off" />
+            <i class="form-control-feedback glyphicon glyphicon-search"></i>
+        </div>
+    </div>
+</div>
+<!--
+<#assign url = "https://proxychecker.serphacker.com/?id=\"&fu=bla#hashtag" + "abc" >
+<textarea style="width:100%">${url}</textarea>
+<textarea style="width:100%">${fu.noreferrer(url)}</textarea>
+<a href="${fu.noreferrer(url)}">${url}</a>
+-->
+<div class="csp-script" data-src="adminDebugController.render" ></div>
+</@>

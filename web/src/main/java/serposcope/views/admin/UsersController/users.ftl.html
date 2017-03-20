@@ -1,0 +1,156 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../admin.ftl.html" as layout>
+<@layout.adminLayout i18n("admin.users.title") >
+
+<div class="row" >
+    <div class="col-xs-12" >
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active">
+                <a href="#users" data-toggle="tab">${i18n("label.users")}</a>
+            </li>
+            <li>
+                <a href="#permissions" data-toggle="tab">${i18n("admin.users.permissions")}</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content admin-users">
+            <div class="tab-pane active" id="users">
+                <div class="row top5" >
+                    <div class="col-xs-12" >
+                        <input type="button" class="btn btn-primary" id="add-user-btn" value="${i18n("admin.users.addUser")}" />
+                    </div>
+                </div>
+                <div class="row top15" >
+                    <div class="col-xs-12" >
+                        <table class="table table-condensed table-bordered" >
+                            <tr>
+                                <th class="width30" >#</th>
+                                <th class="width40" >${i18n("label.admin")}</th>
+                                <th>${i18n("label.email")}</th>
+                            </tr>
+                            <#list users as user>
+                            <tr>
+                                <td>
+                                    <form class="inline" method="post" action="${reverseRoute("admin.UsersController","delete")}" >
+                                          <input type="hidden" name="user-id" value="${user.getId()}" />
+                                        <@authenticityForm/>
+                                        <a href="#" class="del-user-btn">
+                                            <i class="fa fa-remove fa-lg" title="${i18n("admin.users.deleteUser")}" ></i>
+                                        </a>
+                                    </form>
+                                </td>
+                                <td>${user.isAdmin()?c}</td>
+                                <td>${user.getEmail()}</td>
+                            </tr>
+                            </#list>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="permissions">
+                <div class="row top5" >
+                    <div class="col-xs-12" >
+
+                        <div style="overflow-x: auto;" >
+                            <table class="table-header-rotated">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <#list groups as group>
+                                        <th class="rotate">
+                                            <div><span>${group.getName()}</span></div>
+                                        </th>
+                                        </#list>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <#list users as user>
+                                    <tr>
+                                        <th class="row-header" style="white-space: nowrap;">
+                                            <#if user.isAdmin()>
+                                            <span class="fa-stack" title="${i18n("label.admin")}" data-toggle="tooltip">
+                                                  <i class="fa fa-circle fa-stack-2x"></i>
+                                                <i class="fa fa-user fa-stack-1x fa-inverse"></i> 
+                                            </span>
+                                            <#else>
+                                            <span class="fa-stack" title="${i18n("label.user")}" data-toggle="tooltip">
+                                                  <!--<i class="fa fa-circle fa-stack-2x"></i>-->
+                                                  <i class="fa fa-user fa-stack-1x"></i> 
+                                            </span>
+                                            </#if>
+                                            ${user.getEmail()}
+                                        </th>
+                                        <#list groups as group>
+                                        <td>
+                                            <#if user.isAdmin()>
+                                            <input checked="checked" disabled type="checkbox" >
+                                            <#else>
+                                            <input class="btn-toggle-perm" type="checkbox"
+                                                   ${user.canRead(group.getId())?string("checked=checked","")}
+                                                   data-user="${user.getId()}" data-group="${group.getId()}" >
+                                            </#if>
+                                        </td>                                    
+                                        </#list>
+                                    </tr>
+                                    </#list>                                
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="add-user-modal" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">${i18n("admin.users.addUser")}</h4>
+            </div>
+            <form class="form" method="post" action="${reverseRoute("admin.UsersController","add")}" >
+                  <@authenticityForm/>
+                  <div class="modal-body">
+                    <div class="form-group" >
+                        <label for="userEmail" >${i18n("label.email")}</label>
+                        <input id="userEmail" class="form-control" type="email" name="email" >
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="userConfirmEmail" >${i18n("label.confirmEmail")}</label>
+                        <input id="userConfirmEmail" class="form-control" type="email" name="email-confirm" >
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="userPassword" >${i18n("label.password")}</label>
+                        <input id="userPassword" class="form-control" type="password" name="password" >
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="userConfirmPassword" >${i18n("label.confirmPassword")}</label>
+                        <input id=userConfirmPassword" class="form-control" type="password" name="password-confirm" >
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="admin"> Admin
+                        </label>
+                    </div>                    
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                    <input type="submit" class="btn btn-primary" value="${i18n("label.save")}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="csp-script" data-src="adminUsersController.users" ></div>
+
+</@>

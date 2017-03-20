@@ -1,0 +1,44 @@
+<#import "targetLayout.ftl.html" as layout> 
+<@layout.googleTargetLayout  >
+<div id="google-target-variation-container" >
+    <div class="row">
+        <h2 class="text-center">
+            <#if endDate??>${endDate}<#else>${i18n("label.noDataAvailable")}</#if>
+        </h2>
+    </div>
+    <div class="row">
+        <div class="col-xs-12" >
+            <#include "../../helpers/search-filter.ftl.html" />
+        </div>
+    </div>
+    <div class="row" >
+        <div class="col-md-4" >
+            <h4 class="text-center text-uppercase text-success">
+                ${i18n("home.improvedPositions")} 
+                <span id="variation-improved-total" class="variation-count"></span>
+            </h4>
+            <div id="variation-improved-grid" class="variation-grid" >
+                <img class="ajax-loader" src="/assets/img/loader.gif" />
+            </div>
+        </div>
+        <div class="col-md-4" >
+            <h4 class="text-center text-uppercase text-danger">
+                ${i18n("home.lostPositions")}
+                <span id="variation-lost-total" class="variation-count"></span>
+            </h4>
+            <div id="variation-lost-grid" class="variation-grid" >
+                <img class="ajax-loader" src="/assets/img/loader.gif" />
+            </div>
+        </div>                    
+        <div class="col-md-4" >
+            <h4 class="text-center text-uppercase">
+                ${i18n("home.unchangedPositions")}
+                <span id="variation-unchanged-total" class="variation-count"></span>
+            </h4>
+            <div id="variation-unchanged-grid" class="variation-grid" >
+                <img class="ajax-loader" src="/assets/img/loader.gif" />
+            </div>
+        </div>
+    </div>
+</div>
+</@>

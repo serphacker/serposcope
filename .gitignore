@@ -1,0 +1,31 @@
+target/
+/web/assembly/
+/scraper/src/test/resources/testconfig.properties
+/core/src/test/resources/testconfig.properties
+/private/
+/web/src/main/java/assets/compiled
+/web/src/main/java/assets/js/combined.min.js
+
+# java specific
+*.log
+*.class
+*.war
+*.ear
+hs_err_pid*
+
+#netbeans
+nbproject/private/
+nbbuild/
+nbdist/
+nbactions.xml
+.nb-gradle/
+
+#idea
+*.iml
+.idea/
+/core/codegen/
+/web/src/main/java/assets/combined.min.js
+/web/src/main/java/assets/combined.js
+
+#OSX specific
+.DS_Store

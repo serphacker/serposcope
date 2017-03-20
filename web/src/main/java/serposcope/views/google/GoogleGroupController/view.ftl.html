@@ -1,0 +1,277 @@
+<#-- @ftlvariable name="serp" type="com.serphacker.serposcope.models.google.GoogleSerp" -->
+<#import "../google.ftl.html" as layout>
+<@layout.googleLayout group.getName() >
+
+<div class="row">
+    <div class="col-sm-4" >
+        <ol class="breadcrumb" >
+            <li><a href="/"><i class="fa fa-home" ></i></a></li>
+            <li><a href="${reverseRoute("google.GoogleGroupController","view","groupId",group.getId())}">${group.getName()}</a></li>
+        </ol>        
+    </div>
+    <div class="col-sm-8" >
+        <div class="pull-right" >
+            <#if user.isAdmin()>
+            <a href="#" class="btn btn-primary btn-add-search" title="${i18n("label.addSearch")}" data-toggle="tooltip" >
+               <i class="glyphicon glyphicon-search hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("label.addSearch")}</span>
+            </a>
+            <a href="#" class="btn btn-primary btn-add-target" title="${i18n("label.addWebsite")}" data-toggle="tooltip" >
+               <i class="glyphicon glyphicon-star hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("label.addWebsite")}</span>
+            </a>
+            <a href="#" class="btn btn-primary btn-add-event" title="${i18n("label.addEvent")}" data-toggle="tooltip"  >
+               <i class="fa fa-fw fa-calendar hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("label.addEvent")}</span>
+            </a>
+            <a href="${reverseRoute("google.GoogleGroupController","rename","groupId",group.getId())}" 
+               class="btn btn-primary btn-rename" title="${i18n("label.rename")}" data-toggle="tooltip"  >
+               <i class="fa fa-fw fa-pencil hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" >  ${i18n("label.rename")}</span>
+            </a>            
+            <a href="${reverseRoute("google.GoogleGroupController","delete", "groupId",group.getId())}" class="btn btn-danger btn-delete-group" 
+               data-id="${group.getId()}" data-name="${group.getName()}"
+               title="${i18n("google.group.deleteGroup")}" data-toggle="tooltip" 
+               >
+               <i class="glyphicon glyphicon-remove hidden-lg" ></i><span class="hidden-xs hidden-sm hidden-md" > ${i18n("google.group.deleteGroup")}</span>
+            </a>
+            </#if>
+        </div>
+    </div>    
+</div>
+
+<div class="row" >
+    <div class="col-xs-12" >
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active">
+                <a href="#tab-sites" data-toggle="tab">${i18n("label.websites")} (${targets?size})</a>
+            </li>
+            <li>
+                <a href="#tab-searches" data-toggle="tab">${i18n("label.searches")} (${searchesSize})</a>
+            </li>            
+            <li>
+                <a href="#tab-calendar" data-toggle="tab">${i18n("label.calendar")}</a>
+            </li>            
+        </ul>
+
+        <div class="tab-content tab-groups">
+            
+            <div class="tab-pane active" id="tab-sites" >
+                <#include "tab-sites.ftl.html" />
+            </div>
+            
+            <div class="tab-pane" id="tab-searches" >
+                <#include "tab-searches.ftl.html" />
+            </div>
+
+            <div class="tab-pane" id="tab-calendar">
+                <#include "tab-calendar.ftl.html" />
+            </div>            
+        </div>
+    </div>
+</div>
+
+<div id="new-search" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">${i18n("label.newSearch")}</h4>
+            </div>
+            <form class="form" method="post" action="${reverseRoute("google.GoogleGroupController","addSearch","groupId",group.getId())}" >
+                  <@authenticityForm/>
+                  <div class="modal-body">
+
+                    <div class="form-group" >
+                        <label for="searchName" >${i18n("label.keyword")}</label>
+                        <input id="searchName" class="form-control" name="keyword[]" >
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="searchName" ><abbr  title="${i18n("label.topLevelDomain")}" data-toggle="tooltip" >TLD</abbr></label>
+                        <input id="searchName" class="form-control" name="tld[]" value="${default.getDefaultTld()!""}" >
+                        <span class="help-block">${i18n("admin.google.tldHelp")}</span>
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="searchDatacenter" >${i18n("label.datacenter")}</label>
+                        <input id="searchDatacenter" class="form-control" name="datacenter[]" value="${default.getDefaultDatacenter()!""}" >
+                        <span class="help-block">${i18n("admin.google.datacenterHelp")}</span>
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="searchDevice" >${i18n("label.device")}</label>
+                        <div>
+                            <div class="btn-group" data-toggle="buttons">
+                                <#if default.getDefaultDevice() == "MOBILE" >
+                                <label class="btn btn-default">
+                                    <input type="radio" name="device[]" value="0"> 
+                                    <i class="fa fa-desktop fa-bigger fa-lg fa-fw" ></i> ${i18n("label.desktop")}
+                                </label>
+                                <label class="btn btn-default active">
+                                    <input type="radio" name="device[]" value="1" checked="checked" >
+                                    <i class="fa fa-mobile fa-bigger fa-lg fa-fw" ></i> ${i18n("label.mobile")}
+                                </label>                            
+                                <#else>
+                                <label class="btn btn-default active">
+                                    <input type="radio"  name="device[]" value="0" checked="checked" > 
+                                    <i class="fa fa-desktop fa-bigger fa-lg fa-fw" ></i> ${i18n("label.desktop")}
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" name="device[]" value="1" >
+                                    <i class="fa fa-mobile fa-bigger fa-lg fa-fw" ></i> ${i18n("label.mobile")}
+                                </label>                            
+                                </#if>
+
+                            </div>         
+                        </div>
+                        <span class="help-block">${i18n("admin.google.deviceHelp")}</span>
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="searchLocal" >${i18n("label.local")}</label>
+                        <input id="searchLocal" class="form-control search-local" name="local[]" value="${default.getDefaultLocal()!""}" autocomplete="off" >
+                        <span class="help-block"><#noescape>${i18n("admin.google.localHelp")}</#noescape></span>
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="searchCustomParameters" >${i18n("label.customParameters")}</label>
+                        <input id="searchCustomParameters" class="form-control" name="custom[]"
+                               value="${default.getDefaultCustomParameters()!""}"  >
+                        <span class="help-block">${i18n("admin.google.customHelp")}</span>
+                    </div>                      
+
+                </div>
+                <div class="modal-footer">
+                    <div class="pull-left">
+                        <button type="button" class="btn btn-default btn-add-search-bulk" >${i18n("label.bulkImport")}</button>
+                    </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                    <input type="submit" class="btn btn-primary" value="${i18n("label.save")}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="new-search-bulk" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">${i18n("label.bulkImport")}</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group" >
+                    <span class="help-block">${i18n("admin.google.bulkSearchHelp")}</span>
+                    <textarea id="bulk-search" class="form-control" rows="10" placeholder="keyword,TLD,datacenter,device,local,custom"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="pull-left">
+                    <button type="button" class="btn btn-default btn-add-search" >${i18n("label.singleImport")}</button>
+                </div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                <input type="submit" id="bulk-search-import" class="btn btn-primary" value="${i18n("label.save")}"
+                       data-action="${reverseRoute("google.GoogleGroupController","addSearch","groupId",group.getId())}" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="new-target" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">${i18n("label.newWebsite")}</h4>
+            </div>
+            <form class="form" method="post" action="${reverseRoute("google.GoogleGroupController","addTarget","groupId",group.getId())}" >
+                  <@authenticityForm/>
+                  <div class="modal-body">
+                    <div class="form-group" >
+                        <label for="targetName" >${i18n("label.name")}</label>
+                        <input id="targetName" class="form-control" name="name[]" >
+                    </div>
+                    <div class="form-group" >
+                        <label for="input-helper" >${i18n("label.pattern")}</label>
+                        <div class="top10">
+                            <input id="target-domain" class="target-radio" type="radio" name="target-radio" value="DOMAIN" checked="checked" 
+                                data-help="${i18n("google.group.targetType.domainHelper")}" > ${i18n("google.group.targetType.domain")}
+                            <input class="target-radio" type="radio" name="target-radio" value="SUBDOMAIN" 
+                                data-help="${i18n("google.group.targetType.subdomainHelper")}" > ${i18n("google.group.targetType.subdomain")}&nbsp; 
+                            <input class="target-radio" type="radio" name="target-radio" value="REGEX" 
+                            data-help="${i18n("google.group.targetType.regexHelper")}" > ${i18n("google.group.targetType.regex")}
+                        </div>
+                        <input id="pattern" name="pattern[]" class="form-control top10" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="pull-left">
+                        <button type="button" class="btn btn-default btn-add-target-bulk" >${i18n("label.bulkImport")}</button>
+                    </div>                    
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                    <input type="submit" class="btn btn-primary" value="${i18n("label.save")}" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="new-target-bulk" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">${i18n("label.bulkImport")}</h4>
+            </div>
+
+            <div class="modal-body">
+                <span class="help-block"><#noescape>${i18n("admin.google.bulkTargetHelp")}</#noescape></span>
+                <div class="form-group">
+                    <label for="input-helper" >${i18n("label.pattern")}</label>
+                    <div class="top10">
+                        <input class="target-radio" type="radio" name="target-radio" value="DOMAIN" checked="checked"> 
+                        ${i18n("google.group.targetType.domain")}
+                        
+                        <input class="target-radio" type="radio" name="target-radio" value="SUBDOMAIN"> 
+                        ${i18n("google.group.targetType.subdomain")}&nbsp; 
+                        
+                        <input class="target-radio" type="radio" name="target-radio" value="REGEX"> 
+                        ${i18n("google.group.targetType.regex")}
+                    </div>
+                </div>                
+                <div class="form-group" >
+                    <textarea id="bulk-target" class="form-control" rows="10"
+                            placeholder="www.domain.com or ^https?://example\.com/page\.html"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="pull-left">
+                    <button type="button" class="btn btn-default btn-add-target" >${i18n("label.singleImport")}</button>
+                </div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">${i18n("label.close")}</button>
+                <input type="submit" id="bulk-target-import" class="btn btn-primary" value="${i18n("label.save")}"
+                       data-action="${reverseRoute("google.GoogleGroupController","addTarget","groupId",group.getId())}" 
+                />
+            </div>
+        </div>
+    </div>
+</div>
+<#include "../../helpers/add-event-modal.ftl.html" >
+
+<!--<script type="text/javascript" src="/assets/js/canonical-location.js"></script>-->
+<div class="csp-script" data-src="googleGroupController.view" ></div>
+<div id="csp-vars"
+     data-default-tld="${default.getDefaultTld()}"
+     data-default-datacenter="${default.getDefaultDatacenter()!""}"
+     <#if default.getDefaultDevice() == "MOBILE" >
+     data-default-device="1"
+     <#else>
+     data-default-device="0"
+     </#if>
+     data-default-local="${default.getDefaultLocal()!""}"
+     data-default-custom="${default.getDefaultCustomParameters()!""}"
+     data-group-id="${group.getId()}"
+     ></div>
+</@>
