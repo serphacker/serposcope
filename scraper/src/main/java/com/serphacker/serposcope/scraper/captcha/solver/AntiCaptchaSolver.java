@@ -151,7 +151,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
                     break;
                 }
                 
-                if(++retry > maxRetryOnOverload){
+                if(maxRetryOnOverload > 0 && ++retry > maxRetryOnOverload){
                     break;
                 }
                 
