@@ -28,6 +28,8 @@ public class Config {
     
     String anticaptchaKey;
     
+    String taskNotificationUrl;
+    
     public final static String DEFAULT_DISPLAY_HOME = "summary";
     public final static List<String> VALID_DISPLAY_HOME = Arrays.asList("summary","table");
     public final static String DEFAULT_DISPLAY_GOOGLE_TARGET = "table";
@@ -80,6 +82,14 @@ public class Config {
 
     public void setAnticaptchaKey(String anticaptchaKey) {
         this.anticaptchaKey = anticaptchaKey;
+    }
+    
+    public String getTaskNotificationUrl() {
+    	return taskNotificationUrl;
+    }
+    
+    public void setTaskNotificationUrl(String taskNotificationUrl) {
+    	this.taskNotificationUrl = taskNotificationUrl;
     }
     
     public LocalTime getCronTime() {

@@ -4,6 +4,15 @@
 
 *
 
+## 2.7.1 - 2017-03-21
+
+* Hungarian translation thanks to [@chpdesign](https://github.com/chpdesign)
+* Captcha custom debug error message (for more realable debuging)
+* Anticaptcha higher waiting for captcha decode (high as 500 ms)
+* Search notification callback url in settings
+* Credits tab in the admin
+* googleResults store in db aka hits migrated db with version 6->7
+
 ## 2.7.0 - 2017-03-16
 
 * IMPORTANT Fix new recaptcha v2 form issue [#155](https://github.com/serphacker/serposcope/issues/155)

@@ -46,7 +46,8 @@ public class FailoverCaptchaSolver implements CaptchaSolver {
             if(solver == null){
                 LOG.info("all captcha solver failed");
                 captcha.setLastSolver(this);
-                captcha.setError(Captcha.Error.SERVICE_OVERLOADED);
+                if(captcha.getError().equals(Captcha.Error.SUCCESS))
+                	captcha.setError(Captcha.Error.SERVICE_OVERLOADED);
                 return false;
             }
             
@@ -54,7 +55,7 @@ public class FailoverCaptchaSolver implements CaptchaSolver {
                 return true;
             }
             
-            invalidSolver(solver, captcha.getError());
+            invalidSolver(solver, captcha);
         } while(true);
     }
     
@@ -62,11 +63,11 @@ public class FailoverCaptchaSolver implements CaptchaSolver {
         return currentSolver;
     }
     
-    protected synchronized void invalidSolver(CaptchaSolver solver, Captcha.Error error) {
+    protected synchronized void invalidSolver(CaptchaSolver solver, Captcha captcha) {
         if(solver == currentSolver){
             currentSolver = solvers.poll();
-            LOG.info("{} failed with {}, replacing by {}", 
-                solver.getFriendlyName(), error,
+            LOG.info("{} failed with {}, {}, replacing by {}", 
+                solver.getFriendlyName(), captcha.getError(), captcha.getErrorMsg(),
                 currentSolver == null ? "nothing (no more captcha solver)" : currentSolver.getFriendlyName()
             );
         }

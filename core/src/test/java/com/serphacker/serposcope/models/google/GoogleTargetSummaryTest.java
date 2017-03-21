@@ -32,7 +32,7 @@ public class GoogleTargetSummaryTest {
     public void testTop() {
         List<GoogleRank> ranks = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            ranks.add(new GoogleRank(0, 0, 0, i, i, 0, null));
+            ranks.add(new GoogleRank(0, 0, 0, i, i, 0, 0, null));
         }
         Collections.shuffle(ranks);
         
@@ -45,11 +45,11 @@ public class GoogleTargetSummaryTest {
         assertEquals(5, summary.topRanks.size());
         ReflectionAssert.assertLenientEquals(new HashSet<>(summary.topRanks), 
             new HashSet<>(Arrays.asList(
-                new GoogleRank(0, 0, 0, 1, 1, 0, null),
-                new GoogleRank(0, 0, 0, 2, 2, 0, null),
-                new GoogleRank(0, 0, 0, 3, 3, 0, null),
-                new GoogleRank(0, 0, 0, 4, 4, 0, null),
-                new GoogleRank(0, 0, 0, 5, 5, 0, null)
+                new GoogleRank(0, 0, 0, 1, 1, 0, 0, null),
+                new GoogleRank(0, 0, 0, 2, 2, 0, 0, null),
+                new GoogleRank(0, 0, 0, 3, 3, 0, 0, null),
+                new GoogleRank(0, 0, 0, 4, 4, 0, 0, null),
+                new GoogleRank(0, 0, 0, 5, 5, 0, 0, null)
             ))
         );
     }
@@ -60,7 +60,7 @@ public class GoogleTargetSummaryTest {
         GoogleTargetSummary summary = new GoogleTargetSummary();        
         
         for (int i = 0; i < 100; i++) {
-            ranks.add(new GoogleRank(0, 0, 0, 0, r.nextInt(100), r.nextInt(100), null));
+            ranks.add(new GoogleRank(0, 0, 0, 0, r.nextInt(100), r.nextInt(100), r.nextInt(100), null));
         }
         Collections.shuffle(ranks);
                 
@@ -91,7 +91,7 @@ public class GoogleTargetSummaryTest {
         final GoogleTargetSummary summary = new GoogleTargetSummary();        
         
         for (int i = 0; i < 100; i++) {
-            ranks.add(new GoogleRank(0, 0, 0, 0, r.nextInt(100), r.nextInt(100), null));
+            ranks.add(new GoogleRank(0, 0, 0, 0, r.nextInt(100), r.nextInt(100), r.nextInt(100), null));
         }
         Collections.shuffle(ranks);
                 
@@ -130,48 +130,48 @@ public class GoogleTargetSummaryTest {
         GoogleTargetSummary summary;
         
         summary = new GoogleTargetSummary();
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 2, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 3, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 5, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 10, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 30, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 50, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 100, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 500, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 2, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 3, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 5, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 10, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 30, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 50, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 100, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 500, 0, 0, ""));
         assertEquals(100+90+80+70+60+40+30+20+10+5, summary.getScoreRaw());
         
         summary = new GoogleTargetSummary();
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 2, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 3, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 4, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 6, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 11, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 21, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 31, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 51, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 101, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 2, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 3, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 4, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 6, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 11, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 21, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 31, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 51, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 101, 0, 0, ""));
         assertEquals(100+90+80+70+60+40+30+20+10+5, summary.getScoreRaw());
         
         summary = new GoogleTargetSummary();
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, 0, ""));
         assertEquals(300, summary.getScoreRaw());
         assertEquals(10000, summary.computeScoreBP(3));    
         
         summary = new GoogleTargetSummary();
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 1, 0, 0, ""));
         assertEquals(100, summary.getScoreRaw());
         assertEquals(5000, summary.computeScoreBP(2));
         
         summary = new GoogleTargetSummary();
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
-        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, 0, ""));
+        summary.addRankCandidat(new GoogleRank(0, 0, 0, 0, 20, 0, 0, ""));
         assertEquals(160, summary.getScoreRaw());
         assertEquals(4000, summary.computeScoreBP(4));
         

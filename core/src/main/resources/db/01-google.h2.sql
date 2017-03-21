@@ -50,6 +50,7 @@ create table `GOOGLE_RANK` (
 
     rank smallint,
     previous_rank smallint,
+    hits smallint,
     diff smallint,
     url varchar(256),
 

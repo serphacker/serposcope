@@ -138,7 +138,7 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
                     break;
                 }
                 
-                if(++retry > maxRetryOnOverload){
+                if(maxRetryOnOverload > 0 && ++retry > maxRetryOnOverload){
                     break;
                 }
                 

@@ -42,6 +42,8 @@ public class ConfigDB extends AbstractDB {
     
     public final static String APP_PRUNE_RUNS = "app.prune.runs";
     
+    public final static String APP_NOTI_TASK = "app.noti.task";
+    
     QConfig t_cfg = QConfig.config;
     
     public void update(String name, String value){
@@ -138,11 +140,14 @@ public class ConfigDB extends AbstractDB {
         
         config.setAnticaptchaKey(get(APP_ANTICAPTCHA_KEY, null));
         
+        config.setTaskNotificationUrl(get(APP_NOTI_TASK, null));
+        
         config.setDisplayHome(get(APP_DISPLAY_HOME, Config.DEFAULT_DISPLAY_HOME));
         config.setDisplayGoogleSearch(get(APP_DISPLAY_GOOGLE_SEARCH, Config.DEFAULT_DISPLAY_GOOGLE_SEARCH));
         config.setDisplayGoogleTarget(get(APP_DISPLAY_GOOGLE_TARGET, Config.DEFAULT_DISPLAY_GOOGLE_TARGET));
         
         config.setPruneRuns(getInt(APP_PRUNE_RUNS, Config.DEFAULT_PRUNE_RUNS));
+        
         
         return config;
     }
@@ -157,6 +162,8 @@ public class ConfigDB extends AbstractDB {
 //        update(APP_DECAPTCHER_PASS, config.getDecaptcherPass());
         
         update(APP_ANTICAPTCHA_KEY, config.getAnticaptchaKey());
+        
+        update(APP_NOTI_TASK, config.getTaskNotificationUrl());
         
         update(APP_DISPLAY_HOME, config.getDisplayHome());
         update(APP_DISPLAY_GOOGLE_SEARCH, config.getDisplayGoogleSearch());

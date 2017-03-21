@@ -31,7 +31,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -314,6 +313,29 @@ public class RunDB extends AbstractDB {
             LOG.error("SQL error", ex);
         }
         return run;
+    }
+    
+    public List<Run> findRunning(){
+    	List<Run> runs = new ArrayList<>();
+        try(Connection conn = ds.getConnection()){
+            
+        	List<Tuple> tuples = new SQLQuery<>(conn, dbTplConf)
+                .select(t_run.all())
+                .from(t_run)
+                .where(t_run.finished.isNull())
+                .fetch();
+        	
+        	for (Tuple tuple : tuples) {
+                Run run = fromTuple(tuple);
+                if(run != null){
+                    runs.add(run);
+                }
+            }
+
+        }catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        return runs;
     }
     
     public Run findPrevious(int runId){

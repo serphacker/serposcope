@@ -75,7 +75,7 @@ public class GoogleRankDB extends AbstractDB {
                     tuple.get(t_best.groupId),
                     tuple.get(t_best.googleTargetId),
                     tuple.get(t_best.googleSearchId),
-                    tuple.get(t_best.rank),
+                    (int) tuple.get(t_best.rank),
                     tuple.get(t_best.runDay) != null ? tuple.get(t_best.runDay).toLocalDateTime() : null,
                     tuple.get(t_best.url)
                 );
@@ -156,8 +156,8 @@ public class GoogleRankDB extends AbstractDB {
             */
             
             // 
-            StringBuilder builder = new StringBuilder("INSERT INTO `GOOGLE_RANK` " + 
-                "(`RUN_ID`, `GROUP_ID`, `GOOGLE_TARGET_ID`, `GOOGLE_SEARCH_ID`, `RANK`, `PREVIOUS_RANK`, `DIFF`, `URL`) " + 
+            StringBuilder builder = new StringBuilder("INSERT INTO `"+QGoogleRank.TABLE_NAME+"` " + 
+                "(`run_id`, `group_id`, `google_target_id`, `google_search_id`, `rank`, `previous_rank`, `diff`, `url`) " + 
                 "VALUES ");
             for (GoogleRank rank : ranks) {
                 builder.append("(");
@@ -197,6 +197,7 @@ public class GoogleRankDB extends AbstractDB {
                 .set(t_rank.googleSearchId, rank.googleSearchId)
                 .set(t_rank.rank, rank.rank)
                 .set(t_rank.previousRank, rank.previousRank)
+                .set(t_rank.hits, rank.hits)
                 .set(t_rank.diff, rank.diff)
                 .set(t_rank.url, rank.url)
                 .execute() == 1;
@@ -216,6 +217,7 @@ public class GoogleRankDB extends AbstractDB {
                 .set(t_rank.googleSearchId, rank.googleSearchId)
                 .set(t_rank.rank, rank.rank)
                 .set(t_rank.previousRank, rank.previousRank)
+                .set(t_rank.hits, rank.hits)
                 .set(t_rank.diff, rank.diff)
                 .set(t_rank.url, rank.url)
                 .addFlag(QueryFlag.Position.END, 
@@ -250,6 +252,27 @@ public class GoogleRankDB extends AbstractDB {
         }
         
         return rank != null ? rank : GoogleRank.UNRANKED;
+    }
+    
+    public int hits(int runId, int groupId, int googleTargetId, int googleSearchId){
+        Short rank = null;
+        
+        try(Connection con = ds.getConnection()){
+            
+            rank = new SQLQuery<Void>(con, dbTplConf)
+                .select(t_rank.hits)
+                .from(t_rank)
+                .where(t_rank.runId.eq(runId))
+                .where(t_rank.groupId.eq(groupId))
+                .where(t_rank.googleTargetId.eq(googleTargetId))
+                .where(t_rank.googleSearchId.eq(googleSearchId))
+                .fetchOne();
+            
+        } catch(Exception ex){
+            LOG.error("SQL error", ex);
+        }
+        
+        return rank != null ? rank : 0;
     }
 
     public GoogleRank getFull(int runId, int groupId, int googleTargetId, int googleSearchId){
@@ -419,8 +442,9 @@ public class GoogleRankDB extends AbstractDB {
             tuple.get(t_rank.groupId),
             tuple.get(t_rank.googleTargetId),
             tuple.get(t_rank.googleSearchId),
-            tuple.get(t_rank.rank),
-            tuple.get(t_rank.previousRank),
+            (int) tuple.get(t_rank.rank),
+            (int) tuple.get(t_rank.previousRank),
+            (int) tuple.get(t_rank.hits),
             tuple.get(t_rank.url)
         );
     }

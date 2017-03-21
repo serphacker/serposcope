@@ -75,11 +75,13 @@ public class GoogleSerpRescanDB {
             for (GoogleSearch search : searches) {
                 final MutableInt previousRunId = new MutableInt(0);
                 final MutableInt previousRank = new MutableInt(GoogleRank.UNRANKED);
+                final MutableInt hits = new MutableInt(0);
                 GoogleBest searchBest = new GoogleBest(target.getGroupId(), target.getId(), search.getId(), GoogleRank.UNRANKED, null, null);
                 
                 if(specPrevRun != null){
                     previousRunId.setValue(specPrevRun.getId());
                     previousRank.setValue(rankDB.get(specPrevRun.getId(), target.getGroupId(), target.getId(), search.getId()));
+                    hits.setValue(rankDB.hits(specPrevRun.getId(), target.getGroupId(), target.getId(), search.getId()));
                     GoogleBest specificBest = rankDB.getBest(target.getGroupId(), target.getId(), search.getId());
                     if(specificBest != null){
                         searchBest = specificBest;
@@ -101,7 +103,7 @@ public class GoogleSerpRescanDB {
 
                     // only update last run
                     GoogleRank gRank = new GoogleRank(res.getRunId(), target.getGroupId(), target.getId(), search.getId(),
-                        rank, previousRank.shortValue(), rankedUrl);
+                        rank, previousRank.shortValue(), hits.shortValue(), rankedUrl);
                     rankDB.insert(gRank);
                     
                     if(updateSummary){
@@ -179,11 +181,13 @@ public class GoogleSerpRescanDB {
             for (GoogleSearch search : searches) {
                 final MutableInt previousRunId = new MutableInt(0);
                 final MutableInt previousRank = new MutableInt(GoogleRank.UNRANKED);
+                final MutableInt hits = new MutableInt(0);
                 GoogleBest searchBest = new GoogleBest(target.getGroupId(), target.getId(), search.getId(), GoogleRank.UNRANKED, null, null);
                 
                 if(specPrevRun != null){
                     previousRunId.setValue(specPrevRun.getId());
                     previousRank.setValue(rankDB.get(specPrevRun.getId(), target.getGroupId(), target.getId(), search.getId()));
+                    hits.setValue(rankDB.hits(specPrevRun.getId(), target.getGroupId(), target.getId(), search.getId()));
                     GoogleBest specificBest = rankDB.getBest(target.getGroupId(), target.getId(), search.getId());
                     if(specificBest != null){
                         searchBest = specificBest;
@@ -205,7 +209,7 @@ public class GoogleSerpRescanDB {
 
                     // only update last run
                     GoogleRank gRank = new GoogleRank(res.getRunId(), target.getGroupId(), target.getId(), search.getId(),
-                        rank, previousRank.shortValue(), rankedUrl);
+                        rank, previousRank.shortValue(), hits.shortValue(), rankedUrl);
                     ranks.add(gRank);
                     if(ranks.size() > 2000){
                         rankDB.insert(ranks);

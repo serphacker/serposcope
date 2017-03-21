@@ -87,7 +87,8 @@ public class SettingsController extends BaseController {
 //        @Param("decaptcherUser") String decaptcherUser,
 //        @Param("decaptcherPass") String decaptcherPass,        
         @Param("anticaptchaApiKey") String anticaptchaApiKey,
-        @Param("pruneRuns") Integer pruneRuns
+        @Param("pruneRuns") Integer pruneRuns,
+        @Param("taskNotificationUrl") String taskNotificationUrl
     ){
         FlashScope flash = context.getFlashScope();
         
@@ -122,6 +123,10 @@ public class SettingsController extends BaseController {
         
         if(!Validator.isEmpty(anticaptchaApiKey)){
             config.setAnticaptchaKey(anticaptchaApiKey);
+        }
+        
+        if(!Validator.isEmpty(taskNotificationUrl)){
+        	config.setTaskNotificationUrl(taskNotificationUrl);
         }
         
         if(pruneRuns == null || pruneRuns == 0){

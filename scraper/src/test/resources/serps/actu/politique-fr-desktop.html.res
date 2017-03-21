@@ -1,0 +1,9 @@
+http://www.lemonde.fr/politique/
+http://www.lepoint.fr/politique/
+http://tempsreel.nouvelobs.com/politique/
+http://www.lejdd.fr/Politique
+http://www.bfmtv.com/politique/
+https://fr.wikipedia.org/wiki/Politique
+https://fr.news.yahoo.com/politique/
+http://www.liberation.fr/france,11
+http://www.lexpress.fr/actualite/politique/

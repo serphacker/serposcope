@@ -1,0 +1,9 @@
+http://www.lemonde.fr/panama-papers/article/2016/04/03/panama-papers-le-recap-episode-1_4894878_4890278.html
+http://www.lemonde.fr/panama-papers/article/2016/04/04/panama-papers-ces-12-dirigeants-mondiaux-qui-ont-utilise-des-societes-offshore_4894962_4890278.html
+http://www.lemonde.fr/panama-papers/article/2016/04/03/chefs-d-etat-sportifs-milliardaires-premieres-revelations-des-panama-papers-sur-le-systeme-offshore-mondial_4894816_4890278.html
+https://fr.wikipedia.org/wiki/Panama_Papers
+http://www.telerama.fr/medias/panama-papers-cash-investigation-1-platini-0,140503.php
+http://lexpansion.lexpress.fr/actualite-economique/en-direct-panama-papers-revelations-sur-un-gigantesque-scandale-d-evasion-fiscale_1779123.html
+http://www.liberation.fr/france/2016/04/04/panama-papers-ce-que-l-on-sait_1443838
+http://www.france24.com/fr/20160403-panama-papers-systeme-international-fraude-fiscale-evasion-poutine-messi-platini-scandal
+http://tempsreel.nouvelobs.com/monde/20160403.OBS7744/c-est-le-plus-gros-scandale-d-evasion-fiscale-de-l-histoire-que-sont-les-panama-papers.html

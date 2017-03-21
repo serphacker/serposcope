@@ -692,7 +692,7 @@ public class GoogleGroupController extends GoogleController {
         Context context,
         @Param("query") String query
     ) {
-
+    	Group group = context.getAttribute("group", Group.class);
         StringBuilder builder = new StringBuilder("[");
         getSearches(context).stream()
             .filter((g) -> query == null ? true : g.getKeyword().contains(query))
@@ -701,7 +701,8 @@ public class GoogleGroupController extends GoogleController {
             .forEach((g) -> {
                 builder.append("{")
                     .append("\"id\":").append(g.getId()).append(",")
-                    .append("\"name\":\"").append(StringEscapeUtils.escapeJson(g.getKeyword())).append("\"")
+                    .append("\"name\":\"").append(StringEscapeUtils.escapeJson(g.getKeyword())).append("\"").append(",")
+                    .append("\"group\":").append(group.getId())
                     .append("},");
             });
         if (builder.length() > 1) {

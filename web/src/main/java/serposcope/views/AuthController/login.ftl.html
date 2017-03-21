@@ -18,11 +18,11 @@
 
         <form action="${reverseRoute("AuthController","login")}" method="post">
             <div class="form-group has-feedback">
-                <input type="email" name="email" class="form-control" placeholder="Email">
+                <input type="email" name="email" class="form-control" placeholder="${i18n("label.email")}">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
-                <input type="password" name="password" class="form-control" placeholder="Password">
+                <input type="password" name="password" class="form-control" placeholder="${i18n("label.password")}">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="checkbox">
@@ -32,7 +32,7 @@
             </div>
            <div class="row">
                 <div class="col-xs-offset-8 col-xs-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">Login</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">${i18n("auth.login.login")}</button>
                 </div>
             </div>
             <br/>

@@ -102,7 +102,7 @@
 
                 <hr/>
                 
-                <h2 class="styled-h2">${i18n("label.captcha")} <span style="text-transform: none;">(<a href="https://serposcope.serphacker.com/fr/doc/faq.html?pk_campaign=serposcope#captcha" target="_blank" >${i18n("label.help")}</a>)</span></h2>
+                <h2 class="styled-h2">${i18n("label.captcha")} <span style="text-transform: none;">(<a href="https://serposcope.serphacker.com/${lang}/doc/faq.html?pk_campaign=serposcope#captcha" target="_blank" >${i18n("label.help")}</a>)</span></h2>
                 <hr/>
                 
                 <div>
@@ -128,6 +128,14 @@
                     <#noescape>${i18n("admin.settings.captchaSupportDrop")}</#noescape>
                 </p>
                 <hr/>
+                <h2 class="styled-h2">${i18n("label.notification")}</h2>
+                
+                <hr/>
+                <div class="form-group" >
+                    <label for="taskNotificationUrl" >${i18n("admin.settings.taskNotificationUrl")}</label>
+                    <input id="taskNotificationUrl" class="form-control" name="taskNotificationUrl" placeholder="${i18n("admin.settings.taskNotificationUrlExample")}" value="${config.getTaskNotificationUrl()!""}">
+                    <span class="help-block">${i18n("admin.settings.taskNotificationUrlHelp")}</span>
+                </div>
                 
                 <input type="button" id="btn-reset-settings" class="btn btn-default" value="${i18n("label.reset")}" 
                        data-action="${reverseRoute("admin.SettingsController","reset")}" />

@@ -64,7 +64,7 @@ public class GoogleRankDBH2IT extends AbstractDBIT {
         
         String longUrl = StringUtils.repeat("a", 256);
         
-        GoogleRank rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 1, 2,longUrl);
+        GoogleRank rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 1, 2, 3, longUrl);
         assertTrue(googleDB.rank.insert(rank));
         
         GoogleBest best = new GoogleBest(grp.getId(), target.getId(), search.getId(), 1, LocalDateTime.MIN, longUrl);

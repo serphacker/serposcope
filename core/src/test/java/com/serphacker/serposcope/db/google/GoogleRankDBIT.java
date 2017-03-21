@@ -54,10 +54,10 @@ public class GoogleRankDBIT extends AbstractDBIT {
         Run run = new Run(Run.Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0));
         baseDB.run.insert(run);
         
-        GoogleRank rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 1, 2, "url");
+        GoogleRank rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 1, 2, 3, "url");
         googleDB.rank.insert(rank);
         
-        rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 2, 3, "url");
+        rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 2, 3, 4, "url");
         googleDB.rank.insert(rank);        
         
         
@@ -80,8 +80,8 @@ public class GoogleRankDBIT extends AbstractDBIT {
         Run run = new Run(Run.Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0));
         baseDB.run.insert(run);
         
-        GoogleRank rank1 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search1.getId(), 1, 2, "url-1");
-        GoogleRank rank2 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search2.getId(), 2, 3, "url-2");
+        GoogleRank rank1 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search1.getId(), 1, 2, 3, "url-1");
+        GoogleRank rank2 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search2.getId(), 2, 3, 4, "url-2");
         
         assertTrue(googleDB.rank.insert(Arrays.asList(rank1, rank2)));
         List<GoogleRank> ranks = googleDB.rank.list(run.getId(), grp.getId(), target.getId());
@@ -89,8 +89,8 @@ public class GoogleRankDBIT extends AbstractDBIT {
         assertEquals("url-1", ranks.get(0).url);
         assertEquals("url-2", ranks.get(1).url); 
         
-        rank1 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search1.getId(), 10, 20, "url-xxx-1");
-        rank2 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search2.getId(), 20, 30, "url-xxx-2");        
+        rank1 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search1.getId(), 10, 20, 30, "url-xxx-1");
+        rank2 = new GoogleRank(run.getId(), grp.getId(), target.getId(), search2.getId(), 20, 30, 40, "url-xxx-2");        
         
         assertTrue(googleDB.rank.insert(Arrays.asList(rank1, rank2)));
         ranks = googleDB.rank.list(run.getId(), grp.getId(), target.getId());

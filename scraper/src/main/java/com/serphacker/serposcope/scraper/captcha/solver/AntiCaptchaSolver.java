@@ -12,19 +12,15 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import com.serphacker.serposcope.scraper.captcha.Captcha;
-import static com.serphacker.serposcope.scraper.captcha.Captcha.Error.EXCEPTION;
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import com.serphacker.serposcope.scraper.captcha.CaptchaRecaptcha;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
-import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +36,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
         .addOptions(Option.SUPPRESS_EXCEPTIONS);
     
     public final static long POLLING_PAUSE_MS = 2500l;
-    public final static long DEFAULT_TIMEOUT_MS = 90000l;
+    public final static long DEFAULT_TIMEOUT_MS = 500000l;
 
     private String apiUrl = "http://anti-captcha.com/";
     private String apiUrlv2 = "https://api.anti-captcha.com/";
@@ -98,313 +94,183 @@ public class AntiCaptchaSolver implements CaptchaSolver {
     }
 
     @Override
-    public boolean solve(Captcha cap) {
-        if(cap instanceof CaptchaImage || cap instanceof CaptchaRecaptcha){
-            return solveV2(cap);
-        }
-        
-        return false;
-    }
-    
-    public boolean solveV2(Captcha captcha){
-        
-        captchaCount.incrementAndGet();
-        
-        captcha.setLastSolver(this);
-        captcha.setStatus(Captcha.Status.CREATED);
-        
-        Map<String,Object> taskMap = new HashMap<>();
-        Map<String,Object> createTaskMap = new HashMap<>();
-        createTaskMap.put("clientKey", apiKey);
-        createTaskMap.put("softId", SOFT_ID);
-        createTaskMap.put("languagePool", "en");
-        createTaskMap.put("task", taskMap);
-        
-        if(captcha instanceof CaptchaRecaptcha){
-            taskMap.put("type", "NoCaptchaTaskProxyless");
-            taskMap.put("websiteURL", ((CaptchaRecaptcha)captcha).getUrl());
-            taskMap.put("websiteKey", ((CaptchaRecaptcha)captcha).getChallenge());
-        }
-        
-        if(captcha instanceof CaptchaImage){
-            taskMap.put("type", "ImageToTextTask");
-            taskMap.put("body",Base64.encode(((CaptchaImage)captcha).getImage()));
-            taskMap.put("phrase",false);
-            taskMap.put("case",false);
-            taskMap.put("numeric",0);
-            taskMap.put("math", false);
-            taskMap.put("minLength", 0);
-            taskMap.put("maxLength", 0);
-        }
-        
-        long started = System.currentTimeMillis();
-        captcha.setStatus(Captcha.Status.SUBMITTED);
-        try(ScrapClient http = new ScrapClient()){
-//            http.setInsecureSSL(true);
-//            http.setProxy(new HttpProxy("127.0.0.1", 8080));
-            String response;
-            int retry = 0;
-            while(true){
-                http.post(apiUrlv2 + "/createTask", createTaskMap, ScrapClient.PostType.JSON);
-                response = http.getContentAsString();
-                if(!isRetryable(response)){
-                    break;
-                }
-                
-                if(++retry > maxRetryOnOverload){
-                    break;
-                }
-                
-                try {
-                    Long sleep = 5000l*retry;
-                    LOG.debug("server is overloaded \"{}\", sleeping {} ms", response, sleep);
-                    Thread.sleep(sleep);
-                }catch(InterruptedException ex){
-                    break;
-                }
+    public boolean solve(Captcha captcha) {
+        if(captcha instanceof CaptchaImage || captcha instanceof CaptchaRecaptcha){
+        	captchaCount.incrementAndGet();
+            
+            captcha.setLastSolver(this);
+            captcha.setStatus(Captcha.Status.CREATED);
+            
+            Map<String,Object> taskMap = new HashMap<>();
+            Map<String,Object> createTaskMap = new HashMap<>();
+            createTaskMap.put("clientKey", apiKey);
+            createTaskMap.put("softId", SOFT_ID);
+            createTaskMap.put("languagePool", "en");
+            createTaskMap.put("task", taskMap);
+            
+            if(captcha instanceof CaptchaRecaptcha){
+                taskMap.put("type", "NoCaptchaTaskProxyless");
+                taskMap.put("websiteURL", ((CaptchaRecaptcha)captcha).getUrl());
+                taskMap.put("websiteKey", ((CaptchaRecaptcha)captcha).getChallenge());
             }
             
-            if(response == null){
-                captcha.setError(Captcha.Error.NETWORK_ERROR);
-                return false;
+            if(captcha instanceof CaptchaImage){
+                taskMap.put("type", "ImageToTextTask");
+                taskMap.put("body",Base64.encode(((CaptchaImage)captcha).getImage()));
+                taskMap.put("phrase",false);
+                taskMap.put("case",false);
+                taskMap.put("numeric",0);
+                taskMap.put("math", false);
+                taskMap.put("minLength", 0);
+                taskMap.put("maxLength", 0);
             }
             
-            Integer errorId = 0;
-            DocumentContext doc = null;
-            
-            try {
-                doc = JsonPath.using(JSONPATH_CONF).parse(response);
-                errorId = doc.read("$.errorId");
-            }catch(Exception ex){
-                captcha.setError(Captcha.Error.NETWORK_ERROR);
-                return false;
-            }
-            
-            switch(errorId){
-                case 0:
-                    break;
-                case 1:
-                    captcha.setError(Captcha.Error.INVALID_CREDENTIALS);
-                    return false;
-                    
-                case 2:
-                    captcha.setError(Captcha.Error.SERVICE_OVERLOADED);
-                    return false;
-                    
-                case 10:
-                    captcha.setError(Captcha.Error.OUT_OF_CREDITS);
-                    return false;                
-                    
-                default:
-                    captcha.setError(Captcha.Error.NETWORK_ERROR);
-                    return false;                    
-            }
-            
-            Integer taskId = doc.read("$.taskId");
-            if(taskId == null){
-                LOG.debug("no taskId");
-                captcha.setError(Captcha.Error.NETWORK_ERROR);
-                return false;                
-            }
-            
-            captcha.setId(taskId.toString());
-            
-            Map<String,Object> getTaskResultMap = new HashMap<>();
-            getTaskResultMap.put("clientKey", apiKey);
-            getTaskResultMap.put("taskId", taskId);
-            
-            long timeLimit=System.currentTimeMillis() + timeoutMS;
-            while(System.currentTimeMillis() < timeLimit){
-
-                http.post(apiUrlv2 + "/getTaskResult", getTaskResultMap, ScrapClient.PostType.JSON);
-                
-                String res = http.getContentAsString();
-                if(res == null){
-                    captcha.setError(Captcha.Error.NETWORK_ERROR);
-                    return false;
-                }
-                
-                DocumentContext jsonResult = JsonPath.using(JSONPATH_CONF).parse(res);
-                
-                String status = jsonResult.read("$.status");
-                if("ready".equals(status)){
-                    
-                    if(captcha instanceof CaptchaRecaptcha){
-                        String recaptchaResponse = jsonResult.read("$.solution.gRecaptchaResponse");
-                        if(recaptchaResponse == null || recaptchaResponse.isEmpty()){
-                            captcha.setError(Captcha.Error.NETWORK_ERROR);
-                            captcha.setStatus(Captcha.Status.ERROR);
-                            return false;
-                        }
-
-                        ((CaptchaRecaptcha)captcha).setResponse(recaptchaResponse);
-                        captcha.setStatus(Captcha.Status.SOLVED);
-                        return true;
+            long started = System.currentTimeMillis();
+            captcha.setStatus(Captcha.Status.SUBMITTED);
+            try(ScrapClient http = new ScrapClient()){
+//                http.setInsecureSSL(true);
+//                http.setProxy(new HttpProxy("127.0.0.1", 8080));
+                String response;
+                int retry = 0;
+                while(true){
+                    http.post(apiUrlv2 + "/createTask", createTaskMap, ScrapClient.PostType.JSON);
+                    response = http.getContentAsString();
+                    if(!isRetryable(response)){
+                        break;
                     }
                     
-                    if(captcha instanceof CaptchaImage){
-                        String textResponse = jsonResult.read("$.solution.text");
-                        if(textResponse == null || textResponse.isEmpty()){
-                            captcha.setError(Captcha.Error.NETWORK_ERROR);
-                            captcha.setStatus(Captcha.Status.ERROR);
-                            return false;
-                        }
-
-                        ((CaptchaImage)captcha).setResponse(textResponse);
-                        captcha.setStatus(Captcha.Status.SOLVED);
-                        return true;
-                    }                    
+                    if(maxRetryOnOverload > 0 && ++retry > maxRetryOnOverload){
+                        break;
+                    }
                     
+                    try {
+                        Long sleep = 5000l*retry;
+                        LOG.debug("server is overloaded \"{}\", sleeping {} ms", response, sleep);
+                        Thread.sleep(sleep);
+                    }catch(InterruptedException ex){
+                        break;
+                    }
                 }
                 
-                Integer errId = jsonResult.read("$.errorId");
-                if(errId != null && errId != 0){
+                if(response == null){
                     captcha.setError(Captcha.Error.NETWORK_ERROR);
-                    captcha.setStatus(Captcha.Status.ERROR);
                     return false;
                 }
-
-                try {
-                    Thread.sleep(POLLING_PAUSE_MS);
-                } catch (InterruptedException ex) {
-                    break;
-                }
-            }
-            
-            captcha.setError(Captcha.Error.TIMEOUT);
-            captcha.setStatus(Captcha.Status.ERROR);
-            
-        } catch(IOException ex){
-            LOG.error("io exception", ex);
-            captcha.setError(EXCEPTION);
-        } finally {
-            captcha.setSolveDuration(System.currentTimeMillis()-started);
-        }
-        
-        return false;
-    }    
-    
-    public boolean solveV1(CaptchaImage captcha){
-        
-        captchaCount.incrementAndGet();
-        
-        captcha.setLastSolver(this);
-        captcha.setStatus(Captcha.Status.CREATED);
-        
-        String filename = null;
-        String textMimeType = captcha.getMimes()[0];
-        String[] mimes = null;        
-        
-        if(textMimeType != null)
-            mimes = textMimeType.split("/");
-        else
-            textMimeType = "application/octet-stream";
-        if(mimes != null && mimes.length == 2){
-            if(isValidImageExtension(mimes[1])){
-                filename = "image." + mimes[1];
-            }
-        } else {
-            filename = "image.png";
-        }
-        
-        Map<String,Object> data = new HashMap<>();
-        data.put("method", "post");
-        data.put("key", apiKey);
-        data.put("file",new ByteArrayBody(captcha.getImage(), ContentType.create(textMimeType), filename));
-        
-        long started = System.currentTimeMillis();
-        captcha.setStatus(Captcha.Status.SUBMITTED);
-        try(ScrapClient http = new ScrapClient()){
-            String response;
-            int retry = 0;
-            while(true){
-                http.post(apiUrl + "in.php", data, ScrapClient.PostType.MULTIPART);
-                response = http.getContentAsString();
-                if(!isRetryable(response)){
-                    break;
-                }
                 
-                if(++retry > maxRetryOnOverload){
-                    break;
-                }
+                Integer errorId = 0;
+                DocumentContext doc = null;
                 
                 try {
-                    Long sleep = 5000l*retry;
-                    LOG.debug("server is overloaded \"{}\", sleeping {} ms", response, sleep);
-                    Thread.sleep(sleep);
-                }catch(InterruptedException ex){
-                    break;
+                    doc = JsonPath.using(JSONPATH_CONF).parse(response);
+                    errorId = doc.read("$.errorId");
+                }catch(Exception ex){
+                    captcha.setError(Captcha.Error.NETWORK_ERROR);
+                    return false;
                 }
-            }
-            
-            if(response == null){
-                captcha.setError(Captcha.Error.NETWORK_ERROR);
-                return false;
-            }
-            
-            if(!response.startsWith("OK|") || response.length() < 4){
-                switch(response){
-                    case "ERROR_WRONG_USER_KEY":
-                    case "ERROR_KEY_DOES_NOT_EXIST":
+                
+                switch(errorId){
+                    case 0:
+                        break;
+                    case 1:
                         captcha.setError(Captcha.Error.INVALID_CREDENTIALS);
                         return false;
                         
-                    case "ERROR_ZERO_BALANCE":
-                        captcha.setError(Captcha.Error.OUT_OF_CREDITS);
+                    case 2:
+                        captcha.setError(Captcha.Error.SERVICE_OVERLOADED);
+                        captcha.setErrorMsg("errorId: 2");
                         return false;
                         
-                    case "ERROR_NO_SLOT_AVAILABLE":
-                        captcha.setError(Captcha.Error.SERVICE_OVERLOADED);
-                        return false;
+                    case 10:
+                        captcha.setError(Captcha.Error.OUT_OF_CREDITS);
+                        return false;                
                         
                     default:
                         captcha.setError(Captcha.Error.NETWORK_ERROR);
-                        return false;
+                        return false;                    
                 }
-            }
-            
-            captcha.setId(response.substring(3));
-            
-            long timeLimit=System.currentTimeMillis() + timeoutMS;
-            while(System.currentTimeMillis() < timeLimit){
-
-                int status = http.get(apiUrl + "res.php?key=" + apiKey + 
-                    "&action=get" + 
-                    "&id=" + captcha.getId() + 
-                    "&random=" + random.nextInt(Integer.MAX_VALUE));
                 
-                String res = http.getContentAsString();
-                if(res == null){
+                Integer taskId = doc.read("$.taskId");
+                if(taskId == null){
+                    LOG.debug("no taskId");
                     captcha.setError(Captcha.Error.NETWORK_ERROR);
-                    return false;
+                    return false;                
                 }
                 
-                if(!"CAPCHA_NOT_READY".equals(res)){
-                    if(res.startsWith("OK|")){
-                        captcha.setResponse(res.substring(3));
-                        captcha.setStatus(Captcha.Status.SOLVED);
-                        return true;
+                captcha.setId(taskId.toString());
+                
+                Map<String,Object> getTaskResultMap = new HashMap<>();
+                getTaskResultMap.put("clientKey", apiKey);
+                getTaskResultMap.put("taskId", taskId);
+                
+                long timeLimit=System.currentTimeMillis() + timeoutMS;
+                while(System.currentTimeMillis() < timeLimit){
+
+                    http.post(apiUrlv2 + "/getTaskResult", getTaskResultMap, ScrapClient.PostType.JSON);
+                    
+                    String res = http.getContentAsString();
+                    if(res == null){
+                        captcha.setError(Captcha.Error.NETWORK_ERROR);
+                        return false;
                     }
                     
-                    captcha.setError(Captcha.Error.NETWORK_ERROR);
-                    captcha.setStatus(Captcha.Status.ERROR);
-                }
+                    DocumentContext jsonResult = JsonPath.using(JSONPATH_CONF).parse(res);
+                    
+                    String status = jsonResult.read("$.status");
+                    if("ready".equals(status)){
+                        
+                        if(captcha instanceof CaptchaRecaptcha){
+                            String recaptchaResponse = jsonResult.read("$.solution.gRecaptchaResponse");
+                            if(recaptchaResponse == null || recaptchaResponse.isEmpty()){
+                                captcha.setError(Captcha.Error.NETWORK_ERROR);
+                                captcha.setStatus(Captcha.Status.ERROR);
+                                return false;
+                            }
 
-                try {
-                    Thread.sleep(POLLING_PAUSE_MS);
-                } catch (InterruptedException ex) {
-                    break;
+                            ((CaptchaRecaptcha)captcha).setResponse(recaptchaResponse);
+                            captcha.setStatus(Captcha.Status.SOLVED);
+                            return true;
+                        }
+                        
+                        if(captcha instanceof CaptchaImage){
+                            String textResponse = jsonResult.read("$.solution.text");
+                            if(textResponse == null || textResponse.isEmpty()){
+                                captcha.setError(Captcha.Error.NETWORK_ERROR);
+                                captcha.setStatus(Captcha.Status.ERROR);
+                                return false;
+                            }
+
+                            ((CaptchaImage)captcha).setResponse(textResponse);
+                            captcha.setStatus(Captcha.Status.SOLVED);
+                            return true;
+                        }                    
+                        
+                    }
+                    
+                    Integer errId = jsonResult.read("$.errorId");
+                    if(errId != null && errId != 0){
+                        captcha.setError(Captcha.Error.NETWORK_ERROR);
+                        captcha.setStatus(Captcha.Status.ERROR);
+                        return false;
+                    }
+
+                    try {
+                        Thread.sleep(POLLING_PAUSE_MS);
+                    } catch (InterruptedException ex) {
+                        break;
+                    }
                 }
+                
+                captcha.setError(Captcha.Error.TIMEOUT);
+                captcha.setStatus(Captcha.Status.ERROR);
+                
+            } catch(IOException ex){
+                LOG.error("io exception", ex);
+                captcha.setError(Captcha.Error.EXCEPTION);
+            } finally {
+                captcha.setSolveDuration(System.currentTimeMillis()-started);
             }
             
-            captcha.setError(Captcha.Error.TIMEOUT);
-            captcha.setStatus(Captcha.Status.ERROR);
-            
-        } catch(IOException ex){
-            LOG.error("io exception", ex);
-            captcha.setError(EXCEPTION);
-        } finally {
-            captcha.setSolveDuration(System.currentTimeMillis()-started);
+            return false;
         }
         
         return false;

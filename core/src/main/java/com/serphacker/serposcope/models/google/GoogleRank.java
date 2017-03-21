@@ -18,10 +18,11 @@ public class GoogleRank {
     public final int googleSearchId;
     public final short rank;
     public final short previousRank;
+    public final short hits;
     public final short diff;
     public final String url;
     
-    public GoogleRank(int runId, int groupId, int googleTargetId, int googleSearchId, int rank, int previousRank, String url) {
+    public GoogleRank(int runId, int groupId, int googleTargetId, int googleSearchId, int rank, int previousRank, long hits, String url) {
         if(previousRank == 0){
             previousRank = GoogleRank.UNRANKED;
         }
@@ -34,6 +35,7 @@ public class GoogleRank {
         this.googleSearchId = googleSearchId;
         this.rank = (short)rank;
         this.previousRank = (short)previousRank;
+        this.hits = (short)hits;
         this.diff = (short)(rank - previousRank);
         if(url != null && url.length() >= 256){
             url = url.substring(0, 256);

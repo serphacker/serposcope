@@ -1,0 +1,9 @@
+http://mobile.lemonde.fr/panama-papers/article/2016/04/03/panama-papers-le-recap-episode-1_4894878_4890278.html
+http://www.lemonde.fr/panama-papers/article/2016/04/04/panama-papers-ces-12-dirigeants-mondiaux-qui-ont-utilise-des-societes-offshore_4894962_4890278.html
+http://mobile.lemonde.fr/panama-papers/article/2016/04/03/chefs-d-etat-sportifs-milliardaires-premieres-revelations-des-panama-papers-sur-le-systeme-offshore-mondial_4894816_4890278.html
+http://mobile.lemonde.fr/panama-papers/article/2016/04/03/panama-papers-la-mysterieuse-societe-offshore-de-michel-platini_4894849_4890278.html
+http://www.liberation.fr/france/2016/04/04/panama-papers-ce-que-l-on-sait_1443838
+http://www.telerama.fr/medias/panama-papers-cash-investigation-1-platini-0,140503.php
+http://tempsreel.nouvelobs.com/monde/20160403.OBS7744/c-est-le-plus-gros-scandale-d-evasion-fiscale-de-l-histoire-que-sont-les-panama-papers.html
+http://m.france24.com/fr/20160403-panama-papers-systeme-international-fraude-fiscale-evasion-poutine-messi-platini-scandal
+http://m.20minutes.fr/monde/1819087-20160404-video-panama-papers-dirigeants-etrangers-utilisant-societes-offshore

@@ -28,20 +28,35 @@ import com.serphacker.serposcope.scraper.http.ScrapClient;
 import com.serphacker.serposcope.scraper.http.proxy.DirectNoProxy;
 import com.serphacker.serposcope.scraper.http.proxy.ProxyRotator;
 import com.serphacker.serposcope.task.AbstractTask;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.serphacker.serposcope.scraper.http.proxy.ScrapProxy;
+
 import java.util.stream.Collectors;
+
 import com.serphacker.serposcope.di.GoogleScraperFactory;
 import com.serphacker.serposcope.models.google.GoogleBest;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -233,7 +248,7 @@ public class GoogleTask extends AbstractTask {
                     previousRank = googleDB.rank.get(previousRun.getId(), group, target.getId(), search.getId());
                 }
                 
-                GoogleRank gRank = new GoogleRank(run.getId(), group, target.getId(), search.getId(), rank, previousRank, rankedUrl);
+                GoogleRank gRank = new GoogleRank(run.getId(), group, target.getId(), search.getId(), rank, previousRank, res.googleResults,rankedUrl);
                 googleDB.rank.insert(gRank);
                 
                 GoogleTargetSummary summary = summariesByTarget.get(target.getId());
@@ -242,6 +257,54 @@ public class GoogleTask extends AbstractTask {
                 if(rank != GoogleRank.UNRANKED && rank <= best){
                     googleDB.rank.insertBest(new GoogleBest(group, target.getId(), search.getId(), rank, run.getStarted(), rankedUrl));
                 }
+                
+            	String url = baseDB.config.getConfig().getTaskNotificationUrl();
+                
+                //LOG.info("serposcope-agent sending notification to: "+url);
+                
+                if(url != null && !url.isEmpty())
+                {
+                	try{
+	                	LOG.info("serposcope-agent sending notification to: "+url);
+	                	CloseableHttpClient httpNotifiyClient = HttpClientBuilder.create().build();
+	                	HttpPost post = new HttpPost(url);
+		
+	                	// add header
+	                	post.setHeader("User-Agent", "serposcope-agent");
+		
+	                	List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+	                	urlParameters.add(new BasicNameValuePair("keyword", search.getKeyword()));
+	                	urlParameters.add(new BasicNameValuePair("rank", rank+""));
+	                	urlParameters.add(new BasicNameValuePair("best", best+""));
+	                	urlParameters.add(new BasicNameValuePair("hits", res.googleResults+""));
+	                	urlParameters.add(new BasicNameValuePair("url", rankedUrl));
+	                	urlParameters.add(new BasicNameValuePair("previousRank", previousRank+""));
+	                	urlParameters.add(new BasicNameValuePair("target", target.getPattern()+""));
+	                	//urlParameters.add(new BasicNameValuePair("try", searchTry+""));
+	                	//urlParameters.add(new BasicNameValuePair("done", controller.getSearchDone()+""));
+	                	//urlParameters.add(new BasicNameValuePair("total", controller.totalSearch+""));
+		
+	                	post.setEntity(new UrlEncodedFormEntity(urlParameters, "UTF-8"));
+		
+	                	HttpResponse response = httpNotifiyClient.execute(post);
+	                	LOG.info("serposcope-agent response code : "
+		                                + response.getStatusLine().getStatusCode());
+		
+	                	BufferedReader rd = new BufferedReader(
+		                        new InputStreamReader(response.getEntity().getContent()));
+		
+	                	StringBuffer result = new StringBuffer();
+	                	String line = "";
+		                while ((line = rd.readLine()) != null) {
+		                	result.append(line);
+		                }
+                	}
+                	catch (Exception e)
+                	{
+                		LOG.error("serposcope-agent unhandled exception", e);
+                	}
+                }
+                
             }
         }
     }    

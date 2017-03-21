@@ -94,10 +94,10 @@ public class GoogleRankDBBench {
             Run run = new Run(Run.Mode.CRON, Group.Module.GOOGLE, LocalDateTime.now().withNano(0));
             baseDB.run.insert(run);
 
-            GoogleRank rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 1, 2, "url");
+            GoogleRank rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 1, 2, 3, "url");
             googleDB.rank.insert(rank);
 
-            rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 2, 3, "url");
+            rank = new GoogleRank(run.getId(), grp.getId(), target.getId(), search.getId(), 2, 3, 4, "url");
             googleDB.rank.insert(rank);
         }
         System.out.println(DurationFormatUtils.formatDurationHMS(System.currentTimeMillis()-_time));

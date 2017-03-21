@@ -41,13 +41,18 @@
             <a href="${reverseRoute("admin.AdminController","stackdump")}">
                <i class="fa fa-support fa-fw"></i> ${i18n("label.stackdump")}
             </a>
-        </li>         
+        </li>
+		<li>
+            <a href="${reverseRoute("admin.CreditsController","credits")}">
+                <i class="fa fa-id-card-o fa-fw"></i> ${i18n("label.credits")}
+            </a>
+        </li>
         <#if !global.prod>
         <li>
             <a href="${reverseRoute("admin.DebugController","debug")}">
                <i class="fa fa-briefcase fa-fw"></i> ${i18n("label.debug")}
             </a>
-        </li>      
+        </li>
         </#if>
     </ul>
 </li>

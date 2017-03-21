@@ -62,7 +62,7 @@ public class GoogleTargetSummaryDBIT extends AbstractDBIT {
         
         List<GoogleRank> ranks = new ArrayList<>();
         for (GoogleSearch search : searches) {
-            GoogleRank rank = new GoogleRank(run.getId(), group.getId(), target.getId(), search.getId(), r.nextInt(100)+1, r.nextInt(100)+1, "url-" + search.getId());
+            GoogleRank rank = new GoogleRank(run.getId(), group.getId(), target.getId(), search.getId(), r.nextInt(100)+1, r.nextInt(100)+1, r.nextInt(100)+1, "url-" + search.getId());
             google.rank.insert(rank);
             ranks.add(rank);
             summary.addRankCandidat(rank);
@@ -82,7 +82,7 @@ public class GoogleTargetSummaryDBIT extends AbstractDBIT {
         
         List<GoogleRank> ranks = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            targetSum.addRankCandidat(new GoogleRank(0, 0, 0, i, i, 0, "void"));
+            targetSum.addRankCandidat(new GoogleRank(0, 0, 0, i, i, 0, 0, "void"));
         }
         
         System.out.println(google.targetSummary.unserializeIds(targetSum.getTopRanksSerialized()));
