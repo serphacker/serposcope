@@ -17,6 +17,7 @@ import serposcope.controllers.GroupController;
 import serposcope.controllers.HomeController;
 import serposcope.controllers.UserPreferences;
 import serposcope.controllers.admin.AdminController;
+import serposcope.controllers.admin.CreditsController;
 import serposcope.controllers.admin.DebugController;
 import serposcope.controllers.admin.GoogleSettingsController;
 import serposcope.controllers.admin.LogController;
@@ -61,6 +62,8 @@ public class Routes implements ApplicationRoutes {
         router.POST().route("/admin/settings/reset").with(SettingsController.class, "reset");        
         router.GET().route("/admin/settings/test-captcha").with(SettingsController.class, "testCaptcha");
         router.POST().route("/admin/settings/prune").with(SettingsController.class, "prune");
+        
+        router.GET().route("/admin/credits").with(CreditsController.class, "credits");
         
         router.GET().route("/admin/google").with(GoogleSettingsController.class, "settings");
         router.POST().route("/admin/google/update").with(GoogleSettingsController.class, "update");
