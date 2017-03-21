@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class MigrationDB extends AbstractDB {
     
-    public final static int LAST_DB_VERSION = 6;
+    public final static int LAST_DB_VERSION = 7;
     
     public final static String[] DB_SCHEMA_FILES = new String[]{
         "/db/00-base.h2.sql",
@@ -134,6 +134,8 @@ public class MigrationDB extends AbstractDB {
                             break;
                         case 5:
                             upgradeFromV5(stmt);
+                        case 6:
+                        	upgradeFromV6(stmt);
                             break;
                     }
                 }catch(Exception ex){
@@ -206,6 +208,11 @@ public class MigrationDB extends AbstractDB {
             stmt.executeUpdate("ALTER TABLE `"+QGoogleTargetSummary.TABLE_NAME+"` CHARACTER SET utf8 COLLATE utf8_bin;");
         }
         stmt.executeUpdate("insert into `"+QConfig.TABLE_NAME+"` values ('app.dbversion','6') on duplicate key update `value` = '6';");
+    }
+    
+    protected void upgradeFromV6(Statement stmt) throws Exception {
+    	stmt.executeUpdate("ALTER TABLE `"+QGoogleRank.TABLE_NAME+"` ADD `hits` SMALLINT(6) NULL DEFAULT NULL AFTER `previous_rank`;");
+    	stmt.executeUpdate("insert into `"+QConfig.TABLE_NAME+"` values ('app.dbversion','7') on duplicate key update `value` = '7';");
     }
     
 }
