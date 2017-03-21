@@ -450,7 +450,7 @@ public class GoogleScraper {
         CaptchaRecaptcha captcha = new CaptchaRecaptcha(siteKey, captchaRedirect);
         boolean solved = solver.solve(captcha);
         if(!solved || !Captcha.Status.SOLVED.equals(captcha.getStatus())){
-            LOG.error("solver can't resolve captcha (overload ?) error = {}", captcha.getError());
+            LOG.error("solver can't resolve captcha (overload ?) error = {}, {}", captcha.getError(), captcha.getErrorMsg());
             return Status.ERROR_CAPTCHA_INCORRECT;
         }
         LOG.debug("got captcha response {} in {} seconds from {}", captcha.getResponse(), captcha.getSolveDuration()/1000l, 
@@ -552,7 +552,7 @@ public class GoogleScraper {
         CaptchaImage captcha = new CaptchaImage(new byte[][]{http.getContent()});
         boolean solved = solver.solve(captcha);
         if(!solved || !Captcha.Status.SOLVED.equals(captcha.getStatus())){
-            LOG.error("solver can't resolve captcha (overload ?) error = {}", captcha.getError());
+            LOG.error("solver can't resolve captcha (overload ?) error = {}, {}", captcha.getError(), captcha.getErrorMsg());
             return Status.ERROR_CAPTCHA_INCORRECT;
         }
         LOG.debug("got captcha response {} in {} seconds from {}", captcha.getResponse(), captcha.getSolveDuration()/1000l, 

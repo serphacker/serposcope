@@ -40,6 +40,7 @@ public abstract class Captcha {
     String id;
     Status status = CREATED;
     Error error = SUCCESS;
+    String errorMsg = "";
     long solveDuration;
     Map<String,String> context = new HashMap<>();
     CaptchaSolver lastSolver;
@@ -77,6 +78,14 @@ public abstract class Captcha {
         if(error != SUCCESS){
             this.status = Status.ERROR;
         }
+    }
+    
+    public void setErrorMsg(String errorMsg){
+    	this.errorMsg = errorMsg;
+    }
+    
+    public String getErrorMsg(){
+    	return this.errorMsg;
     }
 
     public long getSolveDuration() {
