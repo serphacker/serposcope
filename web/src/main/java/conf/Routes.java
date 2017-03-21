@@ -80,9 +80,10 @@ public class Routes implements ApplicationRoutes {
         router.POST().route("/admin/tasks/{runId: [0-9]+}/delete").with(TaskController.class, "deleteRun");
         router.POST().route("/admin/tasks/{runId: [0-9]+}/rescan-serp").with(TaskController.class, "rescanSerp");
         
-        router.GET().route("/tasks/start").with(SyncController.class, "startTask");
-        router.GET().route("/tasks/stop").with(SyncController.class, "abortTask");
-        router.GET().route("/test-captcha").with(SyncController.class, "testCaptcha");
+        // Maybe later!
+        //router.GET().route("/tasks/start").with(SyncController.class, "startTask");
+        //router.GET().route("/tasks/stop").with(SyncController.class, "abortTask");
+        //router.GET().route("/test-captcha").with(SyncController.class, "testCaptcha");
         
         router.GET().route("/admin/logs").with(LogController.class, "logs");
         router.GET().route("/admin/logs/view").with(LogController.class, "viewLog");
