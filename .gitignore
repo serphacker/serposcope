@@ -21,6 +21,11 @@ nbdist/
 nbactions.xml
 .nb-gradle/
 
+#eclipse
+.settings
+.buildpath
+.project
+
 #idea
 *.iml
 .idea/
