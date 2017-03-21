@@ -22,9 +22,9 @@ nbactions.xml
 .nb-gradle/
 
 #eclipse
-#.settings
-#.buildpath
-#.project
+.settings
+.buildpath
+.project
 
 #idea
 *.iml
