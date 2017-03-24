@@ -177,6 +177,7 @@ public class DecaptcherSolver implements CaptchaSolver {
     @Override
     public boolean solve(Captcha cap) {
         if(!(cap instanceof CaptchaImage)){
+            cap.setError(Captcha.Error.UNSUPPORTED_TYPE);
             return false;
         }
         

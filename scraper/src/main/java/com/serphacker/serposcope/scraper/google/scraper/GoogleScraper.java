@@ -375,7 +375,6 @@ public class GoogleScraper {
         LOG.info("GOT[refetch] status=[{}] exception=[{}]", status, http.getException() == null ? "none" : 
             (http.getException().getClass().getSimpleName() + " : " + http.getException().getMessage()));
         if(status == 200){
-            LOG.debug("bypass captcha by refetch");
             return Status.OK;
         }
         

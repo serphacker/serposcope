@@ -34,7 +34,8 @@ public abstract class Captcha {
         NETWORK_ERROR,
         TIMEOUT,
         INTERRUPTED,
-        EXCEPTION
+        EXCEPTION,
+        UNSUPPORTED_TYPE
     };
     
     String id;

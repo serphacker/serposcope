@@ -412,7 +412,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
     
     public boolean isRetryable(String response){
         boolean retryable = response == null || response.toUpperCase().contains("ERROR_NO_SLOT_AVAILABLE");
-        LOG.debug("isRetryable ? {} - {}", retryable, response);
+//        LOG.debug("isRetryable ? {} - {}", retryable, response);
         return retryable;
     }
     

@@ -41,10 +41,13 @@ public class RandomCaptchaSolver implements CaptchaSolver {
         Collections.shuffle(localSolvers, ThreadLocalRandom.current());
         
         for (CaptchaSolver solver : localSolvers) {
-            LOG.info("trying solver {}", solver.getFriendlyName());
+            captcha.setStatus(Captcha.Status.CREATED);
+            captcha.setError(Captcha.Error.SUCCESS);
+            LOG.info("trying {}", solver.getFriendlyName());
             if(solver.solve(captcha)){
                 return true;
             }
+            LOG.info("{} failed with {}", solver.getFriendlyName(), captcha.getError());
         }
         
         LOG.info("all captcha solver failed");
