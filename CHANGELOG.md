@@ -1,6 +1,6 @@
 # serposcope changelog
 
-## 2.7.1 - UNRELEASED
+## 2.7.1 - 2017-03-24
 
 * IMPORTANT Fix new recaptcha v2 form issue [#155](https://github.com/serphacker/serposcope/issues/155)
 * Big improvements on captcha handling and rate limiting
