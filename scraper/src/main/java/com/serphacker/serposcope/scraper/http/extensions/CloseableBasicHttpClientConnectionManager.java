@@ -19,8 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpHost;
-import org.apache.http.annotation.GuardedBy;
-import org.apache.http.annotation.ThreadSafe;
+import org.apache.http.annotation.Contract;
+import org.apache.http.annotation.ThreadingBehavior;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.Lookup;
 import org.apache.http.config.Registry;
@@ -62,7 +62,7 @@ import org.apache.http.util.LangUtils;
  *
  * @since 4.3
  */
-@ThreadSafe
+@Contract(threading = ThreadingBehavior.SAFE_CONDITIONAL)
 public class CloseableBasicHttpClientConnectionManager implements HttpClientConnectionManager, Closeable {
 
     private final Log log = LogFactory.getLog(getClass());
@@ -70,28 +70,20 @@ public class CloseableBasicHttpClientConnectionManager implements HttpClientConn
     private final HttpClientConnectionOperator connectionOperator;
     private final HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory;
 
-    @GuardedBy("this")
     private ManagedHttpClientConnection conn;
 
-    @GuardedBy("this")
     private HttpRoute route;
 
-    @GuardedBy("this")
     private Object state;
 
-    @GuardedBy("this")
     private long updated;
 
-    @GuardedBy("this")
     private long expiry;
 
-    @GuardedBy("this")
     private boolean leased;
 
-    @GuardedBy("this")
     private SocketConfig socketConfig;
 
-    @GuardedBy("this")
     private ConnectionConfig connConfig;
 
     private final AtomicBoolean isShutdown;

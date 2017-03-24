@@ -297,12 +297,12 @@
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>7.0.7</version>
+            <version>7.0.13</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.8.3</version>
+            <version>1.10.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>

@@ -125,14 +125,14 @@ public class MigrationDB extends AbstractDB {
         // update previous captcha parameters
         String captchaService = config.get("app.captchaservice", "").toLowerCase();
         switch(captchaService){
-//            case "deathbycaptcha":
-//                config.update(ConfigDB.APP_DBC_USER, config.get("app.dbcuser", ""));
-//                config.update(ConfigDB.APP_DBC_PASS, config.get("app.dbcpass", ""));
-//                break;
-//            case "decaptcher":
-//                config.update(ConfigDB.APP_DECAPTCHER_USER, config.get("app.dbcuser", ""));
-//                config.update(ConfigDB.APP_DECAPTCHER_PASS, config.get("app.dbcpass", ""));
-//                break;
+            case "deathbycaptcha":
+                config.update(ConfigDB.APP_DBC_USER, config.get("app.dbcuser", ""));
+                config.update(ConfigDB.APP_DBC_PASS, config.get("app.dbcpass", ""));
+                break;
+            case "decaptcher":
+                config.update(ConfigDB.APP_DECAPTCHER_USER, config.get("app.dbcuser", ""));
+                config.update(ConfigDB.APP_DECAPTCHER_PASS, config.get("app.dbcpass", ""));
+                break;
             case "anticaptcha":
                 config.update(ConfigDB.APP_ANTICAPTCHA_KEY, config.get("app.dbcapi", ""));
                 break;

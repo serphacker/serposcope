@@ -31,7 +31,7 @@ public class FailoverCaptchaSolverIT {
         CaptchaSolver solver1 = new TestingFixedCaptchaSolver("solver#1", 3);
         CaptchaSolver solver2 = new TestingFixedCaptchaSolver("solver#2", 2);
         
-        FailoverCaptchaSolver fcs = new FailoverCaptchaSolver(Arrays.asList(solver1, solver2));
+        RandomCaptchaSolver fcs = new RandomCaptchaSolver(Arrays.asList(solver1, solver2));
         
         CaptchaImage c = new CaptchaImage(null);
         assertTrue(fcs.solve(c));
@@ -53,7 +53,7 @@ public class FailoverCaptchaSolverIT {
     @Test
     public void testConcurrency() throws Exception {
         
-        final FailoverCaptchaSolver fcs = new FailoverCaptchaSolver(Arrays.asList(
+        final RandomCaptchaSolver fcs = new RandomCaptchaSolver(Arrays.asList(
             new TestingRandomCaptchaSolver("fail-100-v1", 100, 50),
             new TestingRandomCaptchaSolver("fail-10", 10, 50),
             new TestingRandomCaptchaSolver("fail-never", 0, 0)

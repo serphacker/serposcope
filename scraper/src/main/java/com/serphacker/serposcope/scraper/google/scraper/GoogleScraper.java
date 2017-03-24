@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GoogleScraper {
     
-    public final static int MAX_RETRY = 6;
+    public final static int MAX_RETRY = 3;
     
     final static BasicClientCookie NCR_COOKIE = new BasicClientCookie("PREF", "ID=1111111111111111:CR=2");
     static {
@@ -98,7 +98,7 @@ public class GoogleScraper {
                 
                 LOG.debug("GET {} via {} try {}", url, http.getProxy() == null ? new DirectNoProxy() : http.getProxy(), retry+1);
                 
-                status = downloadSerp(url, referrer, search);
+                status = downloadSerp(url, referrer, search, retry);
                 if(status == Status.OK){
                     status = parseSerp(urls);
                     if(status == Status.OK){
@@ -149,7 +149,6 @@ public class GoogleScraper {
         
         if("com".equals(search.getTld())){
             http.addCookie(NCR_COOKIE);
-//            http.get("https://www.google.com/ncr");
         }
 
         String hostname = "www.google.com";
@@ -173,7 +172,7 @@ public class GoogleScraper {
         }
     }
     
-    protected Status downloadSerp(String url, String referrer, GoogleScrapSearch search){
+    protected Status downloadSerp(String url, String referrer, GoogleScrapSearch search, int retry){
         if(referrer == null){
             referrer = "https://www.google." + search.getTld();
         }
@@ -184,10 +183,14 @@ public class GoogleScraper {
         switch(status){
             case 200:
                 return Status.OK;
+                
+            case 403:
+                try{Thread.sleep((retry+1)*1000);}catch(Exception ex){}
+                break;
 
             case 302:
                 ++captchas;
-                return handleCaptchaRedirect(http.getResponseHeader("location"));
+                return handleCaptchaRedirect(url, referrer, http.getResponseHeader("location"));
         }
         
         return Status.ERROR_NETWORK;
@@ -361,13 +364,31 @@ public class GoogleScraper {
     }    
     
     final static Pattern PATTERN_CAPTCHA_ID = Pattern.compile("/sorry/image\\?id=([0-9]+)&?");
-    protected Status handleCaptchaRedirect(String captchaRedirect){
-        if(captchaRedirect == null || !captchaRedirect.contains("?continue=")){
+    protected Status handleCaptchaRedirect(String url, String referrer, String redirect){
+        
+        http.clearCookies();
+        if(redirect.contains(".com/search")){
+            http.addCookie(NCR_COOKIE);
+        }
+        
+        int status = http.get(url, referrer);
+        LOG.info("GOT[refetch] status=[{}] exception=[{}]", status, http.getException() == null ? "none" : 
+            (http.getException().getClass().getSimpleName() + " : " + http.getException().getMessage()));
+        if(status == 200){
+            LOG.debug("bypass captcha by refetch");
+            return Status.OK;
+        }
+        
+        if(status == 302){
+            redirect = http.getResponseHeader("location");
+        }
+        
+        if(redirect == null || !redirect.contains("?continue=")){
             return Status.ERROR_NETWORK;
         }
-        LOG.debug("captcha form detected via {}", http.getProxy() == null ? new DirectNoProxy() : http.getProxy());
         
-        int status = http.get(captchaRedirect);
+        LOG.debug("captcha form detected via {}", http.getProxy() == null ? new DirectNoProxy() : http.getProxy());
+        status = http.get(redirect);
         if(status == 403){
             return Status.ERROR_IP_BANNED;
         }
@@ -381,19 +402,19 @@ public class GoogleScraper {
             return Status.ERROR_NETWORK;
         }
         
-        Document doc = Jsoup.parse(content, captchaRedirect);
+        Document doc = Jsoup.parse(content, redirect);
         
         Elements noscript = doc.getElementsByTag("noscript");
         if(!noscript.isEmpty()){
             LOG.debug("noscript form detected, trying with captcha image");
-            Status ret = noscriptCaptchaForm(doc, captchaRedirect);
-            if(Status.OK.equals(ret)){
-                return ret;
-            }
+            return noscriptCaptchaForm(doc, redirect);
+//            if(Status.OK.equals(ret)){
+//                return ret;
+//            }
         }
         
         LOG.debug("trying with captcha recaptcha");
-        return recaptchaForm(doc, captchaRedirect);
+        return recaptchaForm(doc, redirect);
     }    
     
     protected Status recaptchaForm(Document doc, String captchaRedirect){

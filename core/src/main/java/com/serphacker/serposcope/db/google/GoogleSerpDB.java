@@ -9,7 +9,6 @@ package com.serphacker.serposcope.db.google;
 
 import com.google.inject.Singleton;
 import com.mysema.commons.lang.CloseableIterator;
-import com.p6spy.cglib.proxy.Factory;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
@@ -21,7 +20,6 @@ import java.nio.ByteBuffer;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.function.Consumer;
 import javax.sql.rowset.serial.SerialBlob;
 import net.jpountz.lz4.LZ4Compressor;
