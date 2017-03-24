@@ -3,6 +3,7 @@
 ## 2.7.1 - UNRELEASED
 
 * IMPORTANT Fix new recaptcha v2 form issue [#155](https://github.com/serphacker/serposcope/issues/155)
+* Big improvements on captcha handling and rate limiting
 * SERP parsing : exclude sitelinks from rankings, expect ranking variation
 * Better IDN support [#130](https://github.com/serphacker/serposcope/issues/130)
 * Hide add event button if not admin [#133](https://github.com/serphacker/serposcope/issues/133)
