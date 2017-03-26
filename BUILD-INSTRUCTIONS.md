@@ -50,3 +50,8 @@ cd serposcope/web; mvn -Dtest=all -Dninja.standalone.class=serposcope.lifecycle.
 ```
 
 Check also for testconfig.DEFAULT.properties in test resources if you want to run extensive integration tests relying on credentials or whatever
+
+
+## DOCKER DEV
+
+You can [build&run](dev/README.md) Serposcope in Docker.
