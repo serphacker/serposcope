@@ -290,6 +290,7 @@ serposcope.googleSearchController = function () {
             $('#daterange-search').daterangepicker({
                 "ranges": {
                     'Last 30 days': [moment(maxDate).subtract(30, 'days'), moment(maxDate)],
+                    'Last 7 days': [moment(maxDate).subtract(30, 'days'), moment(maxDate)],
                     'Current Month': [moment(maxDate).startOf('month'), moment(maxDate).endOf('month')],
                     'Previous Month': [moment(maxDate).subtract(1, 'month').startOf('month'), moment(maxDate).subtract(1, 'month').endOf('month')]
                 },
