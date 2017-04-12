@@ -160,7 +160,7 @@ serposcope.googleTargetController = function () {
             var maxDate = $('#csp-vars').attr('data-max-date');
             $('#daterange').daterangepicker({
                 "ranges": {
-                    'Last 7 days': [moment(maxDate).subtract(30, 'days'), moment(maxDate)],
+                    'Last 7 days': [moment(maxDate).subtract(7, 'days'), moment(maxDate)],
                     'Last 30 days': [moment(maxDate).subtract(30, 'days'), moment(maxDate)],
                     'Last 90 days': [moment(maxDate).subtract(90, 'days'), moment(maxDate)],
                     'Current Month': [moment(maxDate).startOf('month'), moment(maxDate).endOf('month')],
