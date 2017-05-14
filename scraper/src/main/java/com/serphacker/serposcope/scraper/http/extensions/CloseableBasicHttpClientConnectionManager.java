@@ -57,7 +57,7 @@ import org.apache.http.util.LangUtils;
  * </p>
  * <p>
  * This connection manager implementation should be used inside an EJB container instead of
- * {@link PoolingHttpClientConnectionManager}.
+ * PoolingHttpClientConnectionManager.
  * </p>
  *
  * @since 4.3

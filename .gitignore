@@ -30,3 +30,4 @@ nbactions.xml
 
 #OSX specific
 .DS_Store
+/settings.xml
