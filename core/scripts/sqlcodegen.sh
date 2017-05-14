@@ -1,6 +1,18 @@
 #!/bin/bash
 
-COREPATH=`readlink -f "$(dirname "$0")/.."`
+if [ $(uname) == "Linux" ]; then
+    COREPATH=`readlink -f "$(dirname "$0")/.."`
+elif [ $(uname) == "Darwin" ]; then
+    if which greadlink >/dev/null; then
+        COREPATH=`greadlink -f "$(dirname "$0")/.."`
+    else
+        echo "OSX users need to install greadlink (brew install coreutils)"
+    fi
+else
+    echo "$(uname) platform not supported"
+    exit 1
+fi
+
 JAR=$COREPATH/lib/*.jar
 DBPATH=$COREPATH/codegen/h2
 
