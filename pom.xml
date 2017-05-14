@@ -16,13 +16,33 @@
         <module>scraper</module>
         <module>core</module>
     </modules>
-  
-    <!--    <dependencies>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>4.0</version>
-        </dependency>
-    </dependencies>-->
+    
+    <issueManagement>
+        <url>https://github.com/serphacker/serposcope/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/serphacker/serposcope.git</connection>
+        <developerConnection>scm:git:ssh://github.com:serphacker/serposcope.git</developerConnection>
+        <url>http://github.com/serphacker/serposcope/tree/master</url>
+    </scm>
+    
+    <developers>
+        <developer>
+            <name>Pierre Noguès</name>
+            <email>noguespi@gmail.com</email>
+            <organization>SERP Hacker</organization>
+            <organizationUrl>http://serphacker.com/</organizationUrl>
+        </developer>
+    </developers>
     
 </project>
