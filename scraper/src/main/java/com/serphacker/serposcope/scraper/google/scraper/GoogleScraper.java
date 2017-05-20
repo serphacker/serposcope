@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GoogleScraper {
     
-    public final static int MAX_RETRY = 3;
+    public final static int DEFAULT_MAX_RETRY = 3;
     
     final static BasicClientCookie NCR_COOKIE = new BasicClientCookie("PREF", "ID=1111111111111111:CR=2");
     static {
@@ -64,6 +64,7 @@ public class GoogleScraper {
     
     private static final Logger LOG = LoggerFactory.getLogger(GoogleScraper.class);
 
+    int maxRetry = DEFAULT_MAX_RETRY;
     protected ScrapClient http;
     protected CaptchaSolver solver;
     Random random = new Random();
@@ -94,7 +95,7 @@ public class GoogleScraper {
             String url = buildRequestUrl(search, page);
             
             Status status = null;
-            for (int retry = 0; retry < MAX_RETRY; retry++) {
+            for (int retry = 0; retry < maxRetry; retry++) {
                 
                 LOG.debug("GET {} via {} try {}", url, http.getProxy() == null ? new DirectNoProxy() : http.getProxy(), retry+1);
                 
@@ -636,6 +637,14 @@ public class GoogleScraper {
 
     public void setSolver(CaptchaSolver solver) {
         this.solver = solver;
+    }
+
+    public int getMaxRetry() {
+        return maxRetry;
+    }
+
+    public void setMaxRetry(int maxRetry) {
+        this.maxRetry = maxRetry;
     }
     
 }
