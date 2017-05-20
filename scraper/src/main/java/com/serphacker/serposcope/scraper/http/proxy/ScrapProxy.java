@@ -13,5 +13,6 @@ public interface ScrapProxy {
     public boolean hasAttr(String key);
     public void setAttr(String key, Object value);
     public  <T> T getAttr(String key, Class<T> clazz);
-    public void clearAttr();
+    public void removeAttr(String key);
+    public void clearAttrs();
 }
