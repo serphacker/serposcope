@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.8 - UNRELEASED
+
+* scraper module sources published to maven (to be moved in another repo in near futur)
+
 ## 2.7.1 - 2017-03-24
 
 * IMPORTANT Fix new recaptcha v2 form issue [#155](https://github.com/serphacker/serposcope/issues/155)
