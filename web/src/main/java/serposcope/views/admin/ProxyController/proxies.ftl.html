@@ -30,7 +30,7 @@
                     <tr>
                         <th class="width30" ><a href="#" id="btn-chk-proxy">#</a></th>
                         <th class="width100"  data-sort="string">${i18n("label.type")} <i class="fa fa-sort"></i></th>
-                        <th data-sort="string">IP:Port <i class="fa fa-sort"></i></th>
+                        <th data-sort="string">${i18n("label.ip")}:${i18n("label.port")} <i class="fa fa-sort"></i></th>
                         <th data-sort="string">${i18n("label.user")} <i class="fa fa-sort"></i></th>
                         <th data-sort="string">${i18n("label.password")} <i class="fa fa-sort"></i></th>
                         <th class="width150" data-sort="string">${i18n("label.remoteIp")} <i class="fa fa-sort"></i></th>
@@ -81,7 +81,7 @@
                 <div class="modal-body">
                     <div class="form-group" >
                         <span class="help-block"><#noescape>${i18n("admin.proxy.bulkImportHelp")}</#noescape></span>
-                        <textarea name="proxies" class="form-control" rows="10" placeholder="type#ip#port#username#password"></textarea>
+                        <textarea name="proxies" class="form-control" rows="10" placeholder="${i18n("label.type")}#${i18n("label.ip")}#${i18n("label.port")}#${i18n("label.username")}#${i18n("label.password")}"></textarea>
                     </div>
                 </div>
 

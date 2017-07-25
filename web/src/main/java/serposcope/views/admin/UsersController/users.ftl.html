@@ -27,7 +27,7 @@
                         <table class="table table-condensed table-bordered" >
                             <tr>
                                 <th class="width30" >#</th>
-                                <th class="width40" >${i18n("label.admin")}</th>
+                                <th class="width40" >${i18n("label.administrator")}</th>
                                 <th>${i18n("label.email")}</th>
                             </tr>
                             <#list users as user>
@@ -41,7 +41,11 @@
                                         </a>
                                     </form>
                                 </td>
-                                <td>${user.isAdmin()?c}</td>
+                                <#if user.isAdmin()>
+                                    <td>${i18n("label.yes")}</td>
+                                <#else>
+                                    <td>${i18n("label.no")}</td>
+                                </#if>
                                 <td>${user.getEmail()}</td>
                             </tr>
                             </#list>
@@ -137,7 +141,7 @@
 
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" name="admin"> Admin
+                            <input type="checkbox" name="admin"> ${i18n("label.administrator")}
                         </label>
                     </div>                    
 
