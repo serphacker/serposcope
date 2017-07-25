@@ -124,8 +124,6 @@ public class RunDB extends AbstractDB {
     
     /**
      * update progress, captchas, errors
-     * @param run
-     * @return 
      */
     public boolean updateProgress(Run run){
         boolean updated = false;

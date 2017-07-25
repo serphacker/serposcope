@@ -95,7 +95,6 @@ public class GoogleTargetDB extends AbstractDB {
     
     /**
      * list all target
-     * @return 
      */
     public List<GoogleTarget> list(){
         return list(null);
@@ -120,8 +119,6 @@ public class GoogleTargetDB extends AbstractDB {
     
     /***
      * list target by group
-     * @param groupId
-     * @return 
      */
     public List<GoogleTarget> list(Collection<Integer> groups){
         List<GoogleTarget> targets = new ArrayList<>();

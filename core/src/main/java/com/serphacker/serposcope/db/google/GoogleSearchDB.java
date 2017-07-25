@@ -233,7 +233,6 @@ public class GoogleSearchDB extends AbstractDB {
     
     /**
      * list all google search
-     * @return 
      */
     public List<GoogleSearch> list(){
         return listByGroup(null);
@@ -241,8 +240,6 @@ public class GoogleSearchDB extends AbstractDB {
     
     /***
      * list google searches belonging to a specific group
-     * @param groupId
-     * @return 
      */
     public List<GoogleSearch> listByGroup(Collection<Integer> groups){
         List<GoogleSearch> searches = new ArrayList<>();

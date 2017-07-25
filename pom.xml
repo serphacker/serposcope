@@ -11,6 +11,9 @@
     <artifactId>serposcope</artifactId>
     <version>2.8.0</version>
     <packaging>pom</packaging>
+    <name>serposcope</name>
+    <description>serposcope SEO rank checker</description>
+    <url>https://serposcope.serphacker.com/</url>
     <modules>
         <module>web</module>
         <module>scraper</module>
