@@ -1,8 +1,9 @@
 # serposcope changelog
 
-## 2.8 - UNRELEASED
+## 2.8 - 2017-11-23
 
-* scraper module sources published to maven (to be moved in another repo in near futur)
+* Fix TLD/country localization issue. TLD is replace by country. On upgrade, TLD are automatically converted to associated country unless it is a generic TLD. You may want to reconfigure your default country for new keyword in admin > settings > google > country.
+* Scraper module sources published to maven (to be moved in another repo in near futur)
 
 ## 2.7.1 - 2017-03-24
 
