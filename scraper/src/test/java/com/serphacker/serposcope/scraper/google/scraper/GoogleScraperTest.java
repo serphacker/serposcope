@@ -8,6 +8,7 @@
 package com.serphacker.serposcope.scraper.google.scraper;
 
 import com.google.common.io.ByteStreams;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import static com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status.ERROR_NETWORK;
 import static com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status.OK;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
@@ -130,7 +131,7 @@ public class GoogleScraperTest {
 
         GoogleScrapSearch search = new GoogleScrapSearch();
         search.setKeyword("suivi de position");
-        search.setTld("fr");
+        search.setCountryCode(GoogleCountryCode.FR);
 
         GoogleScraper scraper = new GoogleScraper(http, null);
         assertEquals(ERROR_NETWORK, scraper.scrap(search).status);
@@ -144,7 +145,7 @@ public class GoogleScraperTest {
 
         GoogleScrapSearch search = new GoogleScrapSearch();
         search.setKeyword("suivi de position");
-        search.setTld("fr");
+        search.setCountryCode(GoogleCountryCode.FR);
 
         GoogleScraper scraper = new GoogleScraper(http, null);
         assertEquals(ERROR_NETWORK, scraper.scrap(search).status);

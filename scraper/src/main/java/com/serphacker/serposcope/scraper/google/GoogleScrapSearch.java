@@ -23,7 +23,7 @@ public class GoogleScrapSearch {
     long minPauseBetweenPageMS = 0l;
     long maxPauseBetweenPageMS = 0l;
     String keyword;
-    String tld = "com";
+    GoogleCountryCode countryCode;
     String datacenter;
     GoogleDevice device = GoogleDevice.DESKTOP;
     String local;
@@ -53,12 +53,12 @@ public class GoogleScrapSearch {
         this.keyword = keyword;
     }
 
-    public String getTld() {
-        return tld;
+    public GoogleCountryCode getCountryCode() {
+        return countryCode;
     }
 
-    public void setTld(String tld) {
-        this.tld = tld;
+    public void setCountryCode(GoogleCountryCode countryCode) {
+        this.countryCode = countryCode;
     }
 
     public String getDatacenter() {
@@ -116,7 +116,7 @@ public class GoogleScrapSearch {
         hash = 79 * hash + (int) (this.minPauseBetweenPageMS ^ (this.minPauseBetweenPageMS >>> 32));
         hash = 79 * hash + (int) (this.maxPauseBetweenPageMS ^ (this.maxPauseBetweenPageMS >>> 32));
         hash = 79 * hash + Objects.hashCode(this.keyword);
-        hash = 79 * hash + Objects.hashCode(this.tld);
+        hash = 79 * hash + Objects.hashCode(this.countryCode);
         hash = 79 * hash + Objects.hashCode(this.datacenter);
         hash = 79 * hash + (this.device == null ? 0 : (this.device.ordinal()+1) );
         hash = 79 * hash + Objects.hashCode(this.local);
@@ -151,7 +151,7 @@ public class GoogleScrapSearch {
         if (!Objects.equals(this.keyword, other.keyword)) {
             return false;
         }
-        if (!Objects.equals(this.tld, other.tld)) {
+        if (!Objects.equals(this.countryCode, other.countryCode)) {
             return false;
         }
         if (!Objects.equals(this.datacenter, other.datacenter)) {

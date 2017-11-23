@@ -11,6 +11,7 @@ import com.serphacker.serposcope.scraper.captcha.Captcha;
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import com.serphacker.serposcope.scraper.captcha.CaptchaRecaptcha;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
@@ -148,15 +149,7 @@ public class GoogleScraper {
                 break;
         }
         
-        if("com".equals(search.getTld())){
-            http.addCookie(NCR_COOKIE);
-        }
-
         String hostname = "www.google.com";
-        if(search.getTld() != null && !search.getTld().isEmpty()) {
-            hostname = "www.google." + search.getTld();
-        }
-        
         http.removeRoutes();
         if(search.getDatacenter() != null && !search.getDatacenter().isEmpty()){
             http.setRoute(new HttpHost(hostname, -1, "https"), new HttpHost(search.getDatacenter(), -1, "https"));
@@ -175,7 +168,7 @@ public class GoogleScraper {
     
     protected Status downloadSerp(String url, String referrer, GoogleScrapSearch search, int retry){
         if(referrer == null){
-            referrer = "https://www.google." + search.getTld();
+            referrer = "https://www.google.com";
         }
         
         int status = http.get(url, referrer);
@@ -318,12 +311,20 @@ public class GoogleScraper {
             url += buildHost(search) + "/search?q=" + search.getKeyword();
         }
         
+        if(search.getCountryCode() != null && !GoogleCountryCode.__.equals(search.getCountryCode())){
+            url += "&gl=" + search.getCountryCode().name().toLowerCase();
+        }
+        
         String uule = buildUule(search.getLocal());
         if(uule != null){
             url += "&uule=" + uule;
         }
 
         if(search.getCustomParameters() != null && !search.getCustomParameters().isEmpty()){
+            if(search.getCustomParameters().contains("gl=")){
+                LOG.warn("custom parameter contains gl= parameter, use country code instead");
+            }
+            
             if(!search.getCustomParameters().startsWith("&")){
                 url += "&";
             }
@@ -341,9 +342,6 @@ public class GoogleScraper {
     }
     
     protected String buildHost(GoogleScrapSearch search){
-        if(search.getTld() != null && !search.getTld().isEmpty()) {
-            return "www.google." + search.getTld();
-        }
         return "www.google.com";
     }
     

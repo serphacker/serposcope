@@ -8,6 +8,7 @@
 package com.serphacker.serposcope.scraper.google.scraper;
 
 import com.serphacker.serposcope.scraper.captcha.solver.SwingUICaptchaSolver;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleScrapResult;
 import static com.serphacker.serposcope.scraper.google.GoogleScrapResult.Status.OK;
 import com.serphacker.serposcope.scraper.google.GoogleScrapSearch;
@@ -57,7 +58,7 @@ public class GoogleScraperIT {
             GoogleScrapSearch search = new GoogleScrapSearch();
             search.setLocal(place);
             search.setKeyword("restaurant");
-            search.setTld("fr");
+            search.setCountryCode(GoogleCountryCode.FR);
             search.setPages(1);
             search.setResultPerPage(10);
 
@@ -88,7 +89,7 @@ public class GoogleScraperIT {
         {
             GoogleScrapSearch search = new GoogleScrapSearch();
             search.setKeyword("restaurant");
-            search.setTld("fr");
+            search.setCountryCode(GoogleCountryCode.FR);
             search.setDatacenter("173.194.32.248");
             search.setPages(3);
             search.setResultPerPage(10);

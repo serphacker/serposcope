@@ -8,6 +8,7 @@
 package com.serphacker.serposcope.scraper.google;
 
 public enum GoogleCountryCode {
+    __("Unkown"),
     AF("Afghanistan"),
     AL("Albania"),
     DZ("Algeria"),
