@@ -19,6 +19,7 @@ import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.querybuilder.QGoogleSearch;
 import com.serphacker.serposcope.querybuilder.QGoogleSearchGroup;
 import com.serphacker.serposcope.querybuilder.QGoogleSerp;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class GoogleSearchDB extends AbstractDB {
                 if(search.getId() == 0){
                     Integer key = new SQLInsertClause(con, dbTplConf, t_gsearch)
                         .set(t_gsearch.keyword, search.getKeyword())
-                        .set(t_gsearch.tld, search.getTld())
+                        .set(t_gsearch.country, search.getCountry().name())
                         .set(t_gsearch.datacenter, search.getDatacenter())
                         .set(t_gsearch.device, (byte)search.getDevice().ordinal())
                         .set(t_gsearch.local, search.getLocal())
@@ -79,13 +80,8 @@ public class GoogleSearchDB extends AbstractDB {
                 .select(t_gsearch.id)
                 .from(t_gsearch)
                 .where(t_gsearch.keyword.eq(search.getKeyword()))
-                .where(t_gsearch.device.eq((byte)search.getDevice().ordinal()));
-            
-            if(search.getTld() != null){
-                query.where(t_gsearch.tld.eq(search.getTld()));
-            } else {
-                query.where(t_gsearch.tld.isNull());
-            }
+                .where(t_gsearch.device.eq((byte)search.getDevice().ordinal()))
+                .where(t_gsearch.country.eq(search.getCountry().name()));
             
             if(search.getDatacenter() != null){
                 query.where(t_gsearch.datacenter.eq(search.getDatacenter()));
@@ -359,7 +355,7 @@ public class GoogleSearchDB extends AbstractDB {
         search.setDatacenter(tuple.get(t_gsearch.datacenter));
         search.setDevice(GoogleDevice.values()[tuple.get(t_gsearch.device)]);
         search.setLocal(tuple.get(t_gsearch.local));
-        search.setTld(tuple.get(t_gsearch.tld));
+        search.setCountry(tuple.get(t_gsearch.country));
         search.setCustomParameters(tuple.get(t_gsearch.customParameters));
         
         return search;

@@ -142,7 +142,7 @@ public class GoogleTaskRunnable implements Runnable {
         scrapSearch.setDatacenter(search.getDatacenter());
         scrapSearch.setDevice(search.getDevice());
         scrapSearch.setKeyword(search.getKeyword());
-        scrapSearch.setTld(search.getTld());
+        scrapSearch.setCountry(search.getCountry());
         scrapSearch.setLocal(search.getLocal());
         
         return scrapSearch;

@@ -7,6 +7,7 @@
  */
 package com.serphacker.serposcope.models.google;
 
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class GoogleSearch {
     
     int id;
     String keyword;
-    String tld;
+    GoogleCountryCode country = GoogleCountryCode.__;
     String datacenter;
     GoogleDevice device = GoogleDevice.DESKTOP;
     String local;
@@ -48,12 +49,27 @@ public class GoogleSearch {
         this.keyword = keyword;
     }
 
-    public String getTld() {
-        return tld;
+    public GoogleCountryCode getCountry() {
+        return country;
     }
 
-    public void setTld(String tld) {
-        this.tld = tld;
+    public void setCountry(GoogleCountryCode country) {
+        if(country == null){
+            country = GoogleCountryCode.__;
+        }
+        this.country = country;
+    }
+    
+    public void setCountry(String country){
+        if(country != null && !country.isEmpty()){
+            try {
+                this.country = GoogleCountryCode.valueOf(country.toUpperCase());
+                return;
+            } catch(Exception ex){
+            }
+        }
+        
+        this.country = GoogleCountryCode.__;
     }
 
     public String getDatacenter() {
@@ -96,7 +112,7 @@ public class GoogleSearch {
     public int hashCode() {
         int hash = 7;
         hash = 71 * hash + Objects.hashCode(this.keyword);
-        hash = 71 * hash + Objects.hashCode(this.tld);
+        hash = 71 * hash + Objects.hashCode(this.country);
         hash = 71 * hash + Objects.hashCode(this.datacenter);
         hash = 71 * hash + Objects.hashCode(this.device);
         hash = 71 * hash + Objects.hashCode(this.local);
@@ -119,7 +135,7 @@ public class GoogleSearch {
         if (!Objects.equals(this.keyword, other.keyword)) {
             return false;
         }
-        if (!Objects.equals(this.tld, other.tld)) {
+        if (!Objects.equals(this.country, other.country)) {
             return false;
         }
         if (!Objects.equals(this.datacenter, other.datacenter)) {

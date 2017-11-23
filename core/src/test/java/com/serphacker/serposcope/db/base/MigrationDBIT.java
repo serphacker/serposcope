@@ -15,8 +15,12 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.querydsl.sql.Configuration;
+import static com.serphacker.serposcope.db.base.MigrationDB.LAST_DB_VERSION;
+import com.serphacker.serposcope.db.google.GoogleSearchDB;
 import com.serphacker.serposcope.di.db.ConfigurationProvider;
 import com.serphacker.serposcope.di.db.DataSourceProvider;
+import com.serphacker.serposcope.models.google.GoogleSearch;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -45,10 +49,6 @@ public class MigrationDBIT {
     protected Injector injectorH2 = null;
     protected Injector injectorMySQL = null;
 
-    @Inject
-    BaseDB db;
-    
-    
     protected List<Module> getModule(String dburl) {
         List<Module> lists = new ArrayList<>();
         lists.add(new AbstractModule() {
@@ -168,4 +168,56 @@ public class MigrationDBIT {
         assertTrue(mig.LAST_DB_VERSION == config.getInt(ConfigDB.APP_DBVERSION, 0));
     }
     
+    @Test
+    public void testUpgradeTLD2Country() throws Exception {
+        testUpgradeTLD2Country_(injectorH2);
+        testUpgradeTLD2Country_(injectorMySQL);
+    }    
+    
+    public static class TldCc {
+        public final String tld;
+        public final GoogleCountryCode country;
+
+        public TldCc(String tld, GoogleCountryCode country) {
+            this.tld = tld;
+            this.country = country;
+        }
+    }
+        
+    public void testUpgradeTLD2Country_(Injector injector) throws Exception {
+        MigrationDB mig = injector.getInstance(MigrationDB.class);
+        DataSource ds = injector.getInstance(DataSource.class);
+        GoogleSearchDB gsdb = injector.getInstance(GoogleSearchDB.class);
+        
+        mig.recreateDb(new String[]{
+            "/db/v6/00-base.h2.sql",
+            "/db/v6/01-google.h2.sql"
+        });
+        try(Connection con = ds.getConnection(); Statement stmt = con.createStatement();){
+            stmt.executeUpdate("INSERT INTO `CONFIG` VALUES ('app.dbversion','6')");
+        }
+        assertTrue(mig.isDbCreated());
+        
+        TldCc[] tests = new TldCc[]{
+            new TldCc("com", GoogleCountryCode.__),
+            new TldCc(null, GoogleCountryCode.__),
+            new TldCc("barbapapa", GoogleCountryCode.__),
+            new TldCc("com.br", GoogleCountryCode.BR),
+            new TldCc("co.uk", GoogleCountryCode.UK),
+            new TldCc("fr", GoogleCountryCode.FR)
+        };
+        
+        try(Connection con = ds.getConnection(); Statement stmt = con.createStatement();){
+            for (int i = 0; i < tests.length; i++) {
+                stmt.executeUpdate("INSERT INTO `GOOGLE_SEARCH`(`id`,`keyword`,`device`,`tld`) VALUES (" + (i+1) + ", '#" + i + "', 0, '" + tests[i].tld + "')");
+            }
+        }
+        
+        mig.migrateIfNeeded();
+        
+        for (int i = 0; i < tests.length; i++) {
+            assertEquals(tests[i].country, gsdb.find(i+1).getCountry());
+        }
+        
+    }  
 }

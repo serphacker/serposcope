@@ -58,7 +58,7 @@ public class GoogleScraperIT {
             GoogleScrapSearch search = new GoogleScrapSearch();
             search.setLocal(place);
             search.setKeyword("restaurant");
-            search.setCountryCode(GoogleCountryCode.FR);
+            search.setCountry(GoogleCountryCode.FR);
             search.setPages(1);
             search.setResultPerPage(10);
 
@@ -89,7 +89,7 @@ public class GoogleScraperIT {
         {
             GoogleScrapSearch search = new GoogleScrapSearch();
             search.setKeyword("restaurant");
-            search.setCountryCode(GoogleCountryCode.FR);
+            search.setCountry(GoogleCountryCode.FR);
             search.setDatacenter("173.194.32.248");
             search.setPages(3);
             search.setResultPerPage(10);

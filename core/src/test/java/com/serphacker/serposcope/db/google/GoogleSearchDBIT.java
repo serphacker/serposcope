@@ -16,6 +16,7 @@ import com.serphacker.serposcope.models.base.Run;
 import com.serphacker.serposcope.models.base.Run.Mode;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.models.google.GoogleSerp;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class GoogleSearchDBIT extends AbstractDBIT {
         
         GoogleSearch s1 = new GoogleSearch();
         s1.setKeyword("search #1");
-        s1.setTld("fr");
+        s1.setCountry(GoogleCountryCode.FR);
         
         gsDB.insert(Arrays.asList(s1), groupId);
         
@@ -72,14 +73,14 @@ public class GoogleSearchDBIT extends AbstractDBIT {
         
         GoogleSearch s1 = new GoogleSearch();
         s1.setKeyword("search #1");
-        s1.setTld("fr");
+        s1.setCountry(GoogleCountryCode.FR);
         
         gsDB.insert(Arrays.asList(s1), groupId);
         
         assertEquals(1, s1.getId());
         assertEquals(1, gsDB.getId(s1));
         
-        s1.setTld("de");
+        s1.setCountry(GoogleCountryCode.DE);
         assertEquals(0, gsDB.getId(s1));
         
     }
@@ -100,7 +101,7 @@ public class GoogleSearchDBIT extends AbstractDBIT {
 
         GoogleSearch s2 = new GoogleSearch();
         s2.setKeyword("keyword");
-        s2.setTld("tld");
+        s2.setCountry(GoogleCountryCode.__);
         s2.setDatacenter("datacenter");
         s2.setDevice(GoogleDevice.DESKTOP);
         s2.setLocal("local");
@@ -123,7 +124,7 @@ public class GoogleSearchDBIT extends AbstractDBIT {
         
         assertEquals(1, inserted.get(0).getId());
         assertEquals(s1.getKeyword(), inserted.get(0).getKeyword());
-        assertEquals(s1.getTld(), inserted.get(0).getTld());
+        assertEquals(s1.getCountry(), inserted.get(0).getCountry());
         assertEquals(s1.getDatacenter(), inserted.get(0).getDatacenter());
         assertEquals(s1.getDevice(), inserted.get(0).getDevice());
         assertEquals(s1.getLocal(), inserted.get(0).getLocal());
@@ -131,7 +132,7 @@ public class GoogleSearchDBIT extends AbstractDBIT {
 
         assertEquals(2, inserted.get(1).getId());
         assertEquals(s2.getKeyword(), inserted.get(1).getKeyword());
-        assertEquals(s2.getTld(), inserted.get(1).getTld());
+        assertEquals(s2.getCountry(), inserted.get(1).getCountry());
         assertEquals(s2.getDatacenter(), inserted.get(1).getDatacenter());
         assertEquals(s2.getDevice(), inserted.get(1).getDevice());
         assertEquals(s2.getLocal(), inserted.get(1).getLocal());

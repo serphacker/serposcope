@@ -10,8 +10,10 @@ package com.serphacker.serposcope.db.base;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Singleton;
 import com.serphacker.serposcope.db.AbstractDB;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.inject.Inject;
 import org.slf4j.Logger;
@@ -21,7 +23,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class MigrationDB extends AbstractDB {
     
-    public final static int LAST_DB_VERSION = 6;
+    public final static int LAST_DB_VERSION = 7;
     
     public final static String[] DB_SCHEMA_FILES = new String[]{
         "/db/00-base.h2.sql",
@@ -103,6 +105,9 @@ public class MigrationDB extends AbstractDB {
                         case 5:
                             upgradeFromV5(stmt);
                             break;
+                        case 6:
+                            upgradeFromV6(stmt);
+                            break;
                     }
                 }catch(Exception ex){
                     con.rollback();
@@ -175,5 +180,20 @@ public class MigrationDB extends AbstractDB {
         }
         stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','6') on duplicate key update `value` = '6';");
     }
+    
+    protected void upgradeFromV6(Statement stmt) throws Exception {
+        stmt.executeUpdate("alter table `GOOGLE_SEARCH` add column `country` varchar(2) after tld;");
+        
+        try(Connection con = ds.getConnection(); Statement stmtRO = con.createStatement()){
+            ResultSet rs = stmtRO.executeQuery("select * from `GOOGLE_SEARCH`;");
+            while(rs.next()){
+                GoogleCountryCode country = MigrationTLDtoCountry.fromTld(rs.getString("tld"));
+                stmt.executeUpdate("update `GOOGLE_SEARCH` set `country` = '" + country.name() + "' WHERE `id` = " + rs.getInt("id") + ";");
+            }            
+        }
+
+        stmt.executeUpdate("alter table `GOOGLE_SEARCH` drop column `tld`;");
+        stmt.executeUpdate("insert into `CONFIG` values ('app.dbversion','7') on duplicate key update `value` = '7';");
+    }    
     
 }

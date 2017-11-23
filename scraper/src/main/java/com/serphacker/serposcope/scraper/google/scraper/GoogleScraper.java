@@ -311,8 +311,8 @@ public class GoogleScraper {
             url += buildHost(search) + "/search?q=" + search.getKeyword();
         }
         
-        if(search.getCountryCode() != null && !GoogleCountryCode.__.equals(search.getCountryCode())){
-            url += "&gl=" + search.getCountryCode().name().toLowerCase();
+        if(search.getCountry() != null && !GoogleCountryCode.__.equals(search.getCountry())){
+            url += "&gl=" + search.getCountry().name().toLowerCase();
         }
         
         String uule = buildUule(search.getLocal());

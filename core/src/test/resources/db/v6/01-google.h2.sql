@@ -5,7 +5,7 @@ drop table if exists `GOOGLE_SEARCH`;
 create table `GOOGLE_SEARCH` (
     id int primary key auto_increment,
     keyword varchar(255) not null,
-    country varchar(2),
+    tld varchar(16),
     datacenter varchar(64),
     device tinyint,
     local varchar(64),

@@ -27,6 +27,7 @@ import com.serphacker.serposcope.models.google.GoogleSerp;
 import com.serphacker.serposcope.models.google.GoogleSerpEntry;
 import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleTarget;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -173,7 +174,7 @@ public class ExportDBIT {
         search1.setDevice(GoogleDevice.SMARTPHONE);
         search1.setKeyword("keyw\nord' et ce n'est pas * % tout Z \\' ");
         search1.setLocal("local'");
-        search1.setTld("tld'");
+        search1.setCountry(GoogleCountryCode.AG);
         
         googleDB.search.insert(Arrays.asList(search1), grp.getId());
         

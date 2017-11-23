@@ -131,7 +131,7 @@ public class GoogleScraperTest {
 
         GoogleScrapSearch search = new GoogleScrapSearch();
         search.setKeyword("suivi de position");
-        search.setCountryCode(GoogleCountryCode.FR);
+        search.setCountry(GoogleCountryCode.FR);
 
         GoogleScraper scraper = new GoogleScraper(http, null);
         assertEquals(ERROR_NETWORK, scraper.scrap(search).status);
@@ -145,7 +145,7 @@ public class GoogleScraperTest {
 
         GoogleScrapSearch search = new GoogleScrapSearch();
         search.setKeyword("suivi de position");
-        search.setCountryCode(GoogleCountryCode.FR);
+        search.setCountry(GoogleCountryCode.FR);
 
         GoogleScraper scraper = new GoogleScraper(http, null);
         assertEquals(ERROR_NETWORK, scraper.scrap(search).status);
