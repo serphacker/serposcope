@@ -7,6 +7,7 @@
  */
 package com.serphacker.serposcope.models.google;
 
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,7 @@ public class GoogleSettings {
     int maxThreads = 1;
     int fetchRetry = 3;    
     
-    String defaultTld = "com";
+    GoogleCountryCode defaultCountry = GoogleCountryCode.__;
     String defaultDatacenter = null;
     GoogleDevice defaultDevice = GoogleDevice.DESKTOP;
     String defaultLocal = null;
@@ -76,13 +77,30 @@ public class GoogleSettings {
     }
     
     // search
-    public String getDefaultTld() {
-        return defaultTld;
+
+    public GoogleCountryCode getDefaultCountry() {
+        return defaultCountry;
     }
 
-    public void setDefaultTld(String defaultTld) {
-        this.defaultTld = defaultTld;
+    public void setDefaultCountry(GoogleCountryCode defaultCountry) {
+        if(defaultCountry == null){
+            defaultCountry = GoogleCountryCode.__;
+        }
+        this.defaultCountry = defaultCountry;
     }
+    
+    public void setDefaultCountry(String country){
+        this.defaultCountry = GoogleCountryCode.__;
+        
+        if(country == null){
+            return;
+        }
+        
+        try {
+            this.defaultCountry = GoogleCountryCode.valueOf(country.toUpperCase());
+        } catch(Exception ex){
+        }
+    }    
 
     public String getDefaultDatacenter() {
         return defaultDatacenter;

@@ -85,9 +85,9 @@
                     </div>
 
                     <div class="form-group" >
-                        <label for="searchName" ><abbr  title="${i18n("label.topLevelDomain")}" data-toggle="tooltip" >TLD</abbr></label>
-                        <input id="searchName" class="form-control" name="tld[]" value="${default.getDefaultTld()!""}" >
-                        <span class="help-block">${i18n("admin.google.tldHelp")}</span>
+                        <label for="country" >${i18n("label.country")}</label>
+                        <#noescape>${fu.countryCombo("country[]", default.getDefaultCountry())}</#noescape>
+                        <span class="help-block">${i18n("admin.google.countryHelp")}</span>
                     </div>
 
                     <div class="form-group" >
@@ -162,7 +162,7 @@
             <div class="modal-body">
                 <div class="form-group" >
                     <span class="help-block">${i18n("admin.google.bulkSearchHelp")}</span>
-                    <textarea id="bulk-search" class="form-control" rows="10" placeholder="keyword,TLD,datacenter,device,local,custom"></textarea>
+                    <textarea id="bulk-search" class="form-control" rows="10" placeholder="keyword,country-code,datacenter,device,local,custom"></textarea>
                 </div>
             </div>
 
@@ -263,7 +263,7 @@
 <!--<script type="text/javascript" src="/assets/js/canonical-location.js"></script>-->
 <div class="csp-script" data-src="googleGroupController.view" ></div>
 <div id="csp-vars"
-     data-default-tld="${default.getDefaultTld()}"
+     data-default-country="${default.getDefaultCountry()}"
      data-default-datacenter="${default.getDefaultDatacenter()!""}"
      <#if default.getDefaultDevice() == "MOBILE" >
      data-default-device="1"

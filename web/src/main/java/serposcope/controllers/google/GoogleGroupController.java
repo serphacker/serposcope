@@ -23,6 +23,7 @@ import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.models.google.GoogleTarget.PatternType;
 import com.serphacker.serposcope.models.google.GoogleTargetSummary;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.scraper.google.GoogleDevice;
 import static com.serphacker.serposcope.scraper.google.GoogleDevice.SMARTPHONE;
 import com.serphacker.serposcope.task.TaskManager;
@@ -146,8 +147,8 @@ public class GoogleGroupController extends GoogleController {
                         writer.append("\"keyword\":\"")
                             .append(StringEscapeUtils.escapeJson(search.getKeyword()))
                             .append("\",");
-                        writer.append("\"tld\":\"")
-                            .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                        writer.append("\"country\":\"")
+                            .append(search.getCountry().name())
                             .append("\",");
                         writer.append("\"device\":\"")
                             .append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
@@ -190,15 +191,15 @@ public class GoogleGroupController extends GoogleController {
     public Result addSearch(
         Context context,
         @Params("keyword[]") String[] keywords,
-        @Params("tld[]") String tlds[], @Params("datacenter[]") String[] datacenters,
+        @Params("country[]") String country[], @Params("datacenter[]") String[] datacenters,
         @Params("device[]") Integer[] devices,
         @Params("local[]") String[] locals, @Params("custom[]") String[] customs
     ) {
         FlashScope flash = context.getFlashScope();
         Group group = context.getAttribute("group", Group.class);
 
-        if (keywords == null || tlds == null || datacenters == null || devices == null || locals == null || customs == null
-            || keywords.length != tlds.length || keywords.length != datacenters.length || keywords.length != devices.length
+        if (keywords == null || country == null || datacenters == null || devices == null || locals == null || customs == null
+            || keywords.length != country.length || keywords.length != datacenters.length || keywords.length != devices.length
             || keywords.length != locals.length || keywords.length != customs.length) {
             flash.error("error.invalidParameters");
             return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
@@ -215,11 +216,18 @@ public class GoogleGroupController extends GoogleController {
             }
             search.setKeyword(keywords[i]);
 
-            if (!Validator.isGoogleTLD(tlds[i])) {
-                flash.error("admin.google.invalidTLD");
+            GoogleCountryCode countryCode = null;
+            if(country[i] != null){
+                try {
+                    countryCode = GoogleCountryCode.valueOf(country[i].toUpperCase());
+                } catch(Exception ex){
+                }                
+            }
+            if (countryCode == null) {
+                flash.error("admin.google.invalidCountry");
                 return Results.redirect(router.getReverseRoute(GoogleGroupController.class, "view", "groupId", group.getId()));
             }
-            search.setTld(tlds[i]);
+            search.setCountry(countryCode);
 
             if (!datacenters[i].isEmpty()) {
                 if (!Validator.isIPv4(datacenters[i])) {
@@ -541,7 +549,7 @@ public class GoogleGroupController extends GoogleController {
         StringBuilder builder = new StringBuilder();
         for (GoogleSearch search : searches) {
             builder.append(StringEscapeUtils.escapeCsv(search.getKeyword())).append(",");
-            builder.append(search.getTld() != null ? search.getTld() : "com").append(",");
+            builder.append(search.getCountry()).append(",");
             builder.append(search.getDatacenter() != null ? search.getDatacenter() : "").append(",");
             builder.append(search.getDevice() != null ? (search.getDevice() == GoogleDevice.DESKTOP ? "desktop" : "mobile") : "").append(",");
             builder.append(StringEscapeUtils.escapeCsv(search.getLocal() != null ? search.getLocal() : "")).append(",");

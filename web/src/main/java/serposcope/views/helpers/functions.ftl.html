@@ -31,7 +31,7 @@
 </#function>
 
 <#function gsIcoInfos search>
-    <#assign tld = "<i data-toggle=\"tooltip\" title=\"TLD : " + search.getTld() + "\" class=\"fa fa-globe\" ></i>">
+    <#assign country = "<i data-toggle=\"tooltip\" title=\"Country : " + search.getCountry() + "\" class=\"fa fa-globe\" ></i>">
     
     <#if search.getDevice() == "SMARTPHONE" >
         <#assign device = "<i data-toggle=\"tooltip\" title=\"" + i18n("label.mobile") + "\" class=\"fa fa-mobile fa-fw\" ></i>">
@@ -57,7 +57,7 @@
         <#assign params = "">
     </#if>    
     
-    <#return tld + device + local + datacenter + params>
+    <#return country + device + local + datacenter + params>
     <#--
     " <a href=\"" + reverseRoute("google.GoogleSearchController","search", "groupId", groupId, "searchId", search.getId()) + "\"
             data-toggle=\"tooltip\" + title=\"" + search.getKeyword() + "\" >" +search.getKeyword() +  "</a>"
@@ -68,4 +68,20 @@
 
 <#function formatScore score>
     <#return (score/100)?string(",##0.00")?replace(",",".") >
+</#function>
+
+<#function countryCombo name value>
+    <#assign input = "<select name=\"${name}\" class=\"form-control\" >\n">
+    <#list global.countries.values() as item>
+        <#if item.name() == value>
+            <#assign selected = "selected" />
+        <#else>
+            <#assign selected = "" />
+        </#if>
+        <#assign input = input + "\t<option value=\"${item.name()}\" ${selected} >${item.name()} - ${item.fancyName}</option>\n">
+    </#list> 
+    <#assign input = input + "</select>" >
+        
+    <#return input >
+        
 </#function>

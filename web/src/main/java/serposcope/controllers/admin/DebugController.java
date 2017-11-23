@@ -19,6 +19,7 @@ import com.serphacker.serposcope.models.google.GoogleSettings;
 import com.serphacker.serposcope.models.google.GoogleSearch;
 import com.serphacker.serposcope.models.google.GoogleTarget;
 import com.serphacker.serposcope.models.google.GoogleTarget.PatternType;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.task.TaskManager;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
@@ -154,7 +155,7 @@ public class DebugController extends BaseController {
             List<GoogleSearch> searches = new ArrayList<>();
             for (int j = 0; j < searchPerGroup; j++) {
                 GoogleSearch search = new GoogleSearch("search#" + j + "#" + group.getName());
-                search.setTld("com");
+                search.setCountry(GoogleCountryCode.__);
                 searches.add(search);
             }
             googleDB.search.insert(searches, group.getId());

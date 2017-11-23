@@ -369,8 +369,8 @@ public class GoogleTargetController extends GoogleController {
         searchesJson.append("\"keyword\":\"")
             .append(StringEscapeUtils.escapeJson(search.getKeyword()))
             .append("\",");
-        searchesJson.append("\"tld\":\"")
-            .append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+        searchesJson.append("\"country\":\"")
+            .append(search.getCountry().name())
             .append("\",");
         searchesJson.append("\"device\":\"")
             .append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
@@ -473,7 +473,7 @@ public class GoogleTargetController extends GoogleController {
             .render((Context context, Result result) -> {
                 ResponseStreams stream = context.finalizeHeaders(result);
                 try (Writer writer = stream.getWriter()) {
-                    writer.append("date,rank,url,target,keyword,device,tld,datacenter,local,custom\n");
+                    writer.append("date,rank,url,target,keyword,device,country,datacenter,local,custom\n");
                     for (Run run : runs) {
                         String day = run.getDay().toString();
                         for (GoogleSearch search : searches) {
@@ -488,11 +488,7 @@ public class GoogleTargetController extends GoogleController {
                             writer.append(StringEscapeUtils.escapeCsv(target.getName())).append(",");
                             writer.append(StringEscapeUtils.escapeCsv(search.getKeyword())).append(",");
                             writer.append(search.getDevice() == GoogleDevice.DESKTOP ? "D" : "M").append(",");
-                            writer.append(
-                                search.getTld() != null
-                                    ? StringEscapeUtils.escapeCsv(search.getTld())
-                                    : ""
-                            ).append(",");
+                            writer.append(search.getCountry().name()).append(",");
                             writer.append(
                                 search.getDatacenter() != null
                                     ? StringEscapeUtils.escapeCsv(search.getDatacenter())
@@ -626,7 +622,7 @@ public class GoogleTargetController extends GoogleController {
             builder
                 .append(search.getId())
                 .append(",[\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
-                .append("\",\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                .append("\",\"").append(search.getCountry().name())
                 .append("\",\"").append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
                 .append("\",\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
                 .append("\",\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))
@@ -738,7 +734,7 @@ public class GoogleTargetController extends GoogleController {
                 .append(",\"search\":{")
                 .append("\"id\":").append(search.getId())
                 .append(",\"k\":\"").append(StringEscapeUtils.escapeJson(search.getKeyword()))
-                .append("\",\"t\":\"").append(search.getTld() == null ? "" : StringEscapeUtils.escapeJson(search.getTld()))
+                .append("\",\"t\":\"").append(search.getCountry().name())
                 .append("\",\"d\":\"").append(SMARTPHONE.equals(search.getDevice()) ? 'M' : 'D')
                 .append("\",\"l\":\"").append(search.getLocal() == null ? "" : StringEscapeUtils.escapeJson(search.getLocal()))
                 .append("\",\"dc\":\"").append(search.getDatacenter() == null ? "" : StringEscapeUtils.escapeJson(search.getDatacenter()))

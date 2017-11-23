@@ -16,7 +16,7 @@ serposcope.googleTargetControllerGrid = function () {
     var COL_ID = 0;
     var COL_SEARCH = 1;
     var COL_SEARCH_KEYWORD = 0;
-    var COL_SEARCH_TLD = 1;
+    var COL_SEARCH_COUNTRY = 1;
     var COL_SEARCH_DEVICE = 2;
     var COL_SEARCH_LOCAL = 3;
     var COL_SEARCH_DATACENTER = 4;
@@ -38,7 +38,7 @@ serposcope.googleTargetControllerGrid = function () {
 
     var filter = {
         keyword: '',
-        tld: '',
+        country: '',
         device: '',
         local: '',
         datacenter: '',
@@ -166,7 +166,7 @@ serposcope.googleTargetControllerGrid = function () {
 
     var applyFilter = function () {
         filter.keyword = $('#filter-keyword').val().toLowerCase();
-        filter.tld = $('#filter-tld').val().toLowerCase();
+        filter.country = $('#filter-country').val().toLowerCase();
         filter.device = $('#filter-device').val();
         filter.local = $('#filter-local').val().toLowerCase();
         filter.datacenter = $('#filter-datacenter').val().toLowerCase();
@@ -176,7 +176,7 @@ serposcope.googleTargetControllerGrid = function () {
 
     var resetFilter = function () {
         $('#filter-keyword').val('');
-        $('#filter-tld').val('');
+        $('#filter-country').val('');
         $('#filter-device').val('');
         $('#filter-local').val('');
         $('#filter-datacenter').val('');
@@ -198,7 +198,7 @@ serposcope.googleTargetControllerGrid = function () {
             return false;
         }
 
-        if (filter.tld !== '' && search[COL_SEARCH_TLD] != filter.tld) {
+        if (filter.country !== '' && search[COL_SEARCH_COUNTRY].toLowerCase() != filter.country.toLowerCase()) {
             return false;
         }
 
@@ -224,7 +224,7 @@ serposcope.googleTargetControllerGrid = function () {
         }
 
         var ret = "<div class=\"text-left\">";
-        ret += "<i data-toggle=\"tooltip\" title=\"TLD : " + search[COL_SEARCH_TLD] + "\" class=\"fa fa-globe\" ></i>";
+        ret += "<i data-toggle=\"tooltip\" title=\"Country : " + search[COL_SEARCH_COUNTRY] + "\" class=\"fa fa-globe\" ></i>";
         if (search[COL_SEARCH_DEVICE] === "M") {
             ret += "<i data-toggle=\"tooltip\" title=\"mobile\" class=\"fa fa-mobile fa-fw\" ></i>";
         }

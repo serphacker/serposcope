@@ -171,7 +171,7 @@ serposcope.googleGroupController = function () {
     };
     
     var bulkSearchSubmit = function(){
-        var keyword = [], tld = [], datacenter = [], device = [], local = [], custom = [];
+        var keyword = [], country = [], datacenter = [], device = [], local = [], custom = [];
         if($('#bulk-search').val() == ""){
             alert("no search specified");
             return false;
@@ -192,7 +192,7 @@ serposcope.googleGroupController = function () {
             }
             params = params.data[0];
             keyword[i] = params[0];
-            tld[i] = params.length > 1 ? params[1] : $('#csp-vars').attr('data-default-tld');
+            country[i] = params.length > 1 ? params[1] : $('#csp-vars').attr('data-default-country');
             datacenter[i] = params.length > 2 ? params[2]  : $('#csp-vars').attr('data-default-datacenter');
             if(params.length > 3){
                 switch(params[3].toLowerCase()){
@@ -229,7 +229,7 @@ serposcope.googleGroupController = function () {
                 continue;
             }
             inputs.push($('<input>', {'name': 'keyword[]','value': keyword[i],'type': 'hidden'})[0]);
-            inputs.push($('<input>', {'name': 'tld[]','value': tld[i],'type': 'hidden'})[0]);
+            inputs.push($('<input>', {'name': 'country[]','value': country[i],'type': 'hidden'})[0]);
             inputs.push($('<input>', {'name': 'datacenter[]','value': datacenter[i],'type': 'hidden'})[0]);
             inputs.push($('<input>', {'name': 'device[]','value': device[i],'type': 'hidden'})[0]);
             inputs.push($('<input>', {'name': 'local[]','value': local[i],'type': 'hidden'})[0]);

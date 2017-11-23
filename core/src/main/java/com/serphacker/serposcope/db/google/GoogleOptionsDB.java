@@ -25,7 +25,7 @@ public class GoogleOptionsDB {
     private final static String DEFAULT_DATACENTER = "google.default_datacenter";
     private final static String DEFAULT_DEVICE = "google.default.device";
     private final static String DEFAULT_LOCAL = "google.default.local";
-    private final static String DEFAULT_TLD = "google.default.tld";
+    private final static String DEFAULT_COUNTRY = "google.default.country";
     private final static String DEFAULT_CUSTOM_PARAMETERS = "google.default.custom";
     
     @Inject
@@ -44,7 +44,7 @@ public class GoogleOptionsDB {
         options.setDefaultDatacenter(configDB.get(DEFAULT_DATACENTER, options.getDefaultDatacenter()));
         options.setDefaultDevice(configDB.get(DEFAULT_DEVICE, null));
         options.setDefaultLocal(configDB.get(DEFAULT_LOCAL, options.getDefaultLocal()));
-        options.setDefaultTld(configDB.get(DEFAULT_TLD, options.getDefaultTld()));
+        options.setDefaultCountry(configDB.get(DEFAULT_COUNTRY, null));
         options.setDefaultCustomParameters(configDB.get(DEFAULT_CUSTOM_PARAMETERS, options.getDefaultCustomParameters()));
         
         return options;
@@ -66,7 +66,7 @@ public class GoogleOptionsDB {
         configDB.update(DEFAULT_DATACENTER, nullIfDefault(opts.getDefaultDatacenter(), def.getDefaultDatacenter()));
         configDB.updateInt(DEFAULT_DEVICE, nullIfDefault(opts.getDefaultDevice().ordinal(), def.getDefaultDevice().ordinal()));
         configDB.update(DEFAULT_LOCAL, nullIfDefault(opts.getDefaultLocal(), def.getDefaultLocal()));
-        configDB.update(DEFAULT_TLD, nullIfDefault(opts.getDefaultTld(), def.getDefaultTld()));
+        configDB.update(DEFAULT_COUNTRY, nullIfDefault(opts.getDefaultCountry().name(), def.getDefaultCountry().name()));
         configDB.update(DEFAULT_CUSTOM_PARAMETERS, nullIfDefault(opts.getDefaultCustomParameters(),def.getDefaultCustomParameters()));
         
     }

@@ -13,6 +13,7 @@ import com.serphacker.serposcope.db.base.BaseDB;
 import com.serphacker.serposcope.db.base.ConfigDB;
 import com.serphacker.serposcope.db.base.RunDB;
 import com.serphacker.serposcope.models.base.Run;
+import com.serphacker.serposcope.scraper.google.GoogleCountryCode;
 import com.serphacker.serposcope.task.TaskManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,6 +71,7 @@ public class Ninja extends NinjaDefault {
             global.put("version", Version.CURRENT);
             global.put("prod", props.isProd());
             global.put("update", update);
+            global.put("countries", GoogleCountryCode.__);
             freemarker.getConfiguration().setSharedVariable("global", global);
             freemarker.getConfiguration().addAutoImport("fu","/serposcope/views/helpers/functions.ftl.html");
             

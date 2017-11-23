@@ -54,9 +54,9 @@
                 <span class="help-block">${i18n("admin.google.defaultSearchOptionsHelp")}</span>
 
                 <div class="form-group" >
-                    <label for="searchName" ><abbr  title="${i18n("label.topLevelDomain")}" data-toggle="tooltip" >TLD</abbr></label>
-                    <input id="searchName" class="form-control" name="tld" value="${options.getDefaultTld()}" >
-                    <span class="help-block">${i18n("admin.google.tldHelp")}</span>
+                    <label for="country" >${i18n("label.country")}</label>
+                    <#noescape>${fu.countryCombo("country", options.getDefaultCountry())}</#noescape>
+                    <span class="help-block">${i18n("admin.google.countryHelp")}</span>
                 </div>
 
                 <div class="form-group" >

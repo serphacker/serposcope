@@ -12,7 +12,7 @@ serposcope.googleTargetControllerVariation = function () {
     var UNRANKED = 32767;
     var filter = {
         keyword: '',
-        tld: '',
+        country: '',
         device: '',
         local: '',
         datacenter: '',
@@ -108,7 +108,7 @@ serposcope.googleTargetControllerVariation = function () {
 
     var applyFilter = function () {
         filter.keyword = $('#filter-keyword').val().toLowerCase();
-        filter.tld = $('#filter-tld').val().toLowerCase();
+        filter.country = $('#filter-country').val().toLowerCase();
         filter.device = $('#filter-device').val();
         filter.local = $('#filter-local').val().toLowerCase();
         filter.datacenter = $('#filter-datacenter').val().toLowerCase();
@@ -121,7 +121,7 @@ serposcope.googleTargetControllerVariation = function () {
 
     var resetFilter = function () {
         $('#filter-keyword').val('');
-        $('#filter-tld').val('');
+        $('#filter-country').val('');
         $('#filter-device').val('');
         $('#filter-local').val('');
         $('#filter-datacenter').val('');
@@ -138,7 +138,7 @@ serposcope.googleTargetControllerVariation = function () {
             return false;
         }
 
-        if (filter.tld !== '' && item.search.tld != filter.tld) {
+        if (filter.country !== '' && item.search.country.toLowerCase() != filter.country) {
             return false;
         }
 
@@ -179,7 +179,7 @@ serposcope.googleTargetControllerVariation = function () {
     
     var formatKeyword = function (row, col, unk, colDef, rowData) {
         var ret = "<div class=\"text-left\">";
-        ret += "<i data-toggle=\"tooltip\" title=\"TLD : " + rowData.search.tld + "\" class=\"fa fa-globe\" ></i>";
+        ret += "<i data-toggle=\"tooltip\" title=\"Country : " + rowData.search.country + "\" class=\"fa fa-globe\" ></i>";
         if (rowData.search.device === "M") {
             ret += "<i data-toggle=\"tooltip\" title=\"mobile\" class=\"fa fa-mobile fa-fw\" ></i>";
         }

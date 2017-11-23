@@ -15,7 +15,7 @@ serposcope.googleGroupControllerGrid = function () {
 
     var filter = {
         keyword: '',
-        tld: '',
+        country: '',
         device: '',
         local: '',
         datacenter: '',
@@ -68,7 +68,7 @@ serposcope.googleGroupControllerGrid = function () {
         },{
             id: "device", field: "device", minWidth: 100, sortable: true, name: 'Device', formatter: formatDevice
         },{
-            id: "tld", field: "tld", minWidth: 60, sortable: true, name: 'TLD'/*, formatter: formatTLD,*/
+            id: "country", field: "country", minWidth: 60, sortable: true, name: 'Country', formatter: formatCountry,
         },{
             id: "datacenter", field: "datacenter", minWidth: 100, sortable: true, name: 'Datacenter'/*, formatter: formatDatacenter,*/
         },{
@@ -110,7 +110,7 @@ serposcope.googleGroupControllerGrid = function () {
 
     var applyFilter = function () {
         filter.keyword = $('#filter-keyword').val().toLowerCase();
-        filter.tld = $('#filter-tld').val().toLowerCase();
+        filter.country = $('#filter-country').val().toLowerCase();
         filter.device = $('#filter-device').val();
         filter.local = $('#filter-local').val().toLowerCase();
         filter.datacenter = $('#filter-datacenter').val().toLowerCase();
@@ -120,7 +120,7 @@ serposcope.googleGroupControllerGrid = function () {
 
     var resetFilter = function () {
         $('#filter-keyword').val('');
-        $('#filter-tld').val('');
+        $('#filter-country').val('');
         $('#filter-device').val('');
         $('#filter-local').val('');
         $('#filter-datacenter').val('');
@@ -137,7 +137,7 @@ serposcope.googleGroupControllerGrid = function () {
             return false;
         }
 
-        if (filter.tld !== '' && item.tld != filter.tld) {
+        if (filter.country !== '' && item.country.toLowerCase() != filter.country) {
             return false;
         }
 
@@ -166,6 +166,14 @@ serposcope.googleGroupControllerGrid = function () {
         } else {
             return "<i data-toggle=\"tooltip\" title=\"desktop\" class=\"fa fa-desktop fa-fw\" ></i>";
         }
+    };
+    
+    formatCountry = function (row, col, unk, colDef, rowData) {
+        if(rowData.country === '__'){
+            return "__ (no country)";
+        } else {
+            return rowData.country;
+        }
     };    
     
     var getSelection = function() {
@@ -176,7 +184,7 @@ serposcope.googleGroupControllerGrid = function () {
         return {
             id: i,
             keyword: "search#" + parseInt(Math.random() * 100000),
-            tld: parseInt(Math.random() * 5) == 0 ? 'com' : 'fr',
+            country: parseInt(Math.random() * 5) == 0 ? '__' : 'fr',
             device: parseInt(Math.random() * 5) == 0 ? 'M' : 'D',
             local: parseInt(Math.random() * 5) == 0 ? 'Paris' : '',
             datacenter: parseInt(Math.random() * 5) == 0 ? '1.2.3.4' : '',
