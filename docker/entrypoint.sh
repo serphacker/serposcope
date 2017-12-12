@@ -3,7 +3,7 @@
 conf_file="/etc/serposcope.conf"
 
 function replace_param {
-  sed -i -r -e "/^# *${1}=/ {s|^# *||;s|=.*$|=|;s|$|$(eval echo \$$2)|}" $conf_file
+  sed -i -r -e "/^# *${1}=/ {s|^# *||;s|=.*$|=|;s|$|$(eval echo \$$2 | sed 's/&/\\&/g')|}" $conf_file
 }
 
 if [ -n "$SERPOSCOPE_DB_URL" ]
