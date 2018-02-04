@@ -1,5 +1,7 @@
 # serposcope changelog
 
+## 2.9 - UNRELEASED
+
 ## 2.8 - 2017-11-23
 
 * Fix TLD/country localization issue. TLD is replace by country. On upgrade, TLD are automatically converted to associated country unless it is a generic TLD. You may want to reconfigure your default country for new keyword in admin > settings > google > country.
