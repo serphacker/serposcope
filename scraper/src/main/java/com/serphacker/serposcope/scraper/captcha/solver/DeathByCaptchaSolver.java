@@ -203,7 +203,6 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
 
                 int status = http.get(location + "?" + random.nextInt(Integer.MAX_VALUE));
                 if (status == 200) {
-                    System.out.println(http.getContentAsString());
                     Map<String, String> answer = parseAnswer(http.getContentAsString());
                     if (answer.get("text") != null && !answer.get("text").isEmpty()) {
                         
