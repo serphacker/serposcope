@@ -31,7 +31,7 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
     final static Logger LOG = LoggerFactory.getLogger(DeathByCaptchaSolver.class);
 
     public final static long POLLING_PAUSE_MS = 2500l;
-    public final static long DEFAULT_TIMEOUT_MS = 60000;
+    public final static long DEFAULT_TIMEOUT_MS = 180000l;
 
     private String apiUrl = "http://api.dbcapi.me/api/";
     private String login;

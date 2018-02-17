@@ -11,10 +11,7 @@ import com.google.common.io.ByteStreams;
 import com.serphacker.serposcope.scraper.DeepIntegrationTest;
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

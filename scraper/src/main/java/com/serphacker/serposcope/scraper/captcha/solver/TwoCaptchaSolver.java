@@ -14,6 +14,8 @@ import static com.serphacker.serposcope.scraper.captcha.Captcha.Error.EXCEPTION;
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import com.serphacker.serposcope.scraper.captcha.CaptchaRecaptcha;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
+import com.serphacker.serposcope.scraper.http.proxy.HttpProxy;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +38,9 @@ public class TwoCaptchaSolver implements CaptchaSolver {
         .addOptions(Option.SUPPRESS_EXCEPTIONS);
     
     public final static long POLLING_PAUSE_MS = 2500l;
-    public final static long DEFAULT_TIMEOUT_MS = 90000l;
+    public final static long DEFAULT_TIMEOUT_MS = 180000l;
 
-    private String apiUrl = "https://2captcha.com/";
+    private String apiUrl = "http://2captcha.com/";
     private String apiKey;
     private long timeoutMS;
     private int maxRetryOnOverload;    
@@ -105,31 +107,11 @@ public class TwoCaptchaSolver implements CaptchaSolver {
         
         Map<String,Object> createTaskMap = new HashMap<>();
         createTaskMap.put("key", apiKey);
-        createTaskMap.put("soft_id", SOFT_ID);
+        createTaskMap.put("soft_id", "" + SOFT_ID);
         
         if(captcha instanceof CaptchaImage){
-            
-            String filename = null;
-            String textMimeType = ((CaptchaImage)captcha).getMimes()[0];
-            String[] mimes = null;        
-
-            if(textMimeType != null)
-                mimes = textMimeType.split("/");
-            else
-                textMimeType = "application/octet-stream";
-            if(mimes != null && mimes.length == 2){
-                if(isValidImageExtension(mimes[1])){
-                    filename = "image." + mimes[1];
-                }
-            } else {
-                filename = "image.png";
-            }            
-            
-            createTaskMap.put("method", "post");
-            createTaskMap.put("file",new ByteArrayBody(((CaptchaImage)captcha).getImage(), ContentType.create(textMimeType), filename));
-            
-//            createTaskMap.put("method", "base64");
-            //createTaskMap.put("body",Base64.encode(((CaptchaImage)captcha).getImage()));
+            createTaskMap.put("method", "base64");
+            createTaskMap.put("body",Base64.encode(((CaptchaImage)captcha).getImage()));
         }        
         
         if(captcha instanceof CaptchaRecaptcha){
@@ -210,7 +192,7 @@ public class TwoCaptchaSolver implements CaptchaSolver {
                 }
                 
                 if(!"CAPCHA_NOT_READY".equals(res)){
-                    if(res.startsWith("OK|") && res.substring(3).isEmpty()){
+                    if(res.startsWith("OK|") && !res.substring(3).isEmpty()){
                         
                         if(captcha instanceof CaptchaRecaptcha){
                             ((CaptchaRecaptcha)captcha).setResponse(res.substring(3));

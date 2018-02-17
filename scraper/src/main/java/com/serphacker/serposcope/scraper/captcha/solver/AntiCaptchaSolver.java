@@ -36,7 +36,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
         .addOptions(Option.SUPPRESS_EXCEPTIONS);
 
     public final static long POLLING_PAUSE_MS = 2500l;
-    public final static long DEFAULT_TIMEOUT_MS = 90000l;
+    public final static long DEFAULT_TIMEOUT_MS = 180000l;
 
     private String apiUrl = "http://anti-captcha.com/";
     private String apiUrlv2 = "https://api.anti-captcha.com/";
@@ -107,7 +107,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
         Map<String, Object> taskMap = new HashMap<>();
         Map<String, Object> createTaskMap = new HashMap<>();
         createTaskMap.put("clientKey", apiKey);
-        createTaskMap.put("softId", SOFT_ID);
+        createTaskMap.put("softId", "" + SOFT_ID);
         createTaskMap.put("languagePool", "en");
         createTaskMap.put("task", taskMap);
 

@@ -16,33 +16,35 @@ import org.junit.Test;
  *
  * @author admin
  */
-public class DeathByCaptchaSolverIT extends GenericSolverIT {
-
-    public DeathByCaptchaSolverIT() {
+public class TwoCaptchaSolverIT extends GenericSolverIT {
+    
+    public TwoCaptchaSolverIT() {
     }
-
-    String dbcLogin;
-    String dbcPassword;
-
+    
+    String apiKey;
+    String apikey0balance;
+    
     @Before
     public void readCredentials() throws Exception {
-        assertNotNull(dbcLogin = props.getProperty("dbclogin"));
-        assertNotNull(dbcPassword = props.getProperty("dbcpassword"));
+        apiKey = props.getProperty("2captcha.api");
+        apikey0balance = props.getProperty("2captcha.api0balance");        
+        assertNotNull(apiKey);
+        assertNotNull(apikey0balance);
     }
 
     @Override
     protected CaptchaSolver getSolver() {
-        return new DeathByCaptchaSolver(dbcLogin, dbcPassword);
+        return new TwoCaptchaSolver(apiKey);
     }
 
     @Override
     protected CaptchaSolver getSolverNoBalance() {
-        return null;
+        return new TwoCaptchaSolver(apikey0balance);
     }
 
     @Override
     protected CaptchaSolver getSolverInvalidCredentials() {
-        return new DeathByCaptchaSolver("wrong-login", "wrong-password");
+        return new TwoCaptchaSolver(apiKey + "wrong-password");
     }
-
+    
 }
