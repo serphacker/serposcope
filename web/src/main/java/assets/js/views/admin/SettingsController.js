@@ -41,7 +41,15 @@ serposcope.adminSettingsController = function () {
                 
             case "anticaptcha":
                 data.api = $('#anticaptchaApiKey').val();
-                break;                  
+                break;
+                
+            case "twocaptcha":
+                data.api = $('#twoCaptchaKey').val();
+                break;
+                
+            case "imagetyperz":
+                data.api = $('#imageTyperzKey').val();
+                break;                
         }
         
         $.ajax({

@@ -18,6 +18,8 @@ import com.serphacker.serposcope.scraper.captcha.solver.AntiCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DeathByCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DecaptcherSolver;
+import com.serphacker.serposcope.scraper.captcha.solver.ImageTyperzSolver;
+import com.serphacker.serposcope.scraper.captcha.solver.TwoCaptchaSolver;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import ninja.Context;
@@ -87,6 +89,8 @@ public class SettingsController extends BaseController {
         @Param("decaptcherUser") String decaptcherUser,
         @Param("decaptcherPass") String decaptcherPass,        
         @Param("anticaptchaApiKey") String anticaptchaApiKey,
+        @Param("twoCaptchaKey") String twoCaptchaKey,
+        @Param("imageTyperzKey") String imageTyperzKey,
         @Param("pruneRuns") Integer pruneRuns
     ){
         FlashScope flash = context.getFlashScope();
@@ -122,6 +126,14 @@ public class SettingsController extends BaseController {
         
         if(!Validator.isEmpty(anticaptchaApiKey)){
             config.setAnticaptchaKey(anticaptchaApiKey);
+        }
+        
+        if(!Validator.isEmpty(twoCaptchaKey)){
+            config.setTwoCaptchaKey(twoCaptchaKey);
+        }
+        
+        if(!Validator.isEmpty(imageTyperzKey)){
+            config.setImageTyperzKey(imageTyperzKey);
         }
         
         if(pruneRuns == null || pruneRuns == 0){
@@ -203,6 +215,16 @@ public class SettingsController extends BaseController {
                         solver = new AntiCaptchaSolver(captchaApiKey);
                     }
                     break;
+                case "twocaptcha":
+                    if(!StringUtils.isEmpty(captchaApiKey)){
+                        solver = new TwoCaptchaSolver(captchaApiKey);
+                    }
+                    break;
+                case "imagetyperz":
+                    if(!StringUtils.isEmpty(captchaApiKey)){
+                        solver = new ImageTyperzSolver(captchaApiKey);
+                    }
+                    break;                    
             }
         }
         

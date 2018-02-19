@@ -28,6 +28,10 @@ public class Config {
     
     String anticaptchaKey;
     
+    String twoCaptchaKey;
+    
+    String imageTyperzKey;
+    
     public final static String DEFAULT_DISPLAY_HOME = "summary";
     public final static List<String> VALID_DISPLAY_HOME = Arrays.asList("summary","table");
     public final static String DEFAULT_DISPLAY_GOOGLE_TARGET = "table";
@@ -81,7 +85,23 @@ public class Config {
     public void setAnticaptchaKey(String anticaptchaKey) {
         this.anticaptchaKey = anticaptchaKey;
     }
-    
+
+    public String getTwoCaptchaKey() {
+        return twoCaptchaKey;
+    }
+
+    public void setTwoCaptchaKey(String twoCaptchaKey) {
+        this.twoCaptchaKey = twoCaptchaKey;
+    }
+
+    public String getImageTyperzKey() {
+        return imageTyperzKey;
+    }
+
+    public void setImageTyperzKey(String imageTyperzKey) {
+        this.imageTyperzKey = imageTyperzKey;
+    }
+        
     public LocalTime getCronTime() {
         return cronTime;
     }

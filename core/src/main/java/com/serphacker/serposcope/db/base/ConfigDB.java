@@ -36,6 +36,10 @@ public class ConfigDB extends AbstractDB {
     
     public final static String APP_ANTICAPTCHA_KEY = "app.anticaptcha.key";
     
+    public final static String APP_TWOCAPTCHA_KEY = "app.twocaptcha.key";
+    
+    public final static String APP_IMAGETYPERZ_KEY = "app.imagetyperz.key";
+    
     public final static String APP_DISPLAY_HOME = "app.display.home";
     public final static String APP_DISPLAY_GOOGLE_TARGET = "app.display.google.target";
     public final static String APP_DISPLAY_GOOGLE_SEARCH = "app.display.google.search";
@@ -138,6 +142,10 @@ public class ConfigDB extends AbstractDB {
         
         config.setAnticaptchaKey(get(APP_ANTICAPTCHA_KEY, null));
         
+        config.setTwoCaptchaKey(get(APP_TWOCAPTCHA_KEY, null));
+        
+        config.setImageTyperzKey(get(APP_IMAGETYPERZ_KEY, null));
+        
         config.setDisplayHome(get(APP_DISPLAY_HOME, Config.DEFAULT_DISPLAY_HOME));
         config.setDisplayGoogleSearch(get(APP_DISPLAY_GOOGLE_SEARCH, Config.DEFAULT_DISPLAY_GOOGLE_SEARCH));
         config.setDisplayGoogleTarget(get(APP_DISPLAY_GOOGLE_TARGET, Config.DEFAULT_DISPLAY_GOOGLE_TARGET));
@@ -157,6 +165,10 @@ public class ConfigDB extends AbstractDB {
         update(APP_DECAPTCHER_PASS, config.getDecaptcherPass());
         
         update(APP_ANTICAPTCHA_KEY, config.getAnticaptchaKey());
+        
+        update(APP_TWOCAPTCHA_KEY, config.getTwoCaptchaKey());
+        
+        update(APP_IMAGETYPERZ_KEY, config.getImageTyperzKey());
         
         update(APP_DISPLAY_HOME, config.getDisplayHome());
         update(APP_DISPLAY_GOOGLE_SEARCH, config.getDisplayGoogleSearch());

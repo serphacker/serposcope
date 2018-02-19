@@ -300,7 +300,7 @@ public class ImageTyperzSolver implements CaptchaSolver {
 
     @Override
     public String getFriendlyName() {
-        return "anticaptcha";
+        return "imageTyperz";
     }
 
     @Override

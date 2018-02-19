@@ -124,6 +124,36 @@
                 </div>
                 <hr/>
                 
+                <!-- 2captcha -->
+                <div class="form-group" >
+                    <label for="twoCaptchaKey" >${i18n("admin.settings.twoCaptchaKey")}</label>
+                    <input id="twoCaptchaKey" class="form-control" name="twoCaptchaKey" value="${config.getTwoCaptchaKey()!""}" >
+                </div>
+
+                <div class="form-group">
+                    <div class="pull-right">
+                        <a href="${reverseRoute("admin.SettingsController","testCaptcha")}" class="btn btn-default btn-test-captcha"
+                           data-service="twocaptcha" >${i18n("admin.settings.testCredentials")}</a>
+                    </div>
+                    <div><a rel="noreferrer" href="https://2captcha.com?from=5245306" target="_blank" >2captcha.com</a></div>
+                </div>
+                <hr/>
+                
+                <!-- imagetyperz -->
+                <div class="form-group" >
+                    <label for="imageTyperzKey" >${i18n("admin.settings.imageTyperzKey")}</label>
+                    <input id="imageTyperzKey" class="form-control" name="imageTyperzKey" value="${config.getImageTyperzKey()!""}" >
+                </div>
+
+                <div class="form-group">
+                    <div class="pull-right">
+                        <a href="${reverseRoute("admin.SettingsController","testCaptcha")}" class="btn btn-default btn-test-captcha"
+                           data-service="imagetyperz" >${i18n("admin.settings.testCredentials")}</a>
+                    </div>
+                    <div><a rel="noreferrer" href="https://www.imagetyperz.com" target="_blank" >www.imagetyperz.com</a></div>
+                </div>
+                <hr/>                
+                
                 <!-- deathbycaptcha -->
                 <div class="form-group" >
                     <label for="dbcUser" >${i18n("admin.settings.dbcLogin")}</label>
@@ -145,7 +175,7 @@
                 <hr/>
                 
                 <!-- decaptcher -->
-                <div class="form-group" >
+<!--                <div class="form-group" >
                     <label for="decaptcherUser" >${i18n("admin.settings.decaptcherLogin")}</label>
                     <input id="decaptcherUser" class="form-control" name="decaptcherUser" value="${config.getDecaptcherUser()!""}" >
                 </div>
@@ -162,7 +192,7 @@
                     </div>
                     <div><a rel="noreferrer"href="https://de-captcher.com/" target="_blank" >www.de-captcher.com</a></div>
                 </div>
-                <hr/>
+                <hr/>-->
                 
                 <input type="button" id="btn-reset-settings" class="btn btn-default" value="${i18n("label.reset")}" 
                        data-action="${reverseRoute("admin.SettingsController","reset")}" />

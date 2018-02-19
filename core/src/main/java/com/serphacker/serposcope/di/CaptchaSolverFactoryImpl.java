@@ -12,8 +12,10 @@ import com.serphacker.serposcope.scraper.captcha.solver.AntiCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.CaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DeathByCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.DecaptcherSolver;
+import com.serphacker.serposcope.scraper.captcha.solver.ImageTyperzSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.RandomCaptchaSolver;
 import com.serphacker.serposcope.scraper.captcha.solver.SwingUICaptchaSolver;
+import com.serphacker.serposcope.scraper.captcha.solver.TwoCaptchaSolver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,19 +43,33 @@ public class CaptchaSolverFactoryImpl implements CaptchaSolverFactory {
             }
         }
         
-        if (!StringUtils.isEmpty(config.getDecaptcherUser()) && !StringUtils.isEmpty(config.getDecaptcherPass())) {
-            DecaptcherSolver solver = new DecaptcherSolver(config.getDecaptcherUser(), config.getDecaptcherPass());
-            if(init(solver)){
-                solvers.add(solver);
-            }
-        }
-        
         if(!StringUtils.isEmpty(config.getAnticaptchaKey())){
             AntiCaptchaSolver solver = new AntiCaptchaSolver(config.getAnticaptchaKey());
             if(init(solver)){
                 solvers.add(solver);
             }                    
         }
+        
+        if(!StringUtils.isEmpty(config.getTwoCaptchaKey())){
+            TwoCaptchaSolver solver = new TwoCaptchaSolver(config.getTwoCaptchaKey());
+            if(init(solver)){
+                solvers.add(solver);
+            }                    
+        }
+
+        if(!StringUtils.isEmpty(config.getImageTyperzKey())){
+            ImageTyperzSolver solver = new ImageTyperzSolver(config.getImageTyperzKey());
+            if(init(solver)){
+                solvers.add(solver);
+            }                    
+        }        
+        
+//        if (!StringUtils.isEmpty(config.getDecaptcherUser()) && !StringUtils.isEmpty(config.getDecaptcherPass())) {
+//            DecaptcherSolver solver = new DecaptcherSolver(config.getDecaptcherUser(), config.getDecaptcherPass());
+//            if(init(solver)){
+//                solvers.add(solver);
+//            }
+//        }        
         
         if(solvers.isEmpty()){
             return null;

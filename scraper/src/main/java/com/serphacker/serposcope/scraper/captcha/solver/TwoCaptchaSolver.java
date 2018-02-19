@@ -243,7 +243,7 @@ public class TwoCaptchaSolver implements CaptchaSolver {
 
     @Override
     public String getFriendlyName() {
-        return "anticaptcha";
+        return "2captcha";
     }
 
     @Override
