@@ -59,9 +59,8 @@ public class GoogleScraper {
         NCR_COOKIE.setAttribute(ClientCookie.DOMAIN_ATTR, ".google.com");
     }
     
-    public final static String DEFAULT_DESKTOP_UA = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0";
-    public final static String DEFAULT_SMARTPHONE_UA = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
-//    public final static String DEFAULT_MOBILE_UA = "Mozilla/5.0 (Android; Mobile; rv:37.0) Gecko/37.0 Firefox/37.0";
+    public final static String DEFAULT_DESKTOP_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0";
+    public final static String DEFAULT_SMARTPHONE_UA = "Mozilla/5.0 (Android 7.0; Mobile; rv:59.0) Gecko/59.0 Firefox/59.0 ";
     
     private static final Logger LOG = LoggerFactory.getLogger(GoogleScraper.class);
 
@@ -201,7 +200,12 @@ public class GoogleScraper {
             return Status.ERROR_NETWORK;
         }
         
-        Elements h3Elts = lastSerpHtml.getElementsByTag("h3");
+        Element resDiv = lastSerpHtml.getElementById("res");
+        if(resDiv == null){
+            resDiv = lastSerpHtml;
+        }
+        
+        Elements h3Elts = resDiv.getElementsByTag("h3");
         for (Element h3Elt : h3Elts) {
 
             if(isSiteLinkElement(h3Elt)){
@@ -300,7 +304,16 @@ public class GoogleScraper {
             return false;
         }
         
-        return lastSerpHtml.getElementById("pnnext") != null;
+        if(lastSerpHtml.getElementById("pnnext") != null){
+            return true;
+        }
+        
+        Elements navends = lastSerpHtml.getElementsByClass("navend");
+        if(navends.size() > 1 && navends.last().children().size() > 0 && "a".equals(navends.last().child(0).tagName())){
+            return true;
+        }
+        
+        return false;
     }
     
     protected String buildRequestUrl(GoogleScrapSearch search, int page){

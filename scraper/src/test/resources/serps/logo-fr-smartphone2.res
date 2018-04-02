@@ -1,0 +1,9 @@
+https://www.freelogoservices.com/fr/step1
+https://www.freelogoservices.com/fr
+https://99designs.fr/logo-design
+https://fr.m.wikipedia.org/wiki/Logotype
+http://fr.freelogodesign.org/
+https://fr.shopify.com/outils/createur-de-logo
+https://www.canva.com/fr_fr/creer/logos/
+https://www.tailorbrands.com/logo-maker
+https://www.logaster.fr/logo/
