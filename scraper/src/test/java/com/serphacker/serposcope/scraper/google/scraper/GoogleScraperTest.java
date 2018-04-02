@@ -105,7 +105,7 @@ public class GoogleScraperTest {
                 continue;
             }
             
-            LOG.info("checking {}", testFile);
+            LOG.info("checking {}", testFile.getAbsolutePath());
             
             String testContent = new String(Files.readAllBytes(testFile.toPath()));
             ScrapClient http = mock(ScrapClient.class);

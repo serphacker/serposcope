@@ -1,0 +1,9 @@
+https://pixabay.com/fr/photos/lion/
+https://www.gettyimages.fr/photos/lion
+http://www.ohmymag.com/lion/lion-les-plus-belles-photos-du-roi-de-l-039-afrique_art94369.html
+https://www.canstockphoto.fr/photos-images/lion.html
+http://www.vive-internet-gratuit.com/galerie_animaux_Lion.html
+http://www.photos-animaux.com/photos,autres,lion.html
+https://fr.123rf.com/images-libres-de-droits/tete_de_lion.html
+https://www.gettyimages.com/photos/lion
+https://www.istockphoto.com/photos/lion
