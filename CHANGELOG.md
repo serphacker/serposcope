@@ -2,6 +2,10 @@
 
 ## 2.9.0 - UNRELEASED
 
+* Fix mobile search bug [#187](https://github.com/serphacker/serposcope/issues/187) [#175](https://github.com/serphacker/serposcope/issues/175)
+* Fix deathbycaptcha (now solve recaptcha)
+* Add captcha solver providers : www.imagetyperz.com and 2captcha.com
+
 ## 2.8.0 - 2017-11-23
 
 * Fix TLD/country localization issue. TLD is replace by country. On upgrade, TLD are automatically converted to associated country unless it is a generic TLD. You may want to reconfigure your default country for new keyword in admin > settings > google > country.
