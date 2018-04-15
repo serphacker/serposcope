@@ -116,7 +116,7 @@ public class GoogleScrapSearch {
         hash = 79 * hash + (int) (this.minPauseBetweenPageMS ^ (this.minPauseBetweenPageMS >>> 32));
         hash = 79 * hash + (int) (this.maxPauseBetweenPageMS ^ (this.maxPauseBetweenPageMS >>> 32));
         hash = 79 * hash + Objects.hashCode(this.keyword);
-        hash = 79 * hash + Objects.hashCode(this.country);
+        hash = 79 * hash + (this.country == null ? 0 : (this.country.ordinal()+1) )*100;
         hash = 79 * hash + Objects.hashCode(this.datacenter);
         hash = 79 * hash + (this.device == null ? 0 : (this.device.ordinal()+1) );
         hash = 79 * hash + Objects.hashCode(this.local);
@@ -151,7 +151,7 @@ public class GoogleScrapSearch {
         if (!Objects.equals(this.keyword, other.keyword)) {
             return false;
         }
-        if (!Objects.equals(this.country, other.country)) {
+        if (this.country != other.country) {
             return false;
         }
         if (!Objects.equals(this.datacenter, other.datacenter)) {
