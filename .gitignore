@@ -5,7 +5,7 @@ target/
 /private/
 /web/src/main/java/assets/compiled
 /web/src/main/java/assets/js/combined.min.js
-/scraper/src/test/java/com/serphacker/serposcope/scraper/google/scraper/GoogleScraperDebug.java
+*Debug.java
 
 # java specific
 *.log

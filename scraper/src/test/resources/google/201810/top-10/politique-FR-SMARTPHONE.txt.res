@@ -1,0 +1,9 @@
+https://fr.m.wikipedia.org/wiki/Politique
+https://mobile.lemonde.fr/politique/
+https://www.20minutes.fr/politique/
+https://www.lepoint.fr/politique/
+https://mobile.francetvinfo.fr/politique/#xtref=acc_dir
+https://www.challenges.fr/politique/
+https://www.lci.fr/politique/
+https://www.bfmtv.com/politique/
+http://m.leparisien.fr/politique/

@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.10.0 - 2018-10-06
+
+* Fix serp parsing bug [#200](https://github.com/serphacker/serposcope/issues/200)
+
 ## 2.9.0 - 2018-04-15
 
 * Fix mobile search bug [#187](https://github.com/serphacker/serposcope/issues/187) [#175](https://github.com/serphacker/serposcope/issues/175)

@@ -1,0 +1,10 @@
+https://www.liligo.fr/location-voiture.html
+https://www.sixt.fr/
+https://www.kayak.fr/cars
+https://www.avis.fr/location-de-voitures
+https://mobile.ada.fr/vehicules/voitures.html
+http://www.autoeurope.fr/mobile/index.cfm
+https://www.expedia.fr/location-voiture
+https://www.skyscanner.fr/location-de-voiture
+https://www.happycar.fr/
+https://ucar.fr/location-voiture-pas-cher

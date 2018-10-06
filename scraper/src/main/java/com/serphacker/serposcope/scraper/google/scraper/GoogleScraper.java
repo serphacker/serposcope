@@ -201,23 +201,80 @@ public class GoogleScraper {
         }
         
         Element resDiv = lastSerpHtml.getElementById("res");
-        if(resDiv == null){
-            resDiv = lastSerpHtml;
+        if(resDiv != null){
+            return parseSerpLayoutRes(resDiv, urls);
+        }
+
+        final Element mainDiv = lastSerpHtml.getElementById("main");
+        if(mainDiv != null) {
+            return parseSerpLayoutMain(mainDiv, urls);
         }
         
-        Elements h3Elts = resDiv.getElementsByTag("h3");
+        return Status.ERROR_PARSING;
+    }
+
+    protected Status parseSerpLayoutRes(Element resElement, List<String> urls) {
+
+        Elements h3Elts = resElement.select("a > h3:first-child");
+        if(h3Elts.isEmpty()) {
+            return parseSerpLayoutResLegacy(resElement, urls);
+        }
+
+        for (Element h3Elt : h3Elts) {
+
+            String link = extractLink(h3Elt.parent());
+            if(link == null){
+                continue;
+            }
+
+            urls.add(link);
+        }
+
+        return Status.OK;
+    }
+
+
+    protected Status parseSerpLayoutResLegacy(Element resElement, List<String> urls) {
+
+        Elements h3Elts = resElement.getElementsByTag("h3");
         for (Element h3Elt : h3Elts) {
 
             if(isSiteLinkElement(h3Elt)){
                 continue;
             }
-            
+
             String link = extractLink(h3Elt.getElementsByTag("a").first());
             if(link != null){
                 urls.add(link);
-            }            
+            }
         }
-        
+
+        return Status.OK;
+    }
+
+    protected Status parseSerpLayoutMain(Element divElement, List<String> urls) {
+
+        final Elements links = divElement.select(
+            "#main > div > div:first-child > div:first-child > a:first-child," +
+                "#main > div > div:first-child > a:first-child"
+        );
+        if(links.isEmpty()) {
+            return parseSerpLayoutResLegacy(divElement, urls);
+        }
+
+        for (Element link : links) {
+            if(!link.children().isEmpty() && "img".equals(link.child(0).tagName())) {
+                continue;
+            }
+
+            String url = extractLink(link);
+            if(url == null) {
+                continue;
+            }
+
+            urls.add(url);
+        }
+
         return Status.OK;
     }
     
@@ -265,7 +322,7 @@ public class GoogleScraper {
         
         return false;
     }
-    
+
     protected String extractLink(Element element){
         if(element == null){
             return null;
@@ -312,8 +369,10 @@ public class GoogleScraper {
         if(navends.size() > 1 && navends.last().children().size() > 0 && "a".equals(navends.last().child(0).tagName())){
             return true;
         }
-        
-        return false;
+
+        final Elements footerLinks = lastSerpHtml.select("footer a");
+        return footerLinks.stream().filter(e -> e.text().endsWith(">")).findAny().isPresent();
+
     }
     
     protected String buildRequestUrl(GoogleScrapSearch search, int page){
