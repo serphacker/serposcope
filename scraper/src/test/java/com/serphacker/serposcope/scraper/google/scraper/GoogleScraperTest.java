@@ -79,60 +79,6 @@ public class GoogleScraperTest {
     }
 
     @Test
-    public void testLastPage() throws IOException {
-
-        List<String> files = ResourceHelper.listResourceInDirectories(new String[]{
-            "/google/201804/last-page",
-            "/google/201810/last-page"
-        });
-
-        for (String file : files) {
-            LOG.debug("checking " + file);
-            String content = ResourceHelper.toString(file);
-            ScrapClient http = mock(ScrapClient.class);
-            when(http.getContentAsString()).thenReturn(content);
-            GoogleScraper scraper = new GoogleScraper(http, null);
-            assertEquals(OK, scraper.parseSerp(new ArrayList<>()));
-            assertFalse(scraper.hasNextPage());
-        }
-
-    }
-
-    @Test
-    public void testParsing() throws Exception {
-
-        List<String> files = ResourceHelper.listResourceInDirectories(new String[]{
-            "/google/201804/top-10",
-            "/google/201810/top-10"
-        });
-
-        for (String file : files) {
-
-            if (file.endsWith(".res")) {
-                continue;
-            }
-
-            LOG.info("checking {}", file);
-
-            String serpHtml = ResourceHelper.toString(file);
-            List<String> serpTop10 = Arrays.asList(ResourceHelper.toString(file + ".res").split("\n"));
-
-            assertFalse(serpHtml.isEmpty());
-            assertFalse(serpTop10.isEmpty());
-
-            ScrapClient http = mock(ScrapClient.class);
-            when(http.getContentAsString()).thenReturn(serpHtml);
-            GoogleScraper scraper = new GoogleScraper(http, null);
-            List<String> urls = new ArrayList<>();
-            assertEquals(OK, scraper.parseSerp(urls));
-            assertTrue(scraper.hasNextPage());
-
-            assertEquals(serpTop10, urls);
-        }
-
-    }
-
-    @Test
     public void testDownloadNetworkError() throws Exception {
         ScrapClient http = mock(ScrapClient.class);
         when(http.get(any(), any())).thenReturn(-1);
