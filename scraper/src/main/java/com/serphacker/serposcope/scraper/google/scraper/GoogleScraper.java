@@ -716,5 +716,8 @@ public class GoogleScraper {
     public void setMaxRetry(int maxRetry) {
         this.maxRetry = maxRetry;
     }
-    
+
+    public Document getLastSerpHtml() {
+        return lastSerpHtml;
+    }
 }
