@@ -24,7 +24,8 @@ public class GoogleScraperParserTest {
 
     private final static List<String> DIRECTORIES = Arrays.asList(
         "/google/201804",
-        "/google/201810"
+        "/google/201810",
+        "/google/201910"
     );
 
     @Test
@@ -53,17 +54,17 @@ public class GoogleScraperParserTest {
 
         for (String file : files) {
 
-            if (file.endsWith(".res") || file.endsWith(".html") || !file.contains("lion-FR-DESKTOP.txt")) {
+            if (file.endsWith(".res")) {
                 continue;
             }
 
             LOG.info("checking {}", file);
 
             String serpHtml = ResourceHelper.readResourceAsString(file);
-            List<String> serpTop10 = Arrays.asList(ResourceHelper.readResourceAsString(file + ".res").split("\n"));
+            List<String> expectedUrls = Arrays.asList(ResourceHelper.readResourceAsString(file + ".res").split("\n"));
 
             assertFalse(serpHtml.isEmpty());
-            assertFalse(serpTop10.isEmpty());
+            assertFalse(expectedUrls.isEmpty());
 
             ScrapClient http = mock(ScrapClient.class);
             when(http.getContentAsString()).thenReturn(serpHtml);
@@ -72,7 +73,7 @@ public class GoogleScraperParserTest {
             assertEquals(OK, scraper.parseSerp(urls));
             assertTrue(scraper.hasNextPage());
 
-            assertEquals(serpTop10, urls);
+            assertEquals(expectedUrls, urls.subList(0, expectedUrls.size()));
         }
 
     }
