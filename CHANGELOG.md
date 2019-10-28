@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.11.0 - 2019-10-28
+
+* Fix serp parsing bug [#211](https://github.com/serphacker/serposcope/issues/211)
+
 ## 2.10.0 - 2018-10-06
 
 * Fix serp parsing bug [#200](https://github.com/serphacker/serposcope/issues/200)
