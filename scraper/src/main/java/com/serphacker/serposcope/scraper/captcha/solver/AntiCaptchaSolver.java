@@ -1,27 +1,29 @@
-/* 
+/*
  * Serposcope - SEO rank checker https://serposcope.serphacker.com/
- * 
+ *
  * Copyright (c) 2016 SERP Hacker
  * @author Pierre Nogues <support@serphacker.com>
  * @license https://opensource.org/licenses/MIT MIT License
  */
 package com.serphacker.serposcope.scraper.captcha.solver;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.*;
 import com.serphacker.serposcope.scraper.captcha.Captcha;
+
 import static com.serphacker.serposcope.scraper.captcha.Captcha.Error.EXCEPTION;
+
 import com.serphacker.serposcope.scraper.captcha.CaptchaImage;
 import com.serphacker.serposcope.scraper.captcha.CaptchaRecaptcha;
 import com.serphacker.serposcope.scraper.http.ScrapClient;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +117,7 @@ public class AntiCaptchaSolver implements CaptchaSolver {
             taskMap.put("type", "NoCaptchaTaskProxyless");
             taskMap.put("websiteURL", ((CaptchaRecaptcha) captcha).getUrl());
             taskMap.put("websiteKey", ((CaptchaRecaptcha) captcha).getChallenge());
+            taskMap.put("recaptchaDataSValue", ((CaptchaRecaptcha) captcha).getDataS());
         }
 
         if (captcha instanceof CaptchaImage) {

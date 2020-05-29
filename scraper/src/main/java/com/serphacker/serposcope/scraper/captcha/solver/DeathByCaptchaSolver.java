@@ -137,7 +137,8 @@ public class DeathByCaptchaSolver implements CaptchaSolver {
             try {
                 Map<String, String> json = new HashMap<>();
                 json.put("pageurl", ((CaptchaRecaptcha) cap).getUrl());
-                json.put("googlekey", ((CaptchaRecaptcha) cap).getChallenge());                
+                json.put("googlekey", ((CaptchaRecaptcha) cap).getChallenge());
+                json.put("data-s", ((CaptchaRecaptcha) cap).getDataS());
                 data.put("token_params", new ObjectMapper().writeValueAsString(json));
             } catch (Exception ex) {
                 LOG.warn("json error", ex);

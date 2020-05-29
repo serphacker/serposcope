@@ -118,10 +118,9 @@ public class TwoCaptchaSolver implements CaptchaSolver {
             createTaskMap.put("method", "userrecaptcha");
             createTaskMap.put("googlekey", ((CaptchaRecaptcha)captcha).getChallenge());
             createTaskMap.put("pageurl", ((CaptchaRecaptcha)captcha).getUrl());
+            createTaskMap.put("data-s", ((CaptchaRecaptcha) captcha).getDataS());
         }
-        
 
-        
         long started = System.currentTimeMillis();
         captcha.setStatus(Captcha.Status.SUBMITTED);
         try(ScrapClient http = new ScrapClient()){

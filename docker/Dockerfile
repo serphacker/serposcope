@@ -2,7 +2,7 @@ FROM java:8-jre
 
 ARG SERPOSCOPE_VERSION
 
-ENV SERPOSCOPE_VERSION ${SERPOSCOPE_VERSION:-2.11.0}
+ENV SERPOSCOPE_VERSION ${SERPOSCOPE_VERSION:-2.12.0}
 
 COPY serposcope /etc/default/serposcope
 RUN wget https://serposcope.serphacker.com/download/${SERPOSCOPE_VERSION}/serposcope_${SERPOSCOPE_VERSION}_all.deb -O /tmp/serposcope.deb

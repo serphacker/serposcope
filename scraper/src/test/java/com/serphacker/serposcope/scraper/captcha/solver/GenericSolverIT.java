@@ -121,7 +121,7 @@ public abstract class GenericSolverIT extends DeepIntegrationTest {
     public void testSolverRecaptcha() throws Exception {
 
         try (CaptchaSolver solver = getSolver()) {
-            CaptchaRecaptcha captcha = new CaptchaRecaptcha("6LeLLRkTAAAAAMWD6RpN9oBFamvaumbmjEPmiOxF", "https://spectrocoin.com/en/login.html");
+            CaptchaRecaptcha captcha = new CaptchaRecaptcha("6LeLLRkTAAAAAMWD6RpN9oBFamvaumbmjEPmiOxF", "", "https://spectrocoin.com/en/login.html");
             solver.solve(captcha);
             assertEquals(Captcha.Status.SOLVED, captcha.getStatus());
             assertEquals(Captcha.Error.SUCCESS, captcha.getError());

@@ -165,6 +165,7 @@ public class ImageTyperzSolver implements CaptchaSolver {
         createTaskMap.put("action", "UPLOADCAPTCHA");
         createTaskMap.put("pageurl", captcha.getUrl());
         createTaskMap.put("googlekey", captcha.getChallenge());
+        createTaskMap.put("data-s", captcha.getDataS());
 
         long started = System.currentTimeMillis();
         captcha.setStatus(Captcha.Status.SUBMITTED);
