@@ -1,4 +1,4 @@
-# LEGACY CODE DISCLAIMER
+# LEGACY CODE DISCLAIMER #amazing 
 
 Old application in survival mode. Bug won't be fixed and PR won't be merged.
 
