@@ -51,12 +51,12 @@ public class GoogleScraper {
 
     public final static int DEFAULT_MAX_RETRY = 3;
 
-    final static BasicClientCookie NCR_COOKIE = new BasicClientCookie("PREF", "ID=1111111111111111:CR=2");
+    final static BasicClientCookie CONSENT_COOKIE = new BasicClientCookie("CONSENT", "YES+");
     static {
-        NCR_COOKIE.setDomain("google.com");
-        NCR_COOKIE.setPath("/");
-        NCR_COOKIE.setAttribute(ClientCookie.PATH_ATTR, "/");
-        NCR_COOKIE.setAttribute(ClientCookie.DOMAIN_ATTR, ".google.com");
+        CONSENT_COOKIE.setDomain("google.com");
+        CONSENT_COOKIE.setPath("/");
+        CONSENT_COOKIE.setAttribute(ClientCookie.PATH_ATTR, "/");
+        CONSENT_COOKIE.setAttribute(ClientCookie.DOMAIN_ATTR, ".google.com");
     }
 
     public final static String DEFAULT_DESKTOP_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0";
@@ -438,9 +438,7 @@ public class GoogleScraper {
     protected Status handleCaptchaRedirect(String url, String referrer, String redirect){
 
         http.clearCookies();
-        if(redirect.contains(".com/search")){
-            http.addCookie(NCR_COOKIE);
-        }
+        http.addCookie(CONSENT_COOKIE);
 
         int status = http.get(url, referrer);
         LOG.info("GOT[refetch] status=[{}] exception=[{}]", status, http.getException() == null ? "none" :
