@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.13.0 - 2021-04-10
+
+* Fix captcha resolution bug [#238](https://github.com/serphacker/serposcope/issues/238)
+
 ## 2.12.0 - 2020-05-29
 
 * Update Anticaptcha and 2captcha API [#228](https://github.com/serphacker/serposcope/issues/228)
