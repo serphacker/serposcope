@@ -57,6 +57,6 @@ There are three available environment variables that you can use to change the d
 - ```SERPOSCOPE_DB_OPTIONS``` which amends serposcope.db.options
 - ```SERPOSCOPE_DB_DEBUG``` which amends serposcope.db.debug
 
-You can set one or more of them at the container creation like this:
+You can set one or more of them at the container creation like this (note escaping of ampersands):
 
-```docker run -e "SERPOSCOPE_DB_URL=jdbc:mysql://HOSTNAME/DATABASE?user=USER&password=PASS&allowMultiQueries=true" -d -p 7134:7134 --name my_serposcope yourname/serposcope```
+```docker run -e "SERPOSCOPE_DB_URL=jdbc:mysql://HOSTNAME/DATABASE?user=USER\&password=PASS\&allowMultiQueries=true" -d -p 7134:7134 --name my_serposcope yourname/serposcope```
