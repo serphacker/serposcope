@@ -101,11 +101,6 @@ public class ProxyController extends BaseController {
                 return Results.redirect(router.getReverseRoute(ProxyController.class, "proxies"));
             }
             
-            if(!Validator.isIPv4(split[1])){
-                flash.error(msg.get("admin.proxy.error.invalidIPv4", context, Optional.absent(), line).or(""));
-                return Results.redirect(router.getReverseRoute(ProxyController.class, "proxies"));                
-            }
-            
             proxy.setIp(split[1]);
             
             switch(split[0]){
@@ -128,6 +123,10 @@ public class ProxyController extends BaseController {
                     break;
                     
                 case "bind":
+                    if(!Validator.isIPv4(split[1])){
+                        flash.error(msg.get("admin.proxy.error.invalidIPv4", context, Optional.absent(), line).or(""));
+                        return Results.redirect(router.getReverseRoute(ProxyController.class, "proxies"));
+                    }
                     proxy.setType(Proxy.Type.BIND);
                     break;
                     

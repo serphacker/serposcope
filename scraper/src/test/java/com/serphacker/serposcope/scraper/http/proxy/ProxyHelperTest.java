@@ -34,7 +34,18 @@ public class ProxyHelperTest {
         assertEquals(1234, httpProxy.port);
         assertNull(httpProxy.username);
         assertNull(httpProxy.password);
-        
+
+        httpProxy = (HttpProxy) helper.parse("http://login:pass@localhost:1234/");
+        assertEquals("localhost", httpProxy.ip);
+        assertEquals(1234, httpProxy.port);
+        assertEquals("login", httpProxy.username);
+        assertEquals("pass", httpProxy.password);
+
+        httpProxy = (HttpProxy) helper.parse("http://localhost:1234/");
+        assertEquals("localhost", httpProxy.ip);
+        assertEquals(1234, httpProxy.port);
+        assertNull(httpProxy.username);
+        assertNull(httpProxy.password);
     }
     
     @Test
@@ -62,8 +73,31 @@ public class ProxyHelperTest {
         assertEquals("127.0.0.1", socksProxy.ip);
         assertEquals(1234, socksProxy.port);
         assertNull(socksProxy.username);
-        assertNull(socksProxy.password);        
-        
+        assertNull(socksProxy.password);
+
+        socksProxy = (SocksProxy) helper.parse("socks://login:pass@localhost:1234/");
+        assertEquals("localhost", socksProxy.ip);
+        assertEquals(1234, socksProxy.port);
+        assertEquals("login", socksProxy.username);
+        assertEquals("pass", socksProxy.password);
+
+        socksProxy = (SocksProxy) helper.parse("socks://localhost:1234/");
+        assertEquals("localhost", socksProxy.ip);
+        assertEquals(1234, socksProxy.port);
+        assertNull(socksProxy.username);
+        assertNull(socksProxy.password);
+
+        socksProxy = (SocksProxy) helper.parse("socks://login:pass@localhost:1234");
+        assertEquals("localhost", socksProxy.ip);
+        assertEquals(1234, socksProxy.port);
+        assertEquals("login", socksProxy.username);
+        assertEquals("pass", socksProxy.password);
+
+        socksProxy = (SocksProxy) helper.parse("socks://localhost:1234");
+        assertEquals("localhost", socksProxy.ip);
+        assertEquals(1234, socksProxy.port);
+        assertNull(socksProxy.username);
+        assertNull(socksProxy.password);
     }
     
     @Test
