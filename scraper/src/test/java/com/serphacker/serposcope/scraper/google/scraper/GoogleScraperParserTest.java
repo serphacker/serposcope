@@ -25,7 +25,8 @@ public class GoogleScraperParserTest {
     private final static List<String> DIRECTORIES = Arrays.asList(
         "/google/201804",
         "/google/201810",
-        "/google/201910"
+        "/google/201910",
+        "/google/202111"
     );
 
     @Test
@@ -73,7 +74,7 @@ public class GoogleScraperParserTest {
             assertEquals(OK, scraper.parseSerp(urls));
             assertTrue(scraper.hasNextPage());
 
-            assertEquals(expectedUrls, urls.subList(0, expectedUrls.size()));
+            assertEquals(expectedUrls, urls.subList(0, Math.min(urls.size(), expectedUrls.size())));
         }
 
     }

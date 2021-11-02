@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -243,7 +244,10 @@ public class GoogleScraper {
                 continue;
             }
 
-            String link = extractLink(h3Elt.getElementsByTag("a").first());
+            String link = extractLink(h3Elt.parent());
+            if(link == null) {
+                link = extractLink(h3Elt.getElementsByTag("a").first());
+            }
             if(link != null){
                 urls.add(link);
             }
@@ -345,7 +349,7 @@ public class GoogleScraper {
 
         if(attr.startsWith("/url?")){
             try {
-                List<NameValuePair> parse = URLEncodedUtils.parse(attr.substring(5), Charset.forName("utf-8"));
+                List<NameValuePair> parse = URLEncodedUtils.parse(attr.substring(5), StandardCharsets.UTF_8);
                 Map<String,String> map = parse.stream().collect(Collectors.toMap(NameValuePair::getName,NameValuePair::getValue));
                 return map.get("q");
             }catch(Exception ex){

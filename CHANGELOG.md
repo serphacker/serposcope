@@ -1,5 +1,9 @@
 # serposcope changelog
 
+## 2.14.0 - 2021-11-02
+
+* Fix mobile SERP parsing issue
+
 ## 2.13.1 - 2021-04-10
 
 * Fix corrupted 2.13.0 Windows release

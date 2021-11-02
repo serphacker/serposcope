@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.serphacker.serposcope</groupId>
     <artifactId>serposcope</artifactId>
-    <version>2.13.1</version>
+    <version>2.14.0</version>
     <packaging>pom</packaging>
     <name>serposcope</name>
     <description>serposcope SEO rank checker</description>
