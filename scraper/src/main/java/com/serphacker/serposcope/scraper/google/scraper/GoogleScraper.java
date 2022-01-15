@@ -20,7 +20,6 @@ import com.serphacker.serposcope.scraper.http.proxy.DirectNoProxy;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.http.HttpHost;
@@ -476,13 +474,13 @@ public class GoogleScraper {
 
         Document doc = Jsoup.parse(content, redirect);
 
-        Elements noscript = doc.getElementsByTag("noscript");
-        if(!noscript.isEmpty()){
-            LOG.debug("noscript form detected, trying with captcha image");
-            return noscriptCaptchaForm(doc, redirect);
-//            if(Status.OK.equals(ret)){
-//                return ret;
-//            }
+        Elements elements = doc.getElementsByTag("img");
+        for (Element element : elements) {
+            String src = element.attr("abs:src");
+            if(src != null && src.contains("/sorry/image")){
+                LOG.debug("legacy captcha form detected, trying with captcha image");
+                return legacyCaptcha(doc, redirect);
+            }
         }
 
         LOG.debug("trying with captcha recaptcha");
@@ -597,7 +595,7 @@ public class GoogleScraper {
         LOG.debug("debug dump created in {}", dumpFile.getAbsolutePath());
     }
 
-    protected Status noscriptCaptchaForm(Document captchaDocument, String captchaRedirect){
+    protected Status legacyCaptcha(Document captchaDocument, String captchaRedirect){
 
         String imageSrc = null;
         Elements elements = captchaDocument.getElementsByTag("img");
